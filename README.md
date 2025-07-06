@@ -3,12 +3,12 @@ A programming language inspired by the C family that compiles to DIRIC assembly.
 
 # DIRIC assembly
 DIRIC assembly is a simple assembly language made for the DIRIC ISA which is made in the game Turing Complete.
-DIRIC stands for Directly Implemented Reduced Instructionset Computer.
+DIRIC stands for Directly Implemented Reduced Instruction Computer.
 
 # D Compiler
-This repository contains the compiler for D Programming Language
+This repository contains the compiler for the D Programming Language
 
-## How to use
+## Usage
 ```
 dlang filename
 ```

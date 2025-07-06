@@ -1,5 +1,5 @@
 function myprint(num) {
-    print(num);
+    print(num + 4);
 }
 
 myprint(14);

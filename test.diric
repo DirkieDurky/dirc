@@ -6,12 +6,16 @@ return _ _ _
 
 label myprint
 mov _ r0 stack
+mov|imm2 _ 0 ramPointer
+add|imm2 r0 4 ram
+mov|imm2 _ 0 ramPointer
+mov _ ram r0
 call _ print _
 mov _ stack r0
 return _ _ _
 
 label start
 mov _ r0 stack
-mov|imm _ 14 r0
+mov|imm2 _ 14 r0
 call _ myprint _
 mov _ stack r0

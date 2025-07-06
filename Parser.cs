@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
 
 class Parser
@@ -41,29 +42,45 @@ class Parser
                 Compiler.NewLines.Add($"mov _ r{i} stack");
             }
 
-            r = new Regex("\\s*?\\(\\s*(?:(\\w+)\\s*,\\s*)*(\\w+)?\\s*\\)");
+            r = new Regex("\\s*?\\(");
             m = r.Match(Compiler.Input, parsingIndex);
             if (!m.Success) throw new FormatException("Functions should be followed by parentheses");
             parsingIndex = m.Index + m.Length;
 
-            List<string> argumentsAsStr = [];
-            if (!string.IsNullOrEmpty(m.Groups[1].Value))
+            Regex closingParanthesisRegex = new Regex("^\\s*?\\)");
+            m = closingParanthesisRegex.Match(Compiler.Input.Substring(parsingIndex));
+            List<Identifier> arguments = [];
+            if (!m.Success)
             {
-                argumentsAsStr.AddRange(m.Groups[1].Value.Replace(" ", "").Split().ToList());
+                do
+                {
+                    r = new Regex("[\\s\\w\\d+\\-\\*/%|&^]+,?");
+                    m = r.Match(Compiler.Input, parsingIndex);
+                    if (!m.Success) throw new FormatException("Invalid argument syntax");
+                    arguments.Add(ParseIdentifier(m.Groups[0].Value));
+                    parsingIndex = m.Index + m.Length;
+                } while (m.Value.Last() == ',');
             }
-            argumentsAsStr.Add(m.Groups[2].Value);
-
-            List<Identifier> arguments = argumentsAsStr.Select(ParseIdentifier).ToList();
+            m = closingParanthesisRegex.Match(Compiler.Input.Substring(parsingIndex));
+            if (!m.Success) throw new FormatException("Unexpected closing parentesis");
 
             if (arguments.Count() != function.Arguments.Count())
                 throw new FormatException($"Function '{function.Name}' takes {function.Arguments.Count()} arguments. {arguments.Count()} given.");
 
             for (int i = 0; i < arguments.Count(); i++)
             {
-                string opcode = arguments[i].Immediate ? "mov|imm" : "mov";
-                if (arguments[i].Value != $"r{i}")
+                string opcode = "mov";
+                opcode += arguments[i].Type == Identifier.IdentifierType.Immediate ? "|imm2" : "";
+
+                string value = arguments[i].Value;
+                if (arguments[i].Type == Identifier.IdentifierType.RamPointer)
                 {
-                    Compiler.NewLines.Add($"{opcode} _ {arguments[i].Value} r{i}");
+                    Compiler.NewLines.Add($"mov|imm2 _ {arguments[i].Value} ramPointer");
+                    value = "ram";
+                }
+                if (arguments[i].Value != $"r{i}" || arguments[i].Type == Identifier.IdentifierType.RamPointer)
+                {
+                    Compiler.NewLines.Add($"{opcode} _ {value} r{i}");
                 }
             }
 
@@ -84,16 +101,57 @@ class Parser
 
     public Identifier ParseIdentifier(string input)
     {
+        Regex r;
+        Match m;
+
+        // If only immediate values we can just pass it through because the assembler can deal with that
+        r = new Regex("(\\d+)(?:\\s*[+\\-\\*/%|&^]\\s*(\\d+))+");
+        m = r.Match(input);
+        if (m.Success)
+        {
+            return new Identifier(Identifier.IdentifierType.Immediate, input);
+        }
+        r = new Regex("((?:\\w+\\d*)|\\d+)\\s*([+\\-\\*/%|&^])\\s*((?:\\w+\\d*)|\\d+)");
+        m = r.Match(input);
+        if (m.Success)
+        {
+            string operation = m.Groups[2].Value switch
+            {
+                "+" => "add",
+                "-" => "sub",
+                "|" => "or",
+                "&" => "and",
+                "^" => "xor",
+                _ => throw new InvalidOperationException("No such operation"),
+            };
+
+            Identifier operand1 = ParseIdentifier(m.Groups[1].Value);
+            Identifier operand2 = ParseIdentifier(m.Groups[3].Value);
+
+            if (operand1.Type == Identifier.IdentifierType.Immediate)
+            {
+                operation += "|imm1";
+            }
+            if (operand2.Type == Identifier.IdentifierType.Immediate)
+            {
+                operation += "|imm2";
+            }
+
+            Compiler.NewLines.Add("mov|imm2 _ 0 ramPointer");
+            Compiler.NewLines.Add($"{operation} {operand1.Value} {operand2.Value} ram");
+            return new Identifier(Identifier.IdentifierType.RamPointer, "0");
+        }
+
         Variable? foundArgument = Compiler.KnownArguments.Find(a => a.Name == input);
         if (foundArgument != null)
         {
-            return new Identifier(false, foundArgument.Value);
+            return new Identifier(Identifier.IdentifierType.Register, foundArgument.Value);
         }
         Variable? foundVariable = Compiler.KnownVariables.Find(a => a.Name == input);
         if (foundVariable != null)
         {
-            return new Identifier(false, foundVariable.Value);
+            return new Identifier(Identifier.IdentifierType.RamPointer, foundVariable.Value);
         }
-        return new Identifier(true, input);
+        return new Identifier(Identifier.IdentifierType.Immediate, input);
     }
 }
