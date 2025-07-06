@@ -1,1 +1,5 @@
-print(14)
+function myprint(num) {
+    print(num);
+}
+
+myprint(14);

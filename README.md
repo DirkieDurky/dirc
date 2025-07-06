@@ -1,8 +1,9 @@
 # D Programming language
-A programming language inspired by the C family that compiles to DIRISC assembly.
+A programming language inspired by the C family that compiles to DIRIC assembly.
 
-# DIRISC assembly
-DIRISC assembly is a simple assembly language made for the DIRISC ISA which is made in the game Turing Complete.
+# DIRIC assembly
+DIRIC assembly is a simple assembly language made for the DIRIC ISA which is made in the game Turing Complete.
+DIRIC stands for Directly Implemented Reduced Instructionset Computer.
 
 # D Compiler
 This repository contains the compiler for D Programming Language

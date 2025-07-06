@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-
-class Program
+﻿class Program
 {
     static void Main(string[] args)
     {
@@ -18,14 +15,15 @@ class Program
             return;
         }
 
-        string[] lines = File.ReadAllLines(filePath);
+        string text = File.ReadAllText(filePath);
 
-        string[] newLines = Compiler.Compile(lines);
+        Compiler compiler = new(text);
+        string[] newLines = compiler.Compile();
 
         // Create new file path with ".dirisc" extension
         string diriscPath = Path.Combine(
             Path.GetDirectoryName(filePath) ?? "",
-            Path.GetFileNameWithoutExtension(filePath) + ".dirisc"
+            Path.GetFileNameWithoutExtension(filePath) + ".diric"
         );
 
         File.WriteAllLines(diriscPath, newLines);
