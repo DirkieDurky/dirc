@@ -6,13 +6,12 @@ return _ _ _
 
 label myprint
 mov _ r0 stack
-mov _ r0 r0
 call _ print _
 mov _ stack r0
 return _ _ _
 
 label start
 mov _ r0 stack
-movI _ 14 r0
+mov|imm _ 14 r0
 call _ myprint _
 mov _ stack r0

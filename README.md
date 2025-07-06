@@ -13,4 +13,4 @@ This repository contains the compiler for D Programming Language
 dlang filename
 ```
 The file should have the `.d` file extension
-The compiler will output a `.dirisc` file with the same name as the `.d` file
+The compiler will output a `.diric` file with the same name as the `.d` file
