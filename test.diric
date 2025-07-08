@@ -1,21 +1,35 @@
 jump _ start cnt
 
 label print
+push lr _ _
 mov _ r0 out
+pop _ _ lr
 return _ _ _
 
 label myprint
-mov _ r0 stack
-mov|imm2 _ 0 ramPointer
-add|imm2 r0 4 ram
-mov|imm2 _ 0 ramPointer
-mov _ ram r0
-call _ print _
-mov _ stack r0
+push lr _ _
+push r3 _ _
+push r2 _ _
+push r1 _ _
+push r0 _ _
+add r0 4 r0
+call print _ _
+pop _ _ r0
+pop _ _ r1
+pop _ _ r2
+pop _ _ r3
+pop _ _ lr
 return _ _ _
 
 label start
-mov _ r0 stack
-mov|imm2 _ 14 r0
+mov|i2 _ 14 r0
+push r3 _ _
+push r2 _ _
+push r1 _ _
+push r0 _ _
 call _ myprint _
-mov _ stack r0
+pop _ _ r0
+pop _ _ r1
+pop _ _ r2
+pop _ _ r3
+pop _ _ lr
