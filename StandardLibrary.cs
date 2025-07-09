@@ -13,8 +13,8 @@ class StandardLibrary
         Compiler = compiler;
     }
 
-    public void Compile()
-    {
-        Compiler.CompileStandardFunction("print", ["str"], ["mov _ r0 out"]);
-    }
+    // public void Compile()
+    // {
+    //     Compiler.CompileStandardFunction("print", ["str"], ["mov _ r0 out"]);
+    // }
 }

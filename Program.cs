@@ -17,8 +17,8 @@
 
         string text = File.ReadAllText(filePath);
 
-        Compiler compiler = new(text);
-        string[] newLines = compiler.Compile();
+        Compiler compiler = new();
+        string[] newLines = compiler.Compile(text);
 
         // Create new file path with ".dirisc" extension
         string diriscPath = Path.Combine(
