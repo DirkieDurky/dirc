@@ -1,5 +1,4 @@
 using System.Collections.Immutable;
-using System.Runtime.InteropServices;
 
 class Allocator
 {
@@ -10,12 +9,10 @@ class Allocator
         Register.r3,
     ];
 
-    public Compiler Compiler;
     public List<Register> InUse = new();
 
-    public Allocator(Compiler compiler, List<Register> inUse)
+    public Allocator(List<Register> inUse)
     {
-        Compiler = compiler;
         InUse = inUse;
     }
 

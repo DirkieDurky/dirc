@@ -17,14 +17,13 @@ class Compiler
 
         List<AstNode> astNodes = new Parser().Parse(tokens);
 
-        // foreach (AstNode node in astNodes)
-        // {
-        //     Console.WriteLine(node);
-        // }
+        foreach (AstNode node in astNodes)
+        {
+            Console.WriteLine(node);
+        }
 
-        // string[] assembly = new CodeGenerator().Generate(astNodes);
+        string[] assembly = new CodeGenerator().Generate(astNodes);
 
-        return [];
-        // return assembly;
+        return assembly;
     }
 }

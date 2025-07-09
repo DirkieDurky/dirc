@@ -1,0 +1,4 @@
+interface IOperand
+{
+    string AsOperand();
+}

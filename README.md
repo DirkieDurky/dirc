@@ -16,19 +16,24 @@ The registers can be referred to in assembly by the following names:
 - `r3`
 - `r4`
 - `lr`
-- `cnt`
+- `pc`
 - `in` / `out`
 
 Register `r0-r4` can simply be used to store values.\
 Register `lr` is used by the computer to store the byte to continue executing from after a function ends. See `call` and `return` operations.\
 Note that this register will need to be pushed and popped to and from the stack manually for nested functions.\
-Register `cnt` is used by the computer to keep track of the current byte we should read from the program.\
-The computer will always read the byte at the index in the cnt register and the following 3, thus reading a total of 4 bytes each tick.\
-Each tick, the cnt will automatically advance by 4 in order to read the next 4 bytes.\
-The `cnt` register can be overwritten in order to jump.\
+Register `pc` is used by the computer to keep track of the current byte we should read from the program.\
+The computer will always read the byte at the index in the pc register and the following 3, thus reading a total of 4 bytes each tick.\
+Each tick, the pc will automatically advance by 4 in order to read the next 4 bytes.\
+The `pc` register can be overwritten in order to jump.\
 The "io" register allows reading from the input when used as operand 1 or 2, and will write to the output when used as result address.
 
+## Comments
+`# Comment`
+Comments will be ignored by the computer.
+
 ## Labels
+`label labelname`
 Labels are used to make a byte (or line of assembly code) identifiable by a name such that it's easier to reference later.
 Can be used to jump to using the `jump` operation or any of the conditions.
 Labels are also used to define the start of functions.
@@ -61,9 +66,9 @@ Moves a value from the source to the destination.\
 Operand 2 is unused so should be filled in by `_`.\
 `copy imm/reg _ reg`\
 An alias for `mov`.\
-`jump byte/label _ cnt`\
-An alias of `mov|i1`. Jumps to the byte or label specified by operand 1 by writing it's value to cnt.
-The result address should always be `cnt`.
+`jump byte/label _ pc`\
+An alias of `mov|i1`. Jumps to the byte or label specified by operand 1 by writing it's value to pc.
+The result address should always be `pc`.
 
 ### Calculations
 The computer allows the following calculations: (Corresponding opcode are shown in parentheses)
