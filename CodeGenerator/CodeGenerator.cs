@@ -42,7 +42,7 @@ class CodeGenerator
 
     public void EmitLabel(string name)
     {
-        Emit($"label {name}:");
+        Emit($"label {name}");
     }
 
     public void EmitComment(string comment)

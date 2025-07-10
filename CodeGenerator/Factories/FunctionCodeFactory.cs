@@ -19,9 +19,10 @@ class FunctionCodeFactory
         {
             context.ExprFactory.Generate(stmt, scopeSpecificContext);
         }
+
+        Allocator.Free(framePointer);
         context.CodeGen.EmitPop(RegisterEnum.lr);
         context.CodeGen.EmitReturn();
-        context.CodeGen.Emit("");
 
         context.FunctionTable.Declare(Function.FromFunctionDeclarationNode(node));
     }

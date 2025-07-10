@@ -1,30 +1,26 @@
 class ExpressionCodeFactory
 {
-    public void Generate(AstNode node, CodeGenContext context)
+    public IOperand? Generate(AstNode node, CodeGenContext context)
     {
         switch (node)
         {
             case ExpressionStatementNode exprStmt:
-                Generate(exprStmt.Expression, context);
-                break;
+                return Generate(exprStmt.Expression, context);
             case CallExpressionNode call:
-                GenerateCall(call, context);
-                break;
+                return GenerateCall(call, context);
             case BinaryExpressionNode bin:
-                GenerateBinary(bin, context);
-                break;
+                return GenerateBinary(bin, context);
             case IdentifierNode id:
-                if (context.SymbolTable.TryGetValue(id.Name, out var reg))
-                    context.CodeGen.EmitMov(new Register(reg), RegisterEnum.r0);
-                else
-                    throw new Exception($"Identifier {id.Name} does not exist.");
-                break;
+                if (context.SymbolTable.TryGetValue(id.Name, out var reg)) return new Register(reg);
+                else throw new Exception($"Identifier {id.Name} does not exist.");
+            case NumberLiteralNode number:
+                return number;
             default:
-                throw new Exception("Unhandled node");
+                throw new Exception($"Unhandled node {node}");
         }
     }
 
-    private void GenerateCall(CallExpressionNode node, CodeGenContext context)
+    private IOperand? GenerateCall(CallExpressionNode node, CodeGenContext context)
     {
         // Save in use caller saved registers
         List<RegisterEnum> toSave = Allocator.CallerSaved.Where(Allocator.InUse.Contains).ToList();
@@ -36,8 +32,9 @@ class ExpressionCodeFactory
         // Put arguments in the right locations. Spill arguments to stack if there are more arguments than argumentRegisters.
         for (int i = 0; i < node.Arguments.Count; i++)
         {
-
-            context.CodeGen.EmitMov(new Register(RegisterEnum.r0), (RegisterEnum)i);
+            IOperand argument = Generate(node.Arguments[i], context) ?? throw new Exception("Argument was not set");
+            context.CodeGen.EmitMov(argument, (RegisterEnum)i);
+            if (argument is Register reg) Allocator.Free(reg.RegisterEnum);
         }
 
         context.CodeGen.EmitFunctionCall(node.Callee);
@@ -48,14 +45,14 @@ class ExpressionCodeFactory
         {
             context.CodeGen.EmitPop(reg);
         }
+
+        return null;
     }
 
-    private void GenerateBinary(BinaryExpressionNode node, CodeGenContext context)
+    private IOperand? GenerateBinary(BinaryExpressionNode node, CodeGenContext context)
     {
-        Generate(node.Left, context);
-        context.CodeGen.EmitPush(new Register(RegisterEnum.r0));
-        Generate(node.Right, context);
-        context.CodeGen.EmitPop(RegisterEnum.r1);
+        IOperand leftOperand = Generate(node.Left, context) ?? throw new Exception("Left operand of binary expression is missing");
+        IOperand rightOperand = Generate(node.Right, context) ?? throw new Exception("Right operand of binary expression is missing");
         var op = node.Operator switch
         {
             "+" => Operation.Add,
@@ -67,6 +64,8 @@ class ExpressionCodeFactory
             "^" => Operation.Xor,
             _ => throw new Exception($"Unknown operator {node.Operator}")
         };
-        context.CodeGen.EmitBinaryOperation(op, new Register(RegisterEnum.r1), new Register(RegisterEnum.r0), RegisterEnum.r0);
+        RegisterEnum result = Allocator.Allocate(Allocator.RegisterType.CallerSaved);
+        context.CodeGen.EmitBinaryOperation(op, leftOperand, rightOperand, result);
+        return new Register(result);
     }
 }
