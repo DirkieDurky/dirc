@@ -1,4 +1,4 @@
-using System.Collections.Immutable;
+using System.Diagnostics;
 
 static class Allocator
 {
@@ -23,12 +23,14 @@ static class Allocator
 
         RegisterEnum register = (RegisterEnum)foundRegister;
         InUse.Add(register);
+        Debug.WriteLine($"Allocated register {register}{Environment.StackTrace}");
         return register;
     }
 
     public static void Free(RegisterEnum r)
     {
         InUse.Remove(r);
+        Debug.WriteLine($"Freed register {r}");
     }
 
     public static void Use(RegisterEnum r)

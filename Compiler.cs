@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 class Compiler
 {
     public Compiler()
@@ -12,14 +14,14 @@ class Compiler
         // foreach (Token token in tokens)
         // {
         //     string literal = token.Literal != null ? " " + token.Literal : "";
-        //     Console.Write($"[{token.Type} {token.Lexeme}{literal}] ");
+        //     Debug.Write($"[{token.Type} {token.Lexeme}{literal}] ");
         // }
 
         List<AstNode> astNodes = new Parser().Parse(tokens);
 
         foreach (AstNode node in astNodes)
         {
-            Console.WriteLine(node);
+            Debug.WriteLine(node);
         }
 
         string[] assembly = new CodeGenerator().Generate(astNodes);
