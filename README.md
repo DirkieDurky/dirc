@@ -19,10 +19,10 @@ The registers can be referred to in assembly by the following names:
 - `pc`
 - `in` / `out`
 
-Register `r0-r4` can simply be used to store values.\
-Register `lr` is used by the computer to store the byte to continue executing from after a function ends. See `call` and `return` operations.\
+RegisterEnum `r0-r4` can simply be used to store values.\
+RegisterEnum `lr` is used by the computer to store the byte to continue executing from after a function ends. See `call` and `return` operations.\
 Note that this register will need to be pushed and popped to and from the stack manually for nested functions.\
-Register `pc` is used by the computer to keep track of the current byte we should read from the program.\
+RegisterEnum `pc` is used by the computer to keep track of the current byte we should read from the program.\
 The computer will always read the byte at the index in the pc register and the following 3, thus reading a total of 4 bytes each tick.\
 Each tick, the pc will automatically advance by 4 in order to read the next 4 bytes.\
 The `pc` register can be overwritten in order to jump.\

@@ -1,4 +1,4 @@
-enum Register
+enum RegisterEnum
 {
     r0,
     r1,

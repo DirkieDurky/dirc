@@ -6,4 +6,6 @@ enum Operation
     Or,
     Not,
     Xor,
+    Mul,
+    Div,
 }

@@ -1,26 +1,43 @@
 class CodeGenerator
 {
-    private List<string> code = [];
+    private readonly List<string> _code = new();
+    public CodeGenContext Context { get; private set; }
+
+    public CodeGenerator()
+    {
+        ExpressionCodeFactory exprFactory = new ExpressionCodeFactory();
+        FunctionCodeFactory funcFactory = new FunctionCodeFactory();
+        Context = new CodeGenContext(exprFactory, funcFactory, new(), this);
+    }
 
     public string[] Generate(List<AstNode> nodes)
     {
-        Allocator allocator = new Allocator([]);
-        ExpressionCodeFactory exprFactory = new ExpressionCodeFactory(allocator);
-        FunctionCodeFactory funcFactory = new FunctionCodeFactory(allocator, exprFactory);
+        EmitJump("start");
+        EmitEmptyLine();
 
-        foreach (var node in nodes)
+        // Compile standard library
+        StandardLibrary std = new StandardLibrary();
+        std.Compile(Context);
+
+        // Compile functions first
+        foreach (FunctionDeclarationNode funcNode in nodes.Where(node => node is FunctionDeclarationNode))
+        {
+            Context.FuncFactory.Generate(funcNode, Context);
+        }
+
+        EmitLabel("start");
+        foreach (AstNode node in nodes)
         {
             switch (node)
             {
                 case FunctionDeclarationNode func:
-                    funcFactory.Generate(func);
                     break;
                 default:
-                    exprFactory.Generate(node);
+                    Context.ExprFactory.Generate(node, Context);
                     break;
             }
         }
-        return code.ToArray();
+        return _code.ToArray();
     }
 
     public void EmitLabel(string name)
@@ -33,10 +50,14 @@ class CodeGenerator
         Emit($"# {comment}");
     }
 
-    public void EmitMov(IOperand item, Register result)
+    public void EmitMov(IOperand item, RegisterEnum result)
     {
         string op = "mov" + (item is NumberLiteralNode ? "|i1" : "");
-        Emit($"{op} {item} _ {result}");
+        string line = $"{op} {item.AsOperand()} _ {result}";
+        // Prevent redundant mov (e.g., mov r0 _ r0)
+        if (item is IdentifierNode id && id.Name == result.ToString()) return;
+        if (item is Register regOp && regOp.RegisterEnum == result) return;
+        Emit(line);
     }
 
     public void EmitJump(string label)
@@ -44,7 +65,7 @@ class CodeGenerator
         Emit($"jump {label} _ pc");
     }
 
-    public void EmitBinaryOperation(Operation op, IOperand left, IOperand? right, Register result)
+    public void EmitBinaryOperation(Operation op, IOperand left, IOperand? right, RegisterEnum result)
     {
         if (right == null && op != Operation.Not)
         {
@@ -111,6 +132,7 @@ class CodeGenerator
     public void EmitReturn()
     {
         Emit($"return _ _ _");
+        EmitEmptyLine();
     }
 
     public void EmitPush(IOperand value)
@@ -118,10 +140,10 @@ class CodeGenerator
         string opSuffix = "";
         if (value is NumberLiteralNode) opSuffix += "|i1";
 
-        Emit($"push{opSuffix} {value} _ _");
+        Emit($"push{opSuffix} {value.AsOperand()} _ _");
     }
 
-    public void EmitPop(Register result)
+    public void EmitPop(RegisterEnum result)
     {
         Emit($"pop _ _ {result}");
     }
@@ -132,15 +154,15 @@ class CodeGenerator
         if (value is NumberLiteralNode) opSuffix += "|i1";
         if (location is NumberLiteralNode) opSuffix += "|i2";
 
-        Emit($"store{opSuffix} {value} {location} _");
+        Emit($"store{opSuffix} {value.AsOperand()} {location.AsOperand()} _");
     }
 
-    public void EmitLoad(IOperand location, Register register)
+    public void EmitLoad(IOperand location, RegisterEnum register)
     {
         string opSuffix = "";
         if (location is NumberLiteralNode) opSuffix += "|i1";
 
-        Emit($"load{opSuffix} {location} _ {register}");
+        Emit($"load{opSuffix} {location.AsOperand()} _ {register}");
     }
 
     public void EmitNoop()
@@ -148,8 +170,13 @@ class CodeGenerator
         Emit($"noop _ _ _");
     }
 
+    public void EmitEmptyLine()
+    {
+        Emit("");
+    }
+
     public void Emit(string assembly)
     {
-        code.Add(assembly);
+        _code.Add(assembly);
     }
 }
