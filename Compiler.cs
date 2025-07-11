@@ -11,11 +11,11 @@ class Compiler
     {
         List<Token> tokens = new Lexer().Tokenize(source);
 
-        // foreach (Token token in tokens)
-        // {
-        //     string literal = token.Literal != null ? " " + token.Literal : "";
-        //     Debug.Write($"[{token.Type} {token.Lexeme}{literal}] ");
-        // }
+        foreach (Token token in tokens)
+        {
+            string literal = token.Literal != null ? " " + token.Literal : "";
+            Debug.Write($"[{token.Type} {token.Lexeme}{literal}] ");
+        }
 
         List<AstNode> astNodes = new Parser().Parse(tokens);
 

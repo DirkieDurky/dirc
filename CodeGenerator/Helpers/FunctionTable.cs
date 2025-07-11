@@ -19,7 +19,7 @@ public class FunctionTable
     {
         if (!_functions.TryGetValue(name, out var sig))
         {
-            throw new Exception($"Unknown function: {name}");
+            throw new Exception($"Unknown function: '{name}'");
         }
         return sig;
     }

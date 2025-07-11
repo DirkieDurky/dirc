@@ -1,0 +1,20 @@
+function print4(num) {
+    print(num + 4);
+}
+
+function print25(num) {
+    print(num + 25);
+}
+
+function print60(num) {
+    print(60 + num);
+}
+
+function print10(bum) {
+    print(bum + 10);
+}
+
+print4(14);
+print25(14);
+print60(14);
+print10(14);

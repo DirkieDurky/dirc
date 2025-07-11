@@ -22,6 +22,18 @@ class ExpressionCodeFactory
 
     private IOperand? GenerateCall(CallExpressionNode node, CodeGenContext context)
     {
+        Function callee;
+        try
+        {
+            callee = context.FunctionTable.Lookup(node.Callee);
+        }
+        catch
+        {
+            throw new Exception($"Call made to unknown function '{node.Callee}'");
+        }
+
+        if (callee.Parameters.Count() != node.Arguments.Count) throw new Exception($"Function {callee} takes {callee.Parameters.Count()} arguments. {node.Arguments.Count} given.");
+
         // Save in use caller saved registers
         List<RegisterEnum> toSave = Allocator.CallerSaved.Where(Allocator.InUse.Contains).ToList();
         foreach (var reg in toSave)
