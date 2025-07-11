@@ -122,7 +122,17 @@ class Parser
     {
         if (Match(TokenType.Number))
         {
-            return new NumberLiteralNode((int)Previous().Literal!);
+            return new NumberLiteralNode(NumberLiteralType.Decimal, (string)Previous().Literal!);
+        }
+
+        if (Match(TokenType.BinaryNumber))
+        {
+            return new NumberLiteralNode(NumberLiteralType.Binary, (string)Previous().Literal!);
+        }
+
+        if (Match(TokenType.HexNumber))
+        {
+            return new NumberLiteralNode(NumberLiteralType.Hexadecimal, (string)Previous().Literal!);
         }
 
         if (Match(TokenType.Identifier))

@@ -84,7 +84,18 @@ class Lexer
             default:
                 if (IsDigit(c))
                 {
-                    Number();
+                    if (c == '0' && NextIs('b'))
+                    {
+                        BinaryNumber();
+                    }
+                    else if (c == '0' && NextIs('b'))
+                    {
+                        HexNumber();
+                    }
+                    else
+                    {
+                        Number();
+                    }
                 }
                 else if (IsAlpha(c))
                 {
@@ -111,6 +122,28 @@ class Lexer
         {
             AddToken(TokenType.Identifier);
         }
+    }
+
+    private void BinaryNumber()
+    {
+        Advance();
+        Advance();
+
+        while (IsDigit(Peek())) Advance();
+
+        string text = _source[_start.._current];
+        AddToken(TokenType.BinaryNumber, text);
+    }
+
+    private void HexNumber()
+    {
+        Advance();
+        Advance();
+
+        while (IsAlphaNumeric(Peek())) Advance();
+
+        string text = _source[_start.._current];
+        AddToken(TokenType.HexNumber, text);
     }
 
     private void Number()

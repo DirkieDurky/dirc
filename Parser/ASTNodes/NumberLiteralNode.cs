@@ -1,7 +1,19 @@
 public class NumberLiteralNode : AstNode, IOperand
 {
-    public int Value { get; }
-    public NumberLiteralNode(int value) => Value = value;
+    public string Value { get; }
+    public NumberLiteralType Type { get; }
+    public NumberLiteralNode(NumberLiteralType type, string value)
+    {
+        Type = type;
+        Value = value;
+    }
     public override string ToString() => $"Number({Value})";
     public string AsOperand() => Value.ToString();
+}
+
+public enum NumberLiteralType
+{
+    Decimal,
+    Binary,
+    Hexadecimal,
 }

@@ -15,6 +15,8 @@ public enum TokenType
     // Literals
     Identifier,
     Number,
+    BinaryNumber,
+    HexNumber,
 
     // Keywords
     Function,

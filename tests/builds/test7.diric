@@ -1,0 +1,9 @@
+jump start _ pc
+
+label print
+mov _ r0 out
+return _ _ _
+
+label start
+or|i1|i2 0b01000000 0b00000010 r0
+call print _ _
