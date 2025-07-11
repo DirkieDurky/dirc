@@ -52,7 +52,7 @@ class CodeGenerator
 
     public void EmitMov(IOperand item, RegisterEnum result)
     {
-        string op = "mov" + (item is NumberLiteralNode ? "|i1" : "");
+        string op = "mov" + (item is NumberLiteralNode || item is SimpleBinaryExpressionNode ? "|i1" : "");
         string line = $"{op} {item.AsOperand()} _ {result}";
         // Prevent redundant mov (e.g., mov r0 _ r0)
         if (item is IdentifierNode id && id.Name == result.ToString()) return;

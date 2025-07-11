@@ -151,7 +151,7 @@ class Lexer
         while (IsDigit(Peek())) Advance();
 
         string text = _source[_start.._current];
-        AddToken(TokenType.Number, int.Parse(text));
+        AddToken(TokenType.Number, text);
     }
 
     private bool NextIs(char expected)

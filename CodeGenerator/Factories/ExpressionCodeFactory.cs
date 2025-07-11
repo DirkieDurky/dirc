@@ -65,6 +65,12 @@ class ExpressionCodeFactory
     {
         IOperand leftOperand = Generate(node.Left, context) ?? throw new Exception("Left operand of binary expression is missing");
         IOperand rightOperand = Generate(node.Right, context) ?? throw new Exception("Right operand of binary expression is missing");
+
+        if (leftOperand is NumberLiteralNode && rightOperand is NumberLiteralNode)
+        {
+            return new SimpleBinaryExpressionNode(node);
+        }
+
         var op = node.Operator switch
         {
             "+" => Operation.Add,

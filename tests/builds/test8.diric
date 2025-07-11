@@ -5,5 +5,5 @@ mov _ r0 out
 return _ _ _
 
 label start
-mov|i1 0b01000000 | 0b00000010 _ r0
+mov|i1 3 + 4 _ r0
 call print _ _
