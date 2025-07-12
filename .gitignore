@@ -1,4 +1,6 @@
-bin/*
-obj/*
+bin
+obj
 *.bak
 backups
+tests/builds
+.vscode/launch.json
