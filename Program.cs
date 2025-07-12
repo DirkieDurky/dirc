@@ -27,7 +27,7 @@ class Program
             {
                 if (!file.EndsWith(".dirc")) continue;
 
-                var dir = Directory.CreateDirectory(Path.Combine(path, "builds"));
+                DirectoryInfo dir = Directory.CreateDirectory(Path.Combine(path, "builds"));
 
                 string resultDir = Path.Combine(
                     dir.ToString(),

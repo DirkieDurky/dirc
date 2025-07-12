@@ -115,7 +115,7 @@ class Lexer
         while (IsAlphaNumeric(Peek())) Advance();
 
         string text = _source[_start.._current];
-        if (_keywords.TryGetValue(text, out var type))
+        if (_keywords.TryGetValue(text, out TokenType type))
         {
             AddToken(type);
         }

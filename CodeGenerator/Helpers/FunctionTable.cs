@@ -1,6 +1,15 @@
-public class FunctionTable
+public class FunctionTable : ICloneable
 {
     private readonly Dictionary<string, Function> _functions = new();
+
+    public FunctionTable()
+    {
+    }
+
+    private FunctionTable(Dictionary<string, Function> functions)
+    {
+        _functions = functions;
+    }
 
     public void Declare(Function sig)
     {
@@ -17,10 +26,15 @@ public class FunctionTable
 
     public Function Lookup(string name)
     {
-        if (!_functions.TryGetValue(name, out var sig))
+        if (!_functions.TryGetValue(name, out Function? sig))
         {
             throw new Exception($"Unknown function: '{name}'");
         }
         return sig;
+    }
+
+    public object Clone()
+    {
+        return new FunctionTable(_functions.ToDictionary(x => x.Key, x => x.Value));
     }
 }

@@ -37,17 +37,16 @@ class ExpressionCodeFactory
 
         // Save in use caller saved registers
         List<Register> toSave = Allocator.CallerSaved.Where(context.Allocator.InUse.Contains).ToList();
-        foreach (var reg in toSave)
+        foreach (Register reg in toSave)
         {
             context.CodeGen.EmitPush(reg);
         }
 
-        // Put arguments in the right locations. Spill arguments to stack if there are more arguments than argumentRegisters.
         for (int i = 0; i < node.Arguments.Count; i++)
         {
             IOperand argument = Generate(node.Arguments[i], context) ?? throw new Exception("Argument was not set");
-            context.CodeGen.EmitMov(argument, new Register((RegisterEnum)i));
-            if (argument is Register reg) context.Allocator.Free(reg);
+            context.CodeGen.EmitMov(argument, Allocator.ArgumentRegisters.ElementAt(i));
+            context.Allocator.Free(argument);
         }
 
         context.CodeGen.EmitFunctionCall(node.Callee);
@@ -72,12 +71,7 @@ class ExpressionCodeFactory
             return new SimpleBinaryExpressionNode(node);
         }
 
-        if (leftOperand is Register reg)
-        {
-            context.Allocator.Free(reg);
-        }
-
-        var op = node.Operator switch
+        Operation op = node.Operator switch
         {
             "+" => Operation.Add,
             "-" => Operation.Sub,
@@ -90,24 +84,25 @@ class ExpressionCodeFactory
         };
         Register result = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
         context.CodeGen.EmitBinaryOperation(op, leftOperand, rightOperand, result);
+        context.Allocator.Free(leftOperand);
+        context.Allocator.Free(rightOperand);
         return result;
     }
 
     private IOperand? GenerateVariableDeclaration(VariableDeclarationNode node, CodeGenContext context)
     {
-        int offset = context.CodeGen.AllocateVariable(node.Name);
+        int offset = context.AllocateVariable(node.Name);
 
         if (node.Initializer != null)
         {
             IOperand initialValue = Generate(node.Initializer, context) ?? throw new Exception("Initializer expression failed to generate");
 
-            if (context.FramePointer == null) throw new Exception("Frame pointer not set in context");
-
             Register tmp = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
 
-            context.CodeGen.EmitBinaryOperation(Operation.Add, context.FramePointer, new NumberLiteralNode(NumberLiteralType.Decimal, offset.ToString()), tmp);
+            context.CodeGen.EmitBinaryOperation(Operation.Sub, Register.FP, new NumberLiteralNode(NumberLiteralType.Decimal, offset.ToString()), tmp);
             context.CodeGen.EmitStore(initialValue, tmp);
 
+            context.Allocator.Free(initialValue);
             context.Allocator.Free(tmp);
         }
 
@@ -116,19 +111,17 @@ class ExpressionCodeFactory
 
     private IOperand GenerateIdentifier(IdentifierNode node, CodeGenContext context)
     {
-        if (context.SymbolTable.TryGetValue(node.Name, out var reg))
+        if (context.SymbolTable.TryGetValue(node.Name, out Register? reg))
         {
             return reg;
         }
 
-        if (context.VariableTable.TryGetValue(node.Name, out var variable))
+        if (context.VariableTable.TryGetValue(node.Name, out Variable? variable))
         {
-            if (context.FramePointer == null) throw new Exception("Frame pointer not set in context");
-
             Register tmp = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
 
             Register result = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
-            context.CodeGen.EmitBinaryOperation(Operation.Add, context.FramePointer, new NumberLiteralNode(variable.FramePointerOffset), tmp);
+            context.CodeGen.EmitBinaryOperation(Operation.Sub, Register.FP, new NumberLiteralNode(variable.FramePointerOffset * CodeGenContext.StackAlignment), tmp);
             context.CodeGen.EmitLoad(tmp, result);
 
             context.Allocator.Free(tmp);
@@ -136,6 +129,6 @@ class ExpressionCodeFactory
             return result;
         }
 
-        throw new Exception($"Identifier {node.Name} does not exist.");
+        throw new Exception($"Undefined identifier '{node.Name}' was used");
     }
 }

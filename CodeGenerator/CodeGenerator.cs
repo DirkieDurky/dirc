@@ -8,11 +8,24 @@ class CodeGenerator
         Allocator allocator = new Allocator();
         ExpressionCodeFactory exprFactory = new ExpressionCodeFactory();
         FunctionCodeFactory funcFactory = new FunctionCodeFactory();
-        Context = new CodeGenContext(allocator, exprFactory, funcFactory, new(), this);
+        Context = new CodeGenContext(
+            this,
+            allocator,
+            exprFactory,
+            funcFactory,
+            new(),
+            new(),
+            new(),
+            0
+            );
     }
 
     public string[] Generate(List<AstNode> nodes)
     {
+        // Set the stack pointer to the end of the RAM to grow downwards
+        // In other compilers the OS does this but since we don't have an OS we'll do it ourselves
+        Context.CodeGen.EmitBinaryOperation(Operation.Sub, Register.SP, new NumberLiteralNode(CodeGenContext.StackAlignment), Register.SP);
+
         EmitJump("start");
         EmitEmptyLine();
 
@@ -27,9 +40,7 @@ class CodeGenerator
         }
 
         EmitLabel("start");
-        Register framePointer = Context.Allocator.Allocate(Allocator.RegisterType.CalleeSaved);
-        Context.CodeGen.EmitMov(new Register(RegisterEnum.sp), framePointer);
-        Context.FramePointer = framePointer;
+        Context.CodeGen.EmitMov(Register.SP, Register.FP);
         foreach (AstNode node in nodes)
         {
             switch (node)
@@ -42,14 +53,6 @@ class CodeGenerator
             }
         }
         return _code.ToArray();
-    }
-
-    public int AllocateVariable(string name)
-    {
-        int offset = Context.NextVariableOffset;
-        Context.NextVariableOffset++;
-        Context.VariableTable[name] = new Variable(name, offset);
-        return offset;
     }
 
     public void EmitLabel(string name)

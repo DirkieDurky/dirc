@@ -7,7 +7,7 @@ class Parser
     {
         _tokens = tokens;
         _current = 0;
-        var statements = new List<AstNode>();
+        List<AstNode> statements = new List<AstNode>();
         while (!IsAtEnd())
         {
             statements.Add(ParseStatement());
@@ -26,9 +26,9 @@ class Parser
 
     private FunctionDeclarationNode ParseFunctionDeclaration()
     {
-        var name = Consume(TokenType.Identifier, "Expected function name.").Lexeme;
+        string name = Consume(TokenType.Identifier, "Expected function name.").Lexeme;
         Consume(TokenType.LeftParen, "Expected '(' after function name.");
-        var parameters = new List<string>();
+        List<string> parameters = new List<string>();
         if (!Check(TokenType.RightParen))
         {
             do
@@ -38,7 +38,7 @@ class Parser
         }
         Consume(TokenType.RightParen, "Expected ')' after parameters.");
         Consume(TokenType.LeftBrace, "Expected '{' before function body.");
-        var body = new List<AstNode>();
+        List<AstNode> body = new List<AstNode>();
         while (!Check(TokenType.RightBrace) && !IsAtEnd())
         {
             body.Add(ParseStatement());
@@ -49,7 +49,7 @@ class Parser
 
     private VariableDeclarationNode ParseVariableDeclaration()
     {
-        var name = Consume(TokenType.Identifier, "Expected variable name.").Lexeme;
+        string name = Consume(TokenType.Identifier, "Expected variable name.").Lexeme;
 
         AstNode? initializer = null;
         if (Match(TokenType.Equals))
@@ -63,7 +63,7 @@ class Parser
 
     private ExpressionStatementNode ParseExpressionStatement()
     {
-        var expr = ParseExpression();
+        AstNode expr = ParseExpression();
         Consume(TokenType.Semicolon, "Expected ';' after expression.");
         return new ExpressionStatementNode(expr);
     }
@@ -76,11 +76,11 @@ class Parser
     // Operator precedence: Or | Xor | And | Addition | Multiplication | Primary
     private AstNode ParseOr()
     {
-        var expr = ParseXor();
+        AstNode expr = ParseXor();
         while (Match(TokenType.Or))
         {
-            var op = Previous().Lexeme;
-            var right = ParseXor();
+            string op = Previous().Lexeme;
+            AstNode right = ParseXor();
             expr = new BinaryExpressionNode(op, expr, right);
         }
         return expr;
@@ -88,11 +88,11 @@ class Parser
 
     private AstNode ParseXor()
     {
-        var expr = ParseAnd();
+        AstNode expr = ParseAnd();
         while (Match(TokenType.Xor))
         {
-            var op = Previous().Lexeme;
-            var right = ParseAnd();
+            string op = Previous().Lexeme;
+            AstNode right = ParseAnd();
             expr = new BinaryExpressionNode(op, expr, right);
         }
         return expr;
@@ -100,11 +100,11 @@ class Parser
 
     private AstNode ParseAnd()
     {
-        var expr = ParseAddition();
+        AstNode expr = ParseAddition();
         while (Match(TokenType.And))
         {
-            var op = Previous().Lexeme;
-            var right = ParseAddition();
+            string op = Previous().Lexeme;
+            AstNode right = ParseAddition();
             expr = new BinaryExpressionNode(op, expr, right);
         }
         return expr;
@@ -112,11 +112,11 @@ class Parser
 
     private AstNode ParseAddition()
     {
-        var expr = ParseMultiplication();
+        AstNode expr = ParseMultiplication();
         while (Match(TokenType.Plus) || Match(TokenType.Minus))
         {
-            var op = Previous().Lexeme;
-            var right = ParseMultiplication();
+            string op = Previous().Lexeme;
+            AstNode right = ParseMultiplication();
             expr = new BinaryExpressionNode(op, expr, right);
         }
         return expr;
@@ -124,11 +124,11 @@ class Parser
 
     private AstNode ParseMultiplication()
     {
-        var expr = ParsePrimary();
+        AstNode expr = ParsePrimary();
         while (Match(TokenType.Asterisk) || Match(TokenType.Slash))
         {
-            var op = Previous().Lexeme;
-            var right = ParsePrimary();
+            string op = Previous().Lexeme;
+            AstNode right = ParsePrimary();
             expr = new BinaryExpressionNode(op, expr, right);
         }
         return expr;
@@ -153,10 +153,10 @@ class Parser
 
         if (Match(TokenType.Identifier))
         {
-            var name = Previous().Lexeme;
+            string name = Previous().Lexeme;
             if (Match(TokenType.LeftParen))
             {
-                var args = new List<AstNode>();
+                List<AstNode> args = new List<AstNode>();
                 if (!Check(TokenType.RightParen))
                 {
                     do

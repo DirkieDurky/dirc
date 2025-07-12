@@ -33,6 +33,14 @@ class Allocator
         Debug.WriteLine($"Freed register {r}");
     }
 
+    public void Free(IOperand operand)
+    {
+        if (operand is Register reg)
+        {
+            Free(reg);
+        }
+    }
+
     public void Use(Register r)
     {
         if (InUse.Contains(r)) throw new Exception($"May not use {r}. Register is already in use");
@@ -84,4 +92,9 @@ class Register : IOperand
     public static Register FP => new Register(RegisterEnum.fp);
     public static Register SP => new Register(RegisterEnum.sp);
     public static Register LR => new Register(RegisterEnum.lr);
+
+    public override string ToString()
+    {
+        return RegisterEnum.ToString();
+    }
 }
