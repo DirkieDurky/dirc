@@ -14,15 +14,16 @@ The registers can be referred to in assembly by the following names:
 - `r1`
 - `r2`
 - `r3`
-- `r4`
+- `sp`
 - `lr`
 - `pc`
 - `in` / `out`
 
-RegisterEnum `r0-r4` can simply be used to store values.\
-RegisterEnum `lr` is used by the computer to store the byte to continue executing from after a function ends. See `call` and `return` operations.\
+Register `r0-r3` can simply be used to store values.\
+Register `sp` is used by the computer as the "stack pointer". It always points to the top of the stack.
+Register `lr` is used by the computer to store the byte to continue executing from after a function ends. See `call` and `return` operations.\
 Note that this register will need to be pushed and popped to and from the stack manually for nested functions.\
-RegisterEnum `pc` is used by the computer to keep track of the current byte we should read from the program.\
+Register `pc` is used by the computer to keep track of the current byte we should read from the program.\
 The computer will always read the byte at the index in the pc register and the following 3, thus reading a total of 4 bytes each tick.\
 Each tick, the pc will automatically advance by 4 in order to read the next 4 bytes.\
 The `pc` register can be overwritten in order to jump.\
@@ -111,7 +112,7 @@ Copies the value at the specified location in memory to the register specified b
 Does nothing at all for a tick.
 
 # DIRC Compiler
-This repository contains the compiler for the DIRC Programming Language and compiles from DIRC Programming Language to DIRIC v1.5 assembly.
+This repository contains the compiler for the DIRC Programming Language and compiles from DIRC Programming Language to DIRIC v2.1 assembly.
 
 ## Usage
 ```

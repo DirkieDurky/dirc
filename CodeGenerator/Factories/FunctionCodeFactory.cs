@@ -3,12 +3,13 @@ class FunctionCodeFactory
     public void Generate(FunctionDeclarationNode node, CodeGenContext context)
     {
         context.CodeGen.EmitLabel(node.Name);
-        context.CodeGen.EmitPush(new Register(RegisterEnum.lr));
+        context.CodeGen.EmitPush(Register.LR);
 
-        RegisterEnum framePointer = Allocator.Allocate(Allocator.RegisterType.CalleeSaved);
-        context.CodeGen.EmitMov(new Register(RegisterEnum.sp), framePointer);
+        Register framePointer = context.Allocator.Allocate(Allocator.RegisterType.CalleeSaved);
+        context.CodeGen.EmitMov(Register.SP, framePointer);
 
         CodeGenContext scopeSpecificContext = (CodeGenContext)context.Clone();
+        scopeSpecificContext.FramePointer = framePointer;
         if (node.Parameters.Count > Allocator.ArgumentRegisters.Count) throw new Exception($"No more than {Allocator.ArgumentRegisters.Count} function parameters allowed.");
         for (int i = 0; i < node.Parameters.Count; i++)
         {
@@ -20,8 +21,10 @@ class FunctionCodeFactory
             context.ExprFactory.Generate(stmt, scopeSpecificContext);
         }
 
-        Allocator.Free(framePointer);
-        context.CodeGen.EmitPop(RegisterEnum.lr);
+        // Reset stack pointer to free any local variables
+        context.CodeGen.EmitMov(framePointer, Register.SP);
+        context.Allocator.Free(framePointer);
+        context.CodeGen.EmitPop(Register.LR);
         context.CodeGen.EmitReturn();
 
         context.FunctionTable.Declare(Function.FromFunctionDeclarationNode(node));

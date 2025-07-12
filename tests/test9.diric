@@ -1,0 +1,18 @@
+jump start _ pc
+
+label print
+mov _ r0 out
+return _ _ _
+
+label start
+mov sp _ r6
+mov r6 _ r0
+store|i1 3 r0 _
+add|i2 r6 1 r0
+store|i1 4 r0 _
+mov r6 _ r0
+load r0 _ r1
+add|i2 r6 1 r0
+load r0 _ r2
+add r1 r2 r0
+call print _ _

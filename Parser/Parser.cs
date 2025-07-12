@@ -19,6 +19,8 @@ class Parser
     {
         if (Match(TokenType.Function))
             return ParseFunctionDeclaration();
+        if (Match(TokenType.Var))
+            return ParseVariableDeclaration();
         return ParseExpressionStatement();
     }
 
@@ -43,6 +45,20 @@ class Parser
         }
         Consume(TokenType.RightBrace, "Expected '}' after function body.");
         return new FunctionDeclarationNode(name, parameters, body);
+    }
+
+    private VariableDeclarationNode ParseVariableDeclaration()
+    {
+        var name = Consume(TokenType.Identifier, "Expected variable name.").Lexeme;
+
+        AstNode? initializer = null;
+        if (Match(TokenType.Equals))
+        {
+            initializer = ParseExpression();
+        }
+
+        Consume(TokenType.Semicolon, "Expected ';' after variable declaration.");
+        return new VariableDeclarationNode(name, initializer);
     }
 
     private ExpressionStatementNode ParseExpressionStatement()

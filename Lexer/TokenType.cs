@@ -20,4 +20,5 @@ public enum TokenType
 
     // Keywords
     Function,
+    Var,
 }

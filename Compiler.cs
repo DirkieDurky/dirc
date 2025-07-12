@@ -21,7 +21,7 @@ class Compiler
 
         foreach (AstNode node in astNodes)
         {
-            Debug.WriteLine(node);
+            Console.WriteLine(node);
         }
 
         string[] assembly = new CodeGenerator().Generate(astNodes);
