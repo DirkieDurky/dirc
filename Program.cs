@@ -4,24 +4,29 @@ class Program
 {
     static void Main(string[] args)
     {
-        if (args.Length == 0)
-        {
-            Console.WriteLine("No file argument provided.");
-            return;
-        }
-
         List<string> flags = new();
+        List<string> argsList = new();
         foreach (string arg in args)
         {
-            if (arg.StartsWith("--"))
+            if (arg.StartsWith("-"))
             {
-                flags.Add(arg.Substring("--".Length));
+                flags.Add(arg);
+            }
+            else
+            {
+                argsList.Add(arg);
             }
         }
 
         CompilerOptions compilerOptions = new(flags);
 
-        string sourcePath = args[0];
+        if (argsList.Count == 0)
+        {
+            Console.WriteLine("No file argument provided.");
+            return;
+        }
+
+        string sourcePath = argsList[0];
 
         if (File.Exists(sourcePath))
         {

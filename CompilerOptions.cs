@@ -19,13 +19,17 @@ class CompilerOptions
             }
             switch (splitString[0])
             {
-                case "debug":
+                case "--debug":
                     if (splitString.Count() < 2)
                     {
-                        Console.WriteLine("Invalid flag. Please specify which debug options to enable. Options: ['all', 'general', 'lexer', 'parser', 'allocator', 'none']");
+                        Console.WriteLine("Invalid flag. Please specify which debug options to enable. Options: ['all', 'general', 'lexer', 'parser', 'allocator']");
                         break;
                     }
                     SetDebugOptions(splitString[1]);
+                    break;
+                case "-h":
+                case "--help":
+                    Console.WriteLine(HelpText);
                     break;
                 default:
                     Console.WriteLine($"Unknown flag '{flag}'");
@@ -66,4 +70,12 @@ class CompilerOptions
             }
         }
     }
+
+    private const string HelpText = """
+usage: dirc <sourcePath> [flags]
+flags:
+    {-h --help}    View this help.
+    {--debug}      Set the amount of debug logging.
+    Debug options: ['all', 'general', 'lexer', 'parser', 'allocator']
+""";
 }

@@ -193,15 +193,20 @@ This repository contains the compiler for the DIRC Programming Language and comp
 
 ## Usage
 ```
-dirc sourceFile
+dirc sourcePath [flags]
 ```
 The source file should have the `.dirc` file extension.\
-The compiler will output a `.diric` file with the same name as the `.dirc` file.
+If the source path points to a file, the compiler will output a `.diric` file with the same name as the `.dirc` file.
+If the source path points to a folder, the compiler will compile all `.dirc` files in the folder and put them in a `builds` folder in the source folder.
 
 ### Flags
 The following flags can be used by the compiler:
+- `--help` or `-h`
+Used to view compiler usage.
 - `--debug`
-This flag is used to set the amount of debug logging you would like to receive while compiling.\
+Used to set the amount of debug logging you would like to receive while compiling. For more information, see the Debug chapter below.
+
+#### Debug
 The debug flag takes a comma-separated array of any of the following options:
 - `all`
 Logs all types of debugging.
