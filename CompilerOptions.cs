@@ -60,8 +60,6 @@ class CompilerOptions
                 case "allocator":
                     LogAllocation = true;
                     break;
-                case "none":
-                    break;
                 default:
                     Console.WriteLine($"Unknown debug option '{option}'");
                     break;

@@ -1,6 +1,83 @@
-# DIRC Programming language
+# Dirc Programming language
 A programming language inspired by the C family that compiles to DIRIC assembly.\
-DIRC stands for Directly Implemented and Reduced C.
+Dirc stands for Directly Implemented and Reduced C.
+
+Dirc supports the following features:
+- Access to standard library of functions
+- Creating custom functions
+- Local variables
+- Calculations
+
+## Standard Library
+The standard library contains the following functions:
+- `print(num)`
+Send the given input to the out register.
+Functions (both standard and custom ones) may be called as such:
+```
+print(42);
+```
+
+## Creating custom functions
+Custom functions are created like the following example:
+```
+add(x, y) {
+    return x + y;
+}
+```
+Optionally, the "function" keyword may be used to make extra clear to a reader that a function is being declared:
+```
+function add(x, y) {
+    return x + y;
+}
+```
+
+## Declaring local variables
+Local variables are declared as such:
+```
+x = 5;
+```
+The same syntax can be used to reassign a new value to the variable.
+
+Optionally, the "var" keyword may be used to make extra clear to a reader that a variable is being declared:
+```
+var x = 5;
+```
+
+Later, this variable may be referred to by the given name. This example prints it.
+```
+print(x);
+```
+
+## Calculations
+Calculations can be done using the declared variables as follows:
+```
+x + y
+```
+But this in itself doesn't do anything. To assign the result to a new variable:
+```
+z = x + y
+```
+
+The following operations are permitted:
+- Addition (+)
+- Subtraction (-)
+- Bitwise and (&)
+- Bitwise or (|)
+- Bitwise xor (^)
+
+Another example:
+```
+print(x | 4)
+```
+To make operations like these easier to deal with, binary and hexadecimal literals are also allowed using the '0b' and '0x' prefixes respectively:
+```
+print(0b01000000 | 0b01000100)
+```
+
+Hexadecimal is done using the '0x' prefix:
+```
+print(0xff0000 ^ 0xffff00)
+```
 
 # DIRIC assembly
 DIRIC assembly is a simple assembly language made for the DIRIC ISA which is made in the game Turing Complete.\
@@ -116,7 +193,23 @@ This repository contains the compiler for the DIRC Programming Language and comp
 
 ## Usage
 ```
-dirc filename
+dirc sourceFile
 ```
-The file should have the `.dirc` file extension.\
-The compiler will output a `.diric` file with the same name as the `.d` file
+The source file should have the `.dirc` file extension.\
+The compiler will output a `.diric` file with the same name as the `.dirc` file.
+
+### Flags
+The following flags can be used by the compiler:
+- `--debug`
+This flag is used to set the amount of debug logging you would like to receive while compiling.\
+The debug flag takes a comma-separated array of any of the following options:
+- `all`
+Logs all types of debugging.
+- `general`
+Logs general information, such as the stage the compiler is in.
+- `lexer`
+Logs the output of the lexer.
+- `parser`
+Logs the output of the parser.
+- `allocator`
+Logs when registers are allocated and freed by the allocator.
