@@ -20,6 +20,6 @@ class Register
 
     public void Free()
     {
-        _allocator.Free(this);
+        InUse = false;
     }
 }

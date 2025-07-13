@@ -48,21 +48,6 @@ class Allocator
         return register;
     }
 
-    public void Free(Register register)
-    {
-        register.InUse = false;
-        Console.WriteLine($"Freed register {register}");
-        StackTrace(1, 1);
-    }
-
-    public void Free(IOperand operand)
-    {
-        if (operand is Register reg)
-        {
-            Free(reg);
-        }
-    }
-
     public Register Use(RegisterEnum r)
     {
         Register foundRegister = GetRegisterFromEnum(r);
