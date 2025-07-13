@@ -6,6 +6,12 @@ class Parser
 {
     private List<Token> _tokens = new();
     private int _current;
+    private CompilerContext _compilerContext;
+
+    public Parser(CompilerContext compilerContext)
+    {
+        _compilerContext = compilerContext;
+    }
 
     public List<AstNode> Parse(List<Token> tokens)
     {
@@ -23,25 +29,25 @@ class Parser
     {
         if (Match(TokenType.Function))
         {
-            string name = Consume(TokenType.Identifier, "No function name provided.").Lexeme;
+            Token name = Consume(TokenType.Identifier, "No function name provided.");
             Consume(TokenType.LeftParen, "Expected '(' after function name.");
             return ParseFunction(name, true);
         }
         else if (Match(TokenType.Var))
         {
-            string name = Consume(TokenType.Identifier, "No variable name provided.").Lexeme;
-            return ParseVariableAssignment(name);
+            Token name = Consume(TokenType.Identifier, "No variable name provided.");
+            return ParseVariableAssignment(name.Lexeme);
         }
         else if (Match(TokenType.Identifier))
         {
-            string name = Previous().Lexeme;
+            Token name = Previous();
             if (Match(TokenType.LeftParen))
             {
                 return ParseFunction(name);
             }
             else
             {
-                return ParseVariableAssignment(name);
+                return ParseVariableAssignment(name.Lexeme);
             }
         }
         return ParseExpressionStatement();
@@ -49,7 +55,7 @@ class Parser
 
     // If isDeclaration is true we know it's a function declaration
     // Otherwise we figure it out based on the presence of a LeftBrace.
-    private AstNode ParseFunction(string name, bool isDeclaration = false)
+    private AstNode ParseFunction(Token name, bool isDeclaration = false)
     {
         List<AstNode> parametersOrArguments = new();
         if (!Check(TokenType.RightParen))
@@ -59,7 +65,7 @@ class Parser
                 parametersOrArguments.Add(ParseExpression());
             } while (Match(TokenType.Comma));
         }
-        Consume(TokenType.RightParen, "Expected ')' after parameters.");
+        Consume(TokenType.RightParen, "Expected ')' after parameters");
 
         if (Match(TokenType.LeftBrace) || isDeclaration)
         {
@@ -67,14 +73,14 @@ class Parser
             foreach (AstNode node in parametersOrArguments)
             {
                 if (node is IdentifierNode parameter) parameters.Add(parameter.Name);
-                else throw new Exception("Function parameters may not contain expressions.");
+                else throw new SyntaxException("Function parameters containing expression", Peek(), _compilerContext);
             }
-            return ParseFunctionDeclaration(name, parameters);
+            return ParseFunctionDeclaration(name.Lexeme, parameters);
         }
         else
         {
-            Consume(TokenType.Semicolon, "Expected ';' after function call.");
-            return new CallExpressionNode(name, parametersOrArguments);
+            Consume(TokenType.Semicolon, "Expected ';' after function call");
+            return new CallExpressionNode(name, name.Lexeme, parametersOrArguments);
         }
     }
 
@@ -193,9 +199,10 @@ class Parser
 
         if (Match(TokenType.Identifier))
         {
-            return new IdentifierNode(Previous().Lexeme);
+            return new IdentifierNode(Previous(), Previous().Lexeme);
         }
-        throw new Exception("Unexpected token: " + Peek().Lexeme);
+        if (IsAtEnd()) throw new SyntaxException($"Unexpected end of text", Previous(), _compilerContext);
+        throw new SyntaxException($"Unexpected token", Previous(), _compilerContext);
     }
 
     // Utility methods
@@ -227,6 +234,6 @@ class Parser
     private Token Consume(TokenType type, string message)
     {
         if (Check(type)) return Advance();
-        throw new Exception(message);
+        throw new SyntaxException(message, Previous(), _compilerContext);
     }
 }

@@ -15,6 +15,7 @@ class CodeGenContext : ICloneable
     public FunctionTable FunctionTable { get; } = new();
     public int NextVariableOffset { get; set; } = 0;
     public CompilerOptions CompilerOptions;
+    public CompilerContext CompilerContext;
 
     public CodeGenContext(
         CodeGenerator codeGen,
@@ -25,7 +26,8 @@ class CodeGenContext : ICloneable
         Dictionary<string, Variable> variableTable,
         FunctionTable functionTable,
         int nextVariableOffset,
-        CompilerOptions compilerOptions
+        CompilerOptions compilerOptions,
+        CompilerContext compilerContext
     )
     {
         CodeGen = codeGen;
@@ -37,6 +39,7 @@ class CodeGenContext : ICloneable
         FunctionTable = functionTable;
         NextVariableOffset = nextVariableOffset;
         CompilerOptions = compilerOptions;
+        CompilerContext = compilerContext;
     }
 
     public object Clone()
@@ -50,7 +53,8 @@ class CodeGenContext : ICloneable
             VariableTable.ToDictionary(x => x.Key, x => x.Value),
             (FunctionTable)FunctionTable.Clone(),
             NextVariableOffset,
-            CompilerOptions
+            CompilerOptions,
+            CompilerContext
         );
         return newContext;
     }

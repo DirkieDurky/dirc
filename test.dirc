@@ -1,0 +1,13 @@
+rest() {
+    print();
+}
+
+best() {
+    rest();
+}
+
+test() {
+    best();
+}
+
+test();

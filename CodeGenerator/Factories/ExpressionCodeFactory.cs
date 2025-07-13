@@ -28,6 +28,7 @@ class ExpressionCodeFactory
 
     private IReturnable? GenerateCall(CallExpressionNode node, CodeGenContext context)
     {
+        context.CompilerContext.PushCall(context.CompilerContext.CurrentFilePath, node.CalleeToken.Line);
         Function callee;
         try
         {
@@ -35,12 +36,18 @@ class ExpressionCodeFactory
         }
         catch
         {
-            throw new Exception($"Call made to unknown function '{node.Callee}'");
+            throw new CodeGenException($"Call made to unknown function '{node.Callee}'",
+                node.CalleeToken,
+                context.CompilerContext
+            );
         }
 
         if (callee.Parameters.Count() != node.Arguments.Count)
         {
-            throw new Exception($"Function '{callee}' takes {callee.Parameters.Count()} arguments. {node.Arguments.Count} given.");
+            throw new CodeGenException($"Function '{callee}' takes {callee.Parameters.Count()} arguments. {node.Arguments.Count} given.",
+                node.CalleeToken,
+                context.CompilerContext
+            );
         }
 
         // Save in use caller saved registers
@@ -77,6 +84,8 @@ class ExpressionCodeFactory
         {
             context.CodeGen.EmitPop(reg);
         }
+
+        context.CompilerContext.PopCall();
 
         return null;
     }
@@ -159,6 +168,6 @@ class ExpressionCodeFactory
             return new ReturnRegister(result);
         }
 
-        throw new Exception($"Undefined identifier '{node.Name}' was used");
+        throw new CodeGenException($"Undefined identifier '{node.Name}' was used", node.IdentifierToken, context.CompilerContext);
     }
 }

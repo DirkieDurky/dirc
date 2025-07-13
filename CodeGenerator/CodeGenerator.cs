@@ -9,7 +9,7 @@ class CodeGenerator
 
     private readonly List<string> _code = new();
 
-    public CodeGenerator(CompilerOptions compilerOptions)
+    public CodeGenerator(CompilerOptions compilerOptions, CompilerContext compilerContext)
     {
         Allocator allocator = new(compilerOptions);
         ExpressionCodeFactory exprFactory = new ExpressionCodeFactory();
@@ -23,7 +23,8 @@ class CodeGenerator
             new(),
             new(),
             0,
-            compilerOptions
+            compilerOptions,
+            compilerContext
             );
     }
 

@@ -21,55 +21,57 @@ class Program
 
         CompilerOptions compilerOptions = new(flags);
 
-        string path = args[0];
+        string sourcePath = args[0];
 
-        if (File.Exists(path))
+        if (File.Exists(sourcePath))
         {
-            string resultDir = Path.Combine(
-                Path.GetDirectoryName(path) ?? "",
-                Path.GetFileNameWithoutExtension(path) + ".diric"
+            string resultPath = Path.Combine(
+                Path.GetDirectoryName(sourcePath) ?? "",
+                Path.GetFileNameWithoutExtension(sourcePath) + ".diric"
             );
 
-            HandleFile(path, resultDir, compilerOptions);
+            CompilerContext compilerContext = new(sourcePath);
+            HandleFile(sourcePath, resultPath, compilerOptions, compilerContext);
         }
-        else if (Directory.Exists(path))
+        else if (Directory.Exists(sourcePath))
         {
-            foreach (string file in Directory.EnumerateFiles(path).Order())
+            foreach (string sourceFile in Directory.EnumerateFiles(sourcePath).Order())
             {
-                if (!file.EndsWith(".dirc")) continue;
+                if (!sourceFile.EndsWith(".dirc")) continue;
 
-                DirectoryInfo dir = Directory.CreateDirectory(Path.Combine(path, "builds"));
+                DirectoryInfo dir = Directory.CreateDirectory(Path.Combine(sourcePath, "builds"));
 
                 string resultDir = Path.Combine(
                     dir.ToString(),
-                    Path.GetFileNameWithoutExtension(file) + ".diric"
+                    Path.GetFileNameWithoutExtension(sourceFile) + ".diric"
                 );
 
-                Console.WriteLine($"Compiling {file}...");
+                Console.WriteLine($"Compiling {sourceFile}...");
                 try
                 {
-                    HandleFile(file, resultDir, compilerOptions);
-                    Console.WriteLine($"Compiled {file} with no errors.");
+                    CompilerContext compilerContext = new(sourceFile);
+                    HandleFile(sourceFile, resultDir, compilerOptions, compilerContext);
+                    Console.WriteLine($"Compiled {sourceFile} with no errors.");
                     Console.WriteLine();
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"Error occurred while compiling {file}: {e}\n\n");
+                    Console.WriteLine($"Error occurred while compiling {sourceFile}: {e}\n\n");
                 }
             }
         }
         else
         {
-            Console.WriteLine($"No file or directory found at {path}");
+            Console.WriteLine($"No file or directory found at {sourcePath}");
         }
     }
 
-    private static void HandleFile(string path, string resultDir, CompilerOptions compilerOptions)
+    private static void HandleFile(string path, string resultDir, CompilerOptions compilerOptions, CompilerContext compilerContext)
     {
         string text = File.ReadAllText(path);
 
         Compiler compiler = new();
-        string[] newLines = compiler.Compile(text, compilerOptions);
+        string[] newLines = compiler.Compile(text, compilerOptions, compilerContext);
 
         File.WriteAllLines(resultDir, newLines);
     }

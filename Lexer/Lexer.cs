@@ -15,6 +15,13 @@ class Lexer
         // Add more keywords here as needed
     };
 
+    private CompilerContext _compilerContext;
+
+    public Lexer(CompilerContext compilerContext)
+    {
+        _compilerContext = compilerContext;
+    }
+
     public List<Token> Tokenize(string source)
     {
         _source = source;
@@ -106,7 +113,7 @@ class Lexer
                 }
                 else
                 {
-                    throw new FormatException("Unknown character");
+                    throw new LexicalException($"Unknown character", c, _line, _compilerContext);
                 }
                 break;
         }

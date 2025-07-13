@@ -6,9 +6,9 @@ namespace Dirc;
 
 class Compiler
 {
-    public string[] Compile(string source, CompilerOptions compilerOptions)
+    public string[] Compile(string source, CompilerOptions compilerOptions, CompilerContext compilerContext)
     {
-        List<Token> tokens = new Lexer().Tokenize(source);
+        List<Token> tokens = new Lexer(compilerContext).Tokenize(source);
 
         if (compilerOptions.ShowGeneralDebug)
         {
@@ -25,7 +25,7 @@ class Compiler
             Console.WriteLine();
         }
 
-        List<AstNode> astNodes = new Parser().Parse(tokens);
+        List<AstNode> astNodes = new Parser(compilerContext).Parse(tokens);
 
         if (compilerOptions.ShowGeneralDebug)
         {
@@ -44,7 +44,7 @@ class Compiler
         {
             Console.WriteLine("Running code generator...");
         }
-        string[] assembly = new CodeGenerator(compilerOptions).Generate(astNodes);
+        string[] assembly = new CodeGenerator(compilerOptions, compilerContext).Generate(astNodes);
 
         return assembly;
     }
