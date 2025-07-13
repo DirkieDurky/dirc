@@ -8,7 +8,7 @@ class Compiler
 {
     public string[] Compile(string source, CompilerOptions compilerOptions, CompilerContext compilerContext)
     {
-        List<Token> tokens = new Lexer(compilerContext).Tokenize(source);
+        List<Token> tokens = new Lexer(compilerOptions, compilerContext).Tokenize(source);
 
         if (compilerOptions.ShowGeneralDebug)
         {
@@ -25,7 +25,7 @@ class Compiler
             Console.WriteLine();
         }
 
-        List<AstNode> astNodes = new Parser(compilerContext).Parse(tokens);
+        List<AstNode> astNodes = new Parser(compilerOptions, compilerContext).Parse(tokens);
 
         if (compilerOptions.ShowGeneralDebug)
         {

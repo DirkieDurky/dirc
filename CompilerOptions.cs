@@ -6,6 +6,7 @@ class CompilerOptions
     public bool ShowLexerOutput { get; set; } = false;
     public bool ShowParserOutput { get; set; } = false;
     public bool LogAllocation { get; set; } = false;
+    public bool DebugStackTrace { get; set; } = false;
 
     public CompilerOptions(List<string> flags)
     {
@@ -64,6 +65,9 @@ class CompilerOptions
                 case "allocator":
                     LogAllocation = true;
                     break;
+                case "stack-trace":
+                    DebugStackTrace = true;
+                    break;
                 default:
                     Console.WriteLine($"Unknown debug option '{option}'");
                     break;
@@ -76,6 +80,6 @@ usage: dirc <sourcePath> [flags]
 flags:
     {-h --help}    View this help.
     {--debug}      Set the amount of debug logging.
-    Debug options: ['all', 'general', 'lexer', 'parser', 'allocator']
+    Debug options: ['all', 'general', 'lexer', 'parser', 'allocator', 'stack-trace']
 """;
 }

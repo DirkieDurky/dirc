@@ -13,7 +13,7 @@ class FunctionCodeFactory
         context.CodeGen.EmitMov(ReadonlyRegister.SP, context.Allocator.Use(RegisterEnum.fp));
 
         CodeGenContext scopeSpecificContext = (CodeGenContext)context.Clone();
-        if (node.Parameters.Count > Allocator.ArgumentRegisters.Count) throw new Exception($"No more than {Allocator.ArgumentRegisters.Count} function parameters allowed.");
+        if (node.Parameters.Count > Allocator.ArgumentRegisters.Count) throw new Exception($"More than {Allocator.ArgumentRegisters.Count} function parameters given.");
         for (int i = 0; i < node.Parameters.Count; i++)
         {
             scopeSpecificContext.SymbolTable[node.Parameters[i]] = context.Allocator.Use(Allocator.ArgumentRegisters.ElementAt(i));

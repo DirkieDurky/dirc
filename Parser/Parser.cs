@@ -7,10 +7,12 @@ class Parser
     private List<Token> _tokens = new();
     private int _current;
     private CompilerContext _compilerContext;
+    private CompilerOptions _compilerOptions;
 
-    public Parser(CompilerContext compilerContext)
+    public Parser(CompilerOptions compilerOptions, CompilerContext compilerContext)
     {
         _compilerContext = compilerContext;
+        _compilerOptions = compilerOptions;
     }
 
     public List<AstNode> Parse(List<Token> tokens)
@@ -73,7 +75,7 @@ class Parser
             foreach (AstNode node in parametersOrArguments)
             {
                 if (node is IdentifierNode parameter) parameters.Add(parameter.Name);
-                else throw new SyntaxException("Function parameters containing expression", Peek(), _compilerContext);
+                else throw new SyntaxException("Function parameters containing expression", Peek(), _compilerOptions, _compilerContext);
             }
             return ParseFunctionDeclaration(name.Lexeme, parameters);
         }
@@ -201,8 +203,8 @@ class Parser
         {
             return new IdentifierNode(Previous(), Previous().Lexeme);
         }
-        if (IsAtEnd()) throw new SyntaxException($"Unexpected end of text", Previous(), _compilerContext);
-        throw new SyntaxException($"Unexpected token", Previous(), _compilerContext);
+        if (IsAtEnd()) throw new SyntaxException($"Unexpected end of text", Previous(), _compilerOptions, _compilerContext);
+        throw new SyntaxException($"Unexpected token", Previous(), _compilerOptions, _compilerContext);
     }
 
     // Utility methods
@@ -234,6 +236,6 @@ class Parser
     private Token Consume(TokenType type, string message)
     {
         if (Check(type)) return Advance();
-        throw new SyntaxException(message, Previous(), _compilerContext);
+        throw new SyntaxException(message, Previous(), _compilerOptions, _compilerContext);
     }
 }

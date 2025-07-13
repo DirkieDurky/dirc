@@ -218,3 +218,6 @@ Logs the output of the lexer.
 Logs the output of the parser.
 - `allocator`
 Logs when registers are allocated and freed by the allocator.
+- `stack-trace`
+Normally when an exception occurs only the stack trace of the source code is shown.\
+Use this option enabled to show the stack trace of the compiler as well.

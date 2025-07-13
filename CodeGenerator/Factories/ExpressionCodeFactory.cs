@@ -38,6 +38,7 @@ class ExpressionCodeFactory
         {
             throw new CodeGenException($"Call made to unknown function '{node.Callee}'",
                 node.CalleeToken,
+                context.CompilerOptions,
                 context.CompilerContext
             );
         }
@@ -46,6 +47,7 @@ class ExpressionCodeFactory
         {
             throw new CodeGenException($"Function '{callee}' takes {callee.Parameters.Count()} arguments. {node.Arguments.Count} given.",
                 node.CalleeToken,
+                context.CompilerOptions,
                 context.CompilerContext
             );
         }
@@ -168,6 +170,6 @@ class ExpressionCodeFactory
             return new ReturnRegister(result);
         }
 
-        throw new CodeGenException($"Undefined identifier '{node.Name}' was used", node.IdentifierToken, context.CompilerContext);
+        throw new CodeGenException($"Undefined identifier '{node.Name}' was used", node.IdentifierToken, context.CompilerOptions, context.CompilerContext);
     }
 }

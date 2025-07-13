@@ -1,4 +1,5 @@
 using System.Text;
+using Dirc;
 using Dirc.Lexing;
 
 class CodeGenException : Exception
@@ -6,11 +7,13 @@ class CodeGenException : Exception
     private readonly string _message;
     private readonly Token _token;
     private readonly CompilerContext _compilerContext;
+    private readonly CompilerOptions _compilerOptions;
 
-    public CodeGenException(string message, Token token, CompilerContext compilerContext) : base(message)
+    public CodeGenException(string message, Token token, CompilerOptions compilerOptions, CompilerContext compilerContext) : base(message)
     {
         _message = message;
         _token = token;
+        _compilerOptions = compilerOptions;
         _compilerContext = compilerContext;
     }
 
@@ -22,6 +25,14 @@ class CodeGenException : Exception
         {
             builder.AppendLine($"at {filename}:line {line}");
         }
+
+        if (_compilerOptions.DebugStackTrace)
+        {
+            builder.AppendLine();
+            builder.AppendLine("Debugging stack trace:");
+            builder.Append(StackTrace);
+        }
+
         return builder.ToString();
     }
 }
