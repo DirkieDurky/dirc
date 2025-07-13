@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Dirc.CodeGen;
 using Dirc.Lexing;
 using Dirc.Parsing;
@@ -7,29 +6,45 @@ namespace Dirc;
 
 class Compiler
 {
-    public Compiler()
-    {
-
-    }
-
-    public string[] Compile(string source)
+    public string[] Compile(string source, CompilerOptions compilerOptions)
     {
         List<Token> tokens = new Lexer().Tokenize(source);
 
-        // foreach (Token token in tokens)
-        // {
-        //     string literal = token.Literal != null ? " " + token.Literal : "";
-        //     Console.Write($"[{token.Type} {token.Lexeme}{literal}] ");
-        // }
+        if (compilerOptions.ShowGeneralDebug)
+        {
+            Console.WriteLine("Running lexer...");
+        }
+        if (compilerOptions.ShowLexerOutput)
+        {
+            foreach (Token token in tokens)
+            {
+                string literal = token.Literal != null ? " " + token.Literal : "";
+                Console.Write($"[{token.Type} {token.Lexeme}{literal}] ");
+            }
+            Console.WriteLine();
+            Console.WriteLine();
+        }
 
         List<AstNode> astNodes = new Parser().Parse(tokens);
 
-        // foreach (AstNode node in astNodes)
-        // {
-        //     Console.WriteLine(node);
-        // }
+        if (compilerOptions.ShowGeneralDebug)
+        {
+            Console.WriteLine("Running parser...");
+        }
+        if (compilerOptions.ShowParserOutput)
+        {
+            foreach (AstNode node in astNodes)
+            {
+                Console.WriteLine(node);
+            }
+            Console.WriteLine();
+        }
 
-        string[] assembly = new CodeGenerator().Generate(astNodes);
+        if (compilerOptions.ShowGeneralDebug)
+        {
+            Console.WriteLine("Running code generator...");
+        }
+        string[] assembly = new CodeGenerator(compilerOptions).Generate(astNodes);
 
         return assembly;
     }

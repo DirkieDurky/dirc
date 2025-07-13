@@ -5,12 +5,13 @@ namespace Dirc.CodeGen;
 
 class CodeGenerator
 {
-    private readonly List<string> _code = new();
     public CodeGenContext Context { get; private set; }
 
-    public CodeGenerator()
+    private readonly List<string> _code = new();
+
+    public CodeGenerator(CompilerOptions compilerOptions)
     {
-        Allocator allocator = new Allocator();
+        Allocator allocator = new(compilerOptions);
         ExpressionCodeFactory exprFactory = new ExpressionCodeFactory();
         FunctionCodeFactory funcFactory = new FunctionCodeFactory();
         Context = new CodeGenContext(
@@ -21,7 +22,8 @@ class CodeGenerator
             new(),
             new(),
             new(),
-            0
+            0,
+            compilerOptions
             );
     }
 

@@ -10,6 +10,17 @@ class Program
             return;
         }
 
+        List<string> flags = new();
+        foreach (string arg in args)
+        {
+            if (arg.StartsWith("--"))
+            {
+                flags.Add(arg.Substring("--".Length));
+            }
+        }
+
+        CompilerOptions compilerOptions = new(flags);
+
         string path = args[0];
 
         if (File.Exists(path))
@@ -19,7 +30,7 @@ class Program
                 Path.GetFileNameWithoutExtension(path) + ".diric"
             );
 
-            HandleFile(path, resultDir);
+            HandleFile(path, resultDir, compilerOptions);
         }
         else if (Directory.Exists(path))
         {
@@ -37,8 +48,9 @@ class Program
                 Console.WriteLine($"Compiling {file}...");
                 try
                 {
-                    HandleFile(file, resultDir);
+                    HandleFile(file, resultDir, compilerOptions);
                     Console.WriteLine($"Compiled {file} with no errors.");
+                    Console.WriteLine();
                 }
                 catch (Exception e)
                 {
@@ -52,12 +64,12 @@ class Program
         }
     }
 
-    private static void HandleFile(string path, string resultDir)
+    private static void HandleFile(string path, string resultDir, CompilerOptions compilerOptions)
     {
         string text = File.ReadAllText(path);
 
         Compiler compiler = new();
-        string[] newLines = compiler.Compile(text);
+        string[] newLines = compiler.Compile(text, compilerOptions);
 
         File.WriteAllLines(resultDir, newLines);
     }

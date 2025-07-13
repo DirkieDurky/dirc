@@ -11,8 +11,12 @@ class Allocator
     public IReadOnlyCollection<Register> TrackedCallerSavedRegisters { get; }
     public IReadOnlyCollection<Register> TrackedCalleeSavedRegisters { get; }
 
-    public Allocator()
+    public CompilerOptions CompilerOptions;
+
+    public Allocator(CompilerOptions compilerOptions)
     {
+        CompilerOptions = compilerOptions;
+
         Register[] callerSaved = new Register[CallerSavedRegisters.Count];
         for (int i = 0; i < CallerSavedRegisters.Count; i++)
         {
@@ -42,8 +46,12 @@ class Allocator
 
         Register register = foundRegister;
         register.InUse = true;
-        // Console.WriteLine($"Allocated register {register}");
-        // StackTrace(1, 1);
+
+        if (CompilerOptions.LogAllocation)
+        {
+            Console.Write($"Allocated register {register} ");
+            StackTrace(1, 1);
+        }
 
         return register;
     }
@@ -82,8 +90,7 @@ class Allocator
         CalleeSaved,
     }
 
-
-    static void StackTrace(int skipMethods, int amount)
+    public static void StackTrace(int skipMethods, int amount)
     {
         var stackTrace = new StackTrace(skipFrames: skipMethods + 1, fNeedFileInfo: true);
         foreach (var frame in stackTrace.GetFrames() ?? Array.Empty<StackFrame>())
