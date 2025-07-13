@@ -1,3 +1,5 @@
+namespace Dirc.Parsing;
+
 public class IdentifierNode : AstNode
 {
     public string Name { get; }

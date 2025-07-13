@@ -1,3 +1,5 @@
+namespace Dirc.Parsing;
+
 public class BinaryExpressionNode : AstNode
 {
     public string Operator { get; }

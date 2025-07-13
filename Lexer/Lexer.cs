@@ -1,3 +1,5 @@
+namespace Dirc.Lexing;
+
 class Lexer
 {
     private string _source = "";

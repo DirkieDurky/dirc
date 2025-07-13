@@ -1,3 +1,5 @@
+namespace Dirc.Parsing;
+
 public class VariableDeclarationNode : AstNode
 {
     public string Name { get; }

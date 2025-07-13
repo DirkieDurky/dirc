@@ -1,3 +1,5 @@
+namespace Dirc.CodeGen;
+
 public class Variable : Symbol
 {
     public int FramePointerOffset { get; }

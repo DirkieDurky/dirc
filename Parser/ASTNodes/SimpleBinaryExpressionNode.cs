@@ -1,4 +1,6 @@
-public class SimpleBinaryExpressionNode : AstNode, IOperand
+namespace Dirc.Parsing;
+
+public class SimpleBinaryExpressionNode : AstNode, CodeGen.IReturnable
 {
     public string Operator { get; }
     public NumberLiteralNode Left { get; }
@@ -22,5 +24,10 @@ public class SimpleBinaryExpressionNode : AstNode, IOperand
     public string AsOperand()
     {
         return $"{Left.Value} {Operator} {Right.Value}";
+    }
+
+    public void Free()
+    {
+        // Doesn't need to be freed
     }
 }

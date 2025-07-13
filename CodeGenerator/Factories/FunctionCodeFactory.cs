@@ -1,17 +1,22 @@
+using Dirc.CodeGen.Allocating;
+using Dirc.Parsing;
+
+namespace Dirc.CodeGen;
+
 class FunctionCodeFactory
 {
     public void Generate(FunctionDeclarationNode node, CodeGenContext context)
     {
         context.CodeGen.EmitLabel(node.Name);
-        context.CodeGen.EmitPush(Register.LR);
-        context.CodeGen.EmitPush(Register.FP);
-        context.CodeGen.EmitMov(Register.SP, Register.FP);
+        context.CodeGen.EmitPush(ReadonlyRegister.LR);
+        context.CodeGen.EmitPush(ReadonlyRegister.FP);
+        context.CodeGen.EmitMov(ReadonlyRegister.SP, context.Allocator.Use(RegisterEnum.fp));
 
         CodeGenContext scopeSpecificContext = (CodeGenContext)context.Clone();
         if (node.Parameters.Count > Allocator.ArgumentRegisters.Count) throw new Exception($"No more than {Allocator.ArgumentRegisters.Count} function parameters allowed.");
         for (int i = 0; i < node.Parameters.Count; i++)
         {
-            scopeSpecificContext.SymbolTable[node.Parameters[i]] = Allocator.ArgumentRegisters.ElementAt(i);
+            scopeSpecificContext.SymbolTable[node.Parameters[i]] = context.Allocator.Use(Allocator.ArgumentRegisters.ElementAt(i));
         }
 
         foreach (AstNode stmt in node.Body)
@@ -20,9 +25,9 @@ class FunctionCodeFactory
         }
 
         // Reset stack pointer to free any local variables
-        context.CodeGen.EmitMov(Register.FP, Register.SP);
-        context.CodeGen.EmitPop(Register.FP);
-        context.CodeGen.EmitPop(Register.LR);
+        context.CodeGen.EmitMov(ReadonlyRegister.FP, context.Allocator.Use(RegisterEnum.sp));
+        context.CodeGen.EmitPop(context.Allocator.Use(RegisterEnum.fp));
+        context.CodeGen.EmitPop(context.Allocator.Use(RegisterEnum.lr));
         context.CodeGen.EmitReturn();
 
         context.FunctionTable.Declare(Function.FromFunctionDeclarationNode(node));

@@ -1,3 +1,5 @@
+namespace Dirc.Parsing;
+
 public class CallExpressionNode : AstNode
 {
     public string Callee { get; }

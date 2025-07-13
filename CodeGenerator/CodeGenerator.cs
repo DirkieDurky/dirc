@@ -1,3 +1,8 @@
+using Dirc.CodeGen.Allocating;
+using Dirc.Parsing;
+
+namespace Dirc.CodeGen;
+
 class CodeGenerator
 {
     private readonly List<string> _code = new();
@@ -24,7 +29,12 @@ class CodeGenerator
     {
         // Set the stack pointer to the end of the RAM to grow downwards
         // In other compilers the OS does this but since we don't have an OS we'll do it ourselves
-        Context.CodeGen.EmitBinaryOperation(Operation.Sub, Register.SP, new NumberLiteralNode(CodeGenContext.StackAlignment), Register.SP);
+        Context.CodeGen.EmitBinaryOperation(
+            Operation.Sub,
+            ReadonlyRegister.SP,
+            new NumberLiteralNode(CodeGenContext.StackAlignment),
+            Context.Allocator.Use(RegisterEnum.sp)
+        );
 
         EmitJump("start");
         EmitEmptyLine();
@@ -40,7 +50,7 @@ class CodeGenerator
         }
 
         EmitLabel("start");
-        Context.CodeGen.EmitMov(Register.SP, Register.FP);
+        Context.CodeGen.EmitMov(ReadonlyRegister.SP, Context.Allocator.Use(RegisterEnum.fp));
         foreach (AstNode node in nodes)
         {
             switch (node)
@@ -68,7 +78,7 @@ class CodeGenerator
     public void EmitMov(IOperand item, Register result)
     {
         string op = "mov" + (item is NumberLiteralNode || item is SimpleBinaryExpressionNode ? "|i1" : "");
-        string line = $"{op} {item.AsOperand()} _ {result.AsOperand()}";
+        string line = $"{op} {item.AsOperand()} _ {result}";
         // Prevent redundant mov (e.g., mov r0 _ r0)
         if (item is Register reg && reg.RegisterEnum == result.RegisterEnum) return;
         Emit(line);
@@ -104,7 +114,7 @@ class CodeGenerator
                     EmitMov(left!, result);
                     break;
                 }
-                Emit($"add{opSuffix} {left.AsOperand()} {right!.AsOperand()} {result.AsOperand()}");
+                Emit($"add{opSuffix} {left.AsOperand()} {right!.AsOperand()} {result}");
                 break;
             case Operation.Sub:
                 // Filter out unnecessary statements
@@ -118,19 +128,19 @@ class CodeGenerator
                     EmitMov(left!, result);
                     break;
                 }
-                Emit($"sub{opSuffix} {left.AsOperand()} {right!.AsOperand()} {result.AsOperand()}");
+                Emit($"sub{opSuffix} {left.AsOperand()} {right!.AsOperand()} {result}");
                 break;
             case Operation.And:
-                Emit($"and{opSuffix} {left.AsOperand()} {right!.AsOperand()} {result.AsOperand()}");
+                Emit($"and{opSuffix} {left.AsOperand()} {right!.AsOperand()} {result}");
                 break;
             case Operation.Or:
-                Emit($"or{opSuffix} {left.AsOperand()} {right!.AsOperand()} {result.AsOperand()}");
+                Emit($"or{opSuffix} {left.AsOperand()} {right!.AsOperand()} {result}");
                 break;
             case Operation.Not:
-                Emit($"not{opSuffix} {left.AsOperand()} _ {result.AsOperand()}");
+                Emit($"not{opSuffix} {left.AsOperand()} _ {result}");
                 break;
             case Operation.Xor:
-                Emit($"xor{opSuffix} {left.AsOperand()} {right!.AsOperand()} {result.AsOperand()}");
+                Emit($"xor{opSuffix} {left.AsOperand()} {right!.AsOperand()} {result}");
                 break;
         }
     }
@@ -181,7 +191,7 @@ class CodeGenerator
 
     public void EmitPop(Register result)
     {
-        Emit($"pop _ _ {result.AsOperand()}");
+        Emit($"pop _ _ {result}");
     }
 
     public void EmitStore(IOperand value, IOperand location)
@@ -198,7 +208,7 @@ class CodeGenerator
         string opSuffix = "";
         if (location is NumberLiteralNode) opSuffix += "|i1";
 
-        Emit($"load{opSuffix} {location.AsOperand()} _ {result.AsOperand()}");
+        Emit($"load{opSuffix} {location.AsOperand()} _ {result}");
     }
 
     public void EmitNoop()

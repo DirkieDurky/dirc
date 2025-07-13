@@ -1,4 +1,9 @@
 using System.Diagnostics;
+using Dirc.CodeGen;
+using Dirc.Lexing;
+using Dirc.Parsing;
+
+namespace Dirc;
 
 class Compiler
 {
@@ -21,7 +26,7 @@ class Compiler
 
         foreach (AstNode node in astNodes)
         {
-            Console.WriteLine(node);
+            Debug.WriteLine(node);
         }
 
         string[] assembly = new CodeGenerator().Generate(astNodes);

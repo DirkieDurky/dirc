@@ -1,3 +1,5 @@
+namespace Dirc.Lexing;
+
 public class Token
 {
     public TokenType Type { get; }

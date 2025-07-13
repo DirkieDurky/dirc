@@ -1,3 +1,7 @@
+using Dirc.Lexing;
+
+namespace Dirc.Parsing;
+
 class Parser
 {
     private List<Token> _tokens = new();

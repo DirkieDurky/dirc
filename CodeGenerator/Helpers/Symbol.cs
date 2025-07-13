@@ -1,3 +1,5 @@
+namespace Dirc.CodeGen;
+
 public abstract class Symbol
 {
     public string Name;

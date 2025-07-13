@@ -1,3 +1,5 @@
+namespace Dirc.Lexing;
+
 public enum TokenType
 {
     // Single-character symbols

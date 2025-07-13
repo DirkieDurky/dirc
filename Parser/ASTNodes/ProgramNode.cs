@@ -1,3 +1,5 @@
+namespace Dirc.Parsing;
+
 public class ProgramNode : AstNode
 {
     public List<AstNode> Statements { get; }

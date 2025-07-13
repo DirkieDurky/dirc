@@ -1,3 +1,5 @@
+namespace Dirc.CodeGen;
+
 public class Function : Symbol
 {
     public string[] Parameters;
@@ -9,7 +11,7 @@ public class Function : Symbol
         Custom = custom;
     }
 
-    public static Function FromFunctionDeclarationNode(FunctionDeclarationNode node)
+    public static Function FromFunctionDeclarationNode(Parsing.FunctionDeclarationNode node)
     {
         return new Function(node.Name, node.Parameters.ToArray(), true);
     }

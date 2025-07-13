@@ -1,3 +1,5 @@
+namespace Dirc.CodeGen;
+
 public class FunctionTable : ICloneable
 {
     private readonly Dictionary<string, Function> _functions = new();

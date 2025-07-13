@@ -1,3 +1,5 @@
+namespace Dirc.CodeGen;
+
 enum Condition
 {
     IfEq,

@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿namespace Dirc;
 
 class Program
 {

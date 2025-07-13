@@ -1,3 +1,5 @@
+namespace Dirc.Parsing;
+
 public class FunctionDeclarationNode : AstNode
 {
     public string Name { get; }

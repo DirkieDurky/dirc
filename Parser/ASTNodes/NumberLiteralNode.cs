@@ -1,4 +1,6 @@
-public class NumberLiteralNode : AstNode, IOperand
+namespace Dirc.Parsing;
+
+public class NumberLiteralNode : AstNode, CodeGen.IReturnable
 {
     public string Value { get; }
     public NumberLiteralType Type { get; }
@@ -17,6 +19,11 @@ public class NumberLiteralNode : AstNode, IOperand
 
     public override string ToString() => $"Number({Value})";
     public string AsOperand() => Value.ToString();
+
+    public void Free()
+    {
+        // Doesn't need to be freed
+    }
 }
 
 public enum NumberLiteralType

@@ -1,0 +1,25 @@
+namespace Dirc.CodeGen.Allocating;
+
+class Register
+{
+    public RegisterEnum RegisterEnum { get; }
+    public bool InUse = false;
+
+    private Allocator _allocator;
+
+    public Register(Allocator allocator, RegisterEnum register)
+    {
+        _allocator = allocator;
+        RegisterEnum = register;
+    }
+
+    public override string ToString()
+    {
+        return RegisterEnum.ToString();
+    }
+
+    public void Free()
+    {
+        _allocator.Free(this);
+    }
+}

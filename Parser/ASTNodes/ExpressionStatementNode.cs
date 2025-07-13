@@ -1,3 +1,5 @@
+namespace Dirc.Parsing;
+
 public class ExpressionStatementNode : AstNode
 {
     public AstNode Expression { get; }

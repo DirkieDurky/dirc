@@ -1,3 +1,5 @@
+namespace Dirc.CodeGen;
+
 class StandardLibrary
 {
     public static string[] PrintMethod(string str)

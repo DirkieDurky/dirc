@@ -1,3 +1,8 @@
+using Dirc.CodeGen.Allocating;
+using Dirc.Parsing;
+
+namespace Dirc.CodeGen;
+
 class CodeGenContext : ICloneable
 {
     public const int StackAlignment = 1; // By how many bytes to align the stack
@@ -51,7 +56,12 @@ class CodeGenContext : ICloneable
         int offset = NextVariableOffset;
         NextVariableOffset++;
         VariableTable[name] = new Variable(name, offset);
-        CodeGen.EmitBinaryOperation(Operation.Sub, Register.SP, new NumberLiteralNode(StackAlignment), Register.SP);
+        CodeGen.EmitBinaryOperation(
+            Operation.Sub,
+            ReadonlyRegister.SP,
+            new NumberLiteralNode(StackAlignment),
+            Allocator.Use(RegisterEnum.sp)
+        );
         return offset;
     }
 }
