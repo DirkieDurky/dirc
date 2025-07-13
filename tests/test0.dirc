@@ -1,4 +1,4 @@
-myprint(num) {
+function myprint(num) {
     print(num + 4);
 }
 

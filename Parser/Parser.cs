@@ -22,26 +22,64 @@ class Parser
     private AstNode ParseStatement()
     {
         if (Match(TokenType.Function))
-            return ParseFunctionDeclaration();
-        if (Match(TokenType.Var))
-            return ParseVariableDeclaration();
+        {
+            string name = Consume(TokenType.Identifier, "No function name provided.").Lexeme;
+            Consume(TokenType.LeftParen, "Expected '(' after function name.");
+            return ParseFunction(name, true);
+        }
+        else if (Match(TokenType.Var))
+        {
+            string name = Consume(TokenType.Identifier, "No variable name provided.").Lexeme;
+            return ParseVariableAssignment(name);
+        }
+        else if (Match(TokenType.Identifier))
+        {
+            string name = Previous().Lexeme;
+            if (Match(TokenType.LeftParen))
+            {
+                return ParseFunction(name);
+            }
+            else
+            {
+                return ParseVariableAssignment(name);
+            }
+        }
         return ParseExpressionStatement();
     }
 
-    private FunctionDeclarationNode ParseFunctionDeclaration()
+    // If isDeclaration is true we know it's a function declaration
+    // Otherwise we figure it out based on the presence of a LeftBrace.
+    private AstNode ParseFunction(string name, bool isDeclaration = false)
     {
-        string name = Consume(TokenType.Identifier, "Expected function name.").Lexeme;
-        Consume(TokenType.LeftParen, "Expected '(' after function name.");
-        List<string> parameters = new List<string>();
+        List<AstNode> parametersOrArguments = new();
         if (!Check(TokenType.RightParen))
         {
             do
             {
-                parameters.Add(Consume(TokenType.Identifier, "Expected parameter name.").Lexeme);
+                parametersOrArguments.Add(ParseExpression());
             } while (Match(TokenType.Comma));
         }
         Consume(TokenType.RightParen, "Expected ')' after parameters.");
-        Consume(TokenType.LeftBrace, "Expected '{' before function body.");
+
+        if (Match(TokenType.LeftBrace) || isDeclaration)
+        {
+            List<string> parameters = new();
+            foreach (AstNode node in parametersOrArguments)
+            {
+                if (node is IdentifierNode parameter) parameters.Add(parameter.Name);
+                else throw new Exception("Function parameters may not contain expressions.");
+            }
+            return ParseFunctionDeclaration(name, parameters);
+        }
+        else
+        {
+            Consume(TokenType.Semicolon, "Expected ';' after function call.");
+            return new CallExpressionNode(name, parametersOrArguments);
+        }
+    }
+
+    private FunctionDeclarationNode ParseFunctionDeclaration(string name, List<string> parameters)
+    {
         List<AstNode> body = new List<AstNode>();
         while (!Check(TokenType.RightBrace) && !IsAtEnd())
         {
@@ -51,10 +89,8 @@ class Parser
         return new FunctionDeclarationNode(name, parameters, body);
     }
 
-    private VariableDeclarationNode ParseVariableDeclaration()
+    private VariableAssignmentNode ParseVariableAssignment(string name)
     {
-        string name = Consume(TokenType.Identifier, "Expected variable name.").Lexeme;
-
         AstNode? initializer = null;
         if (Match(TokenType.Equals))
         {
@@ -62,7 +98,7 @@ class Parser
         }
 
         Consume(TokenType.Semicolon, "Expected ';' after variable declaration.");
-        return new VariableDeclarationNode(name, initializer);
+        return new VariableAssignmentNode(name, initializer);
     }
 
     private ExpressionStatementNode ParseExpressionStatement()
@@ -157,21 +193,7 @@ class Parser
 
         if (Match(TokenType.Identifier))
         {
-            string name = Previous().Lexeme;
-            if (Match(TokenType.LeftParen))
-            {
-                List<AstNode> args = new List<AstNode>();
-                if (!Check(TokenType.RightParen))
-                {
-                    do
-                    {
-                        args.Add(ParseExpression());
-                    } while (Match(TokenType.Comma));
-                }
-                Consume(TokenType.RightParen, "Expected ')' after arguments.");
-                return new CallExpressionNode(name, args);
-            }
-            return new IdentifierNode(name);
+            return new IdentifierNode(Previous().Lexeme);
         }
         throw new Exception("Unexpected token: " + Peek().Lexeme);
     }

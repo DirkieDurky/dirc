@@ -1,11 +1,11 @@
 namespace Dirc.Parsing;
 
-public class VariableDeclarationNode : AstNode
+public class VariableAssignmentNode : AstNode
 {
     public string Name { get; }
     public AstNode? Initializer { get; }
 
-    public VariableDeclarationNode(string name, AstNode? initializer = null)
+    public VariableAssignmentNode(string name, AstNode? initializer = null)
     {
         Name = name;
         Initializer = initializer;

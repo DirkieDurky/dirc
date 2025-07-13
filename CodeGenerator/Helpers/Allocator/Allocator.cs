@@ -42,8 +42,8 @@ class Allocator
 
         Register register = foundRegister;
         register.InUse = true;
-        Console.WriteLine($"Allocated register {register}");
-        StackTrace(1, 1);
+        // Console.WriteLine($"Allocated register {register}");
+        // StackTrace(1, 1);
 
         return register;
     }

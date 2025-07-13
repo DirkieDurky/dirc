@@ -1,16 +1,16 @@
-function print4(num) {
+print4(num) {
     print(num + 4);
 }
 
-function print25(num) {
+print25(num) {
     print(num + 25);
 }
 
-function print60(num) {
+print60(num) {
     print(60 + num);
 }
 
-function print10(bum) {
+print10(bum) {
     print(bum + 10);
 }
 

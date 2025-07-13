@@ -11,7 +11,7 @@ class ExpressionCodeFactory
         {
             case ExpressionStatementNode exprStmt:
                 return Generate(exprStmt.Expression, context);
-            case VariableDeclarationNode varDecl:
+            case VariableAssignmentNode varDecl:
                 return GenerateVariableDeclaration(varDecl, context);
             case CallExpressionNode call:
                 return GenerateCall(call, context);
@@ -110,7 +110,7 @@ class ExpressionCodeFactory
         return new ReturnRegister(result);
     }
 
-    private IReturnable? GenerateVariableDeclaration(VariableDeclarationNode node, CodeGenContext context)
+    private IReturnable? GenerateVariableDeclaration(VariableAssignmentNode node, CodeGenContext context)
     {
         int offset = context.AllocateVariable(node.Name);
 

@@ -1,7 +1,7 @@
 test() {
     x = 5;
-    y = 10;
-    result = x + y;
+    y = 24;
+    result = y - x;
     print(result);
 } 
 
