@@ -1,6 +1,6 @@
 namespace Dirc;
 
-class CompilerOptions
+public class CompilerOptions
 {
     public bool ShowGeneralDebug { get; set; } = false;
     public bool ShowLexerOutput { get; set; } = false;

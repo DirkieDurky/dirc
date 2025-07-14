@@ -4,7 +4,7 @@ using Dirc.Parsing;
 
 namespace Dirc;
 
-class Compiler
+public class Compiler
 {
     public string[] Compile(string source, CompilerOptions compilerOptions, CompilerContext compilerContext)
     {
