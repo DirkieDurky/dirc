@@ -75,23 +75,32 @@ print(0xff0000 ^ 0xffff00);
 
 # DIRIC assembly
 DIRIC assembly is a simple assembly language made for the DIRIC ISA which is made in the game Turing Complete.\
-DIRIC stands for Directly Implemented Reduced Instruction Computer.
-This documentation is written for DIRIC v2.0.
+DIRIC stands for Directly Implemented Reduced Instruction-set Computer.
+This documentation is written for DIRIC v2.2.
 
 ## Registers
-The DIRIC computer has 8 registers.\
+The DIRIC computer has 16 registers.\
 The registers can be referred to in assembly by the following names:
 - `r0`
 - `r1`
 - `r2`
 - `r3`
+- `r4`
+- `r5`
+- `r6`
+- `r7`
+- `r8`
+- `r9`
+- `r10`
+- `fp`
 - `sp`
 - `lr`
 - `pc`
 - `in` / `out`
 
-Register `r0-r3` can simply be used to store values.\
-Register `sp` is used by the computer as the "stack pointer". It always points to the top of the stack.
+Register `r0-r10` can simply be used to store values.\
+Register `fp` is used by the computer as any of the previous registers. This register can be used to store the current "frame pointer" which points to the beginning of the current scope on the stack.\
+Register `sp` is used by the computer as the "stack pointer". It always points to the top of the stack.\
 Register `lr` is used by the computer to store the byte to continue executing from after a function ends. See `call` and `return` operations.\
 Note that this register will need to be pushed and popped to and from the stack manually for nested functions.\
 Register `pc` is used by the computer to keep track of the current byte we should read from the program.\
@@ -185,6 +194,9 @@ Does nothing at all for a tick.
 # DIRC Compiler
 This repository contains the compiler for the DIRC Programming Language and compiles from DIRC Programming Language to DIRIC v2.1 assembly.
 
+The compiler uses registers `r0-r3` to pass arguments to functions.\
+Registers `r0-r5` are used as "caller-saved" registers.\
+Registers `r6-r10` are used as "callee-saved" registers.
 ## Usage
 ```
 dirc sourcePath [flags]
