@@ -7,6 +7,8 @@ public class Calculations
     {
         string source =
         """
+        import print;
+
         print(4 + 3);
         """.TrimIndents();
 
@@ -16,7 +18,7 @@ public class Calculations
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start
@@ -35,6 +37,8 @@ public class Calculations
     {
         string source =
         """
+        import print;
+
         print(4 - 3);
         """.TrimIndents();
 
@@ -44,7 +48,7 @@ public class Calculations
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start
@@ -63,6 +67,8 @@ public class Calculations
     {
         string source =
         """
+        import print;
+
         print(0b11110000 & 0b00110000);
         """.TrimIndents();
 
@@ -72,7 +78,7 @@ public class Calculations
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start
@@ -91,6 +97,8 @@ public class Calculations
     {
         string source =
         """
+        import print;
+
         print(0b11110000 | 0b00001100);
         """.TrimIndents();
 
@@ -100,7 +108,7 @@ public class Calculations
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start
@@ -119,6 +127,8 @@ public class Calculations
     {
         string source =
         """
+        import print;
+
         print(0b11110000 ^ 0b00110000);
         """.TrimIndents();
 
@@ -128,7 +138,7 @@ public class Calculations
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start

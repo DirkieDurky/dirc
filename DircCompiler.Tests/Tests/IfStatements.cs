@@ -7,6 +7,8 @@ public class IfStatements
     {
         string source =
         """
+        import print;
+
         if (1 == 1) {
             print(2);
         }
@@ -19,7 +21,7 @@ public class IfStatements
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start
@@ -42,6 +44,8 @@ public class IfStatements
     {
         string source =
         """
+        import print;
+        
         if (1 == 2) {
             print(2);
         }
@@ -54,7 +58,7 @@ public class IfStatements
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start
@@ -77,6 +81,8 @@ public class IfStatements
     {
         string source =
         """
+        import print;
+        
         x = 5;
         y = 4;
         y++;
@@ -92,7 +98,7 @@ public class IfStatements
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start
@@ -132,6 +138,8 @@ public class IfStatements
     {
         string source =
         """
+        import print;
+        
         if (1 == 1) {
             print(2);
         }
@@ -147,7 +155,7 @@ public class IfStatements
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start
@@ -172,6 +180,8 @@ public class IfStatements
     {
         string source =
         """
+        import print;
+        
         if (1 == 2) {
             print(2);
         }
@@ -187,7 +197,7 @@ public class IfStatements
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start
@@ -212,6 +222,8 @@ public class IfStatements
     {
         string source =
         """
+        import print;
+        
         if (1 != 1) {
             print(2);
         }
@@ -224,7 +236,7 @@ public class IfStatements
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start
@@ -247,6 +259,8 @@ public class IfStatements
     {
         string source =
         """
+        import print;
+        
         if (1 < 1) {
             print(2);
         }
@@ -259,7 +273,7 @@ public class IfStatements
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start
@@ -282,6 +296,8 @@ public class IfStatements
     {
         string source =
         """
+        import print;
+        
         if (1 <= 1) {
             print(2);
         }
@@ -294,7 +310,7 @@ public class IfStatements
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start
@@ -317,6 +333,8 @@ public class IfStatements
     {
         string source =
         """
+        import print;
+        
         if (1 > 1) {
             print(2);
         }
@@ -329,7 +347,7 @@ public class IfStatements
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start
@@ -352,6 +370,8 @@ public class IfStatements
     {
         string source =
         """
+        import print;
+        
         if (1 >= 1) {
             print(2);
         }
@@ -364,7 +384,7 @@ public class IfStatements
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start

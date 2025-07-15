@@ -7,6 +7,7 @@ public class Complex
     {
         string source =
         """
+        import print;
         print4(num) {
             print(num + 4);
         }
@@ -35,7 +36,7 @@ public class Complex
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label print4
@@ -116,6 +117,7 @@ public class Complex
     {
         string source =
         """
+        import print;
         test() {
             x = 5;
             y = 10;
@@ -132,7 +134,7 @@ public class Complex
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label test

@@ -7,6 +7,8 @@ public class LocalVariables
     {
         string source =
         """
+        import print;
+        
         x = 3;
         print(x);
         """.TrimIndents();
@@ -17,7 +19,7 @@ public class LocalVariables
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start
@@ -41,6 +43,8 @@ public class LocalVariables
     {
         string source =
         """
+        import print;
+        
         var x = 3;
         print(x);
         """.TrimIndents();
@@ -51,7 +55,7 @@ public class LocalVariables
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start
@@ -75,6 +79,8 @@ public class LocalVariables
     {
         string source =
         """
+        import print;
+        
         x = 3;
         x = x + 1;
 
@@ -87,7 +93,7 @@ public class LocalVariables
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start
@@ -116,6 +122,8 @@ public class LocalVariables
     {
         string source =
         """
+        import print;
+        
         var x = 3;
         var x = 5;
 

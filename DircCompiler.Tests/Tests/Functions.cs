@@ -7,6 +7,8 @@ public class Functions
     {
         string source =
         """
+        import print;
+
         print(14);
         """.TrimIndents();
 
@@ -16,7 +18,7 @@ public class Functions
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start
@@ -35,6 +37,8 @@ public class Functions
     {
         string source =
         """
+        import print;
+
         function myprint(num) {
             print(num);
         }
@@ -46,7 +50,7 @@ public class Functions
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label myprint
@@ -75,6 +79,8 @@ public class Functions
     {
         string source =
         """
+        import print;
+
         myprint(num) {
             print(num);
         }
@@ -86,7 +92,7 @@ public class Functions
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label myprint
@@ -115,6 +121,8 @@ public class Functions
     {
         string source =
         """
+        import print;
+
         function myprint(num) {
             print(num);
         }
@@ -128,7 +136,7 @@ public class Functions
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label myprint
@@ -159,6 +167,8 @@ public class Functions
     {
         string source =
         """
+        import print;
+
         function myprint(num) {
             print(num);
         }
@@ -176,7 +186,7 @@ public class Functions
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label myprint
@@ -215,6 +225,8 @@ public class Functions
     {
         string source =
         """
+        import print;
+
         print() {
             print(3);
         }
@@ -256,6 +268,8 @@ public class Functions
     {
         string source =
         """
+        import print;
+
         test();
 
         rest() {
@@ -277,7 +291,7 @@ public class Functions
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label rest

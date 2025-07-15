@@ -38,15 +38,15 @@ class FunctionCodeFactory
         context.CodeGen.EmitReturn();
     }
 
-    public void CompileStandardFunction(CodeGenContext context, string functionName, string[] parameters, string[] code)
+    public void CompileStandardFunction(CodeGenContext context, StandardFunction function)
     {
-        context.CodeGen.EmitLabel(functionName);
-        foreach (string line in code)
+        context.CodeGen.EmitLabel(function.Name);
+        foreach (string line in function.Code)
         {
             context.CodeGen.Emit(line);
         }
         context.CodeGen.EmitReturn();
 
-        context.FunctionTable.Declare(new Function(functionName, parameters, false), null);
+        context.FunctionTable.Declare(new Function(function.Name, function.Parameters, false), null);
     }
 }

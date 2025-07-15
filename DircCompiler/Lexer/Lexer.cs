@@ -13,8 +13,8 @@ class Lexer
         { "function", TokenType.Function },
         { "var", TokenType.Var },
         { "if", TokenType.If },
-        { "else", TokenType.Else }
-        // Add more keywords here as needed
+        { "else", TokenType.Else },
+        { "import", TokenType.Import },
     };
 
     private CompilerContext _compilerContext;

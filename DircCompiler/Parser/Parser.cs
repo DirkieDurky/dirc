@@ -30,6 +30,12 @@ class Parser
 
     private AstNode ParseStatement()
     {
+        if (Match(TokenType.Import))
+        {
+            Token name = Consume(TokenType.Identifier, "No import function name provided");
+            Consume(TokenType.Semicolon, "Expected ';' after import");
+            return new ImportStatementNode(name, name.Lexeme);
+        }
         if (Match(TokenType.Function))
         {
             Token name = Consume(TokenType.Identifier, "No function name provided");

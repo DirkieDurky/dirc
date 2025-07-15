@@ -25,6 +25,7 @@ public enum TokenType
     HexNumber,
 
     // Keywords
+    Import,
     Function,
     Var,
     If, Else

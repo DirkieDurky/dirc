@@ -7,6 +7,8 @@ public class SpecialLiterals
     {
         string source =
         """
+        import print;
+
         print(0b01000000 | 0b00000010);
         """.TrimIndents();
 
@@ -16,7 +18,7 @@ public class SpecialLiterals
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start
@@ -35,6 +37,8 @@ public class SpecialLiterals
     {
         string source =
         """
+        import print;
+
         print(0x0d | 0xd0);
         """.TrimIndents();
 
@@ -44,7 +48,7 @@ public class SpecialLiterals
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start
@@ -63,6 +67,8 @@ public class SpecialLiterals
     {
         string source =
         """
+        import print;
+
         x = 0b00110011;
         print(x);
         """.TrimIndents();
@@ -73,7 +79,7 @@ public class SpecialLiterals
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start
@@ -97,6 +103,8 @@ public class SpecialLiterals
     {
         string source =
         """
+        import print;
+
         x = 0x0000d0;
         print(x);
         """.TrimIndents();
@@ -107,7 +115,7 @@ public class SpecialLiterals
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start

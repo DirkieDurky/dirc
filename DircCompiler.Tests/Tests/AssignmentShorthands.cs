@@ -16,10 +16,6 @@ public class AssignmentShorthands
         sub|i2 sp 1 sp
         jump _start _ pc
 
-        label print
-        mov _ r0 out
-        return _ _ _
-
         label _start
         mov sp _ fp
         sub|i2 sp 1 sp
@@ -50,10 +46,6 @@ public class AssignmentShorthands
         """
         sub|i2 sp 1 sp
         jump _start _ pc
-
-        label print
-        mov _ r0 out
-        return _ _ _
 
         label _start
         mov sp _ fp
@@ -86,10 +78,6 @@ public class AssignmentShorthands
         sub|i2 sp 1 sp
         jump _start _ pc
 
-        label print
-        mov _ r0 out
-        return _ _ _
-
         label _start
         mov sp _ fp
         sub|i2 sp 1 sp
@@ -120,10 +108,6 @@ public class AssignmentShorthands
         """
         sub|i2 sp 1 sp
         jump _start _ pc
-
-        label print
-        mov _ r0 out
-        return _ _ _
 
         label _start
         mov sp _ fp
@@ -156,10 +140,6 @@ public class AssignmentShorthands
         sub|i2 sp 1 sp
         jump _start _ pc
 
-        label print
-        mov _ r0 out
-        return _ _ _
-
         label _start
         mov sp _ fp
         sub|i2 sp 1 sp
@@ -191,10 +171,6 @@ public class AssignmentShorthands
         sub|i2 sp 1 sp
         jump _start _ pc
 
-        label print
-        mov _ r0 out
-        return _ _ _
-
         label _start
         mov sp _ fp
         sub|i2 sp 1 sp
@@ -225,10 +201,6 @@ public class AssignmentShorthands
         """
         sub|i2 sp 1 sp
         jump _start _ pc
-
-        label print
-        mov _ r0 out
-        return _ _ _
 
         label _start
         mov sp _ fp

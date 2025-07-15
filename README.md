@@ -55,6 +55,15 @@ Functions (both standard and custom ones) may be called as such:
 ```
 print(42);
 ```
+Before using a function from the standard library it should be imported using the import statement:
+```
+import [function];
+```
+
+Example:
+```
+import print;
+```
 
 ## Creating custom functions
 Custom functions are created like the following example:

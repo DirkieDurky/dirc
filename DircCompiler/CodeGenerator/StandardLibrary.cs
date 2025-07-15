@@ -2,8 +2,8 @@ namespace DircCompiler.CodeGen;
 
 class StandardLibrary
 {
-    public void Compile(CodeGenContext context)
+    public Dictionary<string, StandardFunction> Functions = new()
     {
-        context.FuncFactory.CompileStandardFunction(context, "print", ["num"], ["mov _ r0 out"]);
-    }
+        {"print", new StandardFunction("print", ["num"], ["mov r0 _ out"])},
+    };
 }

@@ -45,7 +45,14 @@ class CodeGenerator
 
         // Compile standard library
         StandardLibrary std = new StandardLibrary();
-        std.Compile(Context);
+        foreach (ImportStatementNode importNode in nodes.Where(node => node is ImportStatementNode))
+        {
+            if (!std.Functions.ContainsKey(importNode.FunctionName))
+            {
+                throw new CodeGenException("Unknown import", importNode.Identifier, Context.CompilerOptions, Context.CompilerContext);
+            }
+            Context.FuncFactory.CompileStandardFunction(Context, std.Functions[importNode.FunctionName]);
+        }
 
         // Declare custom functions first to allow calling them at any time
         foreach (FunctionDeclarationNode funcNode in nodes.Where(node => node is FunctionDeclarationNode))
@@ -65,7 +72,8 @@ class CodeGenerator
         {
             switch (node)
             {
-                case FunctionDeclarationNode func:
+                case ImportStatementNode:
+                case FunctionDeclarationNode:
                     break;
                 default:
                     Context.ExprFactory.Generate(node, Context);

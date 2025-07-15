@@ -7,6 +7,8 @@ public class VariableCalculations
     {
         string source =
         """
+        import print;
+        
         x = 4;
         y = 3;
         print(x + y);
@@ -18,7 +20,7 @@ public class VariableCalculations
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start
@@ -47,6 +49,8 @@ public class VariableCalculations
     {
         string source =
         """
+        import print;
+        
         x = 4;
         y = 3;
         print(x - y);
@@ -58,7 +62,7 @@ public class VariableCalculations
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start
@@ -87,6 +91,8 @@ public class VariableCalculations
     {
         string source =
         """
+        import print;
+        
         x = 0b11110000;
         y = 0b00110000;
         print(x & y);
@@ -98,7 +104,7 @@ public class VariableCalculations
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start
@@ -127,6 +133,8 @@ public class VariableCalculations
     {
         string source =
         """
+        import print;
+        
         x = 0b11110000;
         y = 0b00001100;
         print(x | y);
@@ -138,7 +146,7 @@ public class VariableCalculations
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start
@@ -167,6 +175,8 @@ public class VariableCalculations
     {
         string source =
         """
+        import print;
+        
         x = 0b11110000;
         y = 0b00110000;
         print(x ^ y);
@@ -178,7 +188,7 @@ public class VariableCalculations
         jump _start _ pc
 
         label print
-        mov _ r0 out
+        mov r0 _ out
         return _ _ _
 
         label _start
