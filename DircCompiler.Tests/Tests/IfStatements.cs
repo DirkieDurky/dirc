@@ -206,4 +206,179 @@ public class IfStatements
 
         Assert.Equal(expected.Split(Environment.NewLine), assembly);
     }
+
+    [Fact]
+    public void NotEqual()
+    {
+        string source =
+        """
+        if (1 != 1) {
+            print(2);
+        }
+        print(3);
+        """.TrimIndents();
+
+        string expected =
+        """
+        sub|i2 sp 1 sp
+        jump _start _ pc
+
+        label print
+        mov _ r0 out
+        return _ _ _
+
+        label _start
+        mov sp _ fp
+        ifEq|i1|i2 1 1 _if0
+        mov|i1 2 _ r0
+        call print _ _
+        label _if0
+        mov|i1 3 _ r0
+        call print _ _
+        """.TrimIndents();
+
+        string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
+
+        Assert.Equal(expected.Split(Environment.NewLine), assembly);
+    }
+
+    [Fact]
+    public void Less()
+    {
+        string source =
+        """
+        if (1 < 1) {
+            print(2);
+        }
+        print(3);
+        """.TrimIndents();
+
+        string expected =
+        """
+        sub|i2 sp 1 sp
+        jump _start _ pc
+
+        label print
+        mov _ r0 out
+        return _ _ _
+
+        label _start
+        mov sp _ fp
+        ifMoreOrEq|i1|i2 1 1 _if0
+        mov|i1 2 _ r0
+        call print _ _
+        label _if0
+        mov|i1 3 _ r0
+        call print _ _
+        """.TrimIndents();
+
+        string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
+
+        Assert.Equal(expected.Split(Environment.NewLine), assembly);
+    }
+
+    [Fact]
+    public void LessOrEqual()
+    {
+        string source =
+        """
+        if (1 <= 1) {
+            print(2);
+        }
+        print(3);
+        """.TrimIndents();
+
+        string expected =
+        """
+        sub|i2 sp 1 sp
+        jump _start _ pc
+
+        label print
+        mov _ r0 out
+        return _ _ _
+
+        label _start
+        mov sp _ fp
+        ifMore|i1|i2 1 1 _if0
+        mov|i1 2 _ r0
+        call print _ _
+        label _if0
+        mov|i1 3 _ r0
+        call print _ _
+        """.TrimIndents();
+
+        string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
+
+        Assert.Equal(expected.Split(Environment.NewLine), assembly);
+    }
+
+    [Fact]
+    public void More()
+    {
+        string source =
+        """
+        if (1 > 1) {
+            print(2);
+        }
+        print(3);
+        """.TrimIndents();
+
+        string expected =
+        """
+        sub|i2 sp 1 sp
+        jump _start _ pc
+
+        label print
+        mov _ r0 out
+        return _ _ _
+
+        label _start
+        mov sp _ fp
+        ifLessOrEq|i1|i2 1 1 _if0
+        mov|i1 2 _ r0
+        call print _ _
+        label _if0
+        mov|i1 3 _ r0
+        call print _ _
+        """.TrimIndents();
+
+        string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
+
+        Assert.Equal(expected.Split(Environment.NewLine), assembly);
+    }
+
+    [Fact]
+    public void MoreOrEqual()
+    {
+        string source =
+        """
+        if (1 >= 1) {
+            print(2);
+        }
+        print(3);
+        """.TrimIndents();
+
+        string expected =
+        """
+        sub|i2 sp 1 sp
+        jump _start _ pc
+
+        label print
+        mov _ r0 out
+        return _ _ _
+
+        label _start
+        mov sp _ fp
+        ifLess|i1|i2 1 1 _if0
+        mov|i1 2 _ r0
+        call print _ _
+        label _if0
+        mov|i1 3 _ r0
+        call print _ _
+        """.TrimIndents();
+
+        string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
+
+        Assert.Equal(expected.Split(Environment.NewLine), assembly);
+    }
 }
