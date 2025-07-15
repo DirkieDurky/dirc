@@ -6,36 +6,30 @@ public class LocalVariables
     public void WithoutKeyword()
     {
         string source =
-"""
-x = 3;
-y = 4;
-print(x + y);
-""";
+        """
+        x = 3;
+        print(x);
+        """.TrimIndents();
 
         string expected =
-"""
-sub|i2 sp 1 sp
-jump start _ pc
+        """
+        sub|i2 sp 1 sp
+        jump start _ pc
 
-label print
-mov _ r0 out
-return _ _ _
+        label print
+        mov _ r0 out
+        return _ _ _
 
-label start
-mov sp _ fp
-sub|i2 sp 1 sp
-mov fp _ r0
-store|i1 3 r0 _
-sub|i2 sp 1 sp
-sub|i2 fp 1 r0
-store|i1 4 r0 _
-mov fp _ r0
-load r0 _ r1
-sub|i2 fp 1 r0
-load r0 _ r2
-add r1 r2 r0
-call print _ _
-""";
+        label start
+        mov sp _ fp
+        sub|i2 sp 1 sp
+        mov fp _ r0
+        store|i1 3 r0 _
+        mov fp _ r0
+        load r0 _ r1
+        mov r1 _ r0
+        call print _ _
+        """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
 
@@ -46,36 +40,30 @@ call print _ _
     public void WithKeyword()
     {
         string source =
-"""
-var x = 3;
-var y = 4;
-print(x + y);
-""";
+        """
+        var x = 3;
+        print(x);
+        """.TrimIndents();
 
         string expected =
-"""
-sub|i2 sp 1 sp
-jump start _ pc
+        """
+        sub|i2 sp 1 sp
+        jump start _ pc
 
-label print
-mov _ r0 out
-return _ _ _
+        label print
+        mov _ r0 out
+        return _ _ _
 
-label start
-mov sp _ fp
-sub|i2 sp 1 sp
-mov fp _ r0
-store|i1 3 r0 _
-sub|i2 sp 1 sp
-sub|i2 fp 1 r0
-store|i1 4 r0 _
-mov fp _ r0
-load r0 _ r1
-sub|i2 fp 1 r0
-load r0 _ r2
-add r1 r2 r0
-call print _ _
-""";
+        label start
+        mov sp _ fp
+        sub|i2 sp 1 sp
+        mov fp _ r0
+        store|i1 3 r0 _
+        mov fp _ r0
+        load r0 _ r1
+        mov r1 _ r0
+        call print _ _
+        """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
 
@@ -86,37 +74,37 @@ call print _ _
     public void ReassignVariable()
     {
         string source =
-"""
-x = 3;
-x = x + 1;
+        """
+        x = 3;
+        x = x + 1;
 
-print(x);
-""";
+        print(x);
+        """.TrimIndents();
 
         string expected =
-"""
-sub|i2 sp 1 sp
-jump start _ pc
+        """
+        sub|i2 sp 1 sp
+        jump start _ pc
 
-label print
-mov _ r0 out
-return _ _ _
+        label print
+        mov _ r0 out
+        return _ _ _
 
-label start
-mov sp _ fp
-sub|i2 sp 1 sp
-mov fp _ r0
-store|i1 3 r0 _
-mov fp _ r0
-load r0 _ r1
-add|i2 r1 1 r0
-mov fp _ r1
-store r0 r1 _
-mov fp _ r0
-load r0 _ r1
-mov r1 _ r0
-call print _ _
-""";
+        label start
+        mov sp _ fp
+        sub|i2 sp 1 sp
+        mov fp _ r0
+        store|i1 3 r0 _
+        mov fp _ r0
+        load r0 _ r1
+        add|i2 r1 1 r0
+        mov fp _ r1
+        store r0 r1 _
+        mov fp _ r0
+        load r0 _ r1
+        mov r1 _ r0
+        call print _ _
+        """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
 
@@ -127,12 +115,12 @@ call print _ _
     public void DuplicateDefinition()
     {
         string source =
-"""
-var x = 3;
-var x = 5;
+        """
+        var x = 3;
+        var x = 5;
 
-print(x);
-""";
+        print(x);
+        """.TrimIndents();
 
         Assert.Throws<CodeGenException>(() => new Compiler().Compile(source, new([]), new("unittests")));
     }
