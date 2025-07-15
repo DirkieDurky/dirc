@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "name": "My debug config",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "dotnet",
+            "args": [
+                "${workspaceFolder}/DircCompiler/bin/Debug/net8.0/DircCompiler.dll",
+                "test.dirc"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        }
+    ]
+}
