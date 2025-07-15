@@ -23,7 +23,7 @@ public class SimpleBinaryExpressionNode : AstNode, CodeGen.IReturnable
 
     public string AsOperand()
     {
-        return $"{Left.Value} {Operation} {Right.Value}";
+        return $"{Left.Value} {Operation.GetInlineString()} {Right.Value}";
     }
 
     public void Free()

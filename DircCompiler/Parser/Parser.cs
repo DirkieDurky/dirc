@@ -192,7 +192,7 @@ class Parser
         AstNode expr = ParseXor();
         while (Match(TokenType.Or))
         {
-            Operation op = OperationFromToken(Advance());
+            Operation op = OperationFromToken(Previous());
             AstNode right = ParseXor();
             expr = new BinaryExpressionNode(op, expr, right);
         }
@@ -204,7 +204,7 @@ class Parser
         AstNode expr = ParseAnd();
         while (Match(TokenType.Xor))
         {
-            Operation op = OperationFromToken(Advance());
+            Operation op = OperationFromToken(Previous());
             AstNode right = ParseAnd();
             expr = new BinaryExpressionNode(op, expr, right);
         }
@@ -216,7 +216,7 @@ class Parser
         AstNode expr = ParseAddition();
         while (Match(TokenType.And))
         {
-            Operation op = OperationFromToken(Advance());
+            Operation op = OperationFromToken(Previous());
             AstNode right = ParseAddition();
             expr = new BinaryExpressionNode(op, expr, right);
         }
@@ -228,7 +228,7 @@ class Parser
         AstNode expr = ParseMultiplication();
         while (Match(TokenType.Plus) || Match(TokenType.Minus))
         {
-            Operation op = OperationFromToken(Advance());
+            Operation op = OperationFromToken(Previous());
             AstNode right = ParseMultiplication();
             expr = new BinaryExpressionNode(op, expr, right);
         }
@@ -240,7 +240,7 @@ class Parser
         AstNode expr = ParsePrimary();
         while (Match(TokenType.Asterisk) || Match(TokenType.Slash))
         {
-            Operation op = OperationFromToken(Advance());
+            Operation op = OperationFromToken(Previous());
             AstNode right = ParsePrimary();
             expr = new BinaryExpressionNode(op, expr, right);
         }
@@ -274,7 +274,7 @@ class Parser
             else
             {
                 if (Check(TokenType.Equals) || CheckNext(TokenType.Equals)
-                || (Check(TokenType.Plus) && Check(TokenType.Plus)))
+                || (Check(TokenType.Plus) && CheckNext(TokenType.Plus)))
                 {
                     return ParseVariableAssignment(name, false);
                 }
