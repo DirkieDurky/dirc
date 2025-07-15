@@ -10,9 +10,13 @@ public enum TokenType
     Equals, ExclamationPoint,
 
     // Multi-character operators
+    // Conditions
     EqualEqual, NotEqual,
     Less, LessEqual,
     Greater, GreaterEqual,
+    // Assignment shorthands
+    PlusEqual, MinusEqual, AsteriskEqual,
+    SlashEqual, OrEqual, AndEqual, XorEqual,
 
     // Literals
     Identifier,

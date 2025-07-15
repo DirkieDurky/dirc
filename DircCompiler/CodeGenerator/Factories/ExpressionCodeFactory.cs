@@ -149,9 +149,9 @@ class ExpressionCodeFactory
             offset = context.VariableTable[node.Name].FramePointerOffset;
         }
 
-        if (node.Initializer != null)
+        if (node.Value != null)
         {
-            IReturnable value = Generate(node.Initializer, context) ?? throw new Exception("Initializer expression failed to generate");
+            IReturnable value = Generate(node.Value, context) ?? throw new Exception("Initializer expression failed to generate");
             Register tmp = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
 
             context.CodeGen.EmitBinaryOperation(

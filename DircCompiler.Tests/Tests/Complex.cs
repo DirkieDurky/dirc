@@ -1,8 +1,7 @@
 namespace DircCompiler.Tests;
 
-public class CombinedFeatures
+public class Complex
 {
-
     [Fact]
     public void MultipleDefinitions()
     {
