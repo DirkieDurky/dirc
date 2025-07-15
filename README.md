@@ -36,6 +36,17 @@ The following operations are permitted:
 - Bitwise or (|)
 - Bitwise xor (^)
 
+### Shorthands
+Shorthands for all of the above calculations are allowed as well.
+This example will add 2 to x:
+```
+x += 2;
+```
+The "++" operator can be used to add exactly 1 to a number:
+```
+x++;
+```
+
 ## Standard Library
 The standard library contains the following functions:
 - `print(num)`
