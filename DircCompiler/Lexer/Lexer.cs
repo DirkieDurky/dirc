@@ -100,7 +100,7 @@ class Lexer
                     {
                         BinaryNumber();
                     }
-                    else if (c == '0' && NextIs('b'))
+                    else if (c == '0' && NextIs('x'))
                     {
                         HexNumber();
                     }

@@ -5,6 +5,13 @@ namespace DircCompiler.CodeGen;
 
 class FunctionCodeFactory
 {
+    private readonly CompilerOptions _compilerOptions;
+
+    public FunctionCodeFactory(CompilerOptions compilerOptions)
+    {
+        _compilerOptions = compilerOptions;
+    }
+
     public void Generate(FunctionDeclarationNode node, CodeGenContext context)
     {
         context.CodeGen.EmitLabel(node.Name);
@@ -30,7 +37,7 @@ class FunctionCodeFactory
         context.CodeGen.EmitPop(context.Allocator.Use(RegisterEnum.lr));
         context.CodeGen.EmitReturn();
 
-        context.FunctionTable.Declare(Function.FromFunctionDeclarationNode(node));
+        context.FunctionTable.Declare(Function.FromFunctionDeclarationNode(node), node.IdentifierToken);
     }
 
     public void CompileStandardFunction(CodeGenContext context, string functionName, string[] parameters, string[] code)
@@ -42,6 +49,6 @@ class FunctionCodeFactory
         }
         context.CodeGen.EmitReturn();
 
-        context.FunctionTable.Declare(new Function(functionName, parameters, false));
+        context.FunctionTable.Declare(new Function(functionName, parameters, false), null);
     }
 }

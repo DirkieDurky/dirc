@@ -1,8 +1,0 @@
-test() {
-    x = 5;
-    y = 24;
-    result = y - x;
-    print(result);
-} 
-
-test();

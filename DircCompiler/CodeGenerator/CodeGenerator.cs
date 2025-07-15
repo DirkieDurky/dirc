@@ -12,8 +12,8 @@ class CodeGenerator
     public CodeGenerator(CompilerOptions compilerOptions, CompilerContext compilerContext)
     {
         Allocator allocator = new(compilerOptions);
-        ExpressionCodeFactory exprFactory = new ExpressionCodeFactory();
-        FunctionCodeFactory funcFactory = new FunctionCodeFactory();
+        ExpressionCodeFactory exprFactory = new ExpressionCodeFactory(compilerOptions);
+        FunctionCodeFactory funcFactory = new FunctionCodeFactory(compilerOptions);
         Context = new CodeGenContext(
             this,
             allocator,
@@ -21,7 +21,7 @@ class CodeGenerator
             funcFactory,
             new(),
             new(),
-            new(),
+            new(compilerOptions, compilerContext),
             0,
             compilerOptions,
             compilerContext

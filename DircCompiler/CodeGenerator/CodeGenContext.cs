@@ -12,7 +12,7 @@ class CodeGenContext : ICloneable
     public FunctionCodeFactory FuncFactory { get; }
     public Dictionary<string, Register> SymbolTable { get; }
     public Dictionary<string, Variable> VariableTable { get; set; } = new();
-    public FunctionTable FunctionTable { get; } = new();
+    public FunctionTable FunctionTable { get; }
     public int NextVariableOffset { get; set; } = 0;
     public CompilerOptions CompilerOptions;
     public CompilerContext CompilerContext;

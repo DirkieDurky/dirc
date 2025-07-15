@@ -2,7 +2,7 @@ using System.Text;
 using DircCompiler;
 using DircCompiler.Lexing;
 
-class SyntaxException : Exception
+public class SyntaxException : Exception
 {
     private readonly string _message;
     private readonly Token _token;

@@ -1,9 +1,0 @@
-myprint(num) {
-    print(num + 4);
-}
-
-myprint(14);
-myprint(8);
-myprint(25);
-myprint(128);
-myprint(255);

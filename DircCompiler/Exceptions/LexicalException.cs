@@ -1,7 +1,7 @@
 using System.Text;
 using DircCompiler;
 
-class LexicalException : Exception
+public class LexicalException : Exception
 {
     private readonly string _message;
     private readonly char _character;

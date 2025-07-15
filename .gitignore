@@ -4,3 +4,5 @@ obj
 backups
 tests/builds
 .vscode/launch.json
+test.dirc
+test.diric

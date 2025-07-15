@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using DircCompiler.Lexing;
 
 namespace DircCompiler.Parsing;
@@ -77,7 +78,7 @@ class Parser
                 if (node is IdentifierNode parameter) parameters.Add(parameter.Name);
                 else throw new SyntaxException("Function parameters containing expression", Peek(), _compilerOptions, _compilerContext);
             }
-            return ParseFunctionDeclaration(name.Lexeme, parameters);
+            return ParseFunctionDeclaration(name, parameters);
         }
         else
         {
@@ -86,7 +87,7 @@ class Parser
         }
     }
 
-    private FunctionDeclarationNode ParseFunctionDeclaration(string name, List<string> parameters)
+    private FunctionDeclarationNode ParseFunctionDeclaration(Token name, List<string> parameters)
     {
         List<AstNode> body = new List<AstNode>();
         while (!Check(TokenType.RightBrace) && !IsAtEnd())
@@ -94,7 +95,7 @@ class Parser
             body.Add(ParseStatement());
         }
         Consume(TokenType.RightBrace, "Expected '}' after function body.");
-        return new FunctionDeclarationNode(name, parameters, body);
+        return new FunctionDeclarationNode(name, name.Lexeme, parameters, body);
     }
 
     private VariableAssignmentNode ParseVariableAssignment(string name)

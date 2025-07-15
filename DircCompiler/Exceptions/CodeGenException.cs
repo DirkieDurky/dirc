@@ -2,17 +2,17 @@ using System.Text;
 using DircCompiler;
 using DircCompiler.Lexing;
 
-class CodeGenException : Exception
+public class CodeGenException : Exception
 {
     private readonly string _message;
-    private readonly Token _token;
+    private readonly Token? _identifierToken;
     private readonly CompilerContext _compilerContext;
     private readonly CompilerOptions _compilerOptions;
 
-    public CodeGenException(string message, Token token, CompilerOptions compilerOptions, CompilerContext compilerContext) : base(message)
+    public CodeGenException(string message, Token? identifierToken, CompilerOptions compilerOptions, CompilerContext compilerContext) : base(message)
     {
         _message = message;
-        _token = token;
+        _identifierToken = identifierToken;
         _compilerOptions = compilerOptions;
         _compilerContext = compilerContext;
     }
@@ -20,7 +20,8 @@ class CodeGenException : Exception
     public override string ToString()
     {
         StringBuilder builder = new();
-        builder.AppendLine($"CodeGenException: {_message} at '{_token.Lexeme}'");
+        string tokenString = _identifierToken != null ? $"'{_identifierToken.Lexeme}'" : "unknown location";
+        builder.AppendLine($"CodeGenException: {_message} at {tokenString}");
         foreach ((string filename, int line) in _compilerContext.GetCallStack())
         {
             builder.AppendLine($"at {filename}:line {line}");

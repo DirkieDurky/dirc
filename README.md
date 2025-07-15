@@ -70,7 +70,7 @@ print(0b01000000 | 0b01000100);
 
 Hexadecimal is done using the '0x' prefix:
 ```
-print(0xff0000 ^ 0xffff00);
+print(0x0d ^ 0xd0);
 ```
 
 # DIRIC assembly

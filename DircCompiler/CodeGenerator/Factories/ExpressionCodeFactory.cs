@@ -5,6 +5,13 @@ namespace DircCompiler.CodeGen;
 
 class ExpressionCodeFactory
 {
+    private readonly CompilerOptions _compilerOptions;
+
+    public ExpressionCodeFactory(CompilerOptions compilerOptions)
+    {
+        _compilerOptions = compilerOptions;
+    }
+
     public IReturnable? Generate(AstNode node, CodeGenContext context)
     {
         switch (node)
@@ -32,7 +39,7 @@ class ExpressionCodeFactory
         Function callee;
         try
         {
-            callee = context.FunctionTable.Lookup(node.Callee);
+            callee = context.FunctionTable.Lookup(node.Callee, node.CalleeToken);
         }
         catch
         {
@@ -60,11 +67,12 @@ class ExpressionCodeFactory
         }
 
         List<Register> registersToFree = new();
+        // Put function arguments in the right registers
         for (int i = 0; i < node.Arguments.Count; i++)
         {
             IReturnable argument = Generate(node.Arguments[i], context) ?? throw new Exception("Argument was not set");
             RegisterEnum argumentSlotEnum = Allocator.ArgumentRegisters.ElementAt(i);
-            if (argument is ReturnRegister reg && reg.RegisterEnum != argumentSlotEnum)
+            if (argument is not ReturnRegister reg || reg.RegisterEnum != argumentSlotEnum)
             {
                 Register argumentSlot = context.Allocator.Use(argumentSlotEnum);
                 registersToFree.Add(argumentSlot);
