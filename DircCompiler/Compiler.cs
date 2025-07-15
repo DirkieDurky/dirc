@@ -1,8 +1,8 @@
-using Dirc.CodeGen;
-using Dirc.Lexing;
-using Dirc.Parsing;
+using DircCompiler.CodeGen;
+using DircCompiler.Lexing;
+using DircCompiler.Parsing;
 
-namespace Dirc;
+namespace DircCompiler;
 
 public class Compiler
 {

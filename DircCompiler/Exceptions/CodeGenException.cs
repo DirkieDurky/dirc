@@ -1,6 +1,6 @@
 using System.Text;
-using Dirc;
-using Dirc.Lexing;
+using DircCompiler;
+using DircCompiler.Lexing;
 
 class CodeGenException : Exception
 {

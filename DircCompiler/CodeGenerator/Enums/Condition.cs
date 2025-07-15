@@ -1,4 +1,4 @@
-namespace Dirc.CodeGen;
+namespace DircCompiler.CodeGen;
 
 enum Condition
 {

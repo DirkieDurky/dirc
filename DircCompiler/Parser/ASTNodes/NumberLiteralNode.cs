@@ -1,4 +1,4 @@
-namespace Dirc.Parsing;
+namespace DircCompiler.Parsing;
 
 public class NumberLiteralNode : AstNode, CodeGen.IReturnable
 {

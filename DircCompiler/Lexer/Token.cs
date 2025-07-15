@@ -1,4 +1,4 @@
-namespace Dirc.Lexing;
+namespace DircCompiler.Lexing;
 
 public class Token
 {

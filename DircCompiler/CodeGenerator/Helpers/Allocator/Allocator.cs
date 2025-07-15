@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace Dirc.CodeGen.Allocating;
+namespace DircCompiler.CodeGen.Allocating;
 
 class Allocator
 {

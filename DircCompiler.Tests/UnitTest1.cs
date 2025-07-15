@@ -1,4 +1,4 @@
-using Dirc;
+using DircCompiler;
 
 namespace DircCompiler.Tests;
 

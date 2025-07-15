@@ -1,4 +1,4 @@
-﻿namespace Dirc;
+﻿namespace DircCompiler;
 
 class Program
 {

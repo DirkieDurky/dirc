@@ -1,7 +1,7 @@
-using Dirc.CodeGen.Allocating;
-using Dirc.Parsing;
+using DircCompiler.CodeGen.Allocating;
+using DircCompiler.Parsing;
 
-namespace Dirc.CodeGen;
+namespace DircCompiler.CodeGen;
 
 class FunctionCodeFactory
 {

@@ -1,4 +1,4 @@
-namespace Dirc;
+namespace DircCompiler;
 
 public class CompilerOptions
 {

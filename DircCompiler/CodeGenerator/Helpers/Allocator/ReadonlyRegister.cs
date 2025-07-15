@@ -1,4 +1,4 @@
-namespace Dirc.CodeGen.Allocating;
+namespace DircCompiler.CodeGen.Allocating;
 
 class ReadonlyRegister : IOperand
 {

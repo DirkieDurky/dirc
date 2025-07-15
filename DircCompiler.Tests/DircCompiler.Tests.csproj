@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../DircCompiler/dirc.csproj" />
+    <ProjectReference Include="../DircCompiler/DircCompiler.csproj" />
   </ItemGroup>
 
 </Project>

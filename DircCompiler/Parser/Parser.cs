@@ -1,6 +1,6 @@
-using Dirc.Lexing;
+using DircCompiler.Lexing;
 
-namespace Dirc.Parsing;
+namespace DircCompiler.Parsing;
 
 class Parser
 {

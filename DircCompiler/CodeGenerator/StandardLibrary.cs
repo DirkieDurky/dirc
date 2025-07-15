@@ -1,4 +1,4 @@
-namespace Dirc.CodeGen;
+namespace DircCompiler.CodeGen;
 
 class StandardLibrary
 {

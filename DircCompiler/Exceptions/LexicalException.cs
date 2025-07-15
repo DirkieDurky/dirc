@@ -1,5 +1,5 @@
 using System.Text;
-using Dirc;
+using DircCompiler;
 
 class LexicalException : Exception
 {
