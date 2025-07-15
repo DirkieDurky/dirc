@@ -12,7 +12,8 @@ class Lexer
     {
         { "function", TokenType.Function },
         { "var", TokenType.Var },
-        { "if", TokenType.If }
+        { "if", TokenType.If },
+        { "else", TokenType.Else }
         // Add more keywords here as needed
     };
 

@@ -194,7 +194,18 @@ class ExpressionCodeFactory
 
     private IReturnable? GenerateIfStatement(IfStatementNode node, CodeGenContext context, LabelGenerator labelGenerator)
     {
-        string label = labelGenerator.Generate(LabelType.If);
+        string label;
+        string? endLabel = null;
+        if (node.ElseBody == null)
+        {
+            label = labelGenerator.Generate(LabelType.If);
+        }
+        else
+        {
+            label = labelGenerator.Generate(LabelType.Else);
+            endLabel = labelGenerator.Generate(LabelType.IfElseEnd);
+        }
+
         IReturnable left = Generate(node.Condition.Left, context) ?? throw new Exception("Part of if statement was not set");
         IReturnable right = Generate(node.Condition.Right, context) ?? throw new Exception("Part of if statement was not set");
         context.CodeGen.EmitIf(node.Condition.Comparer.GetOpposite(), left, right, label);
@@ -206,7 +217,21 @@ class ExpressionCodeFactory
             context.ExprFactory.Generate(stmt, (CodeGenContext)context.Clone());
         }
 
+        if (endLabel != null)
+        {
+            context.CodeGen.EmitJump(endLabel);
+        }
+
         context.CodeGen.EmitLabel(label);
+
+        if (node.ElseBody != null)
+        {
+            foreach (AstNode stmt in node.ElseBody)
+            {
+                context.ExprFactory.Generate(stmt, (CodeGenContext)context.Clone());
+            }
+            context.CodeGen.EmitLabel(endLabel!);
+        }
         return null;
     }
 }

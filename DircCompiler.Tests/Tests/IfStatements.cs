@@ -24,7 +24,7 @@ public class IfStatements
 
         label start
         mov sp _ fp
-        ifNotEq 1 1 _if0
+        ifNotEq|i1|i2 1 1 _if0
         mov|i1 2 _ r0
         call print _ _
         label _if0
@@ -59,7 +59,7 @@ public class IfStatements
 
         label start
         mov sp _ fp
-        ifNotEq 1 2 _if0
+        ifNotEq|i1|i2 1 2 _if0
         mov|i1 2 _ r0
         call print _ _
         label _if0
@@ -120,6 +120,86 @@ public class IfStatements
         store r0 r1 _
         call print _ _
         label _if0
+        """.TrimIndents();
+
+        string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
+
+        Assert.Equal(expected.Split(Environment.NewLine), assembly);
+    }
+
+    [Fact]
+    public void IfElseTrue()
+    {
+        string source =
+        """
+        if (1 == 1) {
+            print(2);
+        }
+        else
+        {
+            print(3);
+        }
+        """.TrimIndents();
+
+        string expected =
+        """
+        sub|i2 sp 1 sp
+        jump start _ pc
+
+        label print
+        mov _ r0 out
+        return _ _ _
+
+        label start
+        mov sp _ fp
+        ifNotEq|i1|i2 1 1 _else0
+        mov|i1 2 _ r0
+        call print _ _
+        jump _ifElseEnd0 _ pc
+        label _else0
+        mov|i1 3 _ r0
+        call print _ _
+        label _ifElseEnd0
+        """.TrimIndents();
+
+        string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
+
+        Assert.Equal(expected.Split(Environment.NewLine), assembly);
+    }
+
+    [Fact]
+    public void IfElseFalse()
+    {
+        string source =
+        """
+        if (1 == 2) {
+            print(2);
+        }
+        else
+        {
+            print(3);
+        }
+        """.TrimIndents();
+
+        string expected =
+        """
+        sub|i2 sp 1 sp
+        jump start _ pc
+
+        label print
+        mov _ r0 out
+        return _ _ _
+
+        label start
+        mov sp _ fp
+        ifNotEq|i1|i2 1 2 _else0
+        mov|i1 2 _ r0
+        call print _ _
+        jump _ifElseEnd0 _ pc
+        label _else0
+        mov|i1 3 _ r0
+        call print _ _
+        label _ifElseEnd0
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));

@@ -157,25 +157,29 @@ class CodeGenerator
 
     public void EmitIf(Comparer cond, IOperand left, IOperand right, string result)
     {
+        string opSuffix = "";
+        if (left is NumberLiteralNode) opSuffix += "|i1";
+        if (right is NumberLiteralNode) opSuffix += "|i2";
+
         switch (cond)
         {
             case Comparer.IfEq:
-                Emit($"ifEq {left.AsOperand()} {right.AsOperand()} {result}");
+                Emit($"ifEq{opSuffix} {left.AsOperand()} {right.AsOperand()} {result}");
                 break;
             case Comparer.IfLess:
-                Emit($"ifLess {left.AsOperand()} {right.AsOperand()} {result}");
+                Emit($"ifLess{opSuffix} {left.AsOperand()} {right.AsOperand()} {result}");
                 break;
             case Comparer.IfLessOrEq:
-                Emit($"ifLessOrEq {left.AsOperand()} {right.AsOperand()} {result}");
+                Emit($"ifLessOrEq{opSuffix} {left.AsOperand()} {right.AsOperand()} {result}");
                 break;
             case Comparer.IfMore:
-                Emit($"ifMore {left.AsOperand()} {right.AsOperand()} {result}");
+                Emit($"ifMore{opSuffix} {left.AsOperand()} {right.AsOperand()} {result}");
                 break;
             case Comparer.IfMoreOrEq:
-                Emit($"ifMoreOrEq {left.AsOperand()} {right.AsOperand()} {result}");
+                Emit($"ifMoreOrEq{opSuffix} {left.AsOperand()} {right.AsOperand()} {result}");
                 break;
             case Comparer.IfNotEq:
-                Emit($"ifNotEq {left.AsOperand()} {right.AsOperand()} {result}");
+                Emit($"ifNotEq{opSuffix} {left.AsOperand()} {right.AsOperand()} {result}");
                 break;
         }
     }

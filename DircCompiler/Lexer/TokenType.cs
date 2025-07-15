@@ -27,5 +27,5 @@ public enum TokenType
     // Keywords
     Function,
     Var,
-    If,
+    If, Else
 }

@@ -48,7 +48,13 @@ class Parser
             Consume(TokenType.LeftParen, "Expected '(' after if keyword");
             ConditionNode condition = ParseCondition();
             Consume(TokenType.RightParen, "Expected ')' after if condition");
-            return new IfStatementNode(condition, ParseBody("if statement"));
+            List<AstNode> body = ParseBody("if statement");
+            List<AstNode>? elseBody = null;
+            if (Match(TokenType.Else))
+            {
+                elseBody = ParseBody("else statement");
+            }
+            return new IfStatementNode(condition, body, elseBody);
         }
         else if (Match(TokenType.Identifier))
         {
@@ -290,7 +296,6 @@ class Parser
     }
 
     // Utility methods
-
     private Operation OperationFromToken(Token token)
     {
         return token.Type switch
