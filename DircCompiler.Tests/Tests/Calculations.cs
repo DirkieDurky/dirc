@@ -13,13 +13,13 @@ public class Calculations
         string expected =
         """
         sub|i2 sp 1 sp
-        jump start _ pc
+        jump _start _ pc
 
         label print
         mov _ r0 out
         return _ _ _
 
-        label start
+        label _start
         mov sp _ fp
         mov|i1 4 + 3 _ r0
         call print _ _
@@ -41,13 +41,13 @@ public class Calculations
         string expected =
         """
         sub|i2 sp 1 sp
-        jump start _ pc
+        jump _start _ pc
 
         label print
         mov _ r0 out
         return _ _ _
 
-        label start
+        label _start
         mov sp _ fp
         mov|i1 4 - 3 _ r0
         call print _ _
@@ -69,13 +69,13 @@ public class Calculations
         string expected =
         """
         sub|i2 sp 1 sp
-        jump start _ pc
+        jump _start _ pc
 
         label print
         mov _ r0 out
         return _ _ _
 
-        label start
+        label _start
         mov sp _ fp
         mov|i1 0b11110000 & 0b00110000 _ r0
         call print _ _
@@ -97,13 +97,13 @@ public class Calculations
         string expected =
         """
         sub|i2 sp 1 sp
-        jump start _ pc
+        jump _start _ pc
 
         label print
         mov _ r0 out
         return _ _ _
 
-        label start
+        label _start
         mov sp _ fp
         mov|i1 0b11110000 | 0b00001100 _ r0
         call print _ _
@@ -125,13 +125,13 @@ public class Calculations
         string expected =
         """
         sub|i2 sp 1 sp
-        jump start _ pc
+        jump _start _ pc
 
         label print
         mov _ r0 out
         return _ _ _
 
-        label start
+        label _start
         mov sp _ fp
         mov|i1 0b11110000 ^ 0b00110000 _ r0
         call print _ _

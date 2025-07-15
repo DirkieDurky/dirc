@@ -40,7 +40,7 @@ class CodeGenerator
             Context.Allocator.Use(RegisterEnum.sp)
         );
 
-        EmitJump("start");
+        EmitJump("_start");
         EmitEmptyLine();
 
         // Compile standard library
@@ -59,7 +59,7 @@ class CodeGenerator
             Context.FuncFactory.Generate(funcNode, Context);
         }
 
-        EmitLabel("start");
+        EmitLabel("_start");
         Context.CodeGen.EmitMov(ReadonlyRegister.SP, Context.Allocator.Use(RegisterEnum.fp));
         foreach (AstNode node in nodes)
         {

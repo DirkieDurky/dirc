@@ -25,10 +25,6 @@ public class FunctionTable : ICloneable
         {
             throw new CodeGenException($"Trying to declare function '{sig.Name}' which was already declared.", identifierToken, _compilerOptions, _compilerContext);
         }
-        if (sig.Name == "start")
-        {
-            throw new CodeGenException($"Function name '{sig.Name}' not allowed. Reserved label.", identifierToken, _compilerOptions, _compilerContext);
-        }
         _functions[sig.Name] = sig;
     }
 

@@ -32,7 +32,7 @@ public class Complex
         string expected =
         """
         sub|i2 sp 1 sp
-        jump start _ pc
+        jump _start _ pc
 
         label print
         mov _ r0 out
@@ -94,7 +94,7 @@ public class Complex
         pop _ _ lr
         return _ _ _
 
-        label start
+        label _start
         mov sp _ fp
         mov|i1 14 _ r0
         call print4 _ _
@@ -129,7 +129,7 @@ public class Complex
         string expected =
         """
         sub|i2 sp 1 sp
-        jump start _ pc
+        jump _start _ pc
 
         label print
         mov _ r0 out
@@ -162,7 +162,7 @@ public class Complex
         pop _ _ lr
         return _ _ _
 
-        label start
+        label _start
         mov sp _ fp
         call test _ _
         """.TrimIndents();

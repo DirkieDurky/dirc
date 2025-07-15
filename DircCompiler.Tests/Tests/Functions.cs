@@ -13,13 +13,13 @@ public class Functions
         string expected =
         """
         sub|i2 sp 1 sp
-        jump start _ pc
+        jump _start _ pc
 
         label print
         mov _ r0 out
         return _ _ _
 
-        label start
+        label _start
         mov sp _ fp
         mov|i1 14 _ r0
         call print _ _
@@ -43,7 +43,7 @@ public class Functions
         string expected =
         """
         sub|i2 sp 1 sp
-        jump start _ pc
+        jump _start _ pc
 
         label print
         mov _ r0 out
@@ -61,7 +61,7 @@ public class Functions
         pop _ _ lr
         return _ _ _
 
-        label start
+        label _start
         mov sp _ fp
         """.TrimIndents();
 
@@ -83,7 +83,7 @@ public class Functions
         string expected =
         """
         sub|i2 sp 1 sp
-        jump start _ pc
+        jump _start _ pc
 
         label print
         mov _ r0 out
@@ -101,7 +101,7 @@ public class Functions
         pop _ _ lr
         return _ _ _
 
-        label start
+        label _start
         mov sp _ fp
         """.TrimIndents();
 
@@ -125,7 +125,7 @@ public class Functions
         string expected =
         """
         sub|i2 sp 1 sp
-        jump start _ pc
+        jump _start _ pc
 
         label print
         mov _ r0 out
@@ -143,7 +143,7 @@ public class Functions
         pop _ _ lr
         return _ _ _
 
-        label start
+        label _start
         mov sp _ fp
         mov|i1 14 _ r0
         call myprint _ _
@@ -173,7 +173,7 @@ public class Functions
         string expected =
         """
         sub|i2 sp 1 sp
-        jump start _ pc
+        jump _start _ pc
 
         label print
         mov _ r0 out
@@ -191,7 +191,7 @@ public class Functions
         pop _ _ lr
         return _ _ _
 
-        label start
+        label _start
         mov sp _ fp
         mov|i1 14 _ r0
         call myprint _ _
@@ -274,7 +274,7 @@ public class Functions
         string expected =
         """
         sub|i2 sp 1 sp
-        jump start _ pc
+        jump _start _ pc
 
         label print
         mov _ r0 out
@@ -311,7 +311,7 @@ public class Functions
         pop _ _ lr
         return _ _ _
 
-        label start
+        label _start
         mov sp _ fp
         call test _ _
         """.TrimIndents();

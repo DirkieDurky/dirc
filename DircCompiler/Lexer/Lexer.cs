@@ -4,7 +4,7 @@ class Lexer
 {
     private string _source = "";
     private List<Token> _tokens = new();
-    private int _start = 0;
+    private int __start = 0;
     private int _current = 0;
     private int _line = 1;
 
@@ -30,13 +30,13 @@ class Lexer
     {
         _source = source;
         _tokens = new List<Token>();
-        _start = 0;
+        __start = 0;
         _current = 0;
         _line = 1;
 
         while (!IsAtEnd())
         {
-            _start = _current;
+            __start = _current;
             ScanToken();
         }
 
@@ -127,7 +127,7 @@ class Lexer
     {
         while (IsAlphaNumeric(Peek())) Advance();
 
-        string text = _source[_start.._current];
+        string text = _source[__start.._current];
         if (_keywords.TryGetValue(text, out TokenType type))
         {
             AddToken(type);
@@ -145,7 +145,7 @@ class Lexer
 
         while (IsDigit(Peek())) Advance();
 
-        string text = _source[_start.._current];
+        string text = _source[__start.._current];
         AddToken(TokenType.BinaryNumber, text);
     }
 
@@ -156,7 +156,7 @@ class Lexer
 
         while (IsAlphaNumeric(Peek())) Advance();
 
-        string text = _source[_start.._current];
+        string text = _source[__start.._current];
         AddToken(TokenType.HexNumber, text);
     }
 
@@ -164,7 +164,7 @@ class Lexer
     {
         while (IsDigit(Peek())) Advance();
 
-        string text = _source[_start.._current];
+        string text = _source[__start.._current];
         AddToken(TokenType.Number, text);
     }
 
@@ -194,7 +194,7 @@ class Lexer
 
     private void AddToken(TokenType type, object? literal = null)
     {
-        string text = _source[_start.._current];
+        string text = _source[__start.._current];
         _tokens.Add(new Token(type, text, literal, _line));
     }
 
