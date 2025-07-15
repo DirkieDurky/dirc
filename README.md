@@ -26,7 +26,7 @@ x + y
 ```
 But this in itself doesn't do anything. To assign the result to a new variable:
 ```
-z = x + y
+z = x + y;
 ```
 
 The following operations are permitted:
@@ -61,16 +61,16 @@ function add(x, y) {
 
 Another example:
 ```
-print(x | 4)
+print(x | 4);
 ```
 To make operations like these easier to deal with, binary and hexadecimal literals are also allowed using the '0b' and '0x' prefixes respectively:
 ```
-print(0b01000000 | 0b01000100)
+print(0b01000000 | 0b01000100);
 ```
 
 Hexadecimal is done using the '0x' prefix:
 ```
-print(0xff0000 ^ 0xffff00)
+print(0xff0000 ^ 0xffff00);
 ```
 
 # DIRIC assembly
