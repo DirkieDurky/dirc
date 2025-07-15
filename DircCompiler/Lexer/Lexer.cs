@@ -11,7 +11,8 @@ class Lexer
     private static readonly Dictionary<string, TokenType> _keywords = new()
     {
         { "function", TokenType.Function },
-        { "var", TokenType.Var }
+        { "var", TokenType.Var },
+        { "if", TokenType.If }
         // Add more keywords here as needed
     };
 

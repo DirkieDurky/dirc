@@ -5,14 +5,15 @@ namespace DircCompiler.CodeGen;
 
 class CodeGenerator
 {
-    public CodeGenContext Context { get; private set; }
+    public CodeGenContext Context { get; init; }
+    public LabelGenerator LabelGenerator { get; init; } = new();
 
     private readonly List<string> _code = new();
 
     public CodeGenerator(CompilerOptions compilerOptions, CompilerContext compilerContext)
     {
         Allocator allocator = new(compilerOptions);
-        ExpressionCodeFactory exprFactory = new ExpressionCodeFactory(compilerOptions);
+        ExpressionCodeFactory exprFactory = new ExpressionCodeFactory(compilerOptions, LabelGenerator);
         FunctionCodeFactory funcFactory = new FunctionCodeFactory(compilerOptions);
         Context = new CodeGenContext(
             this,
@@ -154,26 +155,26 @@ class CodeGenerator
         }
     }
 
-    public void EmitCondition(Condition cond, IOperand left, IOperand right, string result)
+    public void EmitIf(Comparer cond, IOperand left, IOperand right, string result)
     {
         switch (cond)
         {
-            case Condition.IfEq:
+            case Comparer.IfEq:
                 Emit($"ifEq {left.AsOperand()} {right.AsOperand()} {result}");
                 break;
-            case Condition.IfLess:
+            case Comparer.IfLess:
                 Emit($"ifLess {left.AsOperand()} {right.AsOperand()} {result}");
                 break;
-            case Condition.IfLessOrEq:
+            case Comparer.IfLessOrEq:
                 Emit($"ifLessOrEq {left.AsOperand()} {right.AsOperand()} {result}");
                 break;
-            case Condition.IfMore:
+            case Comparer.IfMore:
                 Emit($"ifMore {left.AsOperand()} {right.AsOperand()} {result}");
                 break;
-            case Condition.IfMoreOrEq:
+            case Comparer.IfMoreOrEq:
                 Emit($"ifMoreOrEq {left.AsOperand()} {right.AsOperand()} {result}");
                 break;
-            case Condition.IfNotEq:
+            case Comparer.IfNotEq:
                 Emit($"ifNotEq {left.AsOperand()} {right.AsOperand()} {result}");
                 break;
         }

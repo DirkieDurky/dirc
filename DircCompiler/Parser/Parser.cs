@@ -39,7 +39,16 @@ class Parser
         else if (Match(TokenType.Var))
         {
             Token name = Consume(TokenType.Identifier, "No variable name provided");
-            return ParseVariableAssignment(name, true);
+            VariableAssignmentNode node = ParseVariableAssignment(name, true);
+            Consume(TokenType.Semicolon, "Expected ';' after variable declaration");
+            return node;
+        }
+        else if (Match(TokenType.If))
+        {
+            Consume(TokenType.LeftParen, "Expected '(' after if keyword");
+            ConditionNode condition = ParseCondition();
+            Consume(TokenType.RightParen, "Expected ')' after if condition");
+            return new IfStatementNode(condition, ParseBody("if statement"));
         }
         else if (Match(TokenType.Identifier))
         {
@@ -50,10 +59,30 @@ class Parser
             }
             else
             {
-                return ParseVariableAssignment(name, false);
+                VariableAssignmentNode node = ParseVariableAssignment(name, false);
+                Consume(TokenType.Semicolon, "Expected ';' after variable assignment or declaration");
+                return node;
             }
         }
         return ParseExpressionStatement();
+    }
+
+    private ConditionNode ParseCondition()
+    {
+        AstNode left = ParseExpression();
+        Comparer comparer = Advance().Type switch
+        {
+            TokenType.EqualEqual => Comparer.IfEq,
+            TokenType.NotEqual => Comparer.IfNotEq,
+            TokenType.Less => Comparer.IfLess,
+            TokenType.LessEqual => Comparer.IfLessOrEq,
+            TokenType.Greater => Comparer.IfMore,
+            TokenType.GreaterEqual => Comparer.IfMoreOrEq,
+            _ => throw new SyntaxException("Invalid comparer specified", Previous(), _compilerOptions, _compilerContext)
+        };
+        AstNode right = ParseExpression();
+
+        return new(comparer, left, right);
     }
 
     // If isDeclaration is true we know it's a function declaration
@@ -70,7 +99,7 @@ class Parser
         }
         Consume(TokenType.RightParen, "Expected ')' after parameters");
 
-        if (Match(TokenType.LeftBrace) || isDeclaration)
+        if (Check(TokenType.LeftBrace) || isDeclaration)
         {
             List<string> parameters = new();
             foreach (AstNode node in parametersOrArguments)
@@ -89,13 +118,20 @@ class Parser
 
     private FunctionDeclarationNode ParseFunctionDeclaration(Token name, List<string> parameters)
     {
-        List<AstNode> body = new List<AstNode>();
+        return new FunctionDeclarationNode(name, name.Lexeme, parameters, ParseBody("function"));
+    }
+
+    private List<AstNode> ParseBody(string kind)
+    {
+        Consume(TokenType.LeftBrace, $$"""Expected '{' after {{kind}}""");
+        List<AstNode> body = new();
         while (!Check(TokenType.RightBrace) && !IsAtEnd())
         {
             body.Add(ParseStatement());
         }
-        Consume(TokenType.RightBrace, "Expected '}' after function body");
-        return new FunctionDeclarationNode(name, name.Lexeme, parameters, body);
+        Consume(TokenType.RightBrace, $$"""Expected '}' after {{kind}} body""");
+
+        return body;
     }
 
     private VariableAssignmentNode ParseVariableAssignment(Token name, bool isDeclaration)
@@ -111,8 +147,7 @@ class Parser
             {
                 Advance();
                 Advance();
-                BinaryExpressionNode valuePlusOne = new BinaryExpressionNode("+", new IdentifierNode(name, name.Lexeme), new NumberLiteralNode(1));
-                Consume(TokenType.Semicolon, "Expected ';' after variable assignment or declaration");
+                BinaryExpressionNode valuePlusOne = new BinaryExpressionNode(Operation.Add, new IdentifierNode(name, name.Lexeme), new NumberLiteralNode(1));
 
                 return new VariableAssignmentNode(name, name.Lexeme, false, true, valuePlusOne);
             }
@@ -121,34 +156,21 @@ class Parser
             {
                 Advance();
                 Advance();
-                BinaryExpressionNode valuePlusOne = new BinaryExpressionNode("-", new IdentifierNode(name, name.Lexeme), new NumberLiteralNode(1));
-                Consume(TokenType.Semicolon, "Expected ';' after variable assignment or declaration");
+                BinaryExpressionNode valuePlusOne = new BinaryExpressionNode(Operation.Sub, new IdentifierNode(name, name.Lexeme), new NumberLiteralNode(1));
 
                 return new VariableAssignmentNode(name, name.Lexeme, false, true, valuePlusOne);
             }
 
-            string operation = Advance().Type switch
-            {
-                TokenType.Plus => "+",
-                TokenType.Minus => "-",
-                TokenType.Asterisk => "*",
-                TokenType.Slash => "/",
-                TokenType.Or => "|",
-                TokenType.And => "&",
-                TokenType.Xor => "^",
-                _ => throw new SyntaxException("Invalid statement", Peek(), _compilerOptions, _compilerContext)
-            };
+            Operation op = OperationFromToken(Advance());
             Consume(TokenType.Equals, "Expected '=' after operation in variable assignment shorthand");
 
             value = ParseExpression();
 
-            BinaryExpressionNode newValue = new BinaryExpressionNode(operation, new IdentifierNode(name, name.Lexeme), value);
-            Consume(TokenType.Semicolon, "Expected ';' after variable assignment or declaration");
+            BinaryExpressionNode newValue = new BinaryExpressionNode(op, new IdentifierNode(name, name.Lexeme), value);
 
             return new VariableAssignmentNode(name, name.Lexeme, false, true, newValue);
         }
 
-        Consume(TokenType.Semicolon, "Expected ';' after variable assignment or declaration");
         return new VariableAssignmentNode(name, name.Lexeme, isDeclaration, false, value);
     }
 
@@ -170,7 +192,7 @@ class Parser
         AstNode expr = ParseXor();
         while (Match(TokenType.Or))
         {
-            string op = Previous().Lexeme;
+            Operation op = OperationFromToken(Advance());
             AstNode right = ParseXor();
             expr = new BinaryExpressionNode(op, expr, right);
         }
@@ -182,7 +204,7 @@ class Parser
         AstNode expr = ParseAnd();
         while (Match(TokenType.Xor))
         {
-            string op = Previous().Lexeme;
+            Operation op = OperationFromToken(Advance());
             AstNode right = ParseAnd();
             expr = new BinaryExpressionNode(op, expr, right);
         }
@@ -194,7 +216,7 @@ class Parser
         AstNode expr = ParseAddition();
         while (Match(TokenType.And))
         {
-            string op = Previous().Lexeme;
+            Operation op = OperationFromToken(Advance());
             AstNode right = ParseAddition();
             expr = new BinaryExpressionNode(op, expr, right);
         }
@@ -206,7 +228,7 @@ class Parser
         AstNode expr = ParseMultiplication();
         while (Match(TokenType.Plus) || Match(TokenType.Minus))
         {
-            string op = Previous().Lexeme;
+            Operation op = OperationFromToken(Advance());
             AstNode right = ParseMultiplication();
             expr = new BinaryExpressionNode(op, expr, right);
         }
@@ -218,7 +240,7 @@ class Parser
         AstNode expr = ParsePrimary();
         while (Match(TokenType.Asterisk) || Match(TokenType.Slash))
         {
-            string op = Previous().Lexeme;
+            Operation op = OperationFromToken(Advance());
             AstNode right = ParsePrimary();
             expr = new BinaryExpressionNode(op, expr, right);
         }
@@ -244,13 +266,45 @@ class Parser
 
         if (Match(TokenType.Identifier))
         {
-            return new IdentifierNode(Previous(), Previous().Lexeme);
+            Token name = Previous();
+            if (Match(TokenType.LeftParen))
+            {
+                return ParseFunction(name);
+            }
+            else
+            {
+                if (Check(TokenType.Equals) || CheckNext(TokenType.Equals)
+                || (Check(TokenType.Plus) && Check(TokenType.Plus)))
+                {
+                    return ParseVariableAssignment(name, false);
+                }
+                else
+                {
+                    return new IdentifierNode(Previous(), Previous().Lexeme);
+                }
+            }
         }
+
         if (IsAtEnd()) throw new SyntaxException($"Unexpected end of text", Previous(), _compilerOptions, _compilerContext);
         throw new SyntaxException($"Unexpected token", Previous(), _compilerOptions, _compilerContext);
     }
 
     // Utility methods
+
+    private Operation OperationFromToken(Token token)
+    {
+        return token.Type switch
+        {
+            TokenType.Plus => Operation.Add,
+            TokenType.Minus => Operation.Sub,
+            TokenType.Asterisk => Operation.Mul,
+            TokenType.Slash => Operation.Div,
+            TokenType.Or => Operation.Or,
+            TokenType.And => Operation.And,
+            TokenType.Xor => Operation.Xor,
+            _ => throw new SyntaxException("Invalid operation specified", token, _compilerOptions, _compilerContext)
+        };
+    }
     private bool Match(TokenType type)
     {
         if (Check(type))

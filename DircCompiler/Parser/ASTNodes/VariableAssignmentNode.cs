@@ -23,5 +23,5 @@ public class VariableAssignmentNode : AstNode
         Value = initializer;
     }
 
-    public override string ToString() => $"VariableDeclaration({Name}, {Value})";
+    public override string ToString() => $"VariableAssignment({Name}, {Value})";
 }

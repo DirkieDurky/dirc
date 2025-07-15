@@ -2,28 +2,28 @@ namespace DircCompiler.Parsing;
 
 public class SimpleBinaryExpressionNode : AstNode, CodeGen.IReturnable
 {
-    public string Operator { get; }
+    public Operation Operation { get; }
     public NumberLiteralNode Left { get; }
     public NumberLiteralNode Right { get; }
-    public SimpleBinaryExpressionNode(string op, NumberLiteralNode left, NumberLiteralNode right)
+    public SimpleBinaryExpressionNode(Operation operation, NumberLiteralNode left, NumberLiteralNode right)
     {
-        Operator = op;
+        Operation = operation;
         Left = left;
         Right = right;
     }
 
     public SimpleBinaryExpressionNode(BinaryExpressionNode ben)
     {
-        Operator = ben.Operator;
+        Operation = ben.Operation;
         Left = (NumberLiteralNode)ben.Left;
         Right = (NumberLiteralNode)ben.Right;
     }
 
-    public override string ToString() => $"BinaryExpression({Left}, {Operator}, {Right})";
+    public override string ToString() => $"BinaryExpression({Left}, {Operation}, {Right})";
 
     public string AsOperand()
     {
-        return $"{Left.Value} {Operator} {Right.Value}";
+        return $"{Left.Value} {Operation} {Right.Value}";
     }
 
     public void Free()

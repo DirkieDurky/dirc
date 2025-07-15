@@ -1,6 +1,6 @@
-namespace DircCompiler.CodeGen;
+namespace DircCompiler;
 
-enum Operation
+public enum Operation
 {
     Add,
     Sub,

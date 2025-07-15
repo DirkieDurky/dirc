@@ -6,10 +6,12 @@ namespace DircCompiler.CodeGen;
 class ExpressionCodeFactory
 {
     private readonly CompilerOptions _compilerOptions;
+    private readonly LabelGenerator _labelGenerator;
 
-    public ExpressionCodeFactory(CompilerOptions compilerOptions)
+    public ExpressionCodeFactory(CompilerOptions compilerOptions, LabelGenerator labelGenerator)
     {
         _compilerOptions = compilerOptions;
+        _labelGenerator = labelGenerator;
     }
 
     public IReturnable? Generate(AstNode node, CodeGenContext context)
@@ -28,6 +30,8 @@ class ExpressionCodeFactory
                 return GenerateIdentifier(id, context);
             case NumberLiteralNode number:
                 return number;
+            case IfStatementNode ifStmt:
+                return GenerateIfStatement(ifStmt, context, _labelGenerator);
             default:
                 throw new Exception($"Unhandled node {node}");
         }
@@ -107,17 +111,7 @@ class ExpressionCodeFactory
             return new SimpleBinaryExpressionNode(node);
         }
 
-        Operation op = node.Operator switch
-        {
-            "+" => Operation.Add,
-            "-" => Operation.Sub,
-            "*" => Operation.Mul,
-            "/" => Operation.Div,
-            "|" => Operation.Or,
-            "&" => Operation.And,
-            "^" => Operation.Xor,
-            _ => throw new Exception($"Unknown operator {node.Operator}")
-        };
+        Operation op = node.Operation;
         Register result = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
         context.CodeGen.EmitBinaryOperation(op, leftOperand, rightOperand, result);
         leftOperand.Free();
@@ -164,6 +158,8 @@ class ExpressionCodeFactory
 
             tmp.Free();
             value.Free();
+
+            return value;
         }
 
         return null;
@@ -194,5 +190,23 @@ class ExpressionCodeFactory
         }
 
         throw new CodeGenException($"Undefined identifier '{node.Name}' was used", node.IdentifierToken, context.CompilerOptions, context.CompilerContext);
+    }
+
+    private IReturnable? GenerateIfStatement(IfStatementNode node, CodeGenContext context, LabelGenerator labelGenerator)
+    {
+        string label = labelGenerator.Generate(LabelType.If);
+        IReturnable left = Generate(node.Condition.Left, context) ?? throw new Exception("Part of if statement was not set");
+        IReturnable right = Generate(node.Condition.Right, context) ?? throw new Exception("Part of if statement was not set");
+        context.CodeGen.EmitIf(node.Condition.Comparer.GetOpposite(), left, right, label);
+        left.Free();
+        right.Free();
+
+        foreach (AstNode stmt in node.Body)
+        {
+            context.ExprFactory.Generate(stmt, (CodeGenContext)context.Clone());
+        }
+
+        context.CodeGen.EmitLabel(label);
+        return null;
     }
 }

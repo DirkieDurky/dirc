@@ -2,14 +2,14 @@ namespace DircCompiler.Parsing;
 
 public class BinaryExpressionNode : AstNode
 {
-    public string Operator { get; }
+    public Operation Operation { get; }
     public AstNode Left { get; }
     public AstNode Right { get; }
-    public BinaryExpressionNode(string op, AstNode left, AstNode right)
+    public BinaryExpressionNode(Operation operation, AstNode left, AstNode right)
     {
-        Operator = op;
+        Operation = operation;
         Left = left;
         Right = right;
     }
-    public override string ToString() => $"BinaryExpression({Left}, {Operator}, {Right})";
+    public override string ToString() => $"BinaryExpression({Left}, {Operation}, {Right})";
 }

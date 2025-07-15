@@ -1,6 +1,6 @@
 namespace DircCompiler.CodeGen;
 
-interface IOperand
+public interface IOperand
 {
     string AsOperand();
 }

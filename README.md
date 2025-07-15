@@ -84,6 +84,48 @@ Hexadecimal is done using the '0x' prefix:
 print(0x0d ^ 0xd0);
 ```
 
+## If statements
+If statements may be used to include a section of code that should only run when a condition is true.\
+An if statement might look like this:
+```
+if (1 == 2) {
+    print(3);
+}
+```
+This if statements prints "3" if 1 is equal to 2.
+
+An if statement can also include expressions like variables:
+```
+x = 4;
+y = 5;
+
+if (x != y) {
+    print(3);
+}
+```
+This statement prints 3 if x is not equal to y, which returns 2; x does in fact dot equal y because x = 4 and y = 5.
+
+## Expressions
+An expression is anything that returns something. Expressions can be used in other elements of the code, like:
+- Function calls (print([expression]))
+- Variable assignments (x = [expression])
+- If statements (if ([expression] != [expression]))
+
+Expression is a very broad term, which means a lot of things can be an expression. The following examples are all expressions:
+- `4` (returns 4)
+- `4 + 5` (returns 9)
+- `x` (returns the value of x)
+
+What can be surprising is that the following examples are also expressions:
+- Function calls (like `input()` returns the input)
+- Variable assignments (`x = 4` (returns 4))
+
+This means that even function calls or variable assignments can be used where an expression is expected, like the examples given at the start of this subchapter.\
+For example, a function call can be used as an argument for another function call:
+```
+print(input());
+```
+
 # DIRIC assembly
 DIRIC assembly is a simple assembly language made for the DIRIC ISA which is made in the game Turing Complete.\
 DIRIC stands for Directly Implemented Reduced Instruction-set Computer.

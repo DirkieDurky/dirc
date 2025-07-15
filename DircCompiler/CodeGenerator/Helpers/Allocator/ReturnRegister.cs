@@ -6,7 +6,7 @@ class ReturnRegister : IReturnable
     {
         get
         {
-            if (!_register.InUse) throw new Exception($"Register {Register.RegisterEnum} was used while free");
+            if (!_register.InUse) throw new Exception($"Register {_register.RegisterEnum} was used while free");
             return _register;
         }
         private set => _register = value;
@@ -25,6 +25,6 @@ class ReturnRegister : IReturnable
 
     public void Free()
     {
-        Register.Free();
+        _register.Free();
     }
 }
