@@ -35,7 +35,6 @@ class ExpressionCodeFactory
 
     private IReturnable? GenerateCall(CallExpressionNode node, CodeGenContext context)
     {
-        context.CompilerContext.PushCall(context.CompilerContext.CurrentFilePath, node.CalleeToken.Line);
         Function callee;
         try
         {
@@ -94,8 +93,6 @@ class ExpressionCodeFactory
         {
             context.CodeGen.EmitPop(reg);
         }
-
-        context.CompilerContext.PopCall();
 
         return null;
     }
