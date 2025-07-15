@@ -39,7 +39,7 @@ class Parser
         else if (Match(TokenType.Var))
         {
             Token name = Consume(TokenType.Identifier, "No variable name provided.");
-            return ParseVariableAssignment(name.Lexeme);
+            return ParseVariableAssignment(name, true);
         }
         else if (Match(TokenType.Identifier))
         {
@@ -50,7 +50,7 @@ class Parser
             }
             else
             {
-                return ParseVariableAssignment(name.Lexeme);
+                return ParseVariableAssignment(name, false);
             }
         }
         return ParseExpressionStatement();
@@ -98,7 +98,7 @@ class Parser
         return new FunctionDeclarationNode(name, name.Lexeme, parameters, body);
     }
 
-    private VariableAssignmentNode ParseVariableAssignment(string name)
+    private VariableAssignmentNode ParseVariableAssignment(Token name, bool isDeclaration)
     {
         AstNode? initializer = null;
         if (Match(TokenType.Equals))
@@ -107,7 +107,7 @@ class Parser
         }
 
         Consume(TokenType.Semicolon, "Expected ';' after variable declaration.");
-        return new VariableAssignmentNode(name, initializer);
+        return new VariableAssignmentNode(name, name.Lexeme, isDeclaration, initializer);
     }
 
     private ExpressionStatementNode ParseExpressionStatement()

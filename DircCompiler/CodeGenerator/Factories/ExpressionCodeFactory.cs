@@ -19,7 +19,7 @@ class ExpressionCodeFactory
             case ExpressionStatementNode exprStmt:
                 return Generate(exprStmt.Expression, context);
             case VariableAssignmentNode varDecl:
-                return GenerateVariableDeclaration(varDecl, context);
+                return GenerateVariableAssignment(varDecl, context);
             case CallExpressionNode call:
                 return GenerateCall(call, context);
             case BinaryExpressionNode bin:
@@ -126,14 +126,32 @@ class ExpressionCodeFactory
         return new ReturnRegister(result);
     }
 
-    private IReturnable? GenerateVariableDeclaration(VariableAssignmentNode node, CodeGenContext context)
+    private IReturnable? GenerateVariableAssignment(VariableAssignmentNode node, CodeGenContext context)
     {
-        int offset = context.AllocateVariable(node.Name);
+        int offset;
+        if (!context.VariableTable.ContainsKey(node.Name) || node.IsDeclaration)
+        {
+            // Declaration
+            if (context.VariableTable.ContainsKey(node.Name))
+            {
+                throw new CodeGenException(
+                    $"Trying to declare variable '{node.Name}' which was already declared.",
+                    node.IdentifierToken,
+                    _compilerOptions,
+                    context.CompilerContext
+                );
+            }
+
+            offset = context.AllocateVariable(node.Name);
+        }
+        else
+        {
+            offset = context.VariableTable[node.Name].FramePointerOffset;
+        }
 
         if (node.Initializer != null)
         {
-            IReturnable initialValue = Generate(node.Initializer, context) ?? throw new Exception("Initializer expression failed to generate");
-
+            IReturnable value = Generate(node.Initializer, context) ?? throw new Exception("Initializer expression failed to generate");
             Register tmp = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
 
             context.CodeGen.EmitBinaryOperation(
@@ -142,10 +160,10 @@ class ExpressionCodeFactory
                 new NumberLiteralNode(NumberLiteralType.Decimal, offset.ToString()),
                 tmp
             );
-            context.CodeGen.EmitStore(initialValue, new ReadonlyRegister(tmp));
+            context.CodeGen.EmitStore(value, new ReadonlyRegister(tmp));
 
             tmp.Free();
-            initialValue.Free();
+            value.Free();
         }
 
         return null;

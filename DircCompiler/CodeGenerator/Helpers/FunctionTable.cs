@@ -23,7 +23,7 @@ public class FunctionTable : ICloneable
     {
         if (_functions.ContainsKey(sig.Name))
         {
-            throw new CodeGenException($"Function '{sig.Name}' already declared.", identifierToken, _compilerOptions, _compilerContext);
+            throw new CodeGenException($"Trying to declare function '{sig.Name}' which was already declared.", identifierToken, _compilerOptions, _compilerContext);
         }
         if (sig.Name == "start")
         {
