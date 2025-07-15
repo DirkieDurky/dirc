@@ -2,35 +2,6 @@
 A programming language inspired by the C family that compiles to DIRIC assembly.\
 Dirc stands for Directly Implemented and Reduced C.
 
-Dirc supports the following features:
-- Access to standard library of functions
-- Creating custom functions
-- Local variables
-- Calculations
-
-## Standard Library
-The standard library contains the following functions:
-- `print(num)`
-Send the given input to the out register.
-Functions (both standard and custom ones) may be called as such:
-```
-print(42);
-```
-
-## Creating custom functions
-Custom functions are created like the following example:
-```
-add(x, y) {
-    return x + y;
-}
-```
-Optionally, the "function" keyword may be used to make extra clear to a reader that a function is being declared:
-```
-function add(x, y) {
-    return x + y;
-}
-```
-
 ## Declaring local variables
 Local variables are declared as such:
 ```
@@ -64,6 +35,29 @@ The following operations are permitted:
 - Bitwise and (&)
 - Bitwise or (|)
 - Bitwise xor (^)
+
+## Standard Library
+The standard library contains the following functions:
+- `print(num)`
+Send the given input to the out register.
+Functions (both standard and custom ones) may be called as such:
+```
+print(42);
+```
+
+## Creating custom functions
+Custom functions are created like the following example:
+```
+add(x, y) {
+    return x + y;
+}
+```
+Optionally, the "function" keyword may be used to make extra clear to a reader that a function is being declared:
+```
+function add(x, y) {
+    return x + y;
+}
+```
 
 Another example:
 ```
