@@ -256,8 +256,10 @@ asd();
     {
         string source =
 """
+test();
+
 rest() {
-    print();
+    print(1);
 }
 
 best() {
@@ -267,20 +269,54 @@ best() {
 test() {
     best();
 }
-
-test();
 """;
 
         string expected =
 """
-?
+sub|i2 sp 1 sp
+jump start _ pc
+
+label print
+mov _ r0 out
+return _ _ _
+
+label rest
+push lr _ _
+push fp _ _
+mov sp _ fp
+mov|i1 1 _ r0
+call print _ _
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
+
+label best
+push lr _ _
+push fp _ _
+mov sp _ fp
+call rest _ _
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
+
+label test
+push lr _ _
+push fp _ _
+mov sp _ fp
+call best _ _
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
+
+label start
+mov sp _ fp
+call test _ _
 """;
 
-        // string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
-        // Assert.Equal(expected.Split(Environment.NewLine), assembly);
-
-        //Just check if it compiles at all for now. Can assert code later
-        Exception ex = Record.Exception(() => new Compiler().Compile(source, new([]), new("unittests")));
-        Assert.Null(ex);
+        string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
+        Assert.Equal(expected.Split(Environment.NewLine), assembly);
     }
 }

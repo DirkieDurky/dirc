@@ -36,8 +36,6 @@ class FunctionCodeFactory
         context.CodeGen.EmitPop(context.Allocator.Use(RegisterEnum.fp));
         context.CodeGen.EmitPop(context.Allocator.Use(RegisterEnum.lr));
         context.CodeGen.EmitReturn();
-
-        context.FunctionTable.Declare(Function.FromFunctionDeclarationNode(node), node.IdentifierToken);
     }
 
     public void CompileStandardFunction(CodeGenContext context, string functionName, string[] parameters, string[] code)

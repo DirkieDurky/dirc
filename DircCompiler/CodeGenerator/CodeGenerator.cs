@@ -46,7 +46,13 @@ class CodeGenerator
         StandardLibrary std = new StandardLibrary();
         std.Compile(Context);
 
-        // Compile functions first
+        // Declare custom functions first to allow calling them at any time
+        foreach (FunctionDeclarationNode funcNode in nodes.Where(node => node is FunctionDeclarationNode))
+        {
+            Context.FunctionTable.Declare(Function.FromFunctionDeclarationNode(funcNode), funcNode.IdentifierToken);
+        }
+
+        // Compile functions before rest of the code
         foreach (FunctionDeclarationNode funcNode in nodes.Where(node => node is FunctionDeclarationNode))
         {
             Context.FuncFactory.Generate(funcNode, Context);
