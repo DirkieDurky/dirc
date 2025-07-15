@@ -99,12 +99,18 @@ public class Complex
         mov sp _ fp
         mov|i1 14 _ r0
         call print4 _ _
+        push r0 _ _
         mov|i1 14 _ r0
         call print25 _ _
+        pop _ _ r0
+        push r0 _ _
         mov|i1 14 _ r0
         call print60 _ _
+        pop _ _ r0
+        push r0 _ _
         mov|i1 14 _ r0
         call print10 _ _
+        pop _ _ r0
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));

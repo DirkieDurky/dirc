@@ -28,5 +28,6 @@ public enum TokenType
     Import,
     Function,
     Var,
-    If, Else
+    If, Else,
+    Return,
 }

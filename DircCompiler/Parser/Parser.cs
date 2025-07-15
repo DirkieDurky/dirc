@@ -30,6 +30,12 @@ class Parser
 
     private AstNode ParseStatement()
     {
+        if (Match(TokenType.Return))
+        {
+            ReturnStatementNode node = new(ParseExpression());
+            Consume(TokenType.Semicolon, "Expected ';' after expression");
+            return node;
+        }
         if (Match(TokenType.Import))
         {
             Token name = Consume(TokenType.Identifier, "No import function name provided");
@@ -40,7 +46,8 @@ class Parser
         {
             Token name = Consume(TokenType.Identifier, "No function name provided");
             Consume(TokenType.LeftParen, "Expected '(' after function name");
-            return ParseFunction(name, true);
+            AstNode node = ParseFunction(name, true);
+            return node;
         }
         else if (Match(TokenType.Var))
         {
@@ -67,7 +74,12 @@ class Parser
             Token name = Previous();
             if (Match(TokenType.LeftParen))
             {
-                return ParseFunction(name);
+                AstNode node = ParseFunction(name);
+                if (node is CallExpressionNode)
+                {
+                    Consume(TokenType.Semicolon, "Expected ';' after function call");
+                }
+                return node;
             }
             else
             {
@@ -123,7 +135,6 @@ class Parser
         }
         else
         {
-            Consume(TokenType.Semicolon, "Expected ';' after function call");
             return new CallExpressionNode(name, name.Lexeme, parametersOrArguments);
         }
     }

@@ -22,7 +22,7 @@ public class CodeGenException : Exception
         StringBuilder builder = new();
         string tokenString = _identifierToken != null ? $"'{_identifierToken.Lexeme}'" : "unknown location";
         string lineString = _identifierToken != null ? $":line {_identifierToken.Line}" : "";
-        builder.AppendLine($"CodeGenException: {_message} at '{tokenString}' at {_compilerContext.CurrentFilePath}{lineString}");
+        builder.AppendLine($"CodeGenException: {_message} at {tokenString} at {_compilerContext.CurrentFilePath}{lineString}");
 
         if (_compilerOptions.DebugStackTrace)
         {

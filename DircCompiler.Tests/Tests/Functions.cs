@@ -205,14 +205,22 @@ public class Functions
         mov sp _ fp
         mov|i1 14 _ r0
         call myprint _ _
+        push r0 _ _
         mov|i1 8 _ r0
         call myprint _ _
+        pop _ _ r0
+        push r0 _ _
         mov|i1 25 _ r0
         call myprint _ _
+        pop _ _ r0
+        push r0 _ _
         mov|i1 128 _ r0
         call myprint _ _
+        pop _ _ r0
+        push r0 _ _
         mov|i1 255 _ r0
         call myprint _ _
+        pop _ _ r0
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));

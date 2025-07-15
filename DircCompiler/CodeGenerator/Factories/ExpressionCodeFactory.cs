@@ -32,6 +32,8 @@ class ExpressionCodeFactory
                 return number;
             case IfStatementNode ifStmt:
                 return GenerateIfStatement(ifStmt, context, _labelGenerator);
+            case ReturnStatementNode returnStmt:
+                return GenerateReturnStatement(returnStmt, context);
             default:
                 throw new Exception($"Unhandled node {node}");
         }
@@ -77,7 +79,7 @@ class ExpressionCodeFactory
             RegisterEnum argumentSlotEnum = Allocator.ArgumentRegisters.ElementAt(i);
             if (argument is not ReturnRegister reg || reg.RegisterEnum != argumentSlotEnum)
             {
-                Register argumentSlot = context.Allocator.Use(argumentSlotEnum);
+                Register argumentSlot = context.Allocator.Use(argumentSlotEnum, true);
                 registersToFree.Add(argumentSlot);
                 context.CodeGen.EmitMov(argument, argumentSlot);
             }
@@ -98,7 +100,7 @@ class ExpressionCodeFactory
             context.CodeGen.EmitPop(reg);
         }
 
-        return null;
+        return new ReturnRegister(context.Allocator.Use(RegisterEnum.r0));
     }
 
     private IReturnable? GenerateBinary(BinaryExpressionNode node, CodeGenContext context)
@@ -189,7 +191,7 @@ class ExpressionCodeFactory
             return new ReturnRegister(result);
         }
 
-        throw new CodeGenException($"Undefined identifier '{node.Name}' was used", node.IdentifierToken, context.CompilerOptions, context.CompilerContext);
+        throw new CodeGenException($"Undefined identifier was used", node.IdentifierToken, context.CompilerOptions, context.CompilerContext);
     }
 
     private IReturnable? GenerateIfStatement(IfStatementNode node, CodeGenContext context, LabelGenerator labelGenerator)
@@ -233,5 +235,16 @@ class ExpressionCodeFactory
             context.CodeGen.EmitLabel(endLabel!);
         }
         return null;
+    }
+
+    private IReturnable? GenerateReturnStatement(ReturnStatementNode node, CodeGenContext context)
+    {
+        IReturnable returnValue = Generate(node.ReturnValue, context) ?? throw new Exception("return value didn't return anything");
+        Register r0 = context.Allocator.Use(RegisterEnum.r0, true);
+        context.CodeGen.EmitMov(returnValue, r0);
+        returnValue.Free();
+        r0.Free();
+
+        return returnValue;
     }
 }

@@ -23,7 +23,7 @@ class FunctionCodeFactory
         if (node.Parameters.Count > Allocator.ArgumentRegisters.Count) throw new Exception($"More than {Allocator.ArgumentRegisters.Count} function parameters given.");
         for (int i = 0; i < node.Parameters.Count; i++)
         {
-            scopeSpecificContext.SymbolTable[node.Parameters[i]] = context.Allocator.Use(Allocator.ArgumentRegisters.ElementAt(i));
+            scopeSpecificContext.SymbolTable[node.Parameters[i]] = scopeSpecificContext.Allocator.Use(Allocator.ArgumentRegisters.ElementAt(i));
         }
 
         foreach (AstNode stmt in node.Body)

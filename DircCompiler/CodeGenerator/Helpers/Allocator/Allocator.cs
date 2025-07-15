@@ -8,10 +8,10 @@ class Allocator
     public static IReadOnlyCollection<RegisterEnum> CallerSavedRegisters = [RegisterEnum.r0, RegisterEnum.r1, RegisterEnum.r2, RegisterEnum.r3, RegisterEnum.r4, RegisterEnum.r5];
     public static IReadOnlyCollection<RegisterEnum> CalleeSavedRegisters = [RegisterEnum.r6, RegisterEnum.r7, RegisterEnum.r8, RegisterEnum.r9, RegisterEnum.r10];
 
-    public IReadOnlyCollection<Register> TrackedCallerSavedRegisters { get; }
-    public IReadOnlyCollection<Register> TrackedCalleeSavedRegisters { get; }
-
     public CompilerOptions CompilerOptions;
+
+    public IReadOnlyCollection<Register> TrackedCallerSavedRegisters { get; private set; }
+    public IReadOnlyCollection<Register> TrackedCalleeSavedRegisters { get; private set; }
 
     public Allocator(CompilerOptions compilerOptions)
     {
@@ -56,11 +56,20 @@ class Allocator
         return register;
     }
 
-    public Register Use(RegisterEnum r)
+    public Register Use(RegisterEnum r, bool overwrite = false)
     {
         Register foundRegister = GetRegisterFromEnum(r);
 
-        if (foundRegister.InUse) throw new Exception($"May not use {r}. Register is already in use");
+        if (!overwrite)
+        {
+            if (foundRegister.InUse) throw new Exception($"May not use {r}. Register is already in use");
+        }
+
+        if (CompilerOptions.LogAllocation)
+        {
+            Console.Write($"Allocated register {foundRegister} ");
+            StackTrace(1, 1);
+        }
 
         foundRegister.InUse = true;
         return foundRegister;

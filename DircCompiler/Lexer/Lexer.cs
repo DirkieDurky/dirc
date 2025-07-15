@@ -15,6 +15,8 @@ class Lexer
         { "if", TokenType.If },
         { "else", TokenType.Else },
         { "import", TokenType.Import },
+        { "return", TokenType.Return },
+        // Add more keywords here as needed
     };
 
     private CompilerContext _compilerContext;

@@ -93,6 +93,21 @@ Hexadecimal is done using the '0x' prefix:
 print(0x0d ^ 0xd0);
 ```
 
+Functions can optionally return values.
+This is done by adding a return statement:
+```
+return x;
+```
+This returns the specified value and exits out of the function.
+This value can then be used as result of the function:
+```
+myAdd(x, y) {
+    return x + y;
+}
+
+print(myAdd(1, 2));
+```
+
 ## If statements
 If statements may be used to include a section of code that should only run when a condition is true.\
 An if statement might look like this:
@@ -256,7 +271,8 @@ Does nothing at all for a tick.
 # DIRC Compiler
 This repository contains the compiler for the DIRC Programming Language and compiles from DIRC Programming Language to DIRIC v2.1 assembly.
 
-The compiler uses registers `r0-r3` to pass arguments to functions.\
+Registers `r0-r3` are used to pass arguments to functions.\
+Register `r0` is used for return values out of functions.\
 Registers `r0-r5` are used as "caller-saved" registers.\
 Registers `r6-r10` are used as "callee-saved" registers.
 ## Usage

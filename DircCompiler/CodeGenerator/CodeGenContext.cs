@@ -46,7 +46,7 @@ class CodeGenContext : ICloneable
     {
         CodeGenContext newContext = new(
             CodeGen,
-            Allocator,
+            new(CompilerOptions),
             ExprFactory,
             FuncFactory,
             SymbolTable.ToDictionary(x => x.Key, x => x.Value),
