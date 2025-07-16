@@ -108,6 +108,7 @@ public class ReturnValues
         mov sp _ fp
         add r0 r1 r2
         mov r2 _ r0
+        return _ _ _
         mov fp _ sp
         pop _ _ fp
         pop _ _ lr

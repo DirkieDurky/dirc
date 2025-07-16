@@ -206,10 +206,13 @@ class CodeGenerator
         Emit($"call {label} _ _");
     }
 
-    public void EmitReturn()
+    public void EmitReturn(bool final = true)
     {
         Emit($"return _ _ _");
-        EmitEmptyLine();
+        if (final)
+        {
+            EmitEmptyLine();
+        }
     }
 
     public void EmitPush(IOperand value)

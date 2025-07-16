@@ -271,6 +271,7 @@ class ExpressionCodeFactory
         context.CodeGen.EmitMov(returnValue, r0);
         returnValue.Free();
         r0.Free();
+        context.CodeGen.EmitReturn(false);
 
         return returnValue;
     }
