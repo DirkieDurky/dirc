@@ -201,6 +201,24 @@ For example, a function call can be used as an argument for another function cal
 print(input());
 ```
 
+## Comments
+Comments are used to document the code and are ignored by the compiler.
+
+Single-line comments begin with "//". Everything after "//" on that line is treated as a comment:
+```
+// This is a single-line comment
+x = 4; // This is also a single-line comment
+```
+Multi-line comments are enclosed between /* and */. They can span multiple lines:
+```
+/*
+This is a multi-line comment.
+It can be used to describe logic over several lines.
+*/
+print(4);
+```
+Comments are useful for explaining complex logic or temporarily disabling code during development.
+
 # DIRIC assembly
 DIRIC assembly is a simple assembly language made for the DIRIC ISA which is made in the game Turing Complete.\
 DIRIC stands for Directly Implemented Reduced Instruction-set Computer.

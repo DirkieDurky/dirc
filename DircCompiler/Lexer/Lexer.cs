@@ -72,6 +72,12 @@ class Lexer
                     // Comment, skip to end of line
                     while (Peek() != '\n' && !IsAtEnd()) Advance();
                 }
+                else if (NextIs('*'))
+                {
+                    // Multiline comment, skip to first "*/"
+                    while (!(_source[_current - 1] == '*' && Peek() == '/') && !IsAtEnd()) Advance();
+                    Advance();
+                }
                 else
                 {
                     AddToken(TokenType.Slash);
