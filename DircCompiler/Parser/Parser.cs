@@ -81,24 +81,39 @@ class Parser
         else if (Match(TokenType.For))
         {
             Consume(TokenType.LeftParen, "Expected '(' after for keyword");
-            AstNode initial;
-            if (Match(TokenType.Var))
+
+            AstNode? initial = null;
+            if (!Match(TokenType.Semicolon))
             {
-                Token name = Consume(TokenType.Identifier, "No variable name provided");
-                initial = ParseVariableAssignment(name, true);
+                if (Match(TokenType.Var))
+                {
+                    Token name = Consume(TokenType.Identifier, "No variable name provided");
+                    initial = ParseVariableAssignment(name, true);
+                }
+                else
+                {
+                    initial = ParseExpression();
+                }
+                Consume(TokenType.Semicolon, "Expected ';' after for expression 1");
             }
-            else
-            {
-                initial = ParseExpression();
-            }
-            Consume(TokenType.Semicolon, "Expected ';' after for expression 1");
+
             AstNode condition = ParseCondition();
             Consume(TokenType.Semicolon, "Expected ';' after for expression 2");
-            AstNode increment = ParseExpression();
-            Consume(TokenType.RightParen, "Expected ')' after for expression 3");
+
+            AstNode? increment = null;
+            if (!Match(TokenType.RightParen))
+            {
+                increment = ParseExpression();
+                Consume(TokenType.RightParen, "Expected ')' after for expression 3");
+            }
+
             List<AstNode> body = ParseBody("for statement");
-            body.Add(increment);
-            return [initial, new WhileStatementNode(condition, body)];
+
+            if (increment != null) body.Add(increment);
+            List<AstNode> result = [];
+            if (initial != null) result.Add(initial);
+            result.Add(new WhileStatementNode(condition, body));
+            return result;
         }
         else if (Match(TokenType.Identifier))
         {
@@ -119,6 +134,7 @@ class Parser
                 return [node];
             }
         }
+        while (Match(TokenType.Semicolon)) { }
         return [ParseExpressionStatement()];
     }
 
