@@ -34,7 +34,7 @@ class ExpressionCodeFactory
                 return GenerateCondition(condition, context, _labelGenerator);
             case IfStatementNode ifStmt:
                 return GenerateIfStatement(ifStmt, context, _labelGenerator);
-            case WhileNode whileStmt:
+            case WhileStatementNode whileStmt:
                 return GenerateWhileStatement(whileStmt, context, _labelGenerator);
             case ReturnStatementNode returnStmt:
                 return GenerateReturnStatement(returnStmt, context);
@@ -289,7 +289,7 @@ class ExpressionCodeFactory
         return null;
     }
 
-    private IReturnable? GenerateWhileStatement(WhileNode node, CodeGenContext context, LabelGenerator labelGenerator)
+    private IReturnable? GenerateWhileStatement(WhileStatementNode node, CodeGenContext context, LabelGenerator labelGenerator)
     {
         string label;
         label = labelGenerator.Generate(LabelType.While);

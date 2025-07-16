@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using DircCompiler.Lexing;
 
 namespace DircCompiler.Parsing;
@@ -23,43 +22,42 @@ class Parser
         List<AstNode> statements = new List<AstNode>();
         while (!IsAtEnd())
         {
-            statements.Add(ParseStatement());
+            statements.AddRange(ParseStatement());
         }
         return statements;
     }
 
-    private AstNode ParseStatement()
+    private List<AstNode> ParseStatement()
     {
         if (Match(TokenType.Return))
         {
             ReturnStatementNode node = new(ParseExpression());
             Consume(TokenType.Semicolon, "Expected ';' after expression");
-            return node;
+            return [node];
         }
         if (Match(TokenType.Import))
         {
             Token name = Consume(TokenType.Identifier, "No import function name provided");
             Consume(TokenType.Semicolon, "Expected ';' after import");
-            return new ImportStatementNode(name, name.Lexeme);
+            return [new ImportStatementNode(name, name.Lexeme)];
         }
         if (Match(TokenType.Function))
         {
             Token name = Consume(TokenType.Identifier, "No function name provided");
             Consume(TokenType.LeftParen, "Expected '(' after function name");
             AstNode node = ParseFunction(name, true);
-            return node;
+            return [node];
         }
         else if (Match(TokenType.Var))
         {
             Token name = Consume(TokenType.Identifier, "No variable name provided");
             VariableAssignmentNode node = ParseVariableAssignment(name, true);
             Consume(TokenType.Semicolon, "Expected ';' after variable declaration");
-            return node;
+            return [node];
         }
         else if (Match(TokenType.If))
         {
             Consume(TokenType.LeftParen, "Expected '(' after if keyword");
-
             AstNode condition = ParseCondition();
             Consume(TokenType.RightParen, "Expected ')' after if condition");
             List<AstNode> body = ParseBody("if statement");
@@ -69,17 +67,29 @@ class Parser
                 elseBody = ParseBody("else statement");
             }
 
-            return new IfStatementNode(condition, body, elseBody);
+            return [new IfStatementNode(condition, body, elseBody)];
         }
         else if (Match(TokenType.While))
         {
             Consume(TokenType.LeftParen, "Expected '(' after while keyword");
-
             AstNode condition = ParseCondition();
             Consume(TokenType.RightParen, "Expected ')' after while condition");
             List<AstNode> body = ParseBody("while statement");
 
-            return new WhileNode(condition, body);
+            return [new WhileStatementNode(condition, body)];
+        }
+        else if (Match(TokenType.For))
+        {
+            Consume(TokenType.LeftParen, "Expected '(' after for keyword");
+            AstNode initial = ParseCondition();
+            Consume(TokenType.Semicolon, "Expected ';' after for expression 1");
+            AstNode condition = ParseCondition();
+            Consume(TokenType.Semicolon, "Expected ';' after for expression 2");
+            AstNode increment = ParseCondition();
+            Consume(TokenType.RightParen, "Expected ')' after for expression 3");
+            List<AstNode> body = ParseBody("for statement");
+            body.Add(increment);
+            return [initial, new WhileStatementNode(condition, body)];
         }
         else if (Match(TokenType.Identifier))
         {
@@ -91,16 +101,16 @@ class Parser
                 {
                     Consume(TokenType.Semicolon, "Expected ';' after function call");
                 }
-                return node;
+                return [node];
             }
             else
             {
                 VariableAssignmentNode node = ParseVariableAssignment(name, false);
                 Consume(TokenType.Semicolon, "Expected ';' after variable assignment or declaration");
-                return node;
+                return [node];
             }
         }
-        return ParseExpressionStatement();
+        return [ParseExpressionStatement()];
     }
 
     // Add this new method for comparison expressions
@@ -169,7 +179,7 @@ class Parser
         List<AstNode> body = new();
         while (!Check(TokenType.RightBrace) && !IsAtEnd())
         {
-            body.Add(ParseStatement());
+            body.AddRange(ParseStatement());
         }
         Consume(TokenType.RightBrace, $$"""Expected '}' after {{kind}} body""");
 
