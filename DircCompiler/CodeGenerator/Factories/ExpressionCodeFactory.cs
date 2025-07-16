@@ -32,6 +32,8 @@ class ExpressionCodeFactory
                 return number;
             case IfStatementNode ifStmt:
                 return GenerateIfStatement(ifStmt, context, _labelGenerator);
+            case ConditionNode condition:
+                return GenerateCondition(condition, context, _labelGenerator);
             case ReturnStatementNode returnStmt:
                 return GenerateReturnStatement(returnStmt, context);
             default:
@@ -192,6 +194,31 @@ class ExpressionCodeFactory
         }
 
         throw new CodeGenException($"Undefined identifier was used", node.IdentifierToken, context.CompilerOptions, context.CompilerContext);
+    }
+
+    private IReturnable? GenerateCondition(ConditionNode node, CodeGenContext context, LabelGenerator labelGenerator)
+    {
+        string label = labelGenerator.Generate(LabelType.Condition);
+        string endLabel = labelGenerator.Generate(LabelType.ConditionEnd);
+
+        IReturnable left = Generate(node.Left, context) ?? throw new Exception("Part of if statement was not set");
+        IReturnable right = Generate(node.Right, context) ?? throw new Exception("Part of if statement was not set");
+        context.CodeGen.EmitIf(node.Comparer.GetOpposite(), left, right, label);
+        left.Free();
+        right.Free();
+
+        Register resultRegister = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
+        // If {
+        context.CodeGen.EmitMov(new NumberLiteralNode(1), resultRegister);
+        // }
+        context.CodeGen.EmitJump(endLabel);
+        context.CodeGen.EmitLabel(label);
+        // Else {
+        context.CodeGen.EmitMov(new NumberLiteralNode(0), resultRegister);
+        // }
+        context.CodeGen.EmitLabel(endLabel);
+
+        return new ReturnRegister(resultRegister);
     }
 
     private IReturnable? GenerateIfStatement(IfStatementNode node, CodeGenContext context, LabelGenerator labelGenerator)

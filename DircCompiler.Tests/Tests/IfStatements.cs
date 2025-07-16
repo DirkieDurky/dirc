@@ -401,4 +401,74 @@ public class IfStatements
 
         Assert.Equal(expected.Split(Environment.NewLine), assembly);
     }
+
+    [Fact]
+    public void ConditionAsExpressionFalse()
+    {
+        string source =
+        """
+        import print;
+
+        print(1 == 2);
+        """.TrimIndents();
+
+        string expected =
+        """
+        sub|i2 sp 1 sp
+        jump _start _ pc
+
+        label print
+        mov r0 _ out
+        return _ _ _
+
+        label _start
+        mov sp _ fp
+        ifNotEq|i1|i2 1 2 _condition0
+        mov|i1 1 _ r0
+        jump _conditionEnd0 _ pc
+        label _condition0
+        mov|i1 0 _ r0
+        label _conditionEnd0
+        call print _ _
+        """.TrimIndents();
+
+        string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
+
+        Assert.Equal(expected.Split(Environment.NewLine), assembly);
+    }
+
+    [Fact]
+    public void ConditionAsExpressionTrue()
+    {
+        string source =
+        """
+        import print;
+        
+        print(2 == 2);
+        """.TrimIndents();
+
+        string expected =
+        """
+        sub|i2 sp 1 sp
+        jump _start _ pc
+
+        label print
+        mov r0 _ out
+        return _ _ _
+
+        label _start
+        mov sp _ fp
+        ifNotEq|i1|i2 2 2 _condition0
+        mov|i1 1 _ r0
+        jump _conditionEnd0 _ pc
+        label _condition0
+        mov|i1 0 _ r0
+        label _conditionEnd0
+        call print _ _
+        """.TrimIndents();
+
+        string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
+
+        Assert.Equal(expected.Split(Environment.NewLine), assembly);
+    }
 }

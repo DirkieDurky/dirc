@@ -59,7 +59,8 @@ class Parser
         else if (Match(TokenType.If))
         {
             Consume(TokenType.LeftParen, "Expected '(' after if keyword");
-            ConditionNode condition = ParseCondition();
+            // Use ParseComparison here instead of ParseCondition
+            AstNode condition = ParseComparison();
             Consume(TokenType.RightParen, "Expected ')' after if condition");
             List<AstNode> body = ParseBody("if statement");
             List<AstNode>? elseBody = null;
@@ -67,7 +68,11 @@ class Parser
             {
                 elseBody = ParseBody("else statement");
             }
-            return new IfStatementNode(condition, body, elseBody);
+            // If the result is a ConditionNode, use it directly, otherwise error
+            if (condition is ConditionNode condNode)
+                return new IfStatementNode(condNode, body, elseBody);
+            else
+                throw new SyntaxException("Expected condition in if statement", Previous(), _compilerOptions, _compilerContext);
         }
         else if (Match(TokenType.Identifier))
         {
@@ -91,22 +96,29 @@ class Parser
         return ParseExpressionStatement();
     }
 
-    private ConditionNode ParseCondition()
+    // Add this new method for comparison expressions
+    private AstNode ParseComparison()
     {
-        AstNode left = ParseExpression();
-        Comparer comparer = Advance().Type switch
+        AstNode expr = ParseOr();
+        while (Check(TokenType.EqualEqual) || Check(TokenType.NotEqual) ||
+               Check(TokenType.Less) || Check(TokenType.LessEqual) ||
+               Check(TokenType.Greater) || Check(TokenType.GreaterEqual))
         {
-            TokenType.EqualEqual => Comparer.IfEq,
-            TokenType.NotEqual => Comparer.IfNotEq,
-            TokenType.Less => Comparer.IfLess,
-            TokenType.LessEqual => Comparer.IfLessOrEq,
-            TokenType.Greater => Comparer.IfMore,
-            TokenType.GreaterEqual => Comparer.IfMoreOrEq,
-            _ => throw new SyntaxException("Invalid comparer specified", Previous(), _compilerOptions, _compilerContext)
-        };
-        AstNode right = ParseExpression();
-
-        return new(comparer, left, right);
+            Token opToken = Advance();
+            Comparer comparer = opToken.Type switch
+            {
+                TokenType.EqualEqual => Comparer.IfEq,
+                TokenType.NotEqual => Comparer.IfNotEq,
+                TokenType.Less => Comparer.IfLess,
+                TokenType.LessEqual => Comparer.IfLessOrEq,
+                TokenType.Greater => Comparer.IfMore,
+                TokenType.GreaterEqual => Comparer.IfMoreOrEq,
+                _ => throw new SyntaxException("Invalid comparer specified", opToken, _compilerOptions, _compilerContext)
+            };
+            AstNode right = ParseOr();
+            expr = new ConditionNode(comparer, expr, right);
+        }
+        return expr;
     }
 
     // If isDeclaration is true we know it's a function declaration
@@ -206,7 +218,7 @@ class Parser
 
     private AstNode ParseExpression()
     {
-        return ParseOr();
+        return ParseComparison();
     }
 
     // Operator precedence: Or | Xor | And | Addition | Multiplication | Primary
