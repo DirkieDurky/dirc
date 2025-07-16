@@ -59,8 +59,8 @@ class Parser
         else if (Match(TokenType.If))
         {
             Consume(TokenType.LeftParen, "Expected '(' after if keyword");
-            // Use ParseComparison here instead of ParseCondition
-            AstNode condition = ParseComparison();
+
+            AstNode condition = ParseCondition();
             Consume(TokenType.RightParen, "Expected ')' after if condition");
             List<AstNode> body = ParseBody("if statement");
             List<AstNode>? elseBody = null;
@@ -68,11 +68,8 @@ class Parser
             {
                 elseBody = ParseBody("else statement");
             }
-            // If the result is a ConditionNode, use it directly, otherwise error
-            if (condition is ConditionNode condNode)
-                return new IfStatementNode(condNode, body, elseBody);
-            else
-                throw new SyntaxException("Expected condition in if statement", Previous(), _compilerOptions, _compilerContext);
+
+            return new IfStatementNode(condition, body, elseBody);
         }
         else if (Match(TokenType.Identifier))
         {
@@ -97,7 +94,7 @@ class Parser
     }
 
     // Add this new method for comparison expressions
-    private AstNode ParseComparison()
+    private AstNode ParseCondition()
     {
         AstNode expr = ParseOr();
         while (Check(TokenType.EqualEqual) || Check(TokenType.NotEqual) ||
@@ -218,7 +215,7 @@ class Parser
 
     private AstNode ParseExpression()
     {
-        return ParseComparison();
+        return ParseCondition();
     }
 
     // Operator precedence: Or | Xor | And | Addition | Multiplication | Primary

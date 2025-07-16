@@ -235,11 +235,34 @@ class ExpressionCodeFactory
             endLabel = labelGenerator.Generate(LabelType.IfElseEnd);
         }
 
-        IReturnable left = Generate(node.Condition.Left, context) ?? throw new Exception("Part of if statement was not set");
-        IReturnable right = Generate(node.Condition.Right, context) ?? throw new Exception("Part of if statement was not set");
-        context.CodeGen.EmitIf(node.Condition.Comparer.GetOpposite(), left, right, label);
-        left.Free();
-        right.Free();
+        if (node.Condition is ConditionNode condition)
+        {
+            IReturnable left = Generate(condition.Left, context) ?? throw new Exception("Part of if statement was not set");
+            IReturnable right = Generate(condition.Right, context) ?? throw new Exception("Part of if statement was not set");
+            context.CodeGen.EmitIf(condition.Comparer.GetOpposite(), left, right, label);
+            left.Free();
+            right.Free();
+        }
+        else
+        {
+            IReturnable conditionResult = Generate(node.Condition, context) ?? throw new Exception("If condition didn't resolve to anything");
+
+            if (conditionResult is ReturnRegister reg)
+            {
+                context.CodeGen.EmitIf(Comparer.IfEq, reg, new NumberLiteralNode(0), label);
+            }
+            else if (conditionResult is NumberLiteralNode num)
+            {
+                if (num.Value == "0")
+                {
+                    context.CodeGen.EmitJump(label);
+                }
+            }
+            else
+            {
+                throw new Exception("Invalid condition result type");
+            }
+        }
 
         foreach (AstNode stmt in node.Body)
         {

@@ -2,11 +2,11 @@ namespace DircCompiler.Parsing;
 
 public class IfStatementNode : AstNode
 {
-    public ConditionNode Condition { get; }
+    public AstNode Condition { get; }
     public List<AstNode> Body { get; }
     public List<AstNode>? ElseBody { get; }
 
-    public IfStatementNode(ConditionNode condition, List<AstNode> body, List<AstNode>? elseBody)
+    public IfStatementNode(AstNode condition, List<AstNode> body, List<AstNode>? elseBody)
     {
         Condition = condition;
         Body = body;
