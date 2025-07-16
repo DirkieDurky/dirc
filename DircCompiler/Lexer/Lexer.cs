@@ -18,6 +18,8 @@ class Lexer
         { "return", TokenType.Return },
         { "true", TokenType.True },
         { "false", TokenType.False },
+        { "while", TokenType.While },
+        { "for", TokenType.For },
     };
 
     private CompilerContext _compilerContext;

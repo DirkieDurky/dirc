@@ -25,5 +25,5 @@ class LabelGenerator
 
 enum LabelType
 {
-    If, Else, IfElseEnd, Condition, ConditionEnd,
+    If, Else, IfElseEnd, Condition, ConditionEnd, While, For,
 }

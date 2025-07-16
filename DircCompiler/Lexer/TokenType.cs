@@ -32,4 +32,6 @@ public enum TokenType
     Var,
     If, Else,
     Return,
+    While,
+    For,
 }

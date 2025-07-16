@@ -71,6 +71,16 @@ class Parser
 
             return new IfStatementNode(condition, body, elseBody);
         }
+        else if (Match(TokenType.While))
+        {
+            Consume(TokenType.LeftParen, "Expected '(' after while keyword");
+
+            AstNode condition = ParseCondition();
+            Consume(TokenType.RightParen, "Expected ')' after while condition");
+            List<AstNode> body = ParseBody("while statement");
+
+            return new WhileNode(condition, body);
+        }
         else if (Match(TokenType.Identifier))
         {
             Token name = Previous();

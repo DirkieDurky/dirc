@@ -30,10 +30,12 @@ class ExpressionCodeFactory
                 return GenerateIdentifier(id, context);
             case NumberLiteralNode number:
                 return number;
-            case IfStatementNode ifStmt:
-                return GenerateIfStatement(ifStmt, context, _labelGenerator);
             case ConditionNode condition:
                 return GenerateCondition(condition, context, _labelGenerator);
+            case IfStatementNode ifStmt:
+                return GenerateIfStatement(ifStmt, context, _labelGenerator);
+            case WhileNode whileStmt:
+                return GenerateWhileStatement(whileStmt, context, _labelGenerator);
             case ReturnStatementNode returnStmt:
                 return GenerateReturnStatement(returnStmt, context);
             default:
@@ -284,6 +286,50 @@ class ExpressionCodeFactory
             }
             context.CodeGen.EmitLabel(endLabel!);
         }
+        return null;
+    }
+
+    private IReturnable? GenerateWhileStatement(WhileNode node, CodeGenContext context, LabelGenerator labelGenerator)
+    {
+        string label;
+        label = labelGenerator.Generate(LabelType.While);
+
+        context.CodeGen.EmitLabel(label);
+
+        foreach (AstNode stmt in node.Body)
+        {
+            context.ExprFactory.Generate(stmt, (CodeGenContext)context.Clone());
+        }
+
+        if (node.Condition is ConditionNode condition)
+        {
+            IReturnable left = Generate(condition.Left, context) ?? throw new Exception("Part of while statement was not set");
+            IReturnable right = Generate(condition.Right, context) ?? throw new Exception("Part of while statement was not set");
+            context.CodeGen.EmitIf(condition.Comparer, left, right, label);
+            left.Free();
+            right.Free();
+        }
+        else
+        {
+            IReturnable conditionResult = Generate(node.Condition, context) ?? throw new Exception("While condition didn't resolve to anything");
+
+            if (conditionResult is ReturnRegister reg)
+            {
+                context.CodeGen.EmitIf(Comparer.IfEq, reg, new NumberLiteralNode(1), label);
+            }
+            else if (conditionResult is NumberLiteralNode num)
+            {
+                if (num.Value == "1")
+                {
+                    context.CodeGen.EmitJump(label);
+                }
+            }
+            else
+            {
+                throw new Exception("Invalid condition result type");
+            }
+        }
+
         return null;
     }
 

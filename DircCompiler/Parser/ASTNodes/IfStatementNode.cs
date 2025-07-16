@@ -13,5 +13,13 @@ public class IfStatementNode : AstNode
         ElseBody = elseBody;
     }
 
-    public override string ToString() => $"If({Condition}, [\n  {string.Join(",\n  ", Body)}\n])";
+    public override string ToString()
+    {
+        string result = $"If({Condition}, [\n  {string.Join(",\n  ", Body)}\n])";
+        if (ElseBody != null)
+        {
+            result += $", Else, [\n  {string.Join(",\n  ", ElseBody)}\n]";
+        }
+        return result;
+    }
 }
