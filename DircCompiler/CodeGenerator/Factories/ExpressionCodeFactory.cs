@@ -315,11 +315,11 @@ class ExpressionCodeFactory
 
             if (conditionResult is ReturnRegister reg)
             {
-                context.CodeGen.EmitIf(Comparer.IfEq, reg, new NumberLiteralNode(1), label);
+                context.CodeGen.EmitIf(Comparer.IfNotEq, reg, new NumberLiteralNode(0), label);
             }
             else if (conditionResult is NumberLiteralNode num)
             {
-                if (num.Value == "1")
+                if (num.Value != "0")
                 {
                     context.CodeGen.EmitJump(label);
                 }
