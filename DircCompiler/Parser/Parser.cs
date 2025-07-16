@@ -81,11 +81,20 @@ class Parser
         else if (Match(TokenType.For))
         {
             Consume(TokenType.LeftParen, "Expected '(' after for keyword");
-            AstNode initial = ParseCondition();
+            AstNode initial;
+            if (Match(TokenType.Var))
+            {
+                Token name = Consume(TokenType.Identifier, "No variable name provided");
+                initial = ParseVariableAssignment(name, true);
+            }
+            else
+            {
+                initial = ParseExpression();
+            }
             Consume(TokenType.Semicolon, "Expected ';' after for expression 1");
             AstNode condition = ParseCondition();
             Consume(TokenType.Semicolon, "Expected ';' after for expression 2");
-            AstNode increment = ParseCondition();
+            AstNode increment = ParseExpression();
             Consume(TokenType.RightParen, "Expected ')' after for expression 3");
             List<AstNode> body = ParseBody("for statement");
             body.Add(increment);
