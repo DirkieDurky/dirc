@@ -403,41 +403,6 @@ public class IfStatements
     }
 
     [Fact]
-    public void ConditionAsExpressionFalse()
-    {
-        string source =
-        """
-        import print;
-
-        print(1 == 2);
-        """.TrimIndents();
-
-        string expected =
-        """
-        sub|i2 sp 1 sp
-        jump _start _ pc
-
-        label print
-        mov r0 _ out
-        return _ _ _
-
-        label _start
-        mov sp _ fp
-        ifNotEq|i1|i2 1 2 _condition0
-        mov|i1 1 _ r0
-        jump _conditionEnd0 _ pc
-        label _condition0
-        mov|i1 0 _ r0
-        label _conditionEnd0
-        call print _ _
-        """.TrimIndents();
-
-        string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
-
-        Assert.Equal(expected.Split(Environment.NewLine), assembly);
-    }
-
-    [Fact]
     public void ConditionAsExpressionTrue()
     {
         string source =
@@ -459,6 +424,41 @@ public class IfStatements
         label _start
         mov sp _ fp
         ifNotEq|i1|i2 2 2 _condition0
+        mov|i1 1 _ r0
+        jump _conditionEnd0 _ pc
+        label _condition0
+        mov|i1 0 _ r0
+        label _conditionEnd0
+        call print _ _
+        """.TrimIndents();
+
+        string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
+
+        Assert.Equal(expected.Split(Environment.NewLine), assembly);
+    }
+
+    [Fact]
+    public void ConditionAsExpressionFalse()
+    {
+        string source =
+        """
+        import print;
+
+        print(1 == 2);
+        """.TrimIndents();
+
+        string expected =
+        """
+        sub|i2 sp 1 sp
+        jump _start _ pc
+
+        label print
+        mov r0 _ out
+        return _ _ _
+
+        label _start
+        mov sp _ fp
+        ifNotEq|i1|i2 1 2 _condition0
         mov|i1 1 _ r0
         jump _conditionEnd0 _ pc
         label _condition0
@@ -609,6 +609,73 @@ public class IfStatements
         mov fp _ r0
         load r0 _ r1
         ifEq|i2 r1 0 _if0
+        mov|i1 3 _ r0
+        call print _ _
+        label _if0
+        """.TrimIndents();
+
+        string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
+
+        Assert.Equal(expected.Split(Environment.NewLine), assembly);
+    }
+
+    [Fact]
+    public void BooleanAsConditionTrue()
+    {
+        string source =
+        """
+        import print;
+
+        if (true) {
+            print(3);
+        }
+        """.TrimIndents();
+
+        string expected =
+        """
+        sub|i2 sp 1 sp
+        jump _start _ pc
+
+        label print
+        mov r0 _ out
+        return _ _ _
+
+        label _start
+        mov sp _ fp
+        mov|i1 3 _ r0
+        call print _ _
+        label _if0
+        """.TrimIndents();
+
+        string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
+
+        Assert.Equal(expected.Split(Environment.NewLine), assembly);
+    }
+
+    [Fact]
+    public void BooleanAsConditionFalse()
+    {
+        string source =
+        """
+        import print;
+
+        if (false) {
+            print(3);
+        }
+        """.TrimIndents();
+
+        string expected =
+        """
+        sub|i2 sp 1 sp
+        jump _start _ pc
+
+        label print
+        mov r0 _ out
+        return _ _ _
+
+        label _start
+        mov sp _ fp
+        jump _if0 _ pc
         mov|i1 3 _ r0
         call print _ _
         label _if0

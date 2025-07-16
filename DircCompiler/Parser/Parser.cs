@@ -296,6 +296,15 @@ class Parser
             return new NumberLiteralNode(NumberLiteralType.Hexadecimal, (string)Previous().Literal!);
         }
 
+        if (Match(TokenType.True))
+        {
+            return new NumberLiteralNode(NumberLiteralType.Decimal, "1");
+        }
+        if (Match(TokenType.False))
+        {
+            return new NumberLiteralNode(NumberLiteralType.Decimal, "0");
+        }
+
         if (Match(TokenType.Identifier))
         {
             Token name = Previous();

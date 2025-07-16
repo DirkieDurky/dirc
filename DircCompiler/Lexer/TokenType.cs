@@ -23,6 +23,8 @@ public enum TokenType
     Number,
     BinaryNumber,
     HexNumber,
+    True,
+    False,
 
     // Keywords
     Import,
