@@ -101,9 +101,8 @@ public class ForStatements
         """
         import print;
 
-        i = 1;
-        for (;i < 5;) {
-            print(i);
+        for (;;) {
+            print(4);
         }
         """.TrimIndents();
 
@@ -118,17 +117,10 @@ public class ForStatements
 
         label _start
         mov sp _ fp
-        sub|i2 sp 1 sp
-        mov fp _ r0
-        store|i1 1 r0 _
         label _while0
-        mov fp _ r0
-        load r0 _ r1
-        mov r1 _ r0
+        mov|i1 4 _ r0
         call print _ _
-        mov fp _ r0
-        load r0 _ r1
-        ifLess|i2 r1 5 _while0
+        jump _while0 _ pc
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));

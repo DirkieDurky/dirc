@@ -97,8 +97,12 @@ class Parser
                 Consume(TokenType.Semicolon, "Expected ';' after for expression 1");
             }
 
-            AstNode condition = ParseCondition();
-            Consume(TokenType.Semicolon, "Expected ';' after for expression 2");
+            AstNode? condition = null;
+            if (!Match(TokenType.Semicolon))
+            {
+                condition = ParseCondition();
+                Consume(TokenType.Semicolon, "Expected ';' after for expression 2");
+            }
 
             AstNode? increment = null;
             if (!Match(TokenType.RightParen))
@@ -112,7 +116,7 @@ class Parser
             if (increment != null) body.Add(increment);
             List<AstNode> result = [];
             if (initial != null) result.Add(initial);
-            result.Add(new WhileStatementNode(condition, body));
+            result.Add(new WhileStatementNode(condition ?? new NumberLiteralNode(1), body));
             return result;
         }
         else if (Match(TokenType.Identifier))

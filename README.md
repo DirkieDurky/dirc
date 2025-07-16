@@ -49,6 +49,8 @@ x++;
 
 ## Standard Library
 The standard library contains the following functions:
+- `input()`
+Returns the current input of the program.
 - `print(num)`
 Send the given input to the out register.
 Functions (both standard and custom ones) may be called as such:
@@ -128,6 +130,55 @@ if (x != y) {
 }
 ```
 This statement prints 3 if x is not equal to y, which returns 2; x does in fact dot equal y because x = 4 and y = 5.
+
+## While loops
+While loops repeatedly execute a block of code as long as a specified condition remains true. The syntax is as follows:
+```
+while (condition) {
+    // code to execute while condition is true
+}
+```
+
+For example:
+```
+i = 0;
+
+while (x < 5) {
+    print(i);
+    i++;
+}
+```
+
+This loop will print the numbers 0 through 4. On each iteration, i is incremented until it is equal to 5, at which point the condition becomes false and the loop stops.
+
+The condition is evaluated before each iteration, meaning the loop body might not execute at all if the condition is false initially.
+
+## For loops
+For loops are typically used when the number of iterations is known in advance. They allow for concise initialization, condition, and increment expressions in a single line. The syntax is as follows:
+```
+for (initialization; condition; increment) {
+    // code to execute
+}
+```
+
+For example:
+```
+for (x = 0; x < 5; x++) {
+    print(x);
+}
+```
+
+This loop behaves the same as the while loop example above.\
+All three components of the for loop are optional. An infinite loop can be written as:
+```
+for (;;) {
+    print(42);
+}
+```
+
+Each component of the for loop is just an expression. As with other expressions in Dirc, assignments and function calls may be used. This gives the for loop a great deal of flexibility.
+
+The loop variable does not have to be declared within the loop header, and can be modified inside the loop body as well.
 
 ## Expressions
 An expression is anything that returns something. Expressions can be used in other elements of the code, like:
