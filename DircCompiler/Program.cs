@@ -37,6 +37,7 @@ class Program
 
             CompilerContext compilerContext = new(sourcePath);
             HandleFile(sourcePath, resultPath, compilerOptions, compilerContext);
+            Console.WriteLine($"Compiled {sourcePath} with no errors. Compiled file at {resultPath}");
         }
         else if (Directory.Exists(sourcePath))
         {
@@ -56,7 +57,7 @@ class Program
                 {
                     CompilerContext compilerContext = new(sourceFile);
                     HandleFile(sourceFile, resultDir, compilerOptions, compilerContext);
-                    Console.WriteLine($"Compiled {sourceFile} with no errors.");
+                    Console.WriteLine($"Compiled {sourceFile} with no errors. Compiled file at {resultDir}");
                     Console.WriteLine();
                 }
                 catch (Exception e)
