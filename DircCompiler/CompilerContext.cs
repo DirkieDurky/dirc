@@ -1,6 +1,6 @@
 public class CompilerContext
 {
-    public static Dictionary<string, int> AssemblyKeywords = new() {
+    public static Dictionary<string, int> AssemblyKeywords { get; } = new() {
     { "_", 0b00000000 },
     { "add", 0b00000000 },
     { "and", 0b00000010 },
@@ -44,6 +44,12 @@ public class CompilerContext
     { "sub", 0b00000001 },
     { "xor", 0b00000101 },
     };
+
+    public static int DataWidth { get; } = 64; // Computer is 64-bit now
+    // public static int RamBytes { get; } = 536870912; // RAM is 512MiB
+    public static int RamBytes { get; } = 256; // Fits in RAM display ingame
+    public static int MaxRamValue => (RamBytes - 1) / 8;
+
     public string CurrentFilePath { get; }
 
     public CompilerContext(string filePath)

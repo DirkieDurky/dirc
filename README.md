@@ -222,7 +222,7 @@ Comments are useful for explaining complex logic or temporarily disabling code d
 # DIRIC assembly
 DIRIC assembly is a simple assembly language made for the DIRIC ISA which is made in the game Turing Complete.\
 DIRIC stands for Directly Implemented Reduced Instruction-set Computer.
-This documentation is written for DIRIC v2.2.
+This documentation is written for DIRIC v2.3.
 
 ## Registers
 The DIRIC computer has 16 registers.\

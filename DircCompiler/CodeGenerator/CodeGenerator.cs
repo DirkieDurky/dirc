@@ -33,10 +33,8 @@ class CodeGenerator
     {
         // Set the stack pointer to the end of the RAM to grow downwards
         // In other compilers the OS does this but since we don't have an OS we'll do it ourselves
-        Context.CodeGen.EmitBinaryOperation(
-            Operation.Sub,
-            ReadonlyRegister.SP,
-            new NumberLiteralNode(CodeGenContext.StackAlignment),
+        Context.CodeGen.EmitMov(
+            new NumberLiteralNode(CompilerContext.MaxRamValue),
             Context.Allocator.Use(RegisterEnum.sp)
         );
 
