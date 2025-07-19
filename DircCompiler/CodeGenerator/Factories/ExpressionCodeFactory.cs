@@ -42,6 +42,15 @@ class ExpressionCodeFactory
                 return GenerateWhileStatement(whileStmt, context, _labelGenerator);
             case ReturnStatementNode returnStmt:
                 return GenerateReturnStatement(returnStmt, context);
+            case ArrayDeclarationNode arrayDecl:
+                return GenerateArrayDeclaration(arrayDecl, context);
+            case ArrayLiteralNode:
+                // Array literals should be handled by the receiver of the array
+                return null;
+            case ArrayAccessNode arrayAccess:
+                return GenerateArrayAccess(arrayAccess, context);
+            case ArrayAssignmentNode arrayAssign:
+                return GenerateArrayAssignment(arrayAssign, context);
             default:
                 throw new Exception($"Unhandled node {node}");
         }
@@ -328,5 +337,140 @@ class ExpressionCodeFactory
         context.CodeGen.EmitReturn(false);
 
         return returnValue;
+    }
+
+    private IReturnable? GenerateArrayDeclaration(ArrayDeclarationNode node, CodeGenContext context)
+    {
+        IReturnable sizeResult = Generate(node.Size, context) ?? throw new Exception("Array size expression failed to generate");
+
+        if (sizeResult is NumberLiteralNode sizeNode && int.TryParse(sizeNode.Value, out int size))
+        {
+            int baseOffset = context.AllocateArray(node.Name, size);
+
+            if (node.Initializer != null)
+            {
+                return GenerateArrayInitialization(node.Name, node.Initializer, context);
+            }
+        }
+        else
+        {
+            throw new CodeGenException("Invalid array size specified", node.IdentifierToken, context.CompilerOptions, context.CompilerContext);
+        }
+
+        sizeResult.Free();
+        return null;
+    }
+
+    private IReturnable? GenerateArrayInitialization(string arrayName, AstNode initializer, CodeGenContext context)
+    {
+        if (initializer is not ArrayLiteralNode arrayLiteral) return null;
+
+        if (!context.VariableTable.TryGetValue(arrayName, out Variable? variable))
+        {
+            throw new CodeGenException($"Undefined array '{arrayName}'", null, context.CompilerOptions, context.CompilerContext);
+        }
+
+        for (int i = 0; i < arrayLiteral.Elements.Count; i++)
+        {
+            IReturnable elementValue = Generate(arrayLiteral.Elements[i], context) ?? throw new Exception("Array element failed to generate");
+
+            Register basePtr = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
+            context.CodeGen.EmitBinaryOperation(
+                Operation.Sub,
+                ReadonlyRegister.FP,
+                new NumberLiteralNode(NumberLiteralType.Decimal, variable.FramePointerOffset.ToString()),
+                basePtr
+            );
+
+            Register address = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
+            context.CodeGen.EmitBinaryOperation(
+                Operation.Add,
+                new ReadonlyRegister(basePtr),
+                new NumberLiteralNode(NumberLiteralType.Decimal, i.ToString()),
+                address
+            );
+            basePtr.Free();
+
+            context.CodeGen.EmitStore(elementValue, new ReadonlyRegister(address));
+
+            elementValue.Free();
+            address.Free();
+        }
+
+        return null;
+    }
+
+    private IReturnable GenerateArrayAccess(ArrayAccessNode node, CodeGenContext context)
+    {
+        if (!context.VariableTable.TryGetValue(node.ArrayName, out Variable? variable))
+        {
+            throw new CodeGenException($"Undefined array '{node.ArrayName}'", node.ArrayToken, context.CompilerOptions, context.CompilerContext);
+        }
+
+        IReturnable indexResult = Generate(node.Index, context) ?? throw new Exception("Array index expression failed to generate");
+
+        // Calculate the address: base + index
+        Register basePtr = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
+        context.CodeGen.EmitBinaryOperation(
+            Operation.Sub,
+            ReadonlyRegister.FP,
+            new NumberLiteralNode(NumberLiteralType.Decimal, variable.FramePointerOffset.ToString()),
+            basePtr
+        );
+
+        Register address = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
+        context.CodeGen.EmitBinaryOperation(
+            Operation.Add,
+            new ReadonlyRegister(basePtr),
+            indexResult,
+            address
+        );
+
+        Register result = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
+        context.CodeGen.EmitLoad(new ReadonlyRegister(address), result);
+
+        indexResult.Free();
+        basePtr.Free();
+        address.Free();
+
+        return new ReturnRegister(result);
+    }
+
+    private IReturnable? GenerateArrayAssignment(ArrayAssignmentNode node, CodeGenContext context)
+    {
+        if (!context.VariableTable.TryGetValue(node.ArrayName, out Variable? variable))
+        {
+            throw new CodeGenException($"Undefined array '{node.ArrayName}'", node.ArrayToken, context.CompilerOptions, context.CompilerContext);
+        }
+
+        IReturnable valueResult = Generate(node.Value, context) ?? throw new Exception("Array assignment value failed to generate");
+
+        IReturnable indexResult = Generate(node.Index, context) ?? throw new Exception("Array index expression failed to generate");
+
+        // Calculate the address: base + index
+        Register basePtr = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
+        context.CodeGen.EmitBinaryOperation(
+            Operation.Sub,
+            ReadonlyRegister.FP,
+            new NumberLiteralNode(NumberLiteralType.Decimal, variable.FramePointerOffset.ToString()),
+            basePtr
+        );
+
+        Register address = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
+        context.CodeGen.EmitBinaryOperation(
+            Operation.Add,
+            new ReadonlyRegister(basePtr),
+            indexResult,
+            address
+        );
+        basePtr.Free();
+        indexResult.Free();
+
+        context.CodeGen.EmitStore(valueResult, new ReadonlyRegister(address));
+
+        valueResult.Free();
+        address.Free();
+
+        return valueResult;
     }
 }

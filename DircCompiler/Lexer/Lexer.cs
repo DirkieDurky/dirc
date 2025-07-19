@@ -56,6 +56,8 @@ class Lexer
             case ')': AddToken(TokenType.RightParen); break;
             case '{': AddToken(TokenType.LeftBrace); break;
             case '}': AddToken(TokenType.RightBrace); break;
+            case '[': AddToken(TokenType.LeftBracket); break;
+            case ']': AddToken(TokenType.RightBracket); break;
             case ',': AddToken(TokenType.Comma); break;
             case ';': AddToken(TokenType.Semicolon); break;
             case '+': AddToken(TokenType.Plus); break;

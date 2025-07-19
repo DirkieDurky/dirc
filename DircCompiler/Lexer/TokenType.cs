@@ -5,6 +5,7 @@ public enum TokenType
     // Single-character symbols
     LeftParen, RightParen,
     LeftBrace, RightBrace,
+    LeftBracket, RightBracket,
     Comma, Semicolon,
     Plus, Minus, Asterisk, Slash, Or, And, Xor,
     Equals, ExclamationPoint,

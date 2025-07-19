@@ -68,4 +68,21 @@ class CodeGenContext : ICloneable
         );
         return offset;
     }
+
+    public int AllocateArray(string name, int size)
+    {
+        int offset = NextVariableOffset + size - StackAlignment;
+        NextVariableOffset += size;
+        VariableTable[name] = new Variable(name, offset);
+
+        // Allocate space for the array on the stack
+        CodeGen.EmitBinaryOperation(
+            Operation.Sub,
+            ReadonlyRegister.SP,
+            new NumberLiteralNode(NumberLiteralType.Decimal, size.ToString()),
+            Allocator.Use(RegisterEnum.sp)
+        );
+
+        return offset;
+    }
 }

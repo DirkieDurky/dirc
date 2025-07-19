@@ -42,7 +42,7 @@ class Parser
             return [new ImportStatementNode(name, name.Lexeme)];
         }
 
-        // Function or variable declarations
+        // Function, array, or variable declarations
         if (Check(TokenType.Identifier) && CheckNext(TokenType.Identifier))
         {
             Token typeToken = Advance();
@@ -50,6 +50,12 @@ class Parser
             if (Match(TokenType.LeftParen))
             {
                 AstNode node = ParseFunctionDeclaration(nameToken, typeToken);
+                return [node];
+            }
+            else if (Match(TokenType.LeftBracket))
+            {
+                AstNode node = ParseArrayDeclaration(typeToken, nameToken);
+                Consume(TokenType.Semicolon, "Expected ';' after array declaration");
                 return [node];
             }
             else
@@ -124,20 +130,31 @@ class Parser
             result.Add(new WhileStatementNode(condition ?? new BooleanLiteralNode(true), body));
             return result;
         }
-        else if (Match(TokenType.Identifier))
+        else if (Check(TokenType.Identifier))
         {
-            Token name = Previous();
-            if (Match(TokenType.LeftParen))
+            if (CheckNext(TokenType.LeftBracket))
             {
-                AstNode node = ParseCall(name);
-                Consume(TokenType.Semicolon, "Expected ';' after function call");
+                // Array access or assignment
+                AstNode node = ParsePrimary();
+                Consume(TokenType.Semicolon, "Expected ';' after array statement");
                 return [node];
             }
             else
             {
-                VariableAssignmentNode node = ParseVariableAssignment(name);
-                Consume(TokenType.Semicolon, "Expected ';' after variable assignment");
-                return [node];
+                // Variable assignment or function call
+                Token name = Advance();
+                if (Match(TokenType.LeftParen))
+                {
+                    AstNode node = ParseCall(name);
+                    Consume(TokenType.Semicolon, "Expected ';' after function call");
+                    return [node];
+                }
+                else
+                {
+                    VariableAssignmentNode node = ParseVariableAssignment(name);
+                    Consume(TokenType.Semicolon, "Expected ';' after variable assignment");
+                    return [node];
+                }
             }
         }
         while (Match(TokenType.Semicolon)) { }
@@ -206,6 +223,37 @@ class Parser
             initializer = ParseExpression();
         }
         return new VariableDeclarationNode(typeToken, nameToken, initializer);
+    }
+
+    private ArrayDeclarationNode ParseArrayDeclaration(Token typeToken, Token nameToken)
+    {
+        AstNode size = ParseExpression();
+        Consume(TokenType.RightBracket, "Expected ']' after array size");
+
+        AstNode? initializer = null;
+        if (Match(TokenType.Equals))
+        {
+            initializer = ParseArrayLiteral();
+        }
+
+        return new ArrayDeclarationNode(typeToken, nameToken, size, initializer);
+    }
+
+    private ArrayLiteralNode ParseArrayLiteral()
+    {
+        Consume(TokenType.LeftBrace, "Expected '{' at start of array literal");
+        List<AstNode> elements = new();
+
+        if (!Check(TokenType.RightBrace))
+        {
+            do
+            {
+                elements.Add(ParseExpression());
+            } while (Match(TokenType.Comma));
+        }
+
+        Consume(TokenType.RightBrace, "Expected '}' at end of array literal");
+        return new ArrayLiteralNode(elements);
     }
 
     private List<AstNode> ParseBody(string kind)
@@ -364,6 +412,21 @@ class Parser
             if (Match(TokenType.LeftParen))
             {
                 return ParseCall(name);
+            }
+            else if (Match(TokenType.LeftBracket))
+            {
+                AstNode index = ParseExpression();
+                Consume(TokenType.RightBracket, "Expected ']' after array index");
+
+                if (Match(TokenType.Equals))
+                {
+                    AstNode value = ParseExpression();
+                    return new ArrayAssignmentNode(name, index, value);
+                }
+                else
+                {
+                    return new ArrayAccessNode(name, index);
+                }
             }
             else
             {

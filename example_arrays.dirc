@@ -1,0 +1,17 @@
+import print;
+
+// Declare an array of 5 integers
+int nums[5] = {1, 2, 3, 4, 5};
+
+// Print the first element
+print(nums[0]);
+
+// Modify an element
+nums[2] = 42;
+
+// Print the modified element
+print(nums[2]);
+
+// Use array in calculations
+int sum = nums[0] + nums[1] + nums[2] + nums[3] + nums[4];
+print(sum); 

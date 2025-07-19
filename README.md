@@ -20,6 +20,33 @@ Later, this variable may be referred to by the given name. This example prints i
 print(x);
 ```
 
+## Arrays
+Arrays can be declared with a fixed size.
+
+To declare an integer array (with space for 10 elements):
+```
+int nums[10];
+```
+
+To declare a boolean array (with space for 5 elements):
+```
+bool flags[5];
+```
+
+Arrays can be initialized with values:
+```
+int nums[5] = {1, 2, 3, 4, 5};
+```
+
+Array elements can be accessed and modified using square bracket notation:
+```
+nums[2] = 42;        // Set element at index 2 to 42
+int x = nums[2];     // Get element at index 2
+print(nums[0]);      // Print the first element
+```
+
+Array indices must be integers and are zero-based.
+
 ## Calculations
 Calculations can be done using the declared variables as follows:
 ```

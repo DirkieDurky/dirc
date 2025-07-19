@@ -175,6 +175,86 @@ public class SemanticAnalyzer
                     throw new SemanticException($"Return type mismatch: expected {expectedType}, got {retType}", null, options, context);
                 }
                 return retType;
+            case ArrayDeclarationNode arrayDecl:
+                string arrayType = arrayDecl.TypeName;
+                if (!ValidTypes.Contains(arrayType))
+                {
+                    throw new SemanticException($"Unknown type '{arrayType}' for array '{arrayDecl.Name}'", arrayDecl.IdentifierToken, options, context);
+                }
+                if (_variables.ContainsKey(arrayDecl.Name))
+                {
+                    throw new SemanticException($"Variable '{arrayDecl.Name}' already declared", arrayDecl.IdentifierToken, options, context);
+                }
+
+                // Check that size is an integer
+                string? sizeType = AnalyzeNode(arrayDecl.Size, "int", options, context);
+                if (sizeType != "int")
+                {
+                    throw new SemanticException($"Array size must be an integer, got {sizeType}", null, options, context);
+                }
+
+                _variables[arrayDecl.Name] = arrayType;
+
+                if (arrayDecl.Initializer != null)
+                {
+                    string? initType = AnalyzeNode(arrayDecl.Initializer, arrayType, options, context);
+                    if (initType != null && initType != arrayType)
+                    {
+                        throw new SemanticException($"Type mismatch in array initialization of '{arrayDecl.Name}': expected {arrayType}, got {initType}", arrayDecl.IdentifierToken, options, context);
+                    }
+                }
+                return null;
+            case ArrayLiteralNode arrayLit:
+                if (arrayLit.Elements.Count == 0)
+                {
+                    return "int"; // Default type for empty arrays
+                }
+
+                string? firstType = AnalyzeNode(arrayLit.Elements[0], null, options, context);
+                foreach (AstNode element in arrayLit.Elements.Skip(1))
+                {
+                    string? elementType = AnalyzeNode(element, firstType, options, context);
+                    if (elementType != firstType)
+                    {
+                        throw new SemanticException($"All array elements must have the same type, got {firstType} and {elementType}", null, options, context);
+                    }
+                }
+                return firstType;
+            case ArrayAccessNode arrayAccess:
+                if (!_variables.TryGetValue(arrayAccess.ArrayName, out string? accessArrayType))
+                {
+                    throw new SemanticException($"Use of undeclared array '{arrayAccess.ArrayName}'", arrayAccess.ArrayToken, options, context);
+                }
+
+                // Check that index is an integer
+                string? indexType = AnalyzeNode(arrayAccess.Index, "int", options, context);
+                if (indexType != "int")
+                {
+                    throw new SemanticException($"Array index must be an integer, got {indexType}", null, options, context);
+                }
+
+                return accessArrayType;
+            case ArrayAssignmentNode arrayAssign:
+                if (!_variables.TryGetValue(arrayAssign.ArrayName, out string? assignArrayType))
+                {
+                    throw new SemanticException($"Assignment to undeclared array '{arrayAssign.ArrayName}'", arrayAssign.ArrayToken, options, context);
+                }
+
+                // Check that index is an integer
+                string? assignIndexType = AnalyzeNode(arrayAssign.Index, "int", options, context);
+                if (assignIndexType != "int")
+                {
+                    throw new SemanticException($"Array index must be an integer, got {assignIndexType}", null, options, context);
+                }
+
+                // Check that value matches array type
+                string? assignValueType = AnalyzeNode(arrayAssign.Value, assignArrayType, options, context);
+                if (assignValueType != null && assignValueType != assignArrayType)
+                {
+                    throw new SemanticException($"Type mismatch in array assignment to '{arrayAssign.ArrayName}': expected {assignArrayType}, got {assignValueType}", arrayAssign.ArrayToken, options, context);
+                }
+
+                return assignArrayType;
             default:
                 // For other nodes, just recurse if they have children
                 return null;
