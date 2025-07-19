@@ -7,6 +7,8 @@ public class SemanticAnalyzer
 {
     private readonly Dictionary<string, string> _variables = new(); // name -> type
     private readonly Dictionary<string, FunctionSignature> _functions = new(); // name -> signature
+    private static readonly HashSet<string> ValidTypes = new() { "int", "bool" };
+    private static readonly HashSet<string> ValidReturnTypes = new() { "int", "bool", "void" };
 
     public void Analyze(List<AstNode> nodes, CompilerOptions options, CompilerContext context)
     {
@@ -22,6 +24,19 @@ public class SemanticAnalyzer
         {
             if (node is FunctionDeclarationNode func)
             {
+                // Check return type (allow 'void' only for return type)
+                if (!ValidReturnTypes.Contains(func.ReturnTypeToken.Lexeme))
+                {
+                    throw new SemanticException($"Unknown return type '{func.ReturnTypeToken.Lexeme}' in function '{func.Name}'", func.ReturnTypeToken, options, context);
+                }
+                // Check parameter types (do not allow 'void')
+                foreach (var param in func.Parameters)
+                {
+                    if (!ValidTypes.Contains(param.TypeName))
+                    {
+                        throw new SemanticException($"Unknown parameter type '{param.TypeName}' in function '{func.Name}'", null, options, context);
+                    }
+                }
                 FunctionSignature signature = new FunctionSignature(func.ReturnTypeToken.Lexeme, func.Parameters);
                 if (_functions.ContainsKey(func.Name))
                 {
@@ -55,6 +70,10 @@ public class SemanticAnalyzer
                 return "int";
             case VariableDeclarationNode varDecl:
                 string varType = varDecl.TypeName;
+                if (!ValidTypes.Contains(varType))
+                {
+                    throw new SemanticException($"Unknown type '{varType}' for variable '{varDecl.Name}'", varDecl.IdentifierToken, options, context);
+                }
                 if (_variables.ContainsKey(varDecl.Name))
                 {
                     throw new SemanticException($"Variable '{varDecl.Name}' already declared", varDecl.IdentifierToken, options, context);

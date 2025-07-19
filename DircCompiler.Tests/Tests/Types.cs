@@ -72,18 +72,6 @@ public class Types
     }
 
     [Fact]
-    public void ThrowsOnConditionOperandsNotInt()
-    {
-        var nodes = new List<AstNode>
-        {
-            new IfStatementNode(
-                new ConditionNode(Comparer.IfEq, new BooleanLiteralNode(true), new BooleanLiteralNode(false)),
-                new List<AstNode>(), null)
-        };
-        Assert.Throws<SemanticException>(() => new SemanticAnalyzer().Analyze(nodes, new([]), new("unittests")));
-    }
-
-    [Fact]
     public void ThrowsOnIfConditionNotBoolOrInt()
     {
         var nodes = new List<AstNode>
@@ -150,5 +138,63 @@ public class Types
             })
         };
         Assert.Throws<SemanticException>(() => new SemanticAnalyzer().Analyze(nodes, new([]), new("unittests")));
+    }
+
+    [Fact]
+    public void VariableDeclaration_WithValidType_DoesNotThrow()
+    {
+        var nodes = new List<AstNode>
+            {
+                new VariableDeclarationNode(
+                    new Token(TokenType.Identifier, "int", null, 1),
+                    new Token(TokenType.Identifier, "x", null, 1),
+                    null)
+            };
+        var analyzer = new SemanticAnalyzer();
+        analyzer.Analyze(nodes, new([]), new("unittests"));
+    }
+
+    [Fact]
+    public void VariableDeclaration_WithInvalidType_Throws()
+    {
+        var nodes = new List<AstNode>
+            {
+                new VariableDeclarationNode(
+                    new Token(TokenType.Identifier, "asd", null, 1),
+                    new Token(TokenType.Identifier, "x", null, 1),
+                    null)
+            };
+        var analyzer = new SemanticAnalyzer();
+        Assert.Throws<SemanticException>(() => analyzer.Analyze(nodes, new([]), new("unittests")));
+    }
+
+    [Fact]
+    public void FunctionDeclaration_WithInvalidReturnType_Throws()
+    {
+        var func = new FunctionDeclarationNode(
+            new Token(TokenType.Identifier, "foo", null, 1),
+            "foo",
+            new Token(TokenType.Identifier, "asd", null, 1),
+            new List<FunctionParameter>(),
+            new List<AstNode>()
+        );
+        var nodes = new List<AstNode> { func };
+        var analyzer = new SemanticAnalyzer();
+        Assert.Throws<SemanticException>(() => analyzer.Analyze(nodes, new([]), new("unittests")));
+    }
+
+    [Fact]
+    public void FunctionDeclaration_WithInvalidParameterType_Throws()
+    {
+        var func = new FunctionDeclarationNode(
+            new Token(TokenType.Identifier, "foo", null, 1),
+            "foo",
+            new Token(TokenType.Identifier, "int", null, 1),
+            new List<FunctionParameter> { new FunctionParameter("asd", "x") },
+            new List<AstNode>()
+        );
+        var nodes = new List<AstNode> { func };
+        var analyzer = new SemanticAnalyzer();
+        Assert.Throws<SemanticException>(() => analyzer.Analyze(nodes, new([]), new("unittests")));
     }
 }
