@@ -6,14 +6,16 @@ public class FunctionDeclarationNode : AstNode
 {
     public Token IdentifierToken { get; }
     public string Name { get; }
-    public List<string> Parameters { get; }
+    public Token ReturnTypeToken { get; }
+    public List<FunctionParameter> Parameters { get; }
     public List<AstNode> Body { get; }
-    public FunctionDeclarationNode(Token identifierToken, string name, List<string> parameters, List<AstNode> body)
+    public FunctionDeclarationNode(Token identifierToken, string name, Token returnTypeToken, List<FunctionParameter> parameters, List<AstNode> body)
     {
         IdentifierToken = identifierToken;
         Name = name;
+        ReturnTypeToken = returnTypeToken;
         Parameters = parameters;
         Body = body;
     }
-    public override string ToString() => $"FunctionDeclaration({Name}, [{string.Join(", ", Parameters)}], [\n  {string.Join(",\n  ", Body)}\n])";
+    public override string ToString() => $"FunctionDeclaration({ReturnTypeToken.Lexeme} {Name}, [{string.Join(", ", Parameters)}], [\n  {string.Join(",\n  ", Body)}\n])";
 }

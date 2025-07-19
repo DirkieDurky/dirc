@@ -13,6 +13,6 @@ public class Function : Symbol
 
     public static Function FromFunctionDeclarationNode(Parsing.FunctionDeclarationNode node)
     {
-        return new Function(node.Name, node.Parameters.ToArray(), true);
+        return new Function(node.Name, node.Parameters.Select(p => p.Name).ToArray(), true);
     }
 }

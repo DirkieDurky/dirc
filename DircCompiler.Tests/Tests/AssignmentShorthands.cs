@@ -2,17 +2,17 @@ namespace DircCompiler.Tests;
 
 public class AssignmentShorthands
 {
-        [Fact]
-        public void Addition()
-        {
-                string source =
-                """
+    [Fact]
+    public void Addition()
+    {
+        string source =
+        """
         x = 2;
         x += 3;
         """.TrimIndents();
 
-                string expected =
-                """
+        string expected =
+        """
         sub|i2 sp 1 sp
         jump _start _ pc
 
@@ -28,22 +28,22 @@ public class AssignmentShorthands
         store r0 r1 _
         """.TrimIndents();
 
-                string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
+        string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
 
-                Assert.Equal(expected.Split(Environment.NewLine), assembly);
-        }
+        Assert.Equal(expected.Split(Environment.NewLine), assembly);
+    }
 
-        [Fact]
-        public void Subtraction()
-        {
-                string source =
-                """
+    [Fact]
+    public void Subtraction()
+    {
+        string source =
+        """
         x = 2;
         x -= 3;
         """.TrimIndents();
 
-                string expected =
-                """
+        string expected =
+        """
         sub|i2 sp 1 sp
         jump _start _ pc
 
@@ -59,22 +59,22 @@ public class AssignmentShorthands
         store r0 r1 _
         """.TrimIndents();
 
-                string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
+        string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
 
-                Assert.Equal(expected.Split(Environment.NewLine), assembly);
-        }
+        Assert.Equal(expected.Split(Environment.NewLine), assembly);
+    }
 
-        [Fact]
-        public void BitwiseAnd()
-        {
-                string source =
-                """
+    [Fact]
+    public void BitwiseAnd()
+    {
+        string source =
+        """
         x = 2;
         x &= 3;
         """.TrimIndents();
 
-                string expected =
-                """
+        string expected =
+        """
         sub|i2 sp 1 sp
         jump _start _ pc
 
@@ -90,22 +90,22 @@ public class AssignmentShorthands
         store r0 r1 _
         """.TrimIndents();
 
-                string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
+        string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
 
-                Assert.Equal(expected.Split(Environment.NewLine), assembly);
-        }
+        Assert.Equal(expected.Split(Environment.NewLine), assembly);
+    }
 
-        [Fact]
-        public void BitwiseOr()
-        {
-                string source =
-                """
+    [Fact]
+    public void BitwiseOr()
+    {
+        string source =
+        """
         x = 2;
         x |= 0b01000000;
         """.TrimIndents();
 
-                string expected =
-                """
+        string expected =
+        """
         sub|i2 sp 1 sp
         jump _start _ pc
 
@@ -121,22 +121,22 @@ public class AssignmentShorthands
         store r0 r1 _
         """.TrimIndents();
 
-                string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
+        string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
 
-                Assert.Equal(expected.Split(Environment.NewLine), assembly);
-        }
+        Assert.Equal(expected.Split(Environment.NewLine), assembly);
+    }
 
-        [Fact]
-        public void BitwiseXor()
-        {
-                string source =
-                """
+    [Fact]
+    public void BitwiseXor()
+    {
+        string source =
+        """
         x = 2;
         x ^= 0b00000111;
         """.TrimIndents();
 
-                string expected =
-                """
+        string expected =
+        """
         sub|i2 sp 1 sp
         jump _start _ pc
 
@@ -152,22 +152,22 @@ public class AssignmentShorthands
         store r0 r1 _
         """.TrimIndents();
 
-                string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
+        string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
 
-                Assert.Equal(expected.Split(Environment.NewLine), assembly);
-        }
+        Assert.Equal(expected.Split(Environment.NewLine), assembly);
+    }
 
-        [Fact]
-        public void PlusPlus()
-        {
-                string source =
-                """
+    [Fact]
+    public void PlusPlus()
+    {
+        string source =
+        """
         x = 2;
         x++;
         """.TrimIndents();
 
-                string expected =
-                """
+        string expected =
+        """
         sub|i2 sp 1 sp
         jump _start _ pc
 
@@ -183,22 +183,22 @@ public class AssignmentShorthands
         store r0 r1 _
         """.TrimIndents();
 
-                string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
+        string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
 
-                Assert.Equal(expected.Split(Environment.NewLine), assembly);
-        }
+        Assert.Equal(expected.Split(Environment.NewLine), assembly);
+    }
 
-        [Fact]
-        public void MinusMinus()
-        {
-                string source =
-                """
+    [Fact]
+    public void MinusMinus()
+    {
+        string source =
+        """
         x = 2;
         x--;
         """.TrimIndents();
 
-                string expected =
-                """
+        string expected =
+        """
         sub|i2 sp 1 sp
         jump _start _ pc
 
@@ -214,8 +214,8 @@ public class AssignmentShorthands
         store r0 r1 _
         """.TrimIndents();
 
-                string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
+        string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
 
-                Assert.Equal(expected.Split(Environment.NewLine), assembly);
-        }
+        Assert.Equal(expected.Split(Environment.NewLine), assembly);
+    }
 }

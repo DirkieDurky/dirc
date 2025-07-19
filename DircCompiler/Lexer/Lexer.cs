@@ -10,8 +10,6 @@ class Lexer
 
     private static readonly Dictionary<string, TokenType> _keywords = new()
     {
-        { "function", TokenType.Function },
-        { "var", TokenType.Var },
         { "if", TokenType.If },
         { "else", TokenType.Else },
         { "import", TokenType.Import },

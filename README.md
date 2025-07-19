@@ -3,18 +3,19 @@ A programming language inspired by the C family that compiles to DIRIC assembly.
 Dirc stands for Directly Implemented and Reduced C.
 
 ## Declaring local variables
-Local variables are declared as such:
-```
-x = 5;
-```
-The same syntax can be used to reassign a new value to the variable.
+All variables must be declared with an explicit type. The supported types are `int` and `bool`.
 
-Optionally, the "var" keyword may be used to make extra clear to a reader that a variable is being declared:
+To declare an integer variable:
 ```
-var x = 5;
+int x = 5;
 ```
 
-Later, this variable may be referred to by the given name. This example prints it.
+To declare a boolean variable:
+```
+bool flag = true;
+```
+
+Later, this variable may be referred to by the given name. This example prints it:
 ```
 print(x);
 ```
@@ -35,6 +36,21 @@ The following operations are permitted:
 - Bitwise and (&)
 - Bitwise or (|)
 - Bitwise xor (^)
+
+This example does a bitwise or operation on 'a' and 'b' and prints it.
+```
+print(a | b)
+```
+
+To make operations like these easier to deal with, binary and hexadecimal literals are also allowed using the '0b' and '0x' prefixes respectively:
+```
+print(0b01000000 | 0b01000100);
+```
+
+Hexadecimal is done using the '0x' prefix:
+```
+print(0x0d ^ 0xd0);
+```
 
 ### Shorthands
 Shorthands for all of the above calculations are allowed as well.
@@ -67,69 +83,52 @@ Example:
 import print;
 ```
 
+
 ## Creating custom functions
-Custom functions are created like the following example:
+All functions must be declared with an explicit return type and explicit types for all parameters. The supported types are `int`, `bool`, and `void` (for functions that do not return a value).
+
+Example of a function returning an int:
 ```
-add(x, y) {
-    return x + y;
-}
-```
-Optionally, the "function" keyword may be used to make extra clear to a reader that a function is being declared:
-```
-function add(x, y) {
+int add(int x, int y) {
     return x + y;
 }
 ```
 
-Another example:
+Example of a function returning a bool:
 ```
-print(x | 4);
-```
-To make operations like these easier to deal with, binary and hexadecimal literals are also allowed using the '0b' and '0x' prefixes respectively:
-```
-print(0b01000000 | 0b01000100);
-```
-
-Hexadecimal is done using the '0x' prefix:
-```
-print(0x0d ^ 0xd0);
-```
-
-Functions can optionally return values.
-This is done by adding a return statement:
-```
-return x;
-```
-This returns the specified value and exits out of the function.
-This value can then be used as result of the function:
-```
-myAdd(x, y) {
-    return x + y;
+bool isEven(int x) {
+    return x % 2 == 0;
 }
-
-print(myAdd(1, 2));
 ```
+
+Example of a function returning nothing:
+```
+void printSum(int x, int y) {
+    print(x + y);
+}
+```
+
 
 ## If statements
 If statements may be used to include a section of code that should only run when a condition is true.\
+An if statement takes a boolean value to determine whether the code runs or not.
 An if statement might look like this:
 ```
-if (1 == 2) {
+int x = 4;
+int y = 5;
+bool cond = (x != y);
+if (cond) {
     print(3);
 }
 ```
-This if statements prints "3" if 1 is equal to 2.
-
-An if statement can also include expressions like variables:
+Or directly:
 ```
-x = 4;
-y = 5;
-
-if (x != y) {
+if (x == y) {
     print(3);
 }
 ```
-This statement prints 3 if x is not equal to y, which returns 2; x does in fact dot equal y because x = 4 and y = 5.
+All comparison operations return a boolean value.
+
 
 ## While loops
 While loops repeatedly execute a block of code as long as a specified condition remains true. The syntax is as follows:
@@ -138,38 +137,35 @@ while (condition) {
     // code to execute while condition is true
 }
 ```
+While loops require a boolean condition. The condition must be of type `bool`.
 
 For example:
 ```
-i = 0;
-
-while (x < 5) {
+int i = 0;
+while (i < 5) {
     print(i);
     i++;
 }
 ```
-
-This loop will print the numbers 0 through 4. On each iteration, i is incremented until it is equal to 5, at which point the condition becomes false and the loop stops.
-
 The condition is evaluated before each iteration, meaning the loop body might not execute at all if the condition is false initially.
 
+
 ## For loops
-For loops are typically used when the number of iterations is known in advance. They allow for concise initialization, condition, and increment expressions in a single line. The syntax is as follows:
+For loops require a boolean condition as the second component. The syntax is as follows:
 ```
 for (initialization; condition; increment) {
     // code to execute
 }
 ```
 
-For example:
+Example:
 ```
-for (x = 0; x < 5; x++) {
+for (int x = 0; x < 5; x++) {
     print(x);
 }
 ```
 
-This loop behaves the same as the while loop example above.\
-All three components of the for loop are optional. An infinite loop can be written as:
+The condition must be of type `bool`. All three components of the for loop are optional. An infinite loop can be written as:
 ```
 for (;;) {
     print(42);
@@ -178,25 +174,25 @@ for (;;) {
 
 Each component of the for loop is just an expression. As with other expressions in Dirc, assignments and function calls may be used. This gives the for loop a great deal of flexibility.
 
-The loop variable does not have to be declared within the loop header, and can be modified inside the loop body as well.
+The loop variable must be declared with a type if it is declared in the loop header, and can be modified inside the loop body as well.
+
 
 ## Expressions
-An expression is anything that returns something. Expressions can be used in other elements of the code, like:
-- Function calls (print([expression]))
-- Variable assignments (x = [expression])
-- If statements (if ([expression] != [expression]))
+An expression is anything that returns a value. Expressions have a type, such as `int` or `bool`. Expressions can be used in other elements of the code, like:
+- Function calls (`print([expression])`)
+- Variable assignments (`x = [expression]`)
+- If statements (`if ([bool expression])`)
 
-Expression is a very broad term, which means a lot of things can be an expression. The following examples are all expressions:
-- `4` (returns 4)
-- `4 + 5` (returns 9)
-- `x` (returns the value of x)
+The following are all valid expressions:
+- `4` (returns an int)
+- `true` (returns a bool)
+- `x` (returns the value of x, with its declared type)
+- `x + 5` (returns an int)
+- `x == y` (returns a bool)
 
-What can be surprising is that the following examples are also expressions:
-- Function calls (like `input()` returns the input)
-- Variable assignments (`x = 4` (returns 4))
+Function calls and variable assignments are also expressions and have a type. For example, `input()` returns an int, and `x = 4` returns an int.
 
-This means that even function calls or variable assignments can be used where an expression is expected, like the examples given at the start of this subchapter.\
-For example, a function call can be used as an argument for another function call:
+This means that even function calls or variable assignments can be used where an expression is expected, like the examples given at the start of this subchapter. For example, a function call can be used as an argument for another function call:
 ```
 print(input());
 ```
@@ -336,6 +332,7 @@ Writes a value to the specified location in memory.
 Copies the value at the specified location in memory to the register specified by the return address.
 - `noop _ _ _`
 Does nothing at all for a tick.
+
 
 # DIRC Compiler
 This repository contains the compiler for the DIRC Programming Language and compiles from DIRC Programming Language to DIRIC v2.1 assembly.

@@ -1,6 +1,7 @@
 using DircCompiler.CodeGen;
 using DircCompiler.Lexing;
 using DircCompiler.Parsing;
+using DircCompiler.Semantic;
 
 namespace DircCompiler;
 
@@ -39,6 +40,12 @@ public class Compiler
             }
             Console.WriteLine();
         }
+
+        if (compilerOptions.ShowGeneralDebug)
+        {
+            Console.WriteLine("Running semantic analyzer...");
+        }
+        new SemanticAnalyzer().Analyze(astNodes, compilerOptions, compilerContext);
 
         if (compilerOptions.ShowGeneralDebug)
         {

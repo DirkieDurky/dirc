@@ -20,13 +20,12 @@ class CodeGenerator
             allocator,
             exprFactory,
             funcFactory,
-            new(),
-            new(),
-            new(compilerOptions, compilerContext),
+            [],
+            [],
             0,
             compilerOptions,
             compilerContext
-            );
+        );
     }
 
     public string[] Generate(List<AstNode> nodes)
@@ -42,32 +41,17 @@ class CodeGenerator
         EmitEmptyLine();
 
         // Compile standard library
-        StandardLibrary std = new StandardLibrary();
         foreach (ImportStatementNode importNode in nodes.Where(node => node is ImportStatementNode))
         {
-            if (!std.Functions.ContainsKey(importNode.FunctionName))
+            if (!StandardLibrary.Functions.ContainsKey(importNode.FunctionName))
             {
                 throw new CodeGenException("Unknown import", importNode.Identifier, Context.CompilerOptions, Context.CompilerContext);
             }
 
-            Context.FuncFactory.CompileStandardFunction(Context, std.Functions[importNode.FunctionName]);
+            Context.FuncFactory.CompileStandardFunction(Context, StandardLibrary.Functions[importNode.FunctionName]);
         }
 
-        // Declare custom functions first to allow calling them at any time
-        foreach (FunctionDeclarationNode funcNode in nodes.Where(node => node is FunctionDeclarationNode))
-        {
-            if (CompilerContext.AssemblyKeywords.ContainsKey(funcNode.Name))
-            {
-                throw new CodeGenException($"Can't declare function with name '{funcNode.Name}'. Reserved keyword",
-                    funcNode.IdentifierToken,
-                    Context.CompilerOptions,
-                    Context.CompilerContext
-                );
-            }
-            Context.FunctionTable.Declare(Function.FromFunctionDeclarationNode(funcNode), funcNode.IdentifierToken);
-        }
-
-        // Compile functions before rest of the code
+        // Compile functions before rest of the code so they're at the top
         foreach (FunctionDeclarationNode funcNode in nodes.Where(node => node is FunctionDeclarationNode))
         {
             Context.FuncFactory.Generate(funcNode, (CodeGenContext)Context.Clone());

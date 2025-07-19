@@ -28,8 +28,6 @@ public enum TokenType
 
     // Keywords
     Import,
-    Function,
-    Var,
     If, Else,
     Return,
     While,

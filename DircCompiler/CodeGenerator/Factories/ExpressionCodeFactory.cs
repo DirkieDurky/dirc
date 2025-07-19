@@ -20,8 +20,10 @@ class ExpressionCodeFactory
         {
             case ExpressionStatementNode exprStmt:
                 return Generate(exprStmt.Expression, context);
-            case VariableAssignmentNode varDecl:
-                return GenerateVariableAssignment(varDecl, context);
+            case VariableDeclarationNode varDeclarationNode:
+                return GenerateVariableDeclaration(varDeclarationNode, context);
+            case VariableAssignmentNode varAssignmentNode:
+                return GenerateVariableAssignment(varAssignmentNode, context);
             case CallExpressionNode call:
                 return GenerateCall(call, context);
             case BinaryExpressionNode bin:
@@ -45,29 +47,6 @@ class ExpressionCodeFactory
 
     private IReturnable? GenerateCall(CallExpressionNode node, CodeGenContext context)
     {
-        Function callee;
-        try
-        {
-            callee = context.FunctionTable.Lookup(node.Callee, node.CalleeToken);
-        }
-        catch
-        {
-            throw new CodeGenException($"Call made to unknown function '{node.Callee}'",
-                node.CalleeToken,
-                context.CompilerOptions,
-                context.CompilerContext
-            );
-        }
-
-        if (callee.Parameters.Count() != node.Arguments.Count)
-        {
-            throw new CodeGenException($"Function '{callee}' takes {callee.Parameters.Count()} arguments. {node.Arguments.Count} given.",
-                node.CalleeToken,
-                context.CompilerOptions,
-                context.CompilerContext
-            );
-        }
-
         // Save in use caller saved registers
         List<Register> toSave = context.Allocator.TrackedCallerSavedRegisters.Where(x => x.InUse).ToList();
         foreach (Register reg in toSave)
@@ -126,49 +105,39 @@ class ExpressionCodeFactory
         return new ReturnRegister(result);
     }
 
+    private IReturnable? GenerateVariableDeclaration(VariableDeclarationNode node, CodeGenContext context)
+    {
+        int offset = context.AllocateVariable(node.Name);
+
+        if (node.Initializer == null) return null;
+
+        return AssignVariable(offset, node.Initializer, context);
+    }
+
     private IReturnable? GenerateVariableAssignment(VariableAssignmentNode node, CodeGenContext context)
     {
-        int offset;
-        if (!context.VariableTable.ContainsKey(node.Name) || node.IsDeclaration)
-        {
-            // Declaration
-            if (context.VariableTable.ContainsKey(node.Name))
-            {
-                throw new CodeGenException(
-                    $"Trying to declare variable '{node.Name}' which was already declared.",
-                    node.IdentifierToken,
-                    _compilerOptions,
-                    context.CompilerContext
-                );
-            }
+        int offset = context.VariableTable[node.Name].FramePointerOffset;
 
-            offset = context.AllocateVariable(node.Name);
-        }
-        else
-        {
-            offset = context.VariableTable[node.Name].FramePointerOffset;
-        }
+        return AssignVariable(offset, node.Value, context);
+    }
 
-        if (node.Value != null)
-        {
-            IReturnable value = Generate(node.Value, context) ?? throw new Exception("Initializer expression failed to generate");
-            Register tmp = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
+    private IReturnable? AssignVariable(int offset, AstNode assignment, CodeGenContext context)
+    {
+        IReturnable value = Generate(assignment, context) ?? throw new Exception("Initializer expression failed to generate");
+        Register tmp = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
 
-            context.CodeGen.EmitBinaryOperation(
-                Operation.Sub,
-                ReadonlyRegister.FP,
-                new NumberLiteralNode(NumberLiteralType.Decimal, offset.ToString()),
-                tmp
-            );
-            context.CodeGen.EmitStore(value, new ReadonlyRegister(tmp));
+        context.CodeGen.EmitBinaryOperation(
+            Operation.Sub,
+            ReadonlyRegister.FP,
+            new NumberLiteralNode(NumberLiteralType.Decimal, offset.ToString()),
+            tmp
+        );
+        context.CodeGen.EmitStore(value, new ReadonlyRegister(tmp));
 
-            tmp.Free();
-            value.Free();
+        tmp.Free();
+        value.Free();
 
-            return value;
-        }
-
-        return null;
+        return value;
     }
 
     private IReturnable GenerateIdentifier(IdentifierNode node, CodeGenContext context)

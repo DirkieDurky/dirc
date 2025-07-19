@@ -1,13 +1,15 @@
+using DircCompiler.Semantic;
+
 namespace DircCompiler.CodeGen;
 
 public class StandardFunction : Symbol
 {
-    public string[] Parameters;
+    public FunctionSignature Signature;
     public string[] Code;
 
-    public StandardFunction(string name, string[] parameters, string[] code) : base(name)
+    public StandardFunction(string name, FunctionSignature signature, string[] code) : base(name)
     {
-        Parameters = parameters;
+        Signature = signature;
         Code = code;
     }
 }
