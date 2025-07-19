@@ -7,13 +7,13 @@ public class AssignmentShorthands
     {
         string source =
         """
-        x = 2;
+        int x = 2;
         x += 3;
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label _start
@@ -38,13 +38,13 @@ public class AssignmentShorthands
     {
         string source =
         """
-        x = 2;
+        int x = 2;
         x -= 3;
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label _start
@@ -69,13 +69,13 @@ public class AssignmentShorthands
     {
         string source =
         """
-        x = 2;
+        int x = 2;
         x &= 3;
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label _start
@@ -100,13 +100,13 @@ public class AssignmentShorthands
     {
         string source =
         """
-        x = 2;
+        int x = 2;
         x |= 0b01000000;
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label _start
@@ -131,13 +131,13 @@ public class AssignmentShorthands
     {
         string source =
         """
-        x = 2;
+        int x = 2;
         x ^= 0b00000111;
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label _start
@@ -162,13 +162,13 @@ public class AssignmentShorthands
     {
         string source =
         """
-        x = 2;
+        int x = 2;
         x++;
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label _start
@@ -193,13 +193,13 @@ public class AssignmentShorthands
     {
         string source =
         """
-        x = 2;
+        int x = 2;
         x--;
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label _start

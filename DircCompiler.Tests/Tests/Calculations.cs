@@ -13,8 +13,8 @@ public class Calculations
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -43,8 +43,8 @@ public class Calculations
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -73,8 +73,8 @@ public class Calculations
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -103,8 +103,8 @@ public class Calculations
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -133,8 +133,8 @@ public class Calculations
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print

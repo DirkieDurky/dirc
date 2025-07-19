@@ -13,8 +13,8 @@ public class SpecialLiterals
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -43,8 +43,8 @@ public class SpecialLiterals
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -69,13 +69,13 @@ public class SpecialLiterals
         """
         import print;
 
-        x = 0b00110011;
+        int x = 0b00110011;
         print(x);
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -105,13 +105,13 @@ public class SpecialLiterals
         """
         import print;
 
-        x = 0x0000d0;
+        int x = 0x0000d0;
         print(x);
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print

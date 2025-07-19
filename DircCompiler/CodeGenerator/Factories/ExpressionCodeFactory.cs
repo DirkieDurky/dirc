@@ -30,6 +30,8 @@ class ExpressionCodeFactory
                 return GenerateBinary(bin, context);
             case IdentifierNode id:
                 return GenerateIdentifier(id, context);
+            case BooleanLiteralNode boolean:
+                return boolean;
             case NumberLiteralNode number:
                 return number;
             case ConditionNode condition:
@@ -229,6 +231,13 @@ class ExpressionCodeFactory
                     context.CodeGen.EmitJump(label);
                 }
             }
+            else if (conditionResult is BooleanLiteralNode boolean)
+            {
+                if (!boolean.Value)
+                {
+                    context.CodeGen.EmitJump(label);
+                }
+            }
             else
             {
                 throw new Exception("Invalid condition result type");
@@ -289,6 +298,13 @@ class ExpressionCodeFactory
             else if (conditionResult is NumberLiteralNode num)
             {
                 if (num.Value != "0")
+                {
+                    context.CodeGen.EmitJump(label);
+                }
+            }
+            else if (conditionResult is BooleanLiteralNode boolean)
+            {
+                if (boolean.Value)
                 {
                     context.CodeGen.EmitJump(label);
                 }

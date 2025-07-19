@@ -10,13 +10,13 @@ public class ReturnValues
         import input;
         import print;
 
-        x = input();
+        int x = input();
         print(x);
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label input
@@ -56,8 +56,8 @@ public class ReturnValues
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label input
@@ -86,7 +86,7 @@ public class ReturnValues
         """
         import print;
 
-        myAdd(x, y) {
+        int myAdd(int x, int y) {
             return x + y;
         }
 
@@ -94,8 +94,8 @@ public class ReturnValues
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print

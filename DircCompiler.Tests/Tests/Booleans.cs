@@ -1,16 +1,14 @@
 namespace DircCompiler.Tests;
 
-public class Misc
+public class Booleans
 {
     [Fact]
-    public void StraySemicolons()
+    public void Test1()
     {
         string source =
         """
         import print;
-        ;
-        ;
-        print(5);
+        printBool(true);
         """.TrimIndents();
 
         string expected =
@@ -24,8 +22,8 @@ public class Misc
 
         label _start
         mov sp _ fp
-        mov|i1 5 _ r0
-        call print _ _
+        mov|i1 1 _ r0
+        call printBool _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));

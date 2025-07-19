@@ -93,7 +93,7 @@ class Parser
                 {
                     Token typeToken = Advance();
                     Token nameToken = Advance();
-                    initial = ParseVariableDeclaration(nameToken, typeToken);
+                    initial = ParseVariableDeclaration(typeToken, nameToken);
                 }
                 else
                 {
@@ -121,7 +121,7 @@ class Parser
             if (increment != null) body.Add(increment);
             List<AstNode> result = [];
             if (initial != null) result.Add(initial);
-            result.Add(new WhileStatementNode(condition ?? new NumberLiteralNode(1), body));
+            result.Add(new WhileStatementNode(condition ?? new BooleanLiteralNode(true), body));
             return result;
         }
         else if (Match(TokenType.Identifier))
@@ -351,11 +351,11 @@ class Parser
 
         if (Match(TokenType.True))
         {
-            return new NumberLiteralNode(NumberLiteralType.Decimal, "1");
+            return new BooleanLiteralNode(true);
         }
         if (Match(TokenType.False))
         {
-            return new NumberLiteralNode(NumberLiteralType.Decimal, "0");
+            return new BooleanLiteralNode(false);
         }
 
         if (Match(TokenType.Identifier))

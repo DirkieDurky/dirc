@@ -16,8 +16,8 @@ public class IfStatements
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -53,8 +53,8 @@ public class IfStatements
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -83,8 +83,8 @@ public class IfStatements
         """
         import print;
         
-        x = 5;
-        y = 4;
+        int x = 5;
+        int y = 4;
         y++;
 
         if (x == y) {
@@ -93,8 +93,8 @@ public class IfStatements
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -150,8 +150,8 @@ public class IfStatements
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -192,8 +192,8 @@ public class IfStatements
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -231,8 +231,8 @@ public class IfStatements
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -268,8 +268,8 @@ public class IfStatements
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -305,8 +305,8 @@ public class IfStatements
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -342,8 +342,8 @@ public class IfStatements
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -379,8 +379,8 @@ public class IfStatements
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -409,12 +409,12 @@ public class IfStatements
         """
         import print;
         
-        print(2 == 2);
+        printBool(2 == 2);
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -429,7 +429,7 @@ public class IfStatements
         label _condition0
         mov|i1 0 _ r0
         label _conditionEnd0
-        call print _ _
+        call printBool _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
@@ -444,12 +444,12 @@ public class IfStatements
         """
         import print;
 
-        print(1 == 2);
+        printBool(1 == 2);
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -464,7 +464,7 @@ public class IfStatements
         label _condition0
         mov|i1 0 _ r0
         label _conditionEnd0
-        call print _ _
+        call printBool _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
@@ -485,8 +485,8 @@ public class IfStatements
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -518,8 +518,8 @@ public class IfStatements
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -546,15 +546,15 @@ public class IfStatements
         """
         import print;
 
-        x = 1;
+        int x = 1;
         if (x) {
             print(3);
         }
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -586,15 +586,15 @@ public class IfStatements
         """
         import print;
 
-        x = 0;
+        int x = 0;
         if (x) {
             print(3);
         }
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -632,8 +632,8 @@ public class IfStatements
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -665,8 +665,8 @@ public class IfStatements
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print

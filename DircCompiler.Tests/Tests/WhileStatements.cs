@@ -9,7 +9,7 @@ public class WhileStatements
         """
         import print;
 
-        i = 0;
+        int i = 0;
         while (i < 5) {
             print(i);
             i++;
@@ -17,8 +17,8 @@ public class WhileStatements
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -63,8 +63,8 @@ public class WhileStatements
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print

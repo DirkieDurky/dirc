@@ -9,14 +9,14 @@ public class VariableCalculations
         """
         import print;
         
-        x = 4;
-        y = 3;
+        int x = 4;
+        int y = 3;
         print(x + y);
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -51,14 +51,14 @@ public class VariableCalculations
         """
         import print;
         
-        x = 4;
-        y = 3;
+        int x = 4;
+        int y = 3;
         print(x - y);
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -93,14 +93,14 @@ public class VariableCalculations
         """
         import print;
         
-        x = 0b11110000;
-        y = 0b00110000;
+        int x = 0b11110000;
+        int y = 0b00110000;
         print(x & y);
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -135,14 +135,14 @@ public class VariableCalculations
         """
         import print;
         
-        x = 0b11110000;
-        y = 0b00001100;
+        int x = 0b11110000;
+        int y = 0b00001100;
         print(x | y);
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -177,14 +177,14 @@ public class VariableCalculations
         """
         import print;
         
-        x = 0b11110000;
-        y = 0b00110000;
+        int x = 0b11110000;
+        int y = 0b00110000;
         print(x ^ y);
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print

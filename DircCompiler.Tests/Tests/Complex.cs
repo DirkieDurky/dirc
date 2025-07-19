@@ -8,19 +8,19 @@ public class Complex
         string source =
         """
         import print;
-        print4(num) {
+        void print4(int num) {
             print(num + 4);
         }
 
-        print25(num) {
+        void print25(int num) {
             print(num + 25);
         }
 
-        print60(num) {
+        void print60(int num) {
             print(60 + num);
         }
 
-        print10(bum) {
+        void print10(int bum) {
             print(bum + 10);
         }
 
@@ -31,8 +31,8 @@ public class Complex
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -124,10 +124,10 @@ public class Complex
         string source =
         """
         import print;
-        test() {
-            x = 5;
-            y = 10;
-            result = x + y;
+        void test() {
+            int x = 5;
+            int y = 10;
+            int result = x + y;
             print(result);
         } 
 
@@ -135,8 +135,8 @@ public class Complex
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print

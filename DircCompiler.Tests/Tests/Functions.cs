@@ -13,8 +13,8 @@ public class Functions
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -39,56 +39,14 @@ public class Functions
         """
         import print;
 
-        function myprint(num) {
+        void myprint(int num) {
             print(num);
         }
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
-        jump _start _ pc
-
-        label print
-        mov r0 _ out
-        return _ _ _
-
-        label myprint
-        push lr _ _
-        push fp _ _
-        mov sp _ fp
-        push r0 _ _
-        call print _ _
-        pop _ _ r0
-        mov fp _ sp
-        pop _ _ fp
-        pop _ _ lr
-        return _ _ _
-
-        label _start
-        mov sp _ fp
-        """.TrimIndents();
-
-        string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
-
-        Assert.Equal(expected.Split(Environment.NewLine), assembly);
-    }
-
-    [Fact]
-    public void CustomFunctionWithoutKeyword()
-    {
-        string source =
-        """
-        import print;
-
-        myprint(num) {
-            print(num);
-        }
-        """.TrimIndents();
-
-        string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -123,7 +81,7 @@ public class Functions
         """
         import print;
 
-        function myprint(num) {
+        void myprint(int num) {
             print(num);
         }
 
@@ -131,8 +89,8 @@ public class Functions
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -169,7 +127,7 @@ public class Functions
         """
         import print;
 
-        function myprint(num) {
+        void myprint(int num) {
             print(num);
         }
 
@@ -181,8 +139,8 @@ public class Functions
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
@@ -235,12 +193,12 @@ public class Functions
         """
         import print;
 
-        print() {
+        void print() {
             print(3);
         }
         """.TrimIndents();
 
-        Assert.Throws<CodeGenException>(() => new Compiler().Compile(source, new([]), new("unittests")));
+        Assert.Throws<SemanticException>(() => new Compiler().Compile(source, new([]), new("unittests")));
     }
 
     [Fact]
@@ -248,16 +206,16 @@ public class Functions
     {
         string source =
         """
-        asd() {
+        void asd() {
 
         }
 
-        asd() {
+        void asd() {
             
         }
         """.TrimIndents();
 
-        Assert.Throws<CodeGenException>(() => new Compiler().Compile(source, new([]), new("unittests")));
+        Assert.Throws<SemanticException>(() => new Compiler().Compile(source, new([]), new("unittests")));
     }
 
     [Fact]
@@ -268,7 +226,7 @@ public class Functions
         asd();
         """.TrimIndents();
 
-        Assert.Throws<CodeGenException>(() => new Compiler().Compile(source, new([]), new("unittests")));
+        Assert.Throws<SemanticException>(() => new Compiler().Compile(source, new([]), new("unittests")));
     }
 
     [Fact]
@@ -280,22 +238,22 @@ public class Functions
 
         test();
 
-        rest() {
+        void rest() {
             print(1);
         }
 
-        best() {
+        void best() {
             rest();
         }
 
-        test() {
+        void test() {
             best();
         }
         """.TrimIndents();
 
         string expected =
-        """
-        sub|i2 sp 1 sp
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
         label print
