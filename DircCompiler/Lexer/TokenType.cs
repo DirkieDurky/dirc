@@ -7,7 +7,7 @@ public enum TokenType
     LeftBrace, RightBrace,
     LeftBracket, RightBracket,
     Comma, Semicolon,
-    Plus, Minus, Asterisk, Slash, Or, And, Xor,
+    Plus, Minus, Asterisk, Slash, Pipe, Ampersand, Caret,
     Equals, ExclamationPoint,
 
     // Multi-character operators
@@ -17,7 +17,7 @@ public enum TokenType
     Greater, GreaterEqual,
     // Assignment shorthands
     PlusEqual, MinusEqual, AsteriskEqual,
-    SlashEqual, OrEqual, AndEqual, XorEqual,
+    SlashEqual, PipeEqual, AmpersandEqual, CaretEqual,
 
     // Literals
     Identifier,

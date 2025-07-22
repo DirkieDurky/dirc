@@ -63,9 +63,9 @@ class Lexer
             case '+': AddToken(TokenType.Plus); break;
             case '-': AddToken(TokenType.Minus); break;
             case '*': AddToken(TokenType.Asterisk); break;
-            case '|': AddToken(TokenType.Or); break;
-            case '&': AddToken(TokenType.And); break;
-            case '^': AddToken(TokenType.Xor); break;
+            case '|': AddToken(TokenType.Pipe); break;
+            case '&': AddToken(TokenType.Ampersand); break;
+            case '^': AddToken(TokenType.Caret); break;
             case '/':
                 if (NextIs('/'))
                 {

@@ -323,7 +323,7 @@ class Parser
     private AstNode ParseOr()
     {
         AstNode expr = ParseXor();
-        while (Match(TokenType.Or))
+        while (Match(TokenType.Pipe))
         {
             Operation op = OperationFromToken(Previous());
             AstNode right = ParseXor();
@@ -335,7 +335,7 @@ class Parser
     private AstNode ParseXor()
     {
         AstNode expr = ParseAnd();
-        while (Match(TokenType.Xor))
+        while (Match(TokenType.Caret))
         {
             Operation op = OperationFromToken(Previous());
             AstNode right = ParseAnd();
@@ -347,7 +347,7 @@ class Parser
     private AstNode ParseAnd()
     {
         AstNode expr = ParseAddition();
-        while (Match(TokenType.And))
+        while (Match(TokenType.Ampersand))
         {
             Operation op = OperationFromToken(Previous());
             AstNode right = ParseAddition();
@@ -455,9 +455,9 @@ class Parser
             TokenType.Minus => Operation.Sub,
             TokenType.Asterisk => Operation.Mul,
             TokenType.Slash => Operation.Div,
-            TokenType.Or => Operation.Or,
-            TokenType.And => Operation.And,
-            TokenType.Xor => Operation.Xor,
+            TokenType.Pipe => Operation.Or,
+            TokenType.Ampersand => Operation.And,
+            TokenType.Caret => Operation.Xor,
             _ => throw new SyntaxException("Invalid operation specified", token, _compilerOptions, _compilerContext)
         };
     }
