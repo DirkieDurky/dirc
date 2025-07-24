@@ -15,8 +15,8 @@ public class Types
     {
         var nodes = new List<AstNode>
         {
-            new FunctionDeclarationNode(T("foo"), "foo", new TypeNode(T("int"), "int"), new(), new()),
-            new FunctionDeclarationNode(T("foo"), "foo", new TypeNode(T("int"), "int"), new(), new()),
+            new FunctionDeclarationNode(T("foo"), "foo", new NamedTypeNode(T("int"), "int"), new(), new()),
+            new FunctionDeclarationNode(T("foo"), "foo", new NamedTypeNode(T("int"), "int"), new(), new()),
         };
         Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, _options, _context));
     }
@@ -26,8 +26,8 @@ public class Types
     {
         var nodes = new List<AstNode>
         {
-            new VariableDeclarationNode(new TypeNode(T("int"), "int"), T("x")),
-            new VariableDeclarationNode(new TypeNode(T("int"), "int"), T("x")),
+            new VariableDeclarationNode(new NamedTypeNode(T("int"), "int"), T("x")),
+            new VariableDeclarationNode(new NamedTypeNode(T("int"), "int"), T("x")),
         };
         Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, _options, _context));
     }
@@ -35,9 +35,9 @@ public class Types
     [Fact]
     public void ThrowsOnAssignmentToUndeclaredVariable()
     {
-        var nodes = new List<AstNode>
+        var nodes = new List<AstNode>()
         {
-            new VariableAssignmentNode(T("x"), "x", new NumberLiteralNode(NumberLiteralType.Decimal, "1")),
+            new VariableAssignmentNode(new IdentifierNode(T("x"), "x"), T("x"), new NumberLiteralNode(NumberLiteralType.Decimal, "1")),
         };
         Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, _options, _context));
     }
@@ -57,7 +57,7 @@ public class Types
     {
         var nodes = new List<AstNode>
         {
-            new VariableDeclarationNode(new TypeNode(T("bool"), "bool"), T("x"), new NumberLiteralNode(NumberLiteralType.Decimal, "1")),
+            new VariableDeclarationNode(new NamedTypeNode(T("bool"), "bool"), T("x"), new NumberLiteralNode(NumberLiteralType.Decimal, "1")),
         };
         Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, _options, _context));
     }
@@ -67,8 +67,8 @@ public class Types
     {
         var nodes = new List<AstNode>
         {
-            new VariableDeclarationNode(new TypeNode(T("int"), "int"), T("x")),
-            new VariableAssignmentNode(T("x"), "x", new BooleanLiteralNode(true)),
+            new VariableDeclarationNode(new NamedTypeNode(T("int"), "int"), T("x")),
+            new VariableAssignmentNode(new IdentifierNode(T("x"), "x"), T("x"), new BooleanLiteralNode(true)),
         };
         Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, _options, _context));
     }
@@ -108,10 +108,10 @@ public class Types
     [Fact]
     public void ThrowsOnFunctionArgumentCountMismatch()
     {
-        var parameters = new List<FunctionParameterNode> { new FunctionParameterNode(T("int"), new TypeNode(T("int"), "int"), "a") };
+        var parameters = new List<FunctionParameterNode> { new FunctionParameterNode(T("int"), new NamedTypeNode(T("int"), "int"), "a") };
         var nodes = new List<AstNode>
         {
-            new FunctionDeclarationNode(T("foo"), "foo", new TypeNode(T("int"), "int"), parameters, new()),
+            new FunctionDeclarationNode(T("foo"), "foo", new NamedTypeNode(T("int"), "int"), parameters, new()),
             new CallExpressionNode(T("foo"), "foo", new List<AstNode>())
         };
         Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, _options, _context));
@@ -120,10 +120,10 @@ public class Types
     [Fact]
     public void ThrowsOnFunctionArgumentTypeMismatch()
     {
-        var parameters = new List<FunctionParameterNode> { new FunctionParameterNode(T("int"), new TypeNode(T("int"), "int"), "a") };
+        var parameters = new List<FunctionParameterNode> { new FunctionParameterNode(T("int"), new NamedTypeNode(T("int"), "int"), "a") };
         var nodes = new List<AstNode>
         {
-            new FunctionDeclarationNode(T("foo"), "foo", new TypeNode(T("int"), "int"), parameters, new()),
+            new FunctionDeclarationNode(T("foo"), "foo", new NamedTypeNode(T("int"), "int"), parameters, new()),
             new CallExpressionNode(T("foo"), "foo", new List<AstNode> { new BooleanLiteralNode(true) })
         };
         Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, _options, _context));
@@ -135,7 +135,7 @@ public class Types
         var parameters = new List<FunctionParameterNode>();
         var nodes = new List<AstNode>
         {
-            new FunctionDeclarationNode(T("foo"), "foo", new TypeNode(T("int"), "int"), parameters, new List<AstNode> {
+            new FunctionDeclarationNode(T("foo"), "foo", new NamedTypeNode(T("int"), "int"), parameters, new List<AstNode> {
                 new ReturnStatementNode(new BooleanLiteralNode(true))
             })
         };
@@ -148,11 +148,12 @@ public class Types
         var nodes = new List<AstNode>
             {
                 new VariableDeclarationNode(
-                    new TypeNode(T("int"), "int"),
+                    new NamedTypeNode(T("int"), "int"),
                     new Token(TokenType.Identifier, "x", null, 1),
                     null)
             };
-        new SemanticAnalyzer(_options, _context).Analyze(nodes, _options, _context);
+        Exception e = Record.Exception(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, _options, _context));
+        Assert.Null(e);
     }
 
     [Fact]
@@ -161,7 +162,7 @@ public class Types
         var nodes = new List<AstNode>
             {
                 new VariableDeclarationNode(
-                    new TypeNode(T("asd"), "asd"),
+                    new NamedTypeNode(T("asd"), "asd"),
                     new Token(TokenType.Identifier, "x", null, 1),
                     null)
             };
@@ -174,7 +175,7 @@ public class Types
         var func = new FunctionDeclarationNode(
             new Token(TokenType.Identifier, "foo", null, 1),
             "foo",
-            new TypeNode(T("asd"), "asd"),
+            new NamedTypeNode(T("asd"), "asd"),
             new List<FunctionParameterNode>(),
             new List<AstNode>()
         );
@@ -188,8 +189,8 @@ public class Types
         var func = new FunctionDeclarationNode(
             new Token(TokenType.Identifier, "foo", null, 1),
             "foo",
-            new TypeNode(T("int"), "int"),
-            new List<FunctionParameterNode> { new FunctionParameterNode(T("asd"), new TypeNode(T("asd"), "asd"), "x") },
+            new NamedTypeNode(T("int"), "int"),
+            new List<FunctionParameterNode> { new FunctionParameterNode(T("asd"), new NamedTypeNode(T("asd"), "asd"), "x") },
             new List<AstNode>()
         );
         var nodes = new List<AstNode> { func };

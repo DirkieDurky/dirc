@@ -43,24 +43,26 @@ class Parser
         }
 
         // Function, array, or variable declarations
-        if (Check(TokenType.Identifier) && CheckNext(TokenType.Identifier))
+        if (Check(TokenType.Identifier) && CheckNext(TokenType.Identifier) || CheckNext(TokenType.Asterisk))
         {
-            Token typeToken = Advance();
-            Token nameToken = Advance();
-            if (Match(TokenType.LeftParen))
+            _current += 2;
+            if (Check(TokenType.LeftParen))
             {
-                AstNode node = ParseFunctionDeclaration(nameToken, typeToken);
+                _current -= 2;
+                AstNode node = ParseFunctionDeclaration();
                 return [node];
             }
-            else if (Match(TokenType.LeftBracket))
+            else if (Check(TokenType.LeftBracket))
             {
-                AstNode node = ParseArrayDeclaration(typeToken, nameToken);
+                _current -= 2;
+                AstNode node = ParseArrayDeclaration();
                 Consume(TokenType.Semicolon, "Expected ';' after array declaration");
                 return [node];
             }
             else
             {
-                VariableDeclarationNode node = ParseVariableDeclaration(typeToken, nameToken);
+                _current -= 2;
+                VariableDeclarationNode node = ParseVariableDeclaration();
                 Consume(TokenType.Semicolon, "Expected ';' after variable declaration");
                 return [node];
             }
@@ -97,9 +99,7 @@ class Parser
             {
                 if (Check(TokenType.Identifier) && CheckNext(TokenType.Identifier))
                 {
-                    Token typeToken = Advance();
-                    Token nameToken = Advance();
-                    initial = ParseVariableDeclaration(typeToken, nameToken);
+                    initial = ParseVariableDeclaration();
                 }
                 else
                 {
@@ -130,6 +130,12 @@ class Parser
             result.Add(new WhileStatementNode(condition ?? new BooleanLiteralNode(true), body));
             return result;
         }
+        else if (Check(TokenType.Asterisk))
+        {
+            VariableAssignmentNode node = ParseVariableAssignment();
+            Consume(TokenType.Semicolon, "Expected ';' after variable assignment");
+            return [node];
+        }
         else if (Check(TokenType.Identifier))
         {
             if (CheckNext(TokenType.LeftBracket))
@@ -151,7 +157,8 @@ class Parser
                 }
                 else
                 {
-                    VariableAssignmentNode node = ParseVariableAssignment(name);
+                    _current--;
+                    VariableAssignmentNode node = ParseVariableAssignment();
                     Consume(TokenType.Semicolon, "Expected ';' after variable assignment");
                     return [node];
                 }
@@ -199,34 +206,44 @@ class Parser
         return new CallExpressionNode(nameToken, nameToken.Lexeme, args);
     }
 
-    private FunctionDeclarationNode ParseFunctionDeclaration(Token nameToken, Token returnTypeToken)
+    private FunctionDeclarationNode ParseFunctionDeclaration()
     {
+        TypeNode returnType = ParseType();
+        Token name = Advance();
+        Consume(TokenType.LeftParen, "Expected '(' after function name");
         List<FunctionParameterNode> parameters = new();
         if (!Check(TokenType.RightParen))
         {
             do
             {
-                Token paramType = Consume(TokenType.Identifier, "No parameter type provided");
+                TypeNode paramType = ParseType();
                 Token paramName = Consume(TokenType.Identifier, "No parameter name provided");
-                parameters.Add(new FunctionParameterNode(paramType, new NamedTypeNode(paramType, paramType.Lexeme), paramName.Lexeme));
+                parameters.Add(new FunctionParameterNode(paramName, paramType, paramName.Lexeme));
             } while (Match(TokenType.Comma));
         }
         Consume(TokenType.RightParen, "Expected ')' after parameters");
-        return new FunctionDeclarationNode(nameToken, nameToken.Lexeme, new NamedTypeNode(returnTypeToken, returnTypeToken.Lexeme), parameters, ParseBody("function"));
+        return new FunctionDeclarationNode(name, name.Lexeme, returnType, parameters, ParseBody("function"));
     }
 
-    private VariableDeclarationNode ParseVariableDeclaration(Token typeToken, Token nameToken)
+    private VariableDeclarationNode ParseVariableDeclaration()
     {
+        TypeNode type = ParseType();
+        Token name = Advance();
+
         AstNode? initializer = null;
         if (Match(TokenType.Equals))
         {
             initializer = ParseExpression();
         }
-        return new VariableDeclarationNode(new NamedTypeNode(typeToken, typeToken.Lexeme), nameToken, initializer);
+        return new VariableDeclarationNode(type, name, initializer);
     }
 
-    private ArrayDeclarationNode ParseArrayDeclaration(Token typeToken, Token nameToken)
+    private ArrayDeclarationNode ParseArrayDeclaration()
     {
+        TypeNode type = ParseType();
+        Token name = Advance();
+        Consume(TokenType.LeftBracket, "Expected '[' in array declaration");
+
         AstNode size = ParseExpression();
         Consume(TokenType.RightBracket, "Expected ']' after array size");
 
@@ -236,7 +253,7 @@ class Parser
             initializer = ParseArrayLiteral();
         }
 
-        return new ArrayDeclarationNode(new NamedTypeNode(typeToken, typeToken.Lexeme), nameToken, size, initializer);
+        return new ArrayDeclarationNode(type, name, size, initializer);
     }
 
     private ArrayLiteralNode ParseArrayLiteral()
@@ -269,8 +286,22 @@ class Parser
         return body;
     }
 
-    private VariableAssignmentNode ParseVariableAssignment(Token name)
+    private VariableAssignmentNode ParseVariableAssignment()
     {
+        AstNode target;
+
+        AstNode? pointerDereference = ParsePointerDereference();
+        if (pointerDereference != null)
+        {
+            target = pointerDereference;
+        }
+        else
+        {
+            Token identifierToken = Consume(TokenType.Identifier, "Expected identifier in variable assignment");
+            target = new IdentifierNode(identifierToken, identifierToken.Lexeme);
+        }
+        Token targetName = Previous();
+
         AstNode? value;
         if (Match(TokenType.Equals))
         {
@@ -282,28 +313,28 @@ class Parser
             {
                 Advance();
                 Advance();
-                BinaryExpressionNode valuePlusOne = new BinaryExpressionNode(Operation.Add, new IdentifierNode(name, name.Lexeme), new NumberLiteralNode(1));
-                return new VariableAssignmentNode(name, name.Lexeme, valuePlusOne);
+                BinaryExpressionNode valuePlusOne = new BinaryExpressionNode(Operation.Add, target, new NumberLiteralNode(1));
+                return new VariableAssignmentNode(target, targetName, valuePlusOne);
             }
 
             if (Check(TokenType.Minus) && CheckNext(TokenType.Minus))
             {
                 Advance();
                 Advance();
-                BinaryExpressionNode valuePlusOne = new BinaryExpressionNode(Operation.Sub, new IdentifierNode(name, name.Lexeme), new NumberLiteralNode(1));
-                return new VariableAssignmentNode(name, name.Lexeme, valuePlusOne);
+                BinaryExpressionNode valuePlusOne = new BinaryExpressionNode(Operation.Sub, target, new NumberLiteralNode(1));
+                return new VariableAssignmentNode(target, targetName, valuePlusOne);
             }
 
             Operation op = OperationFromToken(Advance());
-            Consume(TokenType.Equals, "Expected '=' after operation in variable assignment shorthand");
+            Consume(TokenType.Equals, "Expected '=' after operation in variable assignment");
 
             value = ParseExpression();
 
-            BinaryExpressionNode newValue = new BinaryExpressionNode(op, new IdentifierNode(name, name.Lexeme), value);
-            return new VariableAssignmentNode(name, name.Lexeme, newValue);
+            BinaryExpressionNode newValue = new BinaryExpressionNode(op, target, value);
+            return new VariableAssignmentNode(target, targetName, newValue);
         }
 
-        return new VariableAssignmentNode(name, name.Lexeme, value);
+        return new VariableAssignmentNode(target, targetName, value);
     }
 
     private ExpressionStatementNode ParseExpressionStatement()
@@ -380,8 +411,29 @@ class Parser
         return expr;
     }
 
+    private AstNode? ParsePointerDereference()
+    {
+        // Pointer dereference: *expr
+        if (Match(TokenType.Asterisk))
+        {
+            Token name = Consume(TokenType.Identifier, "Expected identifier after '*'");
+            AstNode expr = new IdentifierNode(name, name.Lexeme);
+            return new PointerDereferenceNode(expr);
+        }
+        return null;
+    }
+
     private AstNode ParsePrimary()
     {
+        AstNode? pointerDereference = ParsePointerDereference();
+        if (pointerDereference != null) return pointerDereference;
+
+        // Address-of: &identifier
+        if (Match(TokenType.Ampersand))
+        {
+            Token name = Consume(TokenType.Identifier, "Expected identifier after '&'");
+            return new AddressOfNode(new IdentifierNode(name, name.Lexeme));
+        }
         if (Match(TokenType.Number))
         {
             return new NumberLiteralNode(NumberLiteralType.Decimal, (string)Previous().Literal!);
@@ -433,7 +485,8 @@ class Parser
                 if (Check(TokenType.Equals) || CheckNext(TokenType.Equals)
                 || (Check(TokenType.Plus) && CheckNext(TokenType.Plus)))
                 {
-                    return ParseVariableAssignment(name);
+                    _current--;
+                    return ParseVariableAssignment();
                 }
                 else
                 {
@@ -447,6 +500,17 @@ class Parser
     }
 
     // Utility methods
+    private TypeNode ParseType()
+    {
+        Token baseTypeToken = Consume(TokenType.Identifier, "Expected type name");
+        TypeNode type = new NamedTypeNode(baseTypeToken, baseTypeToken.Lexeme);
+        while (Match(TokenType.Asterisk))
+        {
+            type = new PointerTypeNode(baseTypeToken, type);
+        }
+        return type;
+    }
+
     private Operation OperationFromToken(Token token)
     {
         return token.Type switch

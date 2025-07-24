@@ -4,16 +4,17 @@ namespace DircCompiler.Parsing;
 
 public class VariableAssignmentNode : AstNode
 {
-    public Token IdentifierToken { get; }
-    public string Name { get; }
+    public AstNode Target { get; }
+    public Token TargetName { get; }
+    public string Name => TargetName.Lexeme;
     public AstNode Value { get; }
 
-    public VariableAssignmentNode(Token identifierToken, string name, AstNode value)
+    public VariableAssignmentNode(AstNode target, Token targetName, AstNode value)
     {
-        IdentifierToken = identifierToken;
-        Name = name;
+        Target = target;
+        TargetName = targetName;
         Value = value;
     }
 
-    public override string ToString() => $"VariableAssignment({Name}, {Value})";
+    public override string ToString() => $"VariableAssignment({Target}, {Value})";
 }

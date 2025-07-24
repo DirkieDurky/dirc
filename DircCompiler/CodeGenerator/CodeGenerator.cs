@@ -214,13 +214,13 @@ class CodeGenerator
         Emit($"pop _ _ {result}");
     }
 
-    public void EmitStore(IOperand value, IOperand location)
+    public void EmitStore(IOperand value, IOperand address)
     {
         string opSuffix = "";
         if (value is NumberLiteralNode) opSuffix += "|i1";
-        if (location is NumberLiteralNode) opSuffix += "|i2";
+        if (address is NumberLiteralNode) opSuffix += "|i2";
 
-        Emit($"store{opSuffix} {value.AsOperand()} {location.AsOperand()} _");
+        Emit($"store{opSuffix} {value.AsOperand()} {address.AsOperand()} _");
     }
 
     public void EmitLoad(IOperand location, Register result)

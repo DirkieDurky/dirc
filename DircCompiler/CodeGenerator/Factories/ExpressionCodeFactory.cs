@@ -1,5 +1,6 @@
 using DircCompiler.CodeGen.Allocating;
 using DircCompiler.Parsing;
+using DircCompiler.Semantic;
 
 namespace DircCompiler.CodeGen;
 
@@ -51,6 +52,10 @@ class ExpressionCodeFactory
                 return GenerateArrayAccess(arrayAccess, context);
             case ArrayAssignmentNode arrayAssign:
                 return GenerateArrayAssignment(arrayAssign, context);
+            case AddressOfNode addressOf:
+                return GenerateAddressOf(addressOf, context);
+            case PointerDereferenceNode deref:
+                return GeneratePointerDereference(deref, context);
             default:
                 throw new Exception($"Unhandled node {node}");
         }
@@ -127,9 +132,27 @@ class ExpressionCodeFactory
 
     private IReturnable? GenerateVariableAssignment(VariableAssignmentNode node, CodeGenContext context)
     {
-        int offset = context.VariableTable[node.Name].FramePointerOffset;
+        if (node.Target is IdentifierNode)
+        {
+            int offset = context.VariableTable[node.Name].FramePointerOffset;
 
-        return AssignVariable(offset, node.Value, context);
+            return AssignVariable(offset, node.Value, context);
+        }
+        else if (node.Target is PointerDereferenceNode target)
+        {
+            IReturnable address = Generate(target.PointerExpression, context) ?? throw new Exception("Pointer dereference failed to generate");
+            IReturnable value = Generate(node.Value, context) ?? throw new Exception("Initializer expression failed to generate");
+
+            context.CodeGen.EmitStore(value, address);
+            address.Free();
+            value.Free();
+
+            return value;
+        }
+        else
+        {
+            throw new CodeGenException("Invalid node type of left side of variable assignment", node.TargetName, context.CompilerOptions, context.CompilerContext);
+        }
     }
 
     private IReturnable? AssignVariable(int offset, AstNode assignment, CodeGenContext context)
@@ -472,5 +495,31 @@ class ExpressionCodeFactory
         address.Free();
 
         return valueResult;
+    }
+
+    private IReturnable GenerateAddressOf(AddressOfNode node, CodeGenContext context)
+    {
+        // Only support address of local variables for now
+        if (!context.VariableTable.TryGetValue(node.Variable.Name, out Variable? variable))
+        {
+            throw new CodeGenException($"Undefined variable '{node.Variable.Name}' for address-of", node.Variable.IdentifierToken, context.CompilerOptions, context.CompilerContext);
+        }
+        Register tmp = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
+        context.CodeGen.EmitBinaryOperation(
+            Operation.Sub,
+            ReadonlyRegister.FP,
+            new NumberLiteralNode(NumberLiteralType.Decimal, variable.FramePointerOffset.ToString()),
+            tmp
+        );
+        return new ReturnRegister(tmp);
+    }
+
+    private IReturnable GeneratePointerDereference(PointerDereferenceNode node, CodeGenContext context)
+    {
+        IReturnable pointerValue = Generate(node.PointerExpression, context) ?? throw new Exception("Pointer expression failed to generate");
+        Register result = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
+        context.CodeGen.EmitLoad(pointerValue, result);
+        pointerValue.Free();
+        return new ReturnRegister(result);
     }
 }

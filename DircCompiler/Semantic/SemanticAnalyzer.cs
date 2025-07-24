@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using DircCompiler.CodeGen;
 using DircCompiler.Parsing;
 
@@ -46,14 +45,11 @@ public class SemanticAnalyzer
             {
                 if (!_validReturnTypes.ContainsKey(func.ReturnType.TypeName))
                 {
-                    throw new SemanticException($"Unknown return type '{func.ReturnType.TypeName}' in function '{func.Name}'", func.ReturnType.IdentifierToken, options, context);
+                    ResolveType(func.ReturnType);
                 }
                 foreach (FunctionParameterNode param in func.Parameters)
                 {
-                    if (!_validTypes.ContainsKey(param.Type.TypeName))
-                    {
-                        throw new SemanticException($"Unknown parameter type '{param.Type.TypeName}' in function '{func.Name}'", null, options, context);
-                    }
+                    ResolveType(param.Type);
                 }
                 FunctionSignature signature = new FunctionSignature(_validReturnTypes[func.ReturnType.TypeName], func.Parameters);
                 if (_functions.ContainsKey(func.Name))
@@ -87,11 +83,7 @@ public class SemanticAnalyzer
             case NumberLiteralNode:
                 return Int.Instance;
             case VariableDeclarationNode varDecl:
-                if (!_validTypes.ContainsKey(varDecl.Type.TypeName))
-                {
-                    throw new SemanticException($"Unknown type '{varDecl.TypeName}' for variable '{varDecl.Name}'", varDecl.IdentifierToken, options, context);
-                }
-                Type varType = _validTypes[varDecl.TypeName];
+                Type varType = ResolveType(varDecl.Type);
                 if (_variables.ContainsKey(varDecl.Name))
                 {
                     throw new SemanticException($"Variable '{varDecl.Name}' already declared", varDecl.IdentifierToken, options, context);
@@ -105,21 +97,29 @@ public class SemanticAnalyzer
                     Type? initType = AnalyzeNode(varDecl.Initializer, varType, options, context);
                     if (initType != null && initType != varType)
                     {
-                        throw new SemanticException($"Type mismatch in initialization of '{varDecl.Name}': expected {varType.Name}, got {initType.Name}", varDecl.IdentifierToken, options, context);
+                        // Allow int assigned to pointer for now
+                        if (!(varType is Pointer && initType == Int.Instance))
+                        {
+                            throw new SemanticException($"Type mismatch in initialization of '{varDecl.Name}': expected {varType.Name}, got {initType.Name}", varDecl.IdentifierToken, options, context);
+                        }
                     }
                 }
                 return null;
             case VariableAssignmentNode varAssign:
                 if (!_variables.TryGetValue(varAssign.Name, out Type? assignType))
                 {
-                    throw new SemanticException($"Assignment to undeclared variable '{varAssign.Name}'", varAssign.IdentifierToken, options, context);
+                    throw new SemanticException($"Assignment to undeclared variable '{varAssign.Name}'", varAssign.TargetName, options, context);
                 }
                 if (varAssign.Value != null)
                 {
                     Type? valueType = AnalyzeNode(varAssign.Value, assignType, options, context);
                     if (assignType != null && valueType != null && valueType != assignType)
                     {
-                        throw new SemanticException($"Type mismatch in assignment to '{varAssign.Name}': expected {assignType.Name}, got {valueType.Name}", varAssign.IdentifierToken, options, context);
+                        // Allow int assigned to pointer for now
+                        if (!(assignType is Pointer && valueType == Int.Instance))
+                        {
+                            throw new SemanticException($"Type mismatch in assignment to '{varAssign.Name}': expected {assignType.Name}, got {valueType.Name}", varAssign.TargetName, options, context);
+                        }
                     }
                 }
                 return assignType;
@@ -166,12 +166,9 @@ public class SemanticAnalyzer
                 }
                 for (int i = 0; i < Math.Min(call.Arguments.Count, sig.Parameters.Count); i++)
                 {
-                    if (!_validTypes.ContainsKey(sig.Parameters[i].Type.TypeName))
-                    {
-                        throw new SemanticException($"Unknown type '{sig.Parameters[i].Type.TypeName}' for argument '{sig.Parameters[i].Name}'", sig.Parameters[i].IdentifierToken, options, context);
-                    }
-                    Type? argType = AnalyzeNode(call.Arguments[i], _validTypes[sig.Parameters[i].Type.TypeName], options, context);
-                    if (argType != null && argType.Name != sig.Parameters[i].Type.TypeName)
+                    Type parameterType = ResolveType(sig.Parameters[i].Type);
+                    Type? argType = AnalyzeNode(call.Arguments[i], parameterType, options, context);
+                    if (argType != null && argType != parameterType)
                     {
                         throw new SemanticException($"Type mismatch in argument {i + 1} of '{call.Callee}': expected {sig.Parameters[i].Type.TypeName}, got {argType.Name}", call.CalleeToken, options, context);
                     }
@@ -182,7 +179,14 @@ public class SemanticAnalyzer
                 Dictionary<string, Type> oldVars = new(_variables);
                 foreach (FunctionParameterNode param in func.Parameters)
                 {
-                    _variables[param.Name] = _validTypes[param.Type.TypeName];
+                    if (param.Type is PointerTypeNode pointerType)
+                    {
+                        _variables[param.Name] = Pointer.Of(_validTypes[pointerType.BaseType.TypeName]);
+                    }
+                    else
+                    {
+                        _variables[param.Name] = _validTypes[param.Type.TypeName];
+                    }
                 }
                 foreach (AstNode stmt in func.Body)
                 {
@@ -282,9 +286,29 @@ public class SemanticAnalyzer
                 }
 
                 return assignArrayType;
+            case PointerDereferenceNode deref:
+                Type ptrType = AnalyzeNode(deref.PointerExpression, null, options, context)!;
+                if (ptrType is Pointer p) return p.BaseType;
+                throw new SemanticException($"Cannot dereference non-pointer type {ptrType.Name}", null, options, context);
+            case AddressOfNode addr:
+                Type varType2 = AnalyzeNode(addr.Variable, null, options, context)!;
+                return Pointer.Of(varType2);
             default:
-                // For other nodes, just recurse if they have children
                 return null;
         }
+    }
+
+    private Type ResolveType(TypeNode node)
+    {
+        if (node is NamedTypeNode named)
+        {
+            if (_validTypes.TryGetValue(named.TypeName, out var t)) return t;
+            throw new SemanticException($"Unknown type '{named.TypeName}'", named.IdentifierToken, _compilerOptions, _compilerContext);
+        }
+        if (node is PointerTypeNode ptr)
+        {
+            return Pointer.Of(ResolveType(ptr.BaseType));
+        }
+        throw new SemanticException($"Unknown type node", null, _compilerOptions, _compilerContext);
     }
 }

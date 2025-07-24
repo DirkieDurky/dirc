@@ -3,59 +3,51 @@ namespace DircCompiler.Tests;
 public class Arrays
 {
     [Fact]
-    public void TestArrayDeclaration()
+    public void Declaration()
     {
         string source = "int nums[5];";
 
-        // This test should compile without errors
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
 
-        // For now, just verify it compiles successfully
         Assert.NotNull(assembly);
         Assert.True(assembly.Length > 0);
     }
 
     [Fact]
-    public void TestArrayAssignment()
+    public void Assignment()
     {
         string source = "int nums[5]; nums[2] = 42;";
 
-        // This test should compile without errors
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
 
-        // For now, just verify it compiles successfully
         Assert.NotNull(assembly);
         Assert.True(assembly.Length > 0);
     }
 
     [Fact]
-    public void TestArrayAccess()
+    public void Access()
     {
         string source = "int nums[5]; int x = nums[2];";
 
-        // This test should compile without errors
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
 
-        // For now, just verify it compiles successfully
         Assert.NotNull(assembly);
         Assert.True(assembly.Length > 0);
     }
 
     [Fact]
-    public void TestArrayLiteral()
+    public void Literal()
     {
         string source = "int nums[5] = {1, 2, 3, 4, 5};";
 
-        // This test should compile without errors
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
 
-        // For now, just verify it compiles successfully
         Assert.NotNull(assembly);
         Assert.True(assembly.Length > 0);
     }
 
     [Fact]
-    public void TestArrayWithPrint()
+    public void WithPrint()
     {
         string source =
         """
@@ -68,13 +60,11 @@ public class Arrays
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
 
-        // Verify it compiles successfully
         Assert.NotNull(assembly);
         Assert.True(assembly.Length > 0);
 
-        // Check that the assembly contains array-related operations
         string assemblyText = string.Join("\n", assembly);
-        Assert.Contains("store", assemblyText); // Should contain store operations for array assignment
-        Assert.Contains("load", assemblyText);  // Should contain load operations for array access
+        Assert.Contains("store", assemblyText);
+        Assert.Contains("load", assemblyText);
     }
 }
