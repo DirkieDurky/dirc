@@ -99,10 +99,11 @@ public class SemanticAnalyzer
                     if (initType != null && initType != varType)
                     {
                         // Allow int assigned to pointer for now
-                        if (!(varType is Pointer && initType == Int.Instance))
-                        {
-                            throw new SemanticException($"Type mismatch in initialization of '{varDecl.Name}': expected {varType.Name}, got {initType.Name}", varDecl.IdentifierToken, options, context);
-                        }
+                        if (varType is Pointer && initType == Int.Instance) return null;
+                        // Allow anything for void pointers
+                        if (initType is Pointer initTypePtr && initTypePtr.BaseType == Void.Instance) return null;
+
+                        throw new SemanticException($"Type mismatch in initialization of '{varDecl.Name}': expected {varType.Name}, got {initType.Name}", varDecl.IdentifierToken, options, context);
                     }
                 }
                 return null;
@@ -172,6 +173,9 @@ public class SemanticAnalyzer
                     Type? argType = AnalyzeNode(call.Arguments[i], parameterType, options, context);
                     if (argType != null && argType != parameterType)
                     {
+                        // Allow anything for void pointers
+                        if (parameterType is Pointer paramTypePtr && paramTypePtr.BaseType == Void.Instance) return sig.ReturnType;
+
                         throw new SemanticException($"Type mismatch in argument {i + 1} of '{call.Callee}': expected {sig.Parameters[i].Type.TypeName}, got {argType.Name}", call.CalleeToken, options, context);
                     }
                 }

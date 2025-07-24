@@ -41,10 +41,7 @@ class FunctionCodeFactory
     public void CompileStandardFunction(CodeGenContext context, StandardFunction function)
     {
         context.CodeGen.EmitLabel(function.Name);
-        foreach (string line in function.Code)
-        {
-            context.CodeGen.Emit(line);
-        }
+        context.CodeGen.Emit(function.Code);
         context.CodeGen.EmitReturn();
     }
 }
