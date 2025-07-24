@@ -43,7 +43,13 @@ static class StandardLibrary
             mov|i1 0 _ r1
             label findFreeLoop
             load r1 _ r2
+            ifNotEq|i2 r2 0 notAvailable
+            add|i2 r1 1 r1
+            load r1 _ r2
             ifEq|i2 r2 0 allocate
+            load r1 _ r2
+            ifLessOrEq|i2 r2 r0 allocate
+            label notAvailable
             add|i2 r1 1 r1
             load r1 _ r2
             add r1 r2 r1
@@ -52,6 +58,7 @@ static class StandardLibrary
 
             label allocate
             # Mark as in use
+            sub|i2 r1 1 r1
             store|i1 1 r1 _
             add|i2 r1 1 r1
             store r0 r1 _
