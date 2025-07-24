@@ -13,5 +13,5 @@ public class FunctionParameterNode
         Type = type;
         Name = name;
     }
-    public override string ToString() => $"{Type.TypeName} {Name}";
+    public override string ToString() => $"{Type} {Name}";
 }

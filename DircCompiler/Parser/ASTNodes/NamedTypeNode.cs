@@ -8,5 +8,5 @@ public class NamedTypeNode : TypeNode
     {
     }
 
-    public override string ToString() => $"Type({TypeName})";
+    public override string ToString() => $"NamedType({TypeName})";
 }

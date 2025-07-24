@@ -208,11 +208,11 @@ class Parser
             {
                 Token paramType = Consume(TokenType.Identifier, "No parameter type provided");
                 Token paramName = Consume(TokenType.Identifier, "No parameter name provided");
-                parameters.Add(new FunctionParameterNode(paramType, new TypeNode(paramType, paramType.Lexeme), paramName.Lexeme));
+                parameters.Add(new FunctionParameterNode(paramType, new NamedTypeNode(paramType, paramType.Lexeme), paramName.Lexeme));
             } while (Match(TokenType.Comma));
         }
         Consume(TokenType.RightParen, "Expected ')' after parameters");
-        return new FunctionDeclarationNode(nameToken, nameToken.Lexeme, new TypeNode(returnTypeToken, returnTypeToken.Lexeme), parameters, ParseBody("function"));
+        return new FunctionDeclarationNode(nameToken, nameToken.Lexeme, new NamedTypeNode(returnTypeToken, returnTypeToken.Lexeme), parameters, ParseBody("function"));
     }
 
     private VariableDeclarationNode ParseVariableDeclaration(Token typeToken, Token nameToken)
@@ -222,7 +222,7 @@ class Parser
         {
             initializer = ParseExpression();
         }
-        return new VariableDeclarationNode(new TypeNode(typeToken, typeToken.Lexeme), nameToken, initializer);
+        return new VariableDeclarationNode(new NamedTypeNode(typeToken, typeToken.Lexeme), nameToken, initializer);
     }
 
     private ArrayDeclarationNode ParseArrayDeclaration(Token typeToken, Token nameToken)
@@ -236,7 +236,7 @@ class Parser
             initializer = ParseArrayLiteral();
         }
 
-        return new ArrayDeclarationNode(new TypeNode(typeToken, typeToken.Lexeme), nameToken, size, initializer);
+        return new ArrayDeclarationNode(new NamedTypeNode(typeToken, typeToken.Lexeme), nameToken, size, initializer);
     }
 
     private ArrayLiteralNode ParseArrayLiteral()

@@ -19,5 +19,5 @@ public class ArrayDeclarationNode : AstNode
         Initializer = initializer;
     }
 
-    public override string ToString() => $"ArrayDeclaration({TypeName} {Name}[{Size}], {Initializer})";
+    public override string ToString() => $"ArrayDeclaration({Type} {Name}[{Size}], {Initializer})";
 }

@@ -11,5 +11,5 @@ public class PointerTypeNode : TypeNode
         BaseType = baseType;
     }
 
-    public override string ToString() => $"Type({TypeName})";
+    public override string ToString() => $"PointerType({TypeName})";
 }

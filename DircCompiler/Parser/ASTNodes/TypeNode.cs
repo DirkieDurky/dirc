@@ -2,7 +2,7 @@ using DircCompiler.Lexing;
 
 namespace DircCompiler.Parsing;
 
-public class TypeNode : AstNode
+public abstract class TypeNode : AstNode
 {
     public Token IdentifierToken { get; }
     public string TypeName { get; }

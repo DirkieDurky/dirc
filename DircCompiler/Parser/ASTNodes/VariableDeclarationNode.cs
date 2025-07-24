@@ -17,5 +17,5 @@ public class VariableDeclarationNode : AstNode
         Initializer = initializer;
     }
 
-    public override string ToString() => $"VariableDeclaration({TypeName} {Name}, {Initializer})";
+    public override string ToString() => $"VariableDeclaration({Type} {Name}, {Initializer})";
 }

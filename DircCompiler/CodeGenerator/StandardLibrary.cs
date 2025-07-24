@@ -13,14 +13,14 @@ static class StandardLibrary
         {"print", new StandardFunction("print",
         new FunctionSignature(
             Semantic.Void.Instance,
-            [new FunctionParameterNode(T("value"), new TypeNode(T("int"), "int"), "value")]
+            [new FunctionParameterNode(T("value"), new NamedTypeNode(T("int"), "int"), "value")]
         ),
             ["mov r0 _ out"]
         )},
         {"printBool", new StandardFunction("printBool",
         new FunctionSignature(
             Semantic.Void.Instance,
-            [new FunctionParameterNode(T("value"), new TypeNode(T("bool"), "bool"), "value")]
+            [new FunctionParameterNode(T("value"), new NamedTypeNode(T("bool"), "bool"), "value")]
         ),
             ["mov r0 _ out"]
         )},

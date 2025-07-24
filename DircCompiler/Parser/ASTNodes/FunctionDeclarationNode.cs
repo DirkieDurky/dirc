@@ -18,5 +18,5 @@ public class FunctionDeclarationNode : AstNode
         Parameters = parameters;
         Body = body;
     }
-    public override string ToString() => $"FunctionDeclaration({ReturnTypeName} {Name}, [{string.Join(", ", Parameters)}], [\n  {string.Join(",\n  ", Body)}\n])";
+    public override string ToString() => $"FunctionDeclaration({ReturnType} {Name}, [{string.Join(", ", Parameters)}], [\n  {string.Join(",\n  ", Body)}\n])";
 }
