@@ -48,7 +48,7 @@ static class StandardLibrary
             load r1 _ r2
             ifEq|i2 r2 0 allocate
             load r1 _ r2
-            ifLessOrEq|i2 r2 r0 allocate
+            ifMore r2 r0 allocate
             label notAvailable
             add|i2 r1 1 r1
             load r1 _ r2
@@ -61,7 +61,10 @@ static class StandardLibrary
             sub|i2 r1 1 r1
             store|i1 1 r1 _
             add|i2 r1 1 r1
+            load r1 _ r2
+            ifNotEq|i2 r2 0 dontOverride
             store r0 r1 _
+            label dontOverride
             add|i2 r1 1 r0
             """.TrimIndents()
         )},
