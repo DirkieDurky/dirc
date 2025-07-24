@@ -289,6 +289,7 @@ class Parser
     private VariableAssignmentNode ParseVariableAssignment()
     {
         AstNode target;
+        Token? targetName = null;
 
         AstNode? pointerDereference = ParsePointerDereference();
         if (pointerDereference != null)
@@ -299,8 +300,8 @@ class Parser
         {
             Token identifierToken = Consume(TokenType.Identifier, "Expected identifier in variable assignment");
             target = new IdentifierNode(identifierToken, identifierToken.Lexeme);
+            targetName = identifierToken;
         }
-        Token targetName = Previous();
 
         AstNode? value;
         if (Match(TokenType.Equals))
@@ -416,8 +417,17 @@ class Parser
         // Pointer dereference: *expr
         if (Match(TokenType.Asterisk))
         {
-            Token name = Consume(TokenType.Identifier, "Expected identifier after '*'");
-            AstNode expr = new IdentifierNode(name, name.Lexeme);
+            AstNode expr;
+            if (Match(TokenType.LeftParen))
+            {
+                expr = ParseExpression();
+                Consume(TokenType.RightParen, "Expected ')' after expression");
+            }
+            else
+            {
+                Token name = Consume(TokenType.Identifier, "Expected identifier after '*'");
+                expr = new IdentifierNode(name, name.Lexeme);
+            }
             return new PointerDereferenceNode(expr);
         }
         return null;
@@ -482,7 +492,7 @@ class Parser
             }
             else
             {
-                if (Check(TokenType.Equals) || CheckNext(TokenType.Equals)
+                if (Check(TokenType.Equals) || (_operations.ContainsKey(Peek().Type) && CheckNext(TokenType.Equals))
                 || (Check(TokenType.Plus) && CheckNext(TokenType.Plus)))
                 {
                     _current--;
@@ -511,19 +521,25 @@ class Parser
         return type;
     }
 
+    private Dictionary<TokenType, Operation> _operations = new()
+    {
+        { TokenType.Plus, Operation.Add },
+        { TokenType.Minus, Operation.Sub },
+        { TokenType.Asterisk, Operation.Mul },
+        { TokenType.Slash, Operation.Div },
+        { TokenType.Pipe, Operation.Or },
+        { TokenType.Ampersand, Operation.And },
+        { TokenType.Caret, Operation.Xor },
+    };
+
     private Operation OperationFromToken(Token token)
     {
-        return token.Type switch
+        if (!_operations.ContainsKey(token.Type))
         {
-            TokenType.Plus => Operation.Add,
-            TokenType.Minus => Operation.Sub,
-            TokenType.Asterisk => Operation.Mul,
-            TokenType.Slash => Operation.Div,
-            TokenType.Pipe => Operation.Or,
-            TokenType.Ampersand => Operation.And,
-            TokenType.Caret => Operation.Xor,
-            _ => throw new SyntaxException("Invalid operation specified", token, _compilerOptions, _compilerContext)
-        };
+            throw new SyntaxException("Invalid operation specified", token, _compilerOptions, _compilerContext);
+        }
+
+        return _operations[token.Type];
     }
 
     private bool Match(TokenType type)

@@ -5,11 +5,11 @@ namespace DircCompiler.Parsing;
 public class VariableAssignmentNode : AstNode
 {
     public AstNode Target { get; }
-    public Token TargetName { get; }
-    public string Name => TargetName.Lexeme;
+    public Token? TargetName { get; }
+    public string? Name => TargetName == null ? null : TargetName.Lexeme;
     public AstNode Value { get; }
 
-    public VariableAssignmentNode(AstNode target, Token targetName, AstNode value)
+    public VariableAssignmentNode(AstNode target, Token? targetName, AstNode value)
     {
         Target = target;
         TargetName = targetName;

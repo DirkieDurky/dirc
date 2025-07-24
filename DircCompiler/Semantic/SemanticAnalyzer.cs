@@ -106,7 +106,8 @@ public class SemanticAnalyzer
                 }
                 return null;
             case VariableAssignmentNode varAssign:
-                if (!_variables.TryGetValue(varAssign.Name, out Type? assignType))
+                Type? assignType = null;
+                if (varAssign.Name != null && !_variables.TryGetValue(varAssign.Name, out assignType))
                 {
                     throw new SemanticException($"Assignment to undeclared variable '{varAssign.Name}'", varAssign.TargetName, options, context);
                 }
