@@ -20,8 +20,75 @@ Later, this variable may be referred to by the given name. This example prints i
 print(x);
 ```
 
+## Memory Management and Pointers
+Dirc supports pointer types for direct memory manipulation. A pointer type is declared by adding an asterisk (`*`) after the base type.
+
+### Basic Pointer Operations
+To declare a pointer variable:
+```
+int* ptr = 0;
+```
+
+To get the address of a variable (address-of operator):
+```
+int x = 5;
+int* ptr = &x;  // ptr now holds the memory address of x
+```
+
+To access the value a pointer points to (dereference operator):
+```
+int y = *ptr;  // y now equals 5
+```
+
+You can modify values through pointers:
+```
+*ptr = 99;  // x now equals 99
+```
+
+### Dynamic Memory Allocation
+Dirc provides `malloc` and `free` functions for dynamic memory management:
+
+```
+import malloc;
+import free;
+
+// Allocate memory for 1 integer
+int* ptr = malloc(1);  
+
+// Use the allocated memory
+*ptr = 42;
+
+// Free the memory when done
+free(ptr);
+```
+
+The `malloc` function:
+- Takes the size (in words) as an argument
+- Returns a pointer to the allocated memory
+
+The `free` function:
+- Takes a pointer previously returned by malloc
+- Deallocates the memory so it can be reused
+
+### Pointer Arithmetic
+Pointers support arithmetic operations:
+
+```
+int* ptr = malloc(4);  // Allocate space for 4 integers
+*(ptr + 0) = 10;       // First integer
+*(ptr + 1) = 20;       // Second integer
+*(ptr + 2) = 30;       // Third integer
+*(ptr + 3) = 40;       // Fourth integer
+```
+
+Array-style syntax can also be used with pointers:
+```
+ptr[0] = 10;  // Equivalent to *(ptr + 0)
+ptr[1] = 20;  // Equivalent to *(ptr + 1)
+```
+
 ## Arrays
-Arrays can be declared with a fixed size.
+Arrays can be declared with a fixed size. These are allocated on the stack.
 
 To declare an integer array (with space for 10 elements):
 ```
@@ -95,7 +162,12 @@ The standard library contains the following functions:
 - `input()`
 Returns the current input of the program.
 - `print(num)`
-Send the given input to the out register.
+Sends the given value to the out register.
+- `malloc(size)`
+Allocates the specified number of words in memory and returns a pointer to the allocated memory.
+- `free(ptr)`
+Deallocates memory previously allocated with malloc. The same pointer you got from malloc should be used here. Allocated memory should always be freed to prevent memory leaks.
+
 Functions (both standard and custom ones) may be called as such:
 ```
 print(42);
