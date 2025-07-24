@@ -134,7 +134,7 @@ class ExpressionCodeFactory
     {
         if (node.Target is IdentifierNode)
         {
-            int offset = context.VariableTable[node.Name].FramePointerOffset;
+            int offset = context.VariableTable[node.Name!].FramePointerOffset;
 
             return AssignVariable(offset, node.Value, context);
         }

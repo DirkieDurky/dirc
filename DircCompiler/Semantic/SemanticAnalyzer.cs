@@ -15,6 +15,9 @@ public class SemanticAnalyzer
     private readonly Dictionary<string, Type> _validTypes = new();
     private readonly Dictionary<string, Type> _validReturnTypes = new();
 
+    private List<AstNode>? _nodes;
+    private int _nodeIndex;
+
     public SemanticAnalyzer(CompilerOptions compilerOptions, CompilerContext compilerContext)
     {
         _compilerContext = compilerContext;
@@ -29,8 +32,10 @@ public class SemanticAnalyzer
         _validReturnTypes.Add(Void.Instance.Name, Void.Instance);
     }
 
-    public void Analyze(List<AstNode> nodes, CompilerOptions options, CompilerContext context)
+    public List<AstNode> Analyze(List<AstNode> nodes, CompilerOptions options, CompilerContext context)
     {
+        _nodes = nodes;
+
         // First pass: collect function signatures
         // Standard library
         foreach ((string name, StandardFunction funcInfo) in StandardLibrary.Functions)
@@ -68,10 +73,13 @@ public class SemanticAnalyzer
             }
         }
         // Second pass: analyze all nodes
-        foreach (AstNode node in nodes)
+        for (_nodeIndex = 0; _nodeIndex < nodes.Count; _nodeIndex++)
         {
+            AstNode node = nodes[_nodeIndex];
             AnalyzeNode(node, null, options, context);
         }
+
+        return _nodes;
     }
 
     private Type? AnalyzeNode(AstNode node, Type? expectedType, CompilerOptions options, CompilerContext context)
@@ -265,6 +273,17 @@ public class SemanticAnalyzer
                     throw new SemanticException($"Array index must be an integer, got {indexType.Name}", null, options, context);
                 }
 
+                if (accessArrayType is Pointer ptr)
+                {
+                    accessArrayType = ptr.BaseType;
+
+                    IdentifierNode identifierNode = new IdentifierNode(arrayAccess.ArrayToken, arrayAccess.ArrayName);
+                    BinaryExpressionNode beNode = new(Operation.Add, identifierNode, arrayAccess.Index);
+                    PointerDereferenceNode newNode = new PointerDereferenceNode(beNode);
+
+                    Replace(node, newNode);
+                    // _nodes![_nodeIndex] = newNode;
+                }
                 return accessArrayType;
             case ArrayAssignmentNode arrayAssign:
                 if (!_variables.TryGetValue(arrayAssign.ArrayName, out Type? assignArrayType))
@@ -281,9 +300,32 @@ public class SemanticAnalyzer
 
                 // Check that value matches array type
                 Type assignValueType = AnalyzeNode(arrayAssign.Value, assignArrayType, options, context)!;
+
+                bool isPointer = false;
+                if (assignArrayType is Pointer assignPtr)
+                {
+                    assignArrayType = assignPtr.BaseType;
+                    isPointer = true;
+                }
+
                 if (assignValueType != null && assignValueType != assignArrayType)
                 {
                     throw new SemanticException($"Type mismatch in array assignment to '{arrayAssign.ArrayName}': expected {assignArrayType.Name}, got {assignValueType.Name}", arrayAssign.ArrayToken, options, context);
+                }
+
+                if (isPointer)
+                {
+                    // Desugar arr[1] to *(arr + 1)
+                    // ArrayAssignment(a[Number(1)] = Number(12))
+                    // Will become:
+                    // VariableAssignment(PointerDereference(BinaryExpression(Identifier(a), Add, Number(1))), Number(12))
+
+                    IdentifierNode identifierNode = new IdentifierNode(arrayAssign.ArrayToken, arrayAssign.ArrayName);
+                    BinaryExpressionNode beNode = new(Operation.Add, identifierNode, arrayAssign.Index);
+                    VariableAssignmentNode newNode = new(new PointerDereferenceNode(beNode), null, arrayAssign.Value);
+
+                    Replace(node, newNode);
+                    // _nodes![_nodeIndex] = newNode;
                 }
 
                 return assignArrayType;
@@ -311,5 +353,10 @@ public class SemanticAnalyzer
             return Pointer.Of(ResolveType(ptr.BaseType));
         }
         throw new SemanticException($"Unknown type node", null, _compilerOptions, _compilerContext);
+    }
+
+    private void Replace(AstNode node, AstNode newNode)
+    {
+
     }
 }

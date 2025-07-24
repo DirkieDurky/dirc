@@ -9,12 +9,11 @@ public class Compiler
 {
     public string[] Compile(string source, CompilerOptions compilerOptions, CompilerContext compilerContext)
     {
-        List<Token> tokens = new Lexer(compilerOptions, compilerContext).Tokenize(source);
-
         if (compilerOptions.ShowGeneralDebug)
         {
             Console.WriteLine("Running lexer...");
         }
+        List<Token> tokens = new Lexer(compilerOptions, compilerContext).Tokenize(source);
         if (compilerOptions.ShowLexerOutput)
         {
             foreach (Token token in tokens)
@@ -26,12 +25,11 @@ public class Compiler
             Console.WriteLine();
         }
 
-        List<AstNode> astNodes = new Parser(compilerOptions, compilerContext).Parse(tokens);
-
         if (compilerOptions.ShowGeneralDebug)
         {
             Console.WriteLine("Running parser...");
         }
+        List<AstNode> astNodes = new Parser(compilerOptions, compilerContext).Parse(tokens);
         if (compilerOptions.ShowParserOutput)
         {
             foreach (AstNode node in astNodes)
@@ -45,13 +43,20 @@ public class Compiler
         {
             Console.WriteLine("Running semantic analyzer...");
         }
-        new SemanticAnalyzer(compilerOptions, compilerContext).Analyze(astNodes, compilerOptions, compilerContext);
-
+        List<AstNode> alteredAstNodes = new SemanticAnalyzer(compilerOptions, compilerContext).Analyze(astNodes, compilerOptions, compilerContext);
+        if (compilerOptions.ShowParserOutput)
+        {
+            foreach (AstNode node in alteredAstNodes)
+            {
+                Console.WriteLine(node);
+            }
+            Console.WriteLine();
+        }
         if (compilerOptions.ShowGeneralDebug)
         {
             Console.WriteLine("Running code generator...");
         }
-        string[] assembly = new CodeGenerator(compilerOptions, compilerContext).Generate(astNodes);
+        string[] assembly = new CodeGenerator(compilerOptions, compilerContext).Generate(alteredAstNodes);
 
         return assembly;
     }
