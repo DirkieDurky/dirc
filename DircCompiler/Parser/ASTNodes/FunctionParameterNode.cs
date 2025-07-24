@@ -2,12 +2,14 @@ using DircCompiler.Lexing;
 
 namespace DircCompiler;
 
-public class FunctionParameter
+public class FunctionParameterNode
 {
+    public Token IdentifierToken { get; }
     public string TypeName { get; }
     public string Name { get; }
-    public FunctionParameter(string typeName, string name)
+    public FunctionParameterNode(Token identifierToken, string typeName, string name)
     {
+        IdentifierToken = identifierToken;
         TypeName = typeName;
         Name = name;
     }

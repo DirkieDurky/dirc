@@ -45,7 +45,7 @@ public class Compiler
         {
             Console.WriteLine("Running semantic analyzer...");
         }
-        new SemanticAnalyzer().Analyze(astNodes, compilerOptions, compilerContext);
+        new SemanticAnalyzer(compilerOptions, compilerContext).Analyze(astNodes, compilerOptions, compilerContext);
 
         if (compilerOptions.ShowGeneralDebug)
         {

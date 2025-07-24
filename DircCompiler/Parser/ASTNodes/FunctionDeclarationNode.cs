@@ -7,9 +7,9 @@ public class FunctionDeclarationNode : AstNode
     public Token IdentifierToken { get; }
     public string Name { get; }
     public Token ReturnTypeToken { get; }
-    public List<FunctionParameter> Parameters { get; }
+    public List<FunctionParameterNode> Parameters { get; }
     public List<AstNode> Body { get; }
-    public FunctionDeclarationNode(Token identifierToken, string name, Token returnTypeToken, List<FunctionParameter> parameters, List<AstNode> body)
+    public FunctionDeclarationNode(Token identifierToken, string name, Token returnTypeToken, List<FunctionParameterNode> parameters, List<AstNode> body)
     {
         IdentifierToken = identifierToken;
         Name = name;

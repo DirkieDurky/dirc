@@ -2,9 +2,9 @@ namespace DircCompiler.Semantic;
 
 public class FunctionSignature
 {
-    public string ReturnType { get; }
-    public List<FunctionParameter> Parameters { get; }
-    public FunctionSignature(string returnType, List<FunctionParameter> parameters)
+    public Type ReturnType { get; }
+    public List<FunctionParameterNode> Parameters { get; }
+    public FunctionSignature(Type returnType, List<FunctionParameterNode> parameters)
     {
         ReturnType = returnType;
         Parameters = parameters;

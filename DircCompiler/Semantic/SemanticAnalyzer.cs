@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using DircCompiler.CodeGen;
 using DircCompiler.Parsing;
 
@@ -5,10 +6,29 @@ namespace DircCompiler.Semantic;
 
 public class SemanticAnalyzer
 {
-    private readonly Dictionary<string, string> _variables = new(); // name -> type
+    private readonly Dictionary<string, Type> _variables = new(); // name -> type
     private readonly Dictionary<string, FunctionSignature> _functions = new(); // name -> signature
-    private static readonly HashSet<string> ValidTypes = new() { "int", "bool" };
-    private static readonly HashSet<string> ValidReturnTypes = new() { "int", "bool", "void" };
+    private CompilerOptions _compilerOptions;
+    private CompilerContext _compilerContext;
+
+    private static readonly HashSet<Type> ValidTypes = new() { Int.Instance, Bool.Instance };
+
+    private readonly Dictionary<string, Type> _validTypes = new();
+    private readonly Dictionary<string, Type> _validReturnTypes = new();
+
+    public SemanticAnalyzer(CompilerOptions compilerOptions, CompilerContext compilerContext)
+    {
+        _compilerContext = compilerContext;
+        _compilerOptions = compilerOptions;
+
+        foreach (Type type in ValidTypes)
+        {
+            _validTypes.Add(type.Name, type);
+        }
+
+        _validReturnTypes = _validTypes;
+        _validReturnTypes.Add(Void.Instance.Name, Void.Instance);
+    }
 
     public void Analyze(List<AstNode> nodes, CompilerOptions options, CompilerContext context)
     {
@@ -24,20 +44,18 @@ public class SemanticAnalyzer
         {
             if (node is FunctionDeclarationNode func)
             {
-                // Check return type (allow 'void' only for return type)
-                if (!ValidReturnTypes.Contains(func.ReturnTypeToken.Lexeme))
+                if (!_validReturnTypes.ContainsKey(func.ReturnTypeToken.Lexeme))
                 {
                     throw new SemanticException($"Unknown return type '{func.ReturnTypeToken.Lexeme}' in function '{func.Name}'", func.ReturnTypeToken, options, context);
                 }
-                // Check parameter types (do not allow 'void')
-                foreach (var param in func.Parameters)
+                foreach (FunctionParameterNode param in func.Parameters)
                 {
-                    if (!ValidTypes.Contains(param.TypeName))
+                    if (!_validTypes.ContainsKey(param.TypeName))
                     {
                         throw new SemanticException($"Unknown parameter type '{param.TypeName}' in function '{func.Name}'", null, options, context);
                     }
                 }
-                FunctionSignature signature = new FunctionSignature(func.ReturnTypeToken.Lexeme, func.Parameters);
+                FunctionSignature signature = new FunctionSignature(_validReturnTypes[func.ReturnTypeToken.Lexeme], func.Parameters);
                 if (_functions.ContainsKey(func.Name))
                 {
                     throw new SemanticException($"Function '{func.Name}' already declared", func.IdentifierToken, options, context);
@@ -60,20 +78,20 @@ public class SemanticAnalyzer
         }
     }
 
-    private string? AnalyzeNode(AstNode node, string? expectedType, CompilerOptions options, CompilerContext context)
+    private Type? AnalyzeNode(AstNode node, Type? expectedType, CompilerOptions options, CompilerContext context)
     {
         switch (node)
         {
             case BooleanLiteralNode:
-                return "bool";
+                return Bool.Instance;
             case NumberLiteralNode:
-                return "int";
+                return Int.Instance;
             case VariableDeclarationNode varDecl:
-                string varType = varDecl.TypeName;
-                if (!ValidTypes.Contains(varType))
+                if (!_validTypes.ContainsKey(varDecl.TypeName))
                 {
-                    throw new SemanticException($"Unknown type '{varType}' for variable '{varDecl.Name}'", varDecl.IdentifierToken, options, context);
+                    throw new SemanticException($"Unknown type '{varDecl.TypeName}' for variable '{varDecl.Name}'", varDecl.IdentifierToken, options, context);
                 }
+                Type varType = _validTypes[varDecl.TypeName];
                 if (_variables.ContainsKey(varDecl.Name))
                 {
                     throw new SemanticException($"Variable '{varDecl.Name}' already declared", varDecl.IdentifierToken, options, context);
@@ -84,55 +102,56 @@ public class SemanticAnalyzer
                 }
                 if (varDecl.Initializer != null)
                 {
-                    string? initType = AnalyzeNode(varDecl.Initializer, varType, options, context);
+                    Type? initType = AnalyzeNode(varDecl.Initializer, varType, options, context);
                     if (initType != null && initType != varType)
                     {
-                        throw new SemanticException($"Type mismatch in initialization of '{varDecl.Name}': expected {varType}, got {initType}", varDecl.IdentifierToken, options, context);
+                        throw new SemanticException($"Type mismatch in initialization of '{varDecl.Name}': expected {varType.Name}, got {initType.Name}", varDecl.IdentifierToken, options, context);
                     }
                 }
                 return null;
             case VariableAssignmentNode varAssign:
-                if (!_variables.TryGetValue(varAssign.Name, out string? assignType))
+                if (!_variables.TryGetValue(varAssign.Name, out Type? assignType))
                 {
                     throw new SemanticException($"Assignment to undeclared variable '{varAssign.Name}'", varAssign.IdentifierToken, options, context);
                 }
                 if (varAssign.Value != null)
                 {
-                    string? valueType = AnalyzeNode(varAssign.Value, assignType, options, context);
+                    Type? valueType = AnalyzeNode(varAssign.Value, assignType, options, context);
                     if (assignType != null && valueType != null && valueType != assignType)
                     {
-                        throw new SemanticException($"Type mismatch in assignment to '{varAssign.Name}': expected {assignType}, got {valueType}", varAssign.IdentifierToken, options, context);
+                        throw new SemanticException($"Type mismatch in assignment to '{varAssign.Name}': expected {assignType.Name}, got {valueType.Name}", varAssign.IdentifierToken, options, context);
                     }
                 }
                 return assignType;
             case IdentifierNode id:
-                if (!_variables.TryGetValue(id.Name, out string? idType))
+                if (!_variables.TryGetValue(id.Name, out Type? idType))
                 {
                     throw new SemanticException($"Use of undeclared variable '{id.Name}'", id.IdentifierToken, options, context);
                 }
                 return idType;
             case ConditionNode cond:
-                string? leftType = AnalyzeNode(cond.Left, null, options, context);
-                string? rightType = AnalyzeNode(cond.Right, null, options, context);
-                if ((leftType != "int" && leftType != "bool") || (rightType != "int" && rightType != "bool"))
+                Type leftType = AnalyzeNode(cond.Left, null, options, context)!;
+                Type rightType = AnalyzeNode(cond.Right, null, options, context)!;
+                if ((leftType != Int.Instance && leftType != Bool.Instance) || (rightType != Int.Instance && rightType != Bool.Instance))
                 {
-                    throw new SemanticException($"Condition operands must be int or bool, got {leftType} and {rightType}", null, options, context);
+                    throw new SemanticException($"Condition operands must be int or bool, got {leftType.Name} and {rightType.Name}", null, options, context);
                 }
-                return "bool";
+                return Bool.Instance;
             case IfStatementNode ifStmt:
-                string? condType = AnalyzeNode(ifStmt.Condition, "bool", options, context);
-                if (condType != "bool" && condType != "int")
+                Type condType = AnalyzeNode(ifStmt.Condition, Bool.Instance, options, context)!;
+                if (condType != Bool.Instance && condType != Int.Instance)
                 {
-                    throw new SemanticException($"If condition must be bool or int, got {condType}", null, options, context);
+                    throw new SemanticException($"If condition must be bool or int, got {condType.Name}", null, options, context);
                 }
                 foreach (AstNode stmt in ifStmt.Body) AnalyzeNode(stmt, null, options, context);
                 if (ifStmt.ElseBody != null) foreach (AstNode stmt in ifStmt.ElseBody) AnalyzeNode(stmt, null, options, context);
                 return null;
             case WhileStatementNode whileStmt:
-                string? whileCondType = AnalyzeNode(whileStmt.Condition, "bool", options, context);
-                if (whileCondType != "bool" && whileCondType != "int")
+                Type? whileCondType = AnalyzeNode(whileStmt.Condition, Bool.Instance, options, context);
+                if (whileCondType != Bool.Instance && whileCondType != Int.Instance)
                 {
-                    throw new SemanticException($"While condition must be bool or int, got {whileCondType}", null, options, context);
+                    string typeString = whileCondType == null ? "null" : whileCondType.Name;
+                    throw new SemanticException($"While condition must be bool or int, got {typeString}", null, options, context);
                 }
                 foreach (AstNode stmt in whileStmt.Body) AnalyzeNode(stmt, null, options, context);
                 return null;
@@ -147,111 +166,119 @@ public class SemanticAnalyzer
                 }
                 for (int i = 0; i < Math.Min(call.Arguments.Count, sig.Parameters.Count); i++)
                 {
-                    string? argType = AnalyzeNode(call.Arguments[i], sig.Parameters[i].TypeName, options, context);
-                    if (argType != null && argType != sig.Parameters[i].TypeName)
+                    if (!_validTypes.ContainsKey(sig.Parameters[i].TypeName))
                     {
-                        throw new SemanticException($"Type mismatch in argument {i + 1} of '{call.Callee}': expected {sig.Parameters[i].TypeName}, got {argType}", call.CalleeToken, options, context);
+                        throw new SemanticException($"Unknown type '{sig.Parameters[i].TypeName}' for argument '{sig.Parameters[i].Name}'", sig.Parameters[i].IdentifierToken, options, context);
+                    }
+                    Type? argType = AnalyzeNode(call.Arguments[i], _validTypes[sig.Parameters[i].TypeName], options, context);
+                    if (argType != null && argType.Name != sig.Parameters[i].TypeName)
+                    {
+                        throw new SemanticException($"Type mismatch in argument {i + 1} of '{call.Callee}': expected {sig.Parameters[i].TypeName}, got {argType.Name}", call.CalleeToken, options, context);
                     }
                 }
                 return sig.ReturnType;
             case FunctionDeclarationNode func:
                 // New scope for parameters
-                Dictionary<string, string> oldVars = new Dictionary<string, string>(_variables);
-                foreach (FunctionParameter param in func.Parameters)
+                Dictionary<string, Type> oldVars = new(_variables);
+                foreach (FunctionParameterNode param in func.Parameters)
                 {
-                    _variables[param.Name] = param.TypeName;
+                    _variables[param.Name] = _validTypes[param.TypeName];
                 }
                 foreach (AstNode stmt in func.Body)
                 {
-                    AnalyzeNode(stmt, func.ReturnTypeToken.Lexeme, options, context);
+                    if (!_validReturnTypes.ContainsKey(func.ReturnTypeToken.Lexeme))
+                    {
+                        throw new SemanticException($"Unknown return type '{func.ReturnTypeToken.Lexeme}' in function '{func.Name}'", func.ReturnTypeToken, options, context);
+                    }
+                    AnalyzeNode(stmt, _validReturnTypes[func.ReturnTypeToken.Lexeme], options, context);
                 }
                 _variables.Clear();
-                foreach (KeyValuePair<string, string> kv in oldVars) _variables[kv.Key] = kv.Value;
+                foreach (KeyValuePair<string, Type> kv in oldVars) _variables[kv.Key] = kv.Value;
                 return null;
             case ReturnStatementNode ret:
-                string? retType = AnalyzeNode(ret.ReturnValue, expectedType, options, context);
+                Type? retType = AnalyzeNode(ret.ReturnValue, expectedType, options, context);
                 if (expectedType != null && retType != null && retType != expectedType)
                 {
-                    throw new SemanticException($"Return type mismatch: expected {expectedType}, got {retType}", null, options, context);
+                    throw new SemanticException($"Return type mismatch: expected {expectedType.Name}, got {retType.Name}", null, options, context);
                 }
                 return retType;
             case ArrayDeclarationNode arrayDecl:
-                string arrayType = arrayDecl.TypeName;
-                if (!ValidTypes.Contains(arrayType))
+                if (!_validTypes.ContainsKey(arrayDecl.TypeName))
                 {
-                    throw new SemanticException($"Unknown type '{arrayType}' for array '{arrayDecl.Name}'", arrayDecl.IdentifierToken, options, context);
+                    throw new SemanticException($"Unknown type '{arrayDecl.TypeName}' for array '{arrayDecl.Name}'", arrayDecl.IdentifierToken, options, context);
                 }
+                Type arrayType = _validTypes[arrayDecl.TypeName];
                 if (_variables.ContainsKey(arrayDecl.Name))
                 {
                     throw new SemanticException($"Variable '{arrayDecl.Name}' already declared", arrayDecl.IdentifierToken, options, context);
                 }
 
                 // Check that size is an integer
-                string? sizeType = AnalyzeNode(arrayDecl.Size, "int", options, context);
-                if (sizeType != "int")
+                Type sizeType = AnalyzeNode(arrayDecl.Size, Int.Instance, options, context)!;
+                if (sizeType != Int.Instance)
                 {
-                    throw new SemanticException($"Array size must be an integer, got {sizeType}", null, options, context);
+                    throw new SemanticException($"Array size must be an integer, got {sizeType.Name}", null, options, context);
                 }
 
                 _variables[arrayDecl.Name] = arrayType;
 
                 if (arrayDecl.Initializer != null)
                 {
-                    string? initType = AnalyzeNode(arrayDecl.Initializer, arrayType, options, context);
+                    Type? initType = AnalyzeNode(arrayDecl.Initializer, arrayType, options, context);
                     if (initType != null && initType != arrayType)
                     {
-                        throw new SemanticException($"Type mismatch in array initialization of '{arrayDecl.Name}': expected {arrayType}, got {initType}", arrayDecl.IdentifierToken, options, context);
+                        throw new SemanticException($"Type mismatch in array initialization of '{arrayDecl.Name}': expected {arrayType.Name}, got {initType.Name}", arrayDecl.IdentifierToken, options, context);
                     }
                 }
                 return null;
             case ArrayLiteralNode arrayLit:
                 if (arrayLit.Elements.Count == 0)
                 {
-                    return "int"; // Default type for empty arrays
+                    return Int.Instance; // Default type for empty arrays
                 }
 
-                string? firstType = AnalyzeNode(arrayLit.Elements[0], null, options, context);
+                Type firstType = AnalyzeNode(arrayLit.Elements[0], null, options, context)!;
                 foreach (AstNode element in arrayLit.Elements.Skip(1))
                 {
-                    string? elementType = AnalyzeNode(element, firstType, options, context);
+                    Type elementType = AnalyzeNode(element, firstType, options, context)!;
                     if (elementType != firstType)
                     {
-                        throw new SemanticException($"All array elements must have the same type, got {firstType} and {elementType}", null, options, context);
+                        throw new SemanticException($"All array elements must have the same type, got {firstType.Name} and {elementType.Name}", null, options, context);
                     }
                 }
                 return firstType;
             case ArrayAccessNode arrayAccess:
-                if (!_variables.TryGetValue(arrayAccess.ArrayName, out string? accessArrayType))
+                if (!_variables.TryGetValue(arrayAccess.ArrayName, out Type? accessArrayType))
                 {
                     throw new SemanticException($"Use of undeclared array '{arrayAccess.ArrayName}'", arrayAccess.ArrayToken, options, context);
                 }
 
                 // Check that index is an integer
-                string? indexType = AnalyzeNode(arrayAccess.Index, "int", options, context);
-                if (indexType != "int")
+                Type indexType = AnalyzeNode(arrayAccess.Index, Int.Instance, options, context)!;
+                if (indexType != Int.Instance)
                 {
-                    throw new SemanticException($"Array index must be an integer, got {indexType}", null, options, context);
+                    throw new SemanticException($"Array index must be an integer, got {indexType.Name}", null, options, context);
                 }
 
                 return accessArrayType;
             case ArrayAssignmentNode arrayAssign:
-                if (!_variables.TryGetValue(arrayAssign.ArrayName, out string? assignArrayType))
+                if (!_variables.TryGetValue(arrayAssign.ArrayName, out Type? assignArrayType))
                 {
                     throw new SemanticException($"Assignment to undeclared array '{arrayAssign.ArrayName}'", arrayAssign.ArrayToken, options, context);
                 }
 
                 // Check that index is an integer
-                string? assignIndexType = AnalyzeNode(arrayAssign.Index, "int", options, context);
-                if (assignIndexType != "int")
+                Type assignIndexType = AnalyzeNode(arrayAssign.Index, Int.Instance, options, context)!;
+                if (assignIndexType != Int.Instance)
                 {
-                    throw new SemanticException($"Array index must be an integer, got {assignIndexType}", null, options, context);
+                    throw new SemanticException($"Array index must be an integer, got {assignIndexType.Name}", null, options, context);
                 }
 
                 // Check that value matches array type
-                string? assignValueType = AnalyzeNode(arrayAssign.Value, assignArrayType, options, context);
+                Type assignValueType = AnalyzeNode(arrayAssign.Value, assignArrayType, options, context)!;
                 if (assignValueType != null && assignValueType != assignArrayType)
                 {
-                    throw new SemanticException($"Type mismatch in array assignment to '{arrayAssign.ArrayName}': expected {assignArrayType}, got {assignValueType}", arrayAssign.ArrayToken, options, context);
+                    throw new SemanticException($"Type mismatch in array assignment to '{arrayAssign.ArrayName}': expected {assignArrayType.Name}, got {assignValueType.Name}", arrayAssign.ArrayToken, options, context);
                 }
 
                 return assignArrayType;

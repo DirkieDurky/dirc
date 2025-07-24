@@ -201,14 +201,14 @@ class Parser
 
     private FunctionDeclarationNode ParseFunctionDeclaration(Token nameToken, Token returnTypeToken)
     {
-        List<FunctionParameter> parameters = new();
+        List<FunctionParameterNode> parameters = new();
         if (!Check(TokenType.RightParen))
         {
             do
             {
                 Token paramType = Consume(TokenType.Identifier, "No parameter type provided");
                 Token paramName = Consume(TokenType.Identifier, "No parameter name provided");
-                parameters.Add(new FunctionParameter(paramType.Lexeme, paramName.Lexeme));
+                parameters.Add(new FunctionParameterNode(paramType, paramType.Lexeme, paramName.Lexeme));
             } while (Match(TokenType.Comma));
         }
         Consume(TokenType.RightParen, "Expected ')' after parameters");
@@ -461,6 +461,7 @@ class Parser
             _ => throw new SyntaxException("Invalid operation specified", token, _compilerOptions, _compilerContext)
         };
     }
+
     private bool Match(TokenType type)
     {
         if (Check(type))
