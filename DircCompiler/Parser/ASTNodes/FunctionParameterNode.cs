@@ -1,17 +1,17 @@
 using DircCompiler.Lexing;
 
-namespace DircCompiler;
+namespace DircCompiler.Parsing;
 
 public class FunctionParameterNode
 {
     public Token IdentifierToken { get; }
-    public string TypeName { get; }
+    public TypeNode Type { get; }
     public string Name { get; }
-    public FunctionParameterNode(Token identifierToken, string typeName, string name)
+    public FunctionParameterNode(Token identifierToken, TypeNode type, string name)
     {
         IdentifierToken = identifierToken;
-        TypeName = typeName;
+        Type = type;
         Name = name;
     }
-    public override string ToString() => $"{TypeName} {Name}";
+    public override string ToString() => $"{Type.TypeName} {Name}";
 }

@@ -5,5 +5,5 @@ class Pointer : Type
     public Type BaseType { get; }
     public Pointer(Type baseType) => BaseType = baseType;
 
-    public override string Name => $"*{BaseType.Name}";
+    public override string Name => $"{BaseType.Name}*";
 }

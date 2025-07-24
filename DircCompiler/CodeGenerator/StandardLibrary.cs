@@ -1,4 +1,5 @@
 using DircCompiler.Lexing;
+using DircCompiler.Parsing;
 using DircCompiler.Semantic;
 
 namespace DircCompiler.CodeGen;
@@ -12,14 +13,14 @@ static class StandardLibrary
         {"print", new StandardFunction("print",
         new FunctionSignature(
             Semantic.Void.Instance,
-            [new FunctionParameterNode(T("value"), Int.Instance.Name, "value")]
+            [new FunctionParameterNode(T("value"), new TypeNode(T("int"), "int"), "value")]
         ),
             ["mov r0 _ out"]
         )},
         {"printBool", new StandardFunction("printBool",
         new FunctionSignature(
             Semantic.Void.Instance,
-            [new FunctionParameterNode(T("value"), Bool.Instance.Name, "value")]
+            [new FunctionParameterNode(T("value"), new TypeNode(T("bool"), "bool"), "value")]
         ),
             ["mov r0 _ out"]
         )},

@@ -1,3 +1,5 @@
+using DircCompiler.Parsing;
+
 namespace DircCompiler.Semantic;
 
 public class FunctionSignature

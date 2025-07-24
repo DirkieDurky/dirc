@@ -4,16 +4,16 @@ namespace DircCompiler.Parsing;
 
 public class ArrayDeclarationNode : AstNode
 {
-    public Token TypeToken { get; }
+    public TypeNode Type { get; }
     public Token IdentifierToken { get; }
     public AstNode Size { get; }
     public AstNode? Initializer { get; }
-    public string TypeName => TypeToken.Lexeme;
+    public string TypeName => Type.TypeName;
     public string Name => IdentifierToken.Lexeme;
 
-    public ArrayDeclarationNode(Token typeToken, Token identifierToken, AstNode size, AstNode? initializer = null)
+    public ArrayDeclarationNode(TypeNode type, Token identifierToken, AstNode size, AstNode? initializer = null)
     {
-        TypeToken = typeToken;
+        Type = type;
         IdentifierToken = identifierToken;
         Size = size;
         Initializer = initializer;

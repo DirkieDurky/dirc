@@ -4,15 +4,15 @@ namespace DircCompiler.Parsing;
 
 public class VariableDeclarationNode : AstNode
 {
-    public Token TypeToken { get; }
+    public TypeNode Type { get; }
     public Token IdentifierToken { get; }
-    public string TypeName => TypeToken.Lexeme;
+    public string TypeName => Type.TypeName;
     public string Name => IdentifierToken.Lexeme;
     public AstNode? Initializer { get; }
 
-    public VariableDeclarationNode(Token typeToken, Token identifierToken, AstNode? initializer = null)
+    public VariableDeclarationNode(TypeNode type, Token identifierToken, AstNode? initializer = null)
     {
-        TypeToken = typeToken;
+        Type = type;
         IdentifierToken = identifierToken;
         Initializer = initializer;
     }

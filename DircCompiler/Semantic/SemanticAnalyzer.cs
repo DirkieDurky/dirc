@@ -44,18 +44,18 @@ public class SemanticAnalyzer
         {
             if (node is FunctionDeclarationNode func)
             {
-                if (!_validReturnTypes.ContainsKey(func.ReturnTypeToken.Lexeme))
+                if (!_validReturnTypes.ContainsKey(func.ReturnType.TypeName))
                 {
-                    throw new SemanticException($"Unknown return type '{func.ReturnTypeToken.Lexeme}' in function '{func.Name}'", func.ReturnTypeToken, options, context);
+                    throw new SemanticException($"Unknown return type '{func.ReturnType.TypeName}' in function '{func.Name}'", func.ReturnType.IdentifierToken, options, context);
                 }
                 foreach (FunctionParameterNode param in func.Parameters)
                 {
-                    if (!_validTypes.ContainsKey(param.TypeName))
+                    if (!_validTypes.ContainsKey(param.Type.TypeName))
                     {
-                        throw new SemanticException($"Unknown parameter type '{param.TypeName}' in function '{func.Name}'", null, options, context);
+                        throw new SemanticException($"Unknown parameter type '{param.Type.TypeName}' in function '{func.Name}'", null, options, context);
                     }
                 }
-                FunctionSignature signature = new FunctionSignature(_validReturnTypes[func.ReturnTypeToken.Lexeme], func.Parameters);
+                FunctionSignature signature = new FunctionSignature(_validReturnTypes[func.ReturnType.TypeName], func.Parameters);
                 if (_functions.ContainsKey(func.Name))
                 {
                     throw new SemanticException($"Function '{func.Name}' already declared", func.IdentifierToken, options, context);
@@ -87,7 +87,7 @@ public class SemanticAnalyzer
             case NumberLiteralNode:
                 return Int.Instance;
             case VariableDeclarationNode varDecl:
-                if (!_validTypes.ContainsKey(varDecl.TypeName))
+                if (!_validTypes.ContainsKey(varDecl.Type.TypeName))
                 {
                     throw new SemanticException($"Unknown type '{varDecl.TypeName}' for variable '{varDecl.Name}'", varDecl.IdentifierToken, options, context);
                 }
@@ -166,14 +166,14 @@ public class SemanticAnalyzer
                 }
                 for (int i = 0; i < Math.Min(call.Arguments.Count, sig.Parameters.Count); i++)
                 {
-                    if (!_validTypes.ContainsKey(sig.Parameters[i].TypeName))
+                    if (!_validTypes.ContainsKey(sig.Parameters[i].Type.TypeName))
                     {
-                        throw new SemanticException($"Unknown type '{sig.Parameters[i].TypeName}' for argument '{sig.Parameters[i].Name}'", sig.Parameters[i].IdentifierToken, options, context);
+                        throw new SemanticException($"Unknown type '{sig.Parameters[i].Type.TypeName}' for argument '{sig.Parameters[i].Name}'", sig.Parameters[i].IdentifierToken, options, context);
                     }
-                    Type? argType = AnalyzeNode(call.Arguments[i], _validTypes[sig.Parameters[i].TypeName], options, context);
-                    if (argType != null && argType.Name != sig.Parameters[i].TypeName)
+                    Type? argType = AnalyzeNode(call.Arguments[i], _validTypes[sig.Parameters[i].Type.TypeName], options, context);
+                    if (argType != null && argType.Name != sig.Parameters[i].Type.TypeName)
                     {
-                        throw new SemanticException($"Type mismatch in argument {i + 1} of '{call.Callee}': expected {sig.Parameters[i].TypeName}, got {argType.Name}", call.CalleeToken, options, context);
+                        throw new SemanticException($"Type mismatch in argument {i + 1} of '{call.Callee}': expected {sig.Parameters[i].Type.TypeName}, got {argType.Name}", call.CalleeToken, options, context);
                     }
                 }
                 return sig.ReturnType;
@@ -182,15 +182,15 @@ public class SemanticAnalyzer
                 Dictionary<string, Type> oldVars = new(_variables);
                 foreach (FunctionParameterNode param in func.Parameters)
                 {
-                    _variables[param.Name] = _validTypes[param.TypeName];
+                    _variables[param.Name] = _validTypes[param.Type.TypeName];
                 }
                 foreach (AstNode stmt in func.Body)
                 {
-                    if (!_validReturnTypes.ContainsKey(func.ReturnTypeToken.Lexeme))
+                    if (!_validReturnTypes.ContainsKey(func.ReturnType.TypeName))
                     {
-                        throw new SemanticException($"Unknown return type '{func.ReturnTypeToken.Lexeme}' in function '{func.Name}'", func.ReturnTypeToken, options, context);
+                        throw new SemanticException($"Unknown return type '{func.ReturnType.TypeName}' in function '{func.Name}'", func.ReturnType.IdentifierToken, options, context);
                     }
-                    AnalyzeNode(stmt, _validReturnTypes[func.ReturnTypeToken.Lexeme], options, context);
+                    AnalyzeNode(stmt, _validReturnTypes[func.ReturnType.TypeName], options, context);
                 }
                 _variables.Clear();
                 foreach (KeyValuePair<string, Type> kv in oldVars) _variables[kv.Key] = kv.Value;
