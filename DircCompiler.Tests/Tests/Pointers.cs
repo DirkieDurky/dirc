@@ -1,6 +1,6 @@
 namespace DircCompiler.Tests;
 
-public class Pointer
+public class Pointers
 {
     [Fact]
     public void AddressOfAndDereference()
