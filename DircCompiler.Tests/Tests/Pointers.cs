@@ -281,7 +281,6 @@ public class Pointers
     {
         string source =
         """
-        import print;
         import malloc;
         import free;
 
@@ -297,14 +296,7 @@ public class Pointers
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
-        mov r0 _ out
-        return _ _ _
-
         label malloc
-        # r0 = size
-        # r1 = currentAddress
-        # r2 = currentValue
         mov|i1 0 _ r1
         label findFreeLoop
         load r1 _ r2
@@ -322,7 +314,6 @@ public class Pointers
         jump findFreeLoop _ pc
 
         label allocate
-        # Mark as in use
         sub|i2 r1 1 r1
         store|i1 1 r1 _
         add|i2 r1 1 r1
@@ -370,6 +361,82 @@ public class Pointers
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
 
-        Assert.Equal(expected.Split(Environment.NewLine), assembly);
+        Assert.Equal(expected, string.Join("\n", assembly));
+    }
+
+    [Fact]
+    public void MallocAndFreeDontOverrideSize()
+    {
+        string source =
+        """
+        import malloc;
+        import free;
+
+        int* aPtr = malloc(2);
+        free(aPtr);
+        int* bPtr = malloc(1);
+        """.TrimIndents();
+
+        string expected =
+        $"""
+        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        jump _start _ pc
+
+        label malloc
+        mov|i1 0 _ r1
+        label findFreeLoop
+        load r1 _ r2
+        ifNotEq|i2 r2 0 notAvailable
+        add|i2 r1 1 r1
+        load r1 _ r2
+        ifEq|i2 r2 0 allocate
+        load r1 _ r2
+        ifMore r2 r0 allocate
+        label notAvailable
+        add|i2 r1 1 r1
+        load r1 _ r2
+        add r1 r2 r1
+        add|i2 r1 1 r1
+        jump findFreeLoop _ pc
+
+        label allocate
+        sub|i2 r1 1 r1
+        store|i1 1 r1 _
+        add|i2 r1 1 r1
+        load r1 _ r2
+        ifNotEq|i2 r2 0 dontOverride
+        store r0 r1 _
+        label dontOverride
+        add|i2 r1 1 r0
+        return _ _ _
+
+        label free
+        sub|i2 r0 2 r0
+        store|i1 0 r0 _
+        return _ _ _
+
+        label _start
+        mov sp _ fp
+        sub|i2 sp 1 sp
+        mov|i1 2 _ r0
+        call malloc _ _
+        mov fp _ r1
+        store r0 r1 _
+        mov fp _ r0
+        load r0 _ r1
+        mov r1 _ r0
+        call free _ _
+        sub|i2 sp 1 sp
+        push r0 _ _
+        mov|i1 1 _ r0
+        call malloc _ _
+        pop _ _ r0
+        sub|i2 fp 1 r1
+        store r0 r1 _
+        """.TrimIndents();
+
+        string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
+
+        Assert.Equal(expected, string.Join("\n", assembly));
     }
 }

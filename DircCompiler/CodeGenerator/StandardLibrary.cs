@@ -36,10 +36,10 @@ static class StandardLibrary
             Pointer.Of(Semantic.Void.Instance),
             [new FunctionParameterNode(T("size"), new NamedTypeNode(T("int"), "int"), "size")]
         ),
+            // r0 = size
+            // r1 = currentAddress
+            // r2 = currentValue
             """
-            # r0 = size
-            # r1 = currentAddress
-            # r2 = currentValue
             mov|i1 0 _ r1
             label findFreeLoop
             load r1 _ r2
@@ -57,7 +57,6 @@ static class StandardLibrary
             jump findFreeLoop _ pc
 
             label allocate
-            # Mark as in use
             sub|i2 r1 1 r1
             store|i1 1 r1 _
             add|i2 r1 1 r1
