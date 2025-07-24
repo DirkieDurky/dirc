@@ -250,22 +250,24 @@ public class Pointers
         store|i1 5 r0 _
         mov fp _ r0
         load r0 _ r1
-        store|i1 10 r1 _
+        mov r1 _ r2
+        store|i1 10 r2 _
         mov fp _ r0
         load r0 _ r1
-        add|i2 r1 1 r0
-        store|i1 12 r0 _
+        add|i2 r1 1 r2
+        store|i1 12 r2 _
         mov fp _ r0
         load r0 _ r1
-        add|i2 r1 2 r0
-        store|i1 9 r0 _
+        add|i2 r1 2 r2
+        store|i1 9 r2 _
         mov fp _ r0
         load r0 _ r1
-        add|i2 r1 3 r0
-        store|i1 4 r0 _
+        add|i2 r1 3 r2
+        store|i1 4 r2 _
         mov fp _ r0
         load r0 _ r1
-        load r1 _ r0
+        add|i2 r1 2 r2
+        load r2 _ r0
         call print _ _
         """.TrimIndents();
 

@@ -425,6 +425,8 @@ class ExpressionCodeFactory
 
     private IReturnable GenerateArrayAccess(ArrayAccessNode node, CodeGenContext context)
     {
+        if (node.ArrayIsPointer!) return GenerateArrayPointerAccess(node, context);
+
         if (!context.VariableTable.TryGetValue(node.ArrayName, out Variable? variable))
         {
             throw new CodeGenException($"Undefined array '{node.ArrayName}'", node.ArrayToken, context.CompilerOptions, context.CompilerContext);
@@ -459,8 +461,23 @@ class ExpressionCodeFactory
         return new ReturnRegister(result);
     }
 
+    private IReturnable GenerateArrayPointerAccess(ArrayAccessNode node, CodeGenContext context)
+    {
+        IReturnable pointerValue = Generate(new IdentifierNode(node.ArrayToken, node.ArrayName), context) ?? throw new Exception("Pointer expression failed to generate");
+        IReturnable indexValue = Generate(node.Index, context) ?? throw new Exception("Array index failed to generate");
+        Register result = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
+        Register additionResult = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
+        context.CodeGen.EmitBinaryOperation(Operation.Add, pointerValue, indexValue, additionResult);
+        pointerValue.Free();
+        indexValue.Free();
+        context.CodeGen.EmitLoad(new ReadonlyRegister(additionResult), result);
+        additionResult.Free();
+        return new ReturnRegister(result);
+    }
+
     private IReturnable? GenerateArrayAssignment(ArrayAssignmentNode node, CodeGenContext context)
     {
+        if (node.ArrayIsPointer) return GenerateArrayPointerAssignment(node, context);
         if (!context.VariableTable.TryGetValue(node.ArrayName, out Variable? variable))
         {
             throw new CodeGenException($"Undefined array '{node.ArrayName}'", node.ArrayToken, context.CompilerOptions, context.CompilerContext);
@@ -495,6 +512,26 @@ class ExpressionCodeFactory
         address.Free();
 
         return valueResult;
+    }
+
+    private IReturnable? GenerateArrayPointerAssignment(ArrayAssignmentNode node, CodeGenContext context)
+    {
+        IReturnable pointerValue = Generate(new IdentifierNode(node.ArrayToken, node.ArrayName), context) ?? throw new Exception("Pointer expression failed to generate");
+        IReturnable indexValue = Generate(node.Index, context) ?? throw new Exception("Array index failed to generate");
+        Register result = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
+        Register additionResult = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
+        context.CodeGen.EmitBinaryOperation(Operation.Add, pointerValue, indexValue, additionResult);
+        pointerValue.Free();
+        indexValue.Free();
+
+        IReturnable value = Generate(node.Value, context) ?? throw new Exception("Variable assignment value failed to generate");
+
+        context.CodeGen.EmitStore(value, new ReadonlyRegister(additionResult));
+        additionResult.Free();
+        value.Free();
+        result.Free();
+
+        return new ReturnRegister(result);
     }
 
     private IReturnable GenerateAddressOf(AddressOfNode node, CodeGenContext context)

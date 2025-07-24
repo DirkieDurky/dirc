@@ -43,20 +43,12 @@ public class Compiler
         {
             Console.WriteLine("Running semantic analyzer...");
         }
-        List<AstNode> alteredAstNodes = new SemanticAnalyzer(compilerOptions, compilerContext).Analyze(astNodes, compilerOptions, compilerContext);
-        if (compilerOptions.ShowParserOutput)
-        {
-            foreach (AstNode node in alteredAstNodes)
-            {
-                Console.WriteLine(node);
-            }
-            Console.WriteLine();
-        }
+        new SemanticAnalyzer(compilerOptions, compilerContext).Analyze(astNodes, compilerOptions, compilerContext);
         if (compilerOptions.ShowGeneralDebug)
         {
             Console.WriteLine("Running code generator...");
         }
-        string[] assembly = new CodeGenerator(compilerOptions, compilerContext).Generate(alteredAstNodes);
+        string[] assembly = new CodeGenerator(compilerOptions, compilerContext).Generate(astNodes);
 
         return assembly;
     }
