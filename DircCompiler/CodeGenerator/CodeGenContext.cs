@@ -8,8 +8,15 @@ class CodeGenContext : ICloneable
     public const int StackAlignment = 1; // By how many bytes to align the stack
     public CodeGenerator CodeGen { get; }
     public Allocator Allocator { get; }
-    public ExpressionCodeFactory ExprFactory { get; }
-    public FunctionCodeFactory FuncFactory { get; }
+    public FunctionFactory FunctionFactory { get; }
+    public ExpressionFactory ExprFactory { get; }
+    public VariableFactory VarFactory { get; }
+    public BinaryFactory BinaryFactory { get; }
+    public IdentifierFactory IdentifierFactory { get; }
+    public CallFactory CallFactory { get; }
+    public ConditionFactory ConditionFactory { get; }
+    public ArrayFactory ArrayFactory { get; }
+    public PointerFactory PointerFactory { get; }
     public Dictionary<string, Register> SymbolTable { get; }
     public Dictionary<string, Variable> VariableTable { get; set; } = new();
     public int NextVariableOffset { get; set; } = 0;
@@ -19,8 +26,15 @@ class CodeGenContext : ICloneable
     public CodeGenContext(
         CodeGenerator codeGen,
         Allocator allocator,
-        ExpressionCodeFactory exprFactory,
-        FunctionCodeFactory funcFactory,
+        ExpressionFactory exprFactory,
+        FunctionFactory funcFactory,
+        VariableFactory varFactory,
+        BinaryFactory binaryFactory,
+        IdentifierFactory identifierFactory,
+        CallFactory callFactory,
+        ConditionFactory conditionFactory,
+        ArrayFactory arrayFactory,
+        PointerFactory pointerFactory,
         Dictionary<string, Register> symbolTable,
         Dictionary<string, Variable> variableTable,
         int nextVariableOffset,
@@ -31,7 +45,14 @@ class CodeGenContext : ICloneable
         CodeGen = codeGen;
         Allocator = allocator;
         ExprFactory = exprFactory;
-        FuncFactory = funcFactory;
+        FunctionFactory = funcFactory;
+        VarFactory = varFactory;
+        BinaryFactory = binaryFactory;
+        IdentifierFactory = identifierFactory;
+        CallFactory = callFactory;
+        ConditionFactory = conditionFactory;
+        ArrayFactory = arrayFactory;
+        PointerFactory = pointerFactory;
         SymbolTable = symbolTable;
         VariableTable = variableTable;
         NextVariableOffset = nextVariableOffset;
@@ -45,7 +66,14 @@ class CodeGenContext : ICloneable
             CodeGen,
             new(CompilerOptions),
             ExprFactory,
-            FuncFactory,
+            FunctionFactory,
+            VarFactory,
+            BinaryFactory,
+            IdentifierFactory,
+            CallFactory,
+            ConditionFactory,
+            ArrayFactory,
+            PointerFactory,
             SymbolTable.ToDictionary(x => x.Key, x => x.Value),
             VariableTable.ToDictionary(x => x.Key, x => x.Value),
             NextVariableOffset,

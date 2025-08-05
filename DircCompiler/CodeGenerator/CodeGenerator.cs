@@ -13,13 +13,27 @@ class CodeGenerator
     public CodeGenerator(CompilerOptions compilerOptions, CompilerContext compilerContext)
     {
         Allocator allocator = new(compilerOptions);
-        ExpressionCodeFactory exprFactory = new ExpressionCodeFactory(compilerOptions, LabelGenerator);
-        FunctionCodeFactory funcFactory = new FunctionCodeFactory(compilerOptions);
+        ExpressionFactory exprFactory = new ExpressionFactory(compilerOptions, LabelGenerator);
+        FunctionFactory funcFactory = new FunctionFactory(compilerOptions);
+        VariableFactory varFactory = new VariableFactory();
+        BinaryFactory binaryFactory = new BinaryFactory();
+        IdentifierFactory identifierFactory = new IdentifierFactory();
+        CallFactory callFactory = new CallFactory();
+        ConditionFactory conditionFactory = new ConditionFactory();
+        ArrayFactory arrayFactory = new ArrayFactory();
+        PointerFactory pointerFactory = new PointerFactory();
         Context = new CodeGenContext(
             this,
             allocator,
             exprFactory,
             funcFactory,
+            varFactory,
+            binaryFactory,
+            identifierFactory,
+            callFactory,
+            conditionFactory,
+            arrayFactory,
+            pointerFactory,
             [],
             [],
             0,
@@ -48,13 +62,13 @@ class CodeGenerator
                 throw new CodeGenException("Unknown import", importNode.Identifier, Context.CompilerOptions, Context.CompilerContext);
             }
 
-            Context.FuncFactory.CompileStandardFunction(Context, StandardLibrary.Functions[importNode.FunctionName]);
+            Context.FunctionFactory.CompileStandardFunction(Context, StandardLibrary.Functions[importNode.FunctionName]);
         }
 
         // Compile functions before rest of the code so they're at the top
         foreach (FunctionDeclarationNode funcNode in nodes.Where(node => node is FunctionDeclarationNode))
         {
-            Context.FuncFactory.Generate(funcNode, (CodeGenContext)Context.Clone());
+            Context.FunctionFactory.Generate(funcNode, (CodeGenContext)Context.Clone());
         }
 
         EmitLabel("_start");

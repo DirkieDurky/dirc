@@ -3,11 +3,11 @@ using DircCompiler.Parsing;
 
 namespace DircCompiler.CodeGen;
 
-class FunctionCodeFactory
+class FunctionFactory
 {
     private readonly CompilerOptions _compilerOptions;
 
-    public FunctionCodeFactory(CompilerOptions compilerOptions)
+    public FunctionFactory(CompilerOptions compilerOptions)
     {
         _compilerOptions = compilerOptions;
     }
@@ -43,5 +43,17 @@ class FunctionCodeFactory
         context.CodeGen.EmitLabel(function.Name);
         context.CodeGen.Emit(function.Code);
         context.CodeGen.EmitReturn();
+    }
+
+    public IReturnable? GenerateReturnStatement(ReturnStatementNode node, CodeGenContext context)
+    {
+        IReturnable returnValue = context.ExprFactory.Generate(node.ReturnValue, context) ?? throw new Exception("return value didn't return anything");
+        Register r0 = context.Allocator.Use(RegisterEnum.r0, true);
+        context.CodeGen.EmitMov(returnValue, r0);
+        returnValue.Free();
+        r0.Free();
+        context.CodeGen.EmitReturn(false);
+
+        return returnValue;
     }
 }
