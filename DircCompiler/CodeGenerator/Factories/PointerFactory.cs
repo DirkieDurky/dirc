@@ -3,7 +3,7 @@ using DircCompiler.Parsing;
 
 namespace DircCompiler.CodeGen;
 
-class PointerFactory
+internal class PointerFactory
 {
     public IReturnable GenerateAddressOf(AddressOfNode node, CodeGenContext context)
     {

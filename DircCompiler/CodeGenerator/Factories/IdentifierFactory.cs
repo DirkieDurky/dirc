@@ -3,7 +3,7 @@ using DircCompiler.Parsing;
 
 namespace DircCompiler.CodeGen;
 
-class IdentifierFactory
+internal class IdentifierFactory
 {
     public IReturnable Generate(IdentifierNode node, CodeGenContext context)
     {

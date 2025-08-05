@@ -3,7 +3,7 @@ using DircCompiler.Parsing;
 
 namespace DircCompiler.CodeGen;
 
-class CallFactory
+internal class CallFactory
 {
     public IReturnable? Generate(CallExpressionNode node, CodeGenContext context)
     {

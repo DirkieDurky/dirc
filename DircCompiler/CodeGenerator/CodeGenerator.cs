@@ -13,8 +13,8 @@ class CodeGenerator
     public CodeGenerator(CompilerOptions compilerOptions, CompilerContext compilerContext)
     {
         Allocator allocator = new(compilerOptions);
-        ExpressionFactory exprFactory = new ExpressionFactory(compilerOptions, LabelGenerator);
         FunctionFactory funcFactory = new FunctionFactory(compilerOptions);
+        ExpressionFactory exprFactory = new ExpressionFactory(compilerOptions, LabelGenerator);
         VariableFactory varFactory = new VariableFactory();
         BinaryFactory binaryFactory = new BinaryFactory();
         IdentifierFactory identifierFactory = new IdentifierFactory();

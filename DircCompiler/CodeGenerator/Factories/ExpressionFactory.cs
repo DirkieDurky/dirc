@@ -3,7 +3,7 @@ using DircCompiler.Parsing;
 
 namespace DircCompiler.CodeGen;
 
-class ExpressionFactory
+internal class ExpressionFactory
 {
     private readonly CompilerOptions _compilerOptions;
     private readonly LabelGenerator _labelGenerator;
