@@ -132,9 +132,11 @@ public class SemanticAnalyzer
                     throw new SemanticException($"Use of undeclared variable '{id.Name}'", id.IdentifierToken, options, context);
                 }
                 return idType;
-            case ConditionNode cond:
-                Type leftType = AnalyzeNode(cond.Left, null, options, context)!;
-                Type rightType = AnalyzeNode(cond.Right, null, options, context)!;
+            case BinaryExpressionNode binNode:
+                if (!binNode.Operation.IsComparer()) return null;
+
+                Type leftType = AnalyzeNode(binNode.Left, null, options, context)!;
+                Type rightType = AnalyzeNode(binNode.Right, null, options, context)!;
                 if ((leftType != Int.Instance && leftType != Bool.Instance) || (rightType != Int.Instance && rightType != Bool.Instance))
                 {
                     throw new SemanticException($"Condition operands must be int or bool, got {leftType.Name} and {rightType.Name}", null, options, context);

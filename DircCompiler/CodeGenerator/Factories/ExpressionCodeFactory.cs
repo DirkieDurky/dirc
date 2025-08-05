@@ -28,15 +28,13 @@ class ExpressionCodeFactory
             case CallExpressionNode call:
                 return GenerateCall(call, context);
             case BinaryExpressionNode bin:
-                return GenerateBinary(bin, context);
+                return GenerateBinary(bin, context, _labelGenerator);
             case IdentifierNode id:
                 return GenerateIdentifier(id, context);
             case BooleanLiteralNode boolean:
                 return boolean;
             case NumberLiteralNode number:
                 return number;
-            case ConditionNode condition:
-                return GenerateCondition(condition, context, _labelGenerator);
             case IfStatementNode ifStmt:
                 return GenerateIfStatement(ifStmt, context, _labelGenerator);
             case WhileStatementNode whileStmt:
@@ -102,8 +100,12 @@ class ExpressionCodeFactory
         return new ReturnRegister(context.Allocator.Use(RegisterEnum.r0));
     }
 
-    private IReturnable? GenerateBinary(BinaryExpressionNode node, CodeGenContext context)
+    private IReturnable? GenerateBinary(BinaryExpressionNode node, CodeGenContext context, LabelGenerator labelGenerator)
     {
+        if (node.Operation.IsComparer())
+        {
+            return GenerateCondition(node, context, labelGenerator);
+        }
         IReturnable leftOperand = Generate(node.Left, context) ?? throw new Exception("Left operand of binary expression is missing");
         IReturnable rightOperand = Generate(node.Right, context) ?? throw new Exception("Right operand of binary expression is missing");
 
@@ -201,14 +203,14 @@ class ExpressionCodeFactory
         throw new CodeGenException($"Undefined identifier was used", node.IdentifierToken, context.CompilerOptions, context.CompilerContext);
     }
 
-    private IReturnable? GenerateCondition(ConditionNode node, CodeGenContext context, LabelGenerator labelGenerator)
+    private IReturnable? GenerateCondition(BinaryExpressionNode node, CodeGenContext context, LabelGenerator labelGenerator)
     {
         string label = labelGenerator.Generate(LabelType.Condition);
         string endLabel = labelGenerator.Generate(LabelType.ConditionEnd);
 
         IReturnable left = Generate(node.Left, context) ?? throw new Exception("Part of if statement was not set");
         IReturnable right = Generate(node.Right, context) ?? throw new Exception("Part of if statement was not set");
-        context.CodeGen.EmitIf(node.Comparer.GetOpposite(), left, right, label);
+        context.CodeGen.EmitIf(node.Operation.GetComparer().GetOpposite(), left, right, label);
         left.Free();
         right.Free();
 
@@ -240,11 +242,11 @@ class ExpressionCodeFactory
             endLabel = labelGenerator.Generate(LabelType.IfElseEnd);
         }
 
-        if (node.Condition is ConditionNode condition)
+        if (node.Condition is BinaryExpressionNode condition && condition.Operation.IsComparer())
         {
             IReturnable left = Generate(condition.Left, context) ?? throw new Exception("Part of if statement was not set");
             IReturnable right = Generate(condition.Right, context) ?? throw new Exception("Part of if statement was not set");
-            context.CodeGen.EmitIf(condition.Comparer.GetOpposite(), left, right, label);
+            context.CodeGen.EmitIf(condition.Operation.GetComparer().GetOpposite(), left, right, label);
             left.Free();
             right.Free();
         }
@@ -311,11 +313,11 @@ class ExpressionCodeFactory
             context.ExprFactory.Generate(stmt, (CodeGenContext)context.Clone());
         }
 
-        if (node.Condition is ConditionNode condition)
+        if (node.Condition is BinaryExpressionNode condition && condition.Operation.IsComparer())
         {
             IReturnable left = Generate(condition.Left, context) ?? throw new Exception("Part of while statement was not set");
             IReturnable right = Generate(condition.Right, context) ?? throw new Exception("Part of while statement was not set");
-            context.CodeGen.EmitIf(condition.Comparer, left, right, label);
+            context.CodeGen.EmitIf(condition.Operation.GetComparer(), left, right, label);
             left.Free();
             right.Free();
         }
