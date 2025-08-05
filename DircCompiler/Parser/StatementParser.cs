@@ -5,7 +5,7 @@ namespace DircCompiler.Parsing;
 /// <summary>
 /// Handles parsing of statements including declarations, control flow, and variable assignments
 /// </summary>
-internal class StatementParser
+class StatementParser
 {
     private readonly ParserBase _parser;
     private readonly ExpressionParser _expressionParser;

@@ -5,7 +5,7 @@ namespace DircCompiler.Parsing;
 /// <summary>
 /// Handles parsing of type declarations including pointer types
 /// </summary>
-internal class TypeParser
+class TypeParser
 {
     private readonly ParserBase _parser;
 

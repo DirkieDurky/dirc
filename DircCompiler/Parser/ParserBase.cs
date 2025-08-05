@@ -5,7 +5,7 @@ namespace DircCompiler.Parsing;
 /// <summary>
 /// Base class providing common parsing utilities and token management
 /// </summary>
-internal class ParserBase
+class ParserBase
 {
     private List<Token> _tokens = new();
     private int _current;

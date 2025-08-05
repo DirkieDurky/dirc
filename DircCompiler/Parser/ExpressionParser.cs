@@ -5,7 +5,7 @@ namespace DircCompiler.Parsing;
 /// <summary>
 /// Handles parsing of expressions including binary operations, literals, and primary expressions
 /// </summary>
-internal class ExpressionParser
+class ExpressionParser
 {
     private readonly ParserBase _parser;
     private readonly OperatorPrecedence _precedence;

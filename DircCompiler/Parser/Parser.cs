@@ -2,10 +2,7 @@ using DircCompiler.Lexing;
 
 namespace DircCompiler.Parsing;
 
-/// <summary>
-/// Main parser class that coordinates the parsing process.
-/// </summary>
-public class Parser
+class Parser
 {
     private readonly ParserBase _parserBase;
     private readonly StatementParser _statementParser;
@@ -20,12 +17,12 @@ public class Parser
     {
         _parserBase.Initialize(tokens);
         List<AstNode> statements = new();
-        
+
         while (!_parserBase.IsAtEnd())
         {
             statements.AddRange(_statementParser.ParseStatement());
         }
-        
+
         return statements;
     }
 }

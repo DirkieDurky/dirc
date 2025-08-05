@@ -5,7 +5,7 @@ namespace DircCompiler.Parsing;
 /// <summary>
 /// Manages operator precedence and provides operator-related utilities
 /// </summary>
-internal class OperatorPrecedence
+class OperatorPrecedence
 {
     private readonly Dictionary<int, HashSet<TokenType>> _precedenceLevels;
     private readonly Dictionary<TokenType, Operation> _operations;
@@ -16,11 +16,11 @@ internal class OperatorPrecedence
         _precedenceLevels = new Dictionary<int, HashSet<TokenType>>
         {
             // Level 0: Comparison operators
-            { 0, new HashSet<TokenType> 
-                { 
+            { 0, new HashSet<TokenType>
+                {
                     TokenType.EqualEqual, TokenType.NotEqual,
                     TokenType.Less, TokenType.LessEqual,
-                    TokenType.Greater, TokenType.GreaterEqual 
+                    TokenType.Greater, TokenType.GreaterEqual
                 }
             },
 
