@@ -1,9 +1,8 @@
-using DircCompiler.CodeGen.Allocating;
 using DircCompiler.Parsing;
 
 namespace DircCompiler.CodeGen;
 
-internal class ExpressionFactory
+class ExpressionFactory
 {
     private readonly CompilerOptions _compilerOptions;
     private readonly LabelGenerator _labelGenerator;

@@ -3,7 +3,7 @@ using DircCompiler.Parsing;
 
 namespace DircCompiler.CodeGen;
 
-internal class BinaryFactory
+class BinaryFactory
 {
     public IReturnable? Generate(BinaryExpressionNode node, CodeGenContext context, LabelGenerator labelGenerator)
     {

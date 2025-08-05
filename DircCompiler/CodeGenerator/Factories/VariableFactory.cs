@@ -3,7 +3,7 @@ using DircCompiler.Parsing;
 
 namespace DircCompiler.CodeGen;
 
-internal class VariableFactory
+class VariableFactory
 {
     public IReturnable? GenerateVariableDeclaration(VariableDeclarationNode node, CodeGenContext context)
     {

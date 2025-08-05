@@ -3,7 +3,7 @@ using DircCompiler.Parsing;
 
 namespace DircCompiler.CodeGen;
 
-internal class ArrayFactory
+class ArrayFactory
 {
     public IReturnable? GenerateArrayDeclaration(ArrayDeclarationNode node, CodeGenContext context)
     {

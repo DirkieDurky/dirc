@@ -3,7 +3,7 @@ using DircCompiler.Parsing;
 
 namespace DircCompiler.CodeGen;
 
-internal class FunctionFactory
+class FunctionFactory
 {
     private readonly CompilerOptions _compilerOptions;
 
