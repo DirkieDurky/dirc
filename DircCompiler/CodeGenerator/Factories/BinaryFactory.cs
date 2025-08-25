@@ -9,7 +9,7 @@ class BinaryFactory
     {
         if (node.Operation.IsComparer())
         {
-            return context.ControlFlowFactory.Generate(node, context, labelGenerator);
+            return context.ControlFlowFactory.GenerateCondition(node, context, labelGenerator);
         }
         IReturnable leftOperand = context.ExprFactory.Generate(node.Left, context) ?? throw new Exception("Left operand of binary expression is missing");
         IReturnable rightOperand = context.ExprFactory.Generate(node.Right, context) ?? throw new Exception("Right operand of binary expression is missing");

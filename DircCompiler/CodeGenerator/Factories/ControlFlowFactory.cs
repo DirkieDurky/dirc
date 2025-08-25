@@ -5,7 +5,7 @@ namespace DircCompiler.CodeGen;
 
 class ControlFlowFactory
 {
-    public IReturnable? Generate(BinaryExpressionNode node, CodeGenContext context, LabelGenerator labelGenerator)
+    public IReturnable? GenerateCondition(BinaryExpressionNode node, CodeGenContext context, LabelGenerator labelGenerator)
     {
         string label = labelGenerator.Generate(LabelType.Condition);
         string endLabel = labelGenerator.Generate(LabelType.ConditionEnd);
