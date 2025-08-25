@@ -36,8 +36,8 @@ class OperatorPrecedence
             // Level 4: Addition/Subtraction
             { 4, new HashSet<TokenType> { TokenType.Plus, TokenType.Minus } },
             
-            // Level 5: Multiplication/Division
-            { 5, new HashSet<TokenType> { TokenType.Asterisk, TokenType.Slash } }
+            // Level 5: Multiplication/Division/Modulo
+            { 5, new HashSet<TokenType> { TokenType.Asterisk, TokenType.Slash, TokenType.Percent } }
         };
 
         // Map tokens to operations
@@ -48,6 +48,7 @@ class OperatorPrecedence
             { TokenType.Minus, Operation.Sub },
             { TokenType.Asterisk, Operation.Mul },
             { TokenType.Slash, Operation.Div },
+            { TokenType.Percent, Operation.Mod },
             
             // Bitwise operators
             { TokenType.Pipe, Operation.Or },

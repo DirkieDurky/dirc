@@ -7,7 +7,7 @@ public enum TokenType
     LeftBrace, RightBrace,
     LeftBracket, RightBracket,
     Comma, Semicolon,
-    Plus, Minus, Asterisk, Slash, Pipe, Ampersand, Caret,
+    Plus, Minus, Asterisk, Slash, Percent, Pipe, Ampersand, Caret,
     Equals, ExclamationPoint,
 
     // Multi-character operators

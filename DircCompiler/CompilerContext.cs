@@ -43,6 +43,9 @@ public class CompilerContext
     { "store", 0b00010101 },
     { "sub", 0b00000001 },
     { "xor", 0b00000101 },
+    { "mul", 0b00000110 },
+    { "div", 0b00000111 },
+    { "mod", 0b00001000 },
     };
 
     public static int DataWidth { get; } = 64; // Computer is 64-bit now

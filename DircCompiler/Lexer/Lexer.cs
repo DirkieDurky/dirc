@@ -63,6 +63,7 @@ class Lexer
             case '+': AddToken(TokenType.Plus); break;
             case '-': AddToken(TokenType.Minus); break;
             case '*': AddToken(TokenType.Asterisk); break;
+            case '%': AddToken(TokenType.Percent); break;
             case '|': AddToken(TokenType.Pipe); break;
             case '&': AddToken(TokenType.Ampersand); break;
             case '^': AddToken(TokenType.Caret); break;

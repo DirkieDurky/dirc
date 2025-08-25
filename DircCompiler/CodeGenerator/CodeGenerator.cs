@@ -169,6 +169,15 @@ class CodeGenerator
             case Operation.Xor:
                 Emit($"xor{opSuffix} {left.AsOperand()} {right!.AsOperand()} {result}");
                 break;
+            case Operation.Mul:
+                Emit($"mul{opSuffix} {left.AsOperand()} {right!.AsOperand()} {result}");
+                break;
+            case Operation.Div:
+                Emit($"div{opSuffix} {left.AsOperand()} {right!.AsOperand()} {result}");
+                break;
+            case Operation.Mod:
+                Emit($"mod{opSuffix} {left.AsOperand()} {right!.AsOperand()} {result}");
+                break;
         }
     }
 
