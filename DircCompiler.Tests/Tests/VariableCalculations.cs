@@ -91,11 +91,11 @@ public class VariableCalculations
     {
         string source =
         """
-        import print;
+        import printBool;
         
         int x = 0b11110000;
         int y = 0b00110000;
-        print(x & y);
+        printBool(x & y);
         """.TrimIndents();
 
         string expected =
@@ -103,7 +103,7 @@ public class VariableCalculations
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label printBool
         mov r0 _ out
         return _ _ _
 
@@ -120,7 +120,7 @@ public class VariableCalculations
         sub|i2 fp 1 r0
         load r0 _ r2
         and r1 r2 r0
-        call print _ _
+        call printBool _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
@@ -133,11 +133,11 @@ public class VariableCalculations
     {
         string source =
         """
-        import print;
+        import printBool;
         
         int x = 0b11110000;
         int y = 0b00001100;
-        print(x | y);
+        printBool(x | y);
         """.TrimIndents();
 
         string expected =
@@ -145,7 +145,7 @@ public class VariableCalculations
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label printBool
         mov r0 _ out
         return _ _ _
 
@@ -162,7 +162,7 @@ public class VariableCalculations
         sub|i2 fp 1 r0
         load r0 _ r2
         or r1 r2 r0
-        call print _ _
+        call printBool _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
@@ -175,11 +175,11 @@ public class VariableCalculations
     {
         string source =
         """
-        import print;
+        import printBool;
         
         int x = 0b11110000;
         int y = 0b00110000;
-        print(x ^ y);
+        printBool(x ^ y);
         """.TrimIndents();
 
         string expected =
@@ -187,7 +187,7 @@ public class VariableCalculations
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label printBool
         mov r0 _ out
         return _ _ _
 
@@ -204,7 +204,7 @@ public class VariableCalculations
         sub|i2 fp 1 r0
         load r0 _ r2
         xor r1 r2 r0
-        call print _ _
+        call printBool _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));

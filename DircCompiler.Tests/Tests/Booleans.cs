@@ -7,7 +7,7 @@ public class Booleans
     {
         string source =
         """
-        import print;
+        import printBool;
         printBool(true);
         """.TrimIndents();
 
@@ -16,7 +16,7 @@ public class Booleans
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label printBool
         mov r0 _ out
         return _ _ _
 

@@ -407,7 +407,7 @@ public class IfStatements
     {
         string source =
         """
-        import print;
+        import printBool;
         
         printBool(2 == 2);
         """.TrimIndents();
@@ -417,7 +417,7 @@ public class IfStatements
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label printBool
         mov r0 _ out
         return _ _ _
 
@@ -442,7 +442,7 @@ public class IfStatements
     {
         string source =
         """
-        import print;
+        import printBool;
 
         printBool(1 == 2);
         """.TrimIndents();
@@ -452,7 +452,7 @@ public class IfStatements
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label printBool
         mov r0 _ out
         return _ _ _
 

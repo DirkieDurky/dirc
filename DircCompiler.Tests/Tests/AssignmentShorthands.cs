@@ -70,7 +70,7 @@ public class AssignmentShorthands
         string source =
         """
         int x = 2;
-        x &= 3;
+        bool y = x & 3;
         """.TrimIndents();
 
         string expected =
@@ -83,10 +83,11 @@ public class AssignmentShorthands
         sub|i2 sp 1 sp
         mov fp _ r0
         store|i1 2 r0 _
+        sub|i2 sp 1 sp
         mov fp _ r0
         load r0 _ r1
         and|i2 r1 3 r0
-        mov fp _ r1
+        sub|i2 fp 1 r1
         store r0 r1 _
         """.TrimIndents();
 
@@ -101,7 +102,7 @@ public class AssignmentShorthands
         string source =
         """
         int x = 2;
-        x |= 0b01000000;
+        bool y = x | 0b01000000;
         """.TrimIndents();
 
         string expected =
@@ -114,10 +115,11 @@ public class AssignmentShorthands
         sub|i2 sp 1 sp
         mov fp _ r0
         store|i1 2 r0 _
+        sub|i2 sp 1 sp
         mov fp _ r0
         load r0 _ r1
         or|i2 r1 0b01000000 r0
-        mov fp _ r1
+        sub|i2 fp 1 r1
         store r0 r1 _
         """.TrimIndents();
 
@@ -132,7 +134,7 @@ public class AssignmentShorthands
         string source =
         """
         int x = 2;
-        x ^= 0b00000111;
+        bool y = x ^ 0b00000111;
         """.TrimIndents();
 
         string expected =
@@ -145,10 +147,11 @@ public class AssignmentShorthands
         sub|i2 sp 1 sp
         mov fp _ r0
         store|i1 2 r0 _
+        sub|i2 sp 1 sp
         mov fp _ r0
         load r0 _ r1
         xor|i2 r1 0b00000111 r0
-        mov fp _ r1
+        sub|i2 fp 1 r1
         store r0 r1 _
         """.TrimIndents();
 

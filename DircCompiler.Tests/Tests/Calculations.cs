@@ -67,9 +67,9 @@ public class Calculations
     {
         string source =
         """
-        import print;
+        import printBool;
 
-        print(0b11110000 & 0b00110000);
+        printBool(0b11110000 & 0b00110000);
         """.TrimIndents();
 
         string expected =
@@ -77,14 +77,14 @@ public class Calculations
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label printBool
         mov r0 _ out
         return _ _ _
 
         label _start
         mov sp _ fp
         mov|i1 0b11110000 & 0b00110000 _ r0
-        call print _ _
+        call printBool _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
@@ -97,9 +97,9 @@ public class Calculations
     {
         string source =
         """
-        import print;
+        import printBool;
 
-        print(0b11110000 | 0b00001100);
+        printBool(0b11110000 | 0b00001100);
         """.TrimIndents();
 
         string expected =
@@ -107,14 +107,14 @@ public class Calculations
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label printBool
         mov r0 _ out
         return _ _ _
 
         label _start
         mov sp _ fp
         mov|i1 0b11110000 | 0b00001100 _ r0
-        call print _ _
+        call printBool _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
@@ -127,9 +127,9 @@ public class Calculations
     {
         string source =
         """
-        import print;
+        import printBool;
 
-        print(0b11110000 ^ 0b00110000);
+        printBool(0b11110000 ^ 0b00110000);
         """.TrimIndents();
 
         string expected =
@@ -137,14 +137,14 @@ public class Calculations
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label printBool
         mov r0 _ out
         return _ _ _
 
         label _start
         mov sp _ fp
         mov|i1 0b11110000 ^ 0b00110000 _ r0
-        call print _ _
+        call printBool _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
