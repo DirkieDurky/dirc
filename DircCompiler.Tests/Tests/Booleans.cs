@@ -7,8 +7,8 @@ public class Booleans
     {
         string source =
         """
-        import printBool;
-        printBool(true);
+        import outBool;
+        outBool(true);
         """.TrimIndents();
 
         string expected =
@@ -16,14 +16,14 @@ public class Booleans
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label printBool
+        label outBool
         mov r0 _ out
         return _ _ _
 
         label _start
         mov sp _ fp
         mov|i1 1 _ r0
-        call printBool _ _
+        call outBool _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));

@@ -7,27 +7,27 @@ public class Complex
     {
         string source =
         """
-        import print;
-        void print4(int num) {
-            print(num + 4);
+        import out;
+        void out4(int num) {
+            out(num + 4);
         }
 
-        void print25(int num) {
-            print(num + 25);
+        void out25(int num) {
+            out(num + 25);
         }
 
-        void print60(int num) {
-            print(60 + num);
+        void out60(int num) {
+            out(60 + num);
         }
 
-        void print10(int bum) {
-            print(bum + 10);
+        void out10(int bum) {
+            out(bum + 10);
         }
 
-        print4(14);
-        print25(14);
-        print60(14);
-        print10(14);
+        out4(14);
+        out25(14);
+        out60(14);
+        out10(14);
         """.TrimIndents();
 
         string expected =
@@ -35,60 +35,60 @@ public class Complex
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
-        label print4
+        label out4
         push lr _ _
         push fp _ _
         mov sp _ fp
         push r0 _ _
         add|i2 r0 4 r1
         mov r1 _ r0
-        call print _ _
+        call out _ _
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp
         pop _ _ lr
         return _ _ _
 
-        label print25
+        label out25
         push lr _ _
         push fp _ _
         mov sp _ fp
         push r0 _ _
         add|i2 r0 25 r1
         mov r1 _ r0
-        call print _ _
+        call out _ _
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp
         pop _ _ lr
         return _ _ _
 
-        label print60
+        label out60
         push lr _ _
         push fp _ _
         mov sp _ fp
         push r0 _ _
         add|i1 60 r0 r1
         mov r1 _ r0
-        call print _ _
+        call out _ _
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp
         pop _ _ lr
         return _ _ _
 
-        label print10
+        label out10
         push lr _ _
         push fp _ _
         mov sp _ fp
         push r0 _ _
         add|i2 r0 10 r1
         mov r1 _ r0
-        call print _ _
+        call out _ _
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp
@@ -98,18 +98,18 @@ public class Complex
         label _start
         mov sp _ fp
         mov|i1 14 _ r0
-        call print4 _ _
+        call out4 _ _
         push r0 _ _
         mov|i1 14 _ r0
-        call print25 _ _
+        call out25 _ _
         pop _ _ r0
         push r0 _ _
         mov|i1 14 _ r0
-        call print60 _ _
+        call out60 _ _
         pop _ _ r0
         push r0 _ _
         mov|i1 14 _ r0
-        call print10 _ _
+        call out10 _ _
         pop _ _ r0
         """.TrimIndents();
 
@@ -123,12 +123,12 @@ public class Complex
     {
         string source =
         """
-        import print;
+        import out;
         void test() {
             int x = 5;
             int y = 10;
             int result = x + y;
-            print(result);
+            out(result);
         } 
 
         test();
@@ -139,7 +139,7 @@ public class Complex
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -164,7 +164,7 @@ public class Complex
         sub|i2 fp 2 r0
         load r0 _ r1
         mov r1 _ r0
-        call print _ _
+        call out _ _
         mov fp _ sp
         pop _ _ fp
         pop _ _ lr

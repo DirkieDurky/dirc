@@ -8,10 +8,10 @@ public class ReturnValues
         string source =
         """
         import input;
-        import print;
+        import out;
 
         int x = input();
-        print(x);
+        out(x);
         """.TrimIndents();
 
         string expected =
@@ -23,7 +23,7 @@ public class ReturnValues
         mov in _ r0
         return _ _ _
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -36,7 +36,7 @@ public class ReturnValues
         mov fp _ r0
         load r0 _ r1
         mov r1 _ r0
-        call print _ _
+        call out _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
@@ -50,9 +50,9 @@ public class ReturnValues
         string source =
         """
         import input;
-        import print;
+        import out;
 
-        print(input());
+        out(input());
         """.TrimIndents();
 
         string expected =
@@ -64,14 +64,14 @@ public class ReturnValues
         mov in _ r0
         return _ _ _
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
         label _start
         mov sp _ fp
         call input _ _
-        call print _ _
+        call out _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
@@ -84,13 +84,13 @@ public class ReturnValues
     {
         string source =
         """
-        import print;
+        import out;
 
         int myAdd(int x, int y) {
             return x + y;
         }
 
-        print(myAdd(1, 2));
+        out(myAdd(1, 2));
         """.TrimIndents();
 
         string expected =
@@ -98,7 +98,7 @@ public class ReturnValues
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -119,7 +119,7 @@ public class ReturnValues
         mov|i1 1 _ r0
         mov|i1 2 _ r1
         call myAdd _ _
-        call print _ _
+        call out _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));

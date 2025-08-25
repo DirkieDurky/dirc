@@ -7,10 +7,10 @@ public class LocalVariables
     {
         string source =
         """
-        import print;
+        import out;
         
         int x = 3;
-        print(x);
+        out(x);
         """.TrimIndents();
 
         string expected =
@@ -18,7 +18,7 @@ public class LocalVariables
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -30,7 +30,7 @@ public class LocalVariables
         mov fp _ r0
         load r0 _ r1
         mov r1 _ r0
-        call print _ _
+        call out _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
@@ -43,12 +43,12 @@ public class LocalVariables
     {
         string source =
         """
-        import print;
+        import out;
         
         int x = 3;
         x = x + 1;
 
-        print(x);
+        out(x);
         """.TrimIndents();
 
         string expected =
@@ -56,7 +56,7 @@ public class LocalVariables
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -73,7 +73,7 @@ public class LocalVariables
         mov fp _ r0
         load r0 _ r1
         mov r1 _ r0
-        call print _ _
+        call out _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
@@ -86,12 +86,12 @@ public class LocalVariables
     {
         string source =
         """
-        import print;
+        import out;
         
         int x = 3;
         int x = 5;
 
-        print(x);
+        out(x);
         """.TrimIndents();
 
         Assert.Throws<SemanticException>(() => new Compiler().Compile(source, new([]), new("unittests")));

@@ -7,10 +7,10 @@ public class Misc
     {
         string source =
         """
-        import print;
+        import out;
         ;
         ;
-        print(5);
+        out(5);
         """.TrimIndents();
 
         string expected =
@@ -18,14 +18,14 @@ public class Misc
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
         label _start
         mov sp _ fp
         mov|i1 5 _ r0
-        call print _ _
+        call out _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));

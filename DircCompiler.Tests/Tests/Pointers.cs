@@ -129,11 +129,11 @@ public class Pointers
     {
         string source =
         """
-        import print;
+        import out;
 
         int* a = 5;
         *a = 10;
-        print(*a);
+        out(*a);
         """.TrimIndents();
 
         string expected =
@@ -141,7 +141,7 @@ public class Pointers
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -156,7 +156,7 @@ public class Pointers
         mov fp _ r0
         load r0 _ r1
         load r1 _ r0
-        call print _ _
+        call out _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
@@ -169,14 +169,14 @@ public class Pointers
     {
         string source =
         """
-        import print;
+        import out;
 
         int* a = 5;
         *(a) = 10;
         *(a + 1) = 12;
         *(a + 2) = 9;
         *(a + 3) = 4;
-        print(*a);
+        out(*a);
         """.TrimIndents();
 
         string expected =
@@ -184,7 +184,7 @@ public class Pointers
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -211,7 +211,7 @@ public class Pointers
         mov fp _ r0
         load r0 _ r1
         load r1 _ r0
-        call print _ _
+        call out _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
@@ -224,14 +224,14 @@ public class Pointers
     {
         string source =
         """
-        import print;
+        import out;
 
         int* a = 5;
         a[0] = 10;
         a[1] = 12;
         a[2] = 9;
         a[3] = 4;
-        print(a[2]);
+        out(a[2]);
         """.TrimIndents();
 
         string expected =
@@ -239,7 +239,7 @@ public class Pointers
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -268,7 +268,7 @@ public class Pointers
         load r0 _ r1
         add|i2 r1 2 r2
         load r2 _ r0
-        call print _ _
+        call out _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));

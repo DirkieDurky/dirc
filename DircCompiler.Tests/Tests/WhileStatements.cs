@@ -7,11 +7,11 @@ public class WhileStatements
     {
         string source =
         """
-        import print;
+        import out;
 
         int i = 0;
         while (i < 5) {
-            print(i);
+            out(i);
             i++;
         }
         """.TrimIndents();
@@ -21,7 +21,7 @@ public class WhileStatements
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -34,7 +34,7 @@ public class WhileStatements
         mov fp _ r0
         load r0 _ r1
         mov r1 _ r0
-        call print _ _
+        call out _ _
         mov fp _ r0
         load r0 _ r1
         add|i2 r1 1 r0
@@ -55,10 +55,10 @@ public class WhileStatements
     {
         string source =
         """
-        import print;
+        import out;
 
         while (true) {
-            print(42);
+            out(42);
         }
         """.TrimIndents();
 
@@ -67,7 +67,7 @@ public class WhileStatements
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -75,7 +75,7 @@ public class WhileStatements
         mov sp _ fp
         label _while0
         mov|i1 42 _ r0
-        call print _ _
+        call out _ _
         jump _while0 _ pc
         """.TrimIndents();
 

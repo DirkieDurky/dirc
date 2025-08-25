@@ -51,11 +51,11 @@ public class Arrays
     {
         string source =
         """
-        import print;
+        import out;
         
         int nums[5] = {1, 2, 3, 4, 5};
         nums[2] = 42;
-        print(nums[2]);
+        out(nums[2]);
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));

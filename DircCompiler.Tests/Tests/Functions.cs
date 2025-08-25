@@ -7,9 +7,9 @@ public class Functions
     {
         string source =
         """
-        import print;
+        import out;
 
-        print(14);
+        out(14);
         """.TrimIndents();
 
         string expected =
@@ -17,14 +17,14 @@ public class Functions
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
         label _start
         mov sp _ fp
         mov|i1 14 _ r0
-        call print _ _
+        call out _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
@@ -37,10 +37,10 @@ public class Functions
     {
         string source =
         """
-        import print;
+        import out;
 
-        void myprint(int num) {
-            print(num);
+        void myout(int num) {
+            out(num);
         }
         """.TrimIndents();
 
@@ -49,16 +49,16 @@ public class Functions
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
-        label myprint
+        label myout
         push lr _ _
         push fp _ _
         mov sp _ fp
         push r0 _ _
-        call print _ _
+        call out _ _
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp
@@ -79,13 +79,13 @@ public class Functions
     {
         string source =
         """
-        import print;
+        import out;
 
-        void myprint(int num) {
-            print(num);
+        void myout(int num) {
+            out(num);
         }
 
-        myprint(14);
+        myout(14);
         """.TrimIndents();
 
         string expected =
@@ -93,16 +93,16 @@ public class Functions
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
-        label myprint
+        label myout
         push lr _ _
         push fp _ _
         mov sp _ fp
         push r0 _ _
-        call print _ _
+        call out _ _
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp
@@ -112,7 +112,7 @@ public class Functions
         label _start
         mov sp _ fp
         mov|i1 14 _ r0
-        call myprint _ _
+        call myout _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
@@ -125,17 +125,17 @@ public class Functions
     {
         string source =
         """
-        import print;
+        import out;
 
-        void myprint(int num) {
-            print(num);
+        void myout(int num) {
+            out(num);
         }
 
-        myprint(14);
-        myprint(8);
-        myprint(25);
-        myprint(128);
-        myprint(255);
+        myout(14);
+        myout(8);
+        myout(25);
+        myout(128);
+        myout(255);
         """.TrimIndents();
 
         string expected =
@@ -143,16 +143,16 @@ public class Functions
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
-        label myprint
+        label myout
         push lr _ _
         push fp _ _
         mov sp _ fp
         push r0 _ _
-        call print _ _
+        call out _ _
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp
@@ -162,22 +162,22 @@ public class Functions
         label _start
         mov sp _ fp
         mov|i1 14 _ r0
-        call myprint _ _
+        call myout _ _
         push r0 _ _
         mov|i1 8 _ r0
-        call myprint _ _
+        call myout _ _
         pop _ _ r0
         push r0 _ _
         mov|i1 25 _ r0
-        call myprint _ _
+        call myout _ _
         pop _ _ r0
         push r0 _ _
         mov|i1 128 _ r0
-        call myprint _ _
+        call myout _ _
         pop _ _ r0
         push r0 _ _
         mov|i1 255 _ r0
-        call myprint _ _
+        call myout _ _
         pop _ _ r0
         """.TrimIndents();
 
@@ -191,10 +191,10 @@ public class Functions
     {
         string source =
         """
-        import print;
+        import out;
 
-        void print() {
-            print(3);
+        void out() {
+            out(3);
         }
         """.TrimIndents();
 
@@ -234,12 +234,12 @@ public class Functions
     {
         string source =
         """
-        import print;
+        import out;
 
         test();
 
         void rest() {
-            print(1);
+            out(1);
         }
 
         void best() {
@@ -256,7 +256,7 @@ public class Functions
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -265,7 +265,7 @@ public class Functions
         push fp _ _
         mov sp _ fp
         mov|i1 1 _ r0
-        call print _ _
+        call out _ _
         mov fp _ sp
         pop _ _ fp
         pop _ _ lr

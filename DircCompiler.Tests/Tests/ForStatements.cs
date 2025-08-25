@@ -7,10 +7,10 @@ public class ForStatements
     {
         string source =
         """
-        import print;
+        import out;
 
         for (int i = 0; i < 5; i++) {
-            print(i);
+            out(i);
         }
         """.TrimIndents();
 
@@ -19,7 +19,7 @@ public class ForStatements
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -32,7 +32,7 @@ public class ForStatements
         mov fp _ r0
         load r0 _ r1
         mov r1 _ r0
-        call print _ _
+        call out _ _
         mov fp _ r0
         load r0 _ r1
         add|i2 r1 1 r0
@@ -53,10 +53,10 @@ public class ForStatements
     {
         string source =
         """
-        import print;
+        import out;
 
         for (;;) {
-            print(4);
+            out(4);
         }
         """.TrimIndents();
 
@@ -65,7 +65,7 @@ public class ForStatements
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -73,7 +73,7 @@ public class ForStatements
         mov sp _ fp
         label _while0
         mov|i1 4 _ r0
-        call print _ _
+        call out _ _
         jump _while0 _ pc
         """.TrimIndents();
 

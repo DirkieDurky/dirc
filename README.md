@@ -15,9 +15,9 @@ To declare a boolean variable:
 bool flag = true;
 ```
 
-Later, this variable may be referred to by the given name. This example prints it:
+Later, this variable may be referred to by the given name. This example outs it:
 ```
-print(x);
+out(x);
 ```
 
 ## Memory Management and Pointers
@@ -109,7 +109,7 @@ Array elements can be accessed and modified using square bracket notation:
 ```
 nums[2] = 42;        // Set element at index 2 to 42
 int x = nums[2];     // Get element at index 2
-print(nums[0]);      // Print the first element
+out(nums[0]);      // Print the first element
 ```
 
 Array indices must be integers and are zero-based.
@@ -131,19 +131,19 @@ The following operations are permitted:
 - Bitwise or (|)
 - Bitwise xor (^)
 
-This example does a bitwise or operation on 'a' and 'b' and prints it.
+This example does a bitwise or operation on 'a' and 'b' and outs it.
 ```
-print(a | b)
+out(a | b)
 ```
 
 To make operations like these easier to deal with, binary and hexadecimal literals are also allowed using the '0b' and '0x' prefixes respectively:
 ```
-print(0b01000000 | 0b01000100);
+out(0b01000000 | 0b01000100);
 ```
 
 Hexadecimal is done using the '0x' prefix:
 ```
-print(0x0d ^ 0xd0);
+out(0x0d ^ 0xd0);
 ```
 
 ### Shorthands
@@ -161,7 +161,7 @@ x++;
 The standard library contains the following functions:
 - `input()`
 Returns the current input of the program.
-- `print(num)`
+- `out(num)`
 Sends the given value to the out register.
 - `malloc(size)`
 Allocates the specified number of words in memory and returns a pointer to the allocated memory.
@@ -170,7 +170,7 @@ Deallocates memory previously allocated with malloc. The same pointer you got fr
 
 Functions (both standard and custom ones) may be called as such:
 ```
-print(42);
+out(42);
 ```
 Before using a function from the standard library it should be imported using the import statement:
 ```
@@ -179,7 +179,7 @@ import [function];
 
 Example:
 ```
-import print;
+import out;
 ```
 
 
@@ -202,8 +202,8 @@ bool isEven(int x) {
 
 Example of a function returning nothing:
 ```
-void printSum(int x, int y) {
-    print(x + y);
+void outSum(int x, int y) {
+    out(x + y);
 }
 ```
 
@@ -217,13 +217,13 @@ int x = 4;
 int y = 5;
 bool cond = (x != y);
 if (cond) {
-    print(3);
+    out(3);
 }
 ```
 Or directly:
 ```
 if (x == y) {
-    print(3);
+    out(3);
 }
 ```
 All comparison operations return a boolean value.
@@ -242,7 +242,7 @@ For example:
 ```
 int i = 0;
 while (i < 5) {
-    print(i);
+    out(i);
     i++;
 }
 ```
@@ -260,14 +260,14 @@ for (initialization; condition; increment) {
 Example:
 ```
 for (int x = 0; x < 5; x++) {
-    print(x);
+    out(x);
 }
 ```
 
 The condition must be of type `bool`. All three components of the for loop are optional. An infinite loop can be written as:
 ```
 for (;;) {
-    print(42);
+    out(42);
 }
 ```
 
@@ -278,7 +278,7 @@ The loop variable must be declared with a type if it is declared in the loop hea
 
 ## Expressions
 An expression is anything that returns a value. Expressions have a type, such as `int` or `bool`. Expressions can be used in other elements of the code, like:
-- Function calls (`print([expression])`)
+- Function calls (`out([expression])`)
 - Variable assignments (`x = [expression]`)
 - If statements (`if ([bool expression])`)
 
@@ -293,7 +293,7 @@ Function calls and variable assignments are also expressions and have a type. Fo
 
 This means that even function calls or variable assignments can be used where an expression is expected, like the examples given at the start of this subchapter. For example, a function call can be used as an argument for another function call:
 ```
-print(input());
+out(input());
 ```
 
 ## Comments
@@ -310,7 +310,7 @@ Multi-line comments are enclosed between /* and */. They can span multiple lines
 This is a multi-line comment.
 It can be used to describe logic over several lines.
 */
-print(4);
+out(4);
 ```
 Comments are useful for explaining complex logic or temporarily disabling code during development.
 

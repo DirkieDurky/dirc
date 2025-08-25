@@ -7,12 +7,12 @@ public class IfStatements
     {
         string source =
         """
-        import print;
+        import out;
 
         if (1 == 1) {
-            print(2);
+            out(2);
         }
-        print(3);
+        out(3);
         """.TrimIndents();
 
         string expected =
@@ -20,7 +20,7 @@ public class IfStatements
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -28,10 +28,10 @@ public class IfStatements
         mov sp _ fp
         ifNotEq|i1|i2 1 1 _if0
         mov|i1 2 _ r0
-        call print _ _
+        call out _ _
         label _if0
         mov|i1 3 _ r0
-        call print _ _
+        call out _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
@@ -44,12 +44,12 @@ public class IfStatements
     {
         string source =
         """
-        import print;
+        import out;
         
         if (1 == 2) {
-            print(2);
+            out(2);
         }
-        print(3);
+        out(3);
         """.TrimIndents();
 
         string expected =
@@ -57,7 +57,7 @@ public class IfStatements
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -65,10 +65,10 @@ public class IfStatements
         mov sp _ fp
         ifNotEq|i1|i2 1 2 _if0
         mov|i1 2 _ r0
-        call print _ _
+        call out _ _
         label _if0
         mov|i1 3 _ r0
-        call print _ _
+        call out _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
@@ -81,14 +81,14 @@ public class IfStatements
     {
         string source =
         """
-        import print;
+        import out;
         
         int x = 5;
         int y = 4;
         y++;
 
         if (x == y) {
-            print(y++);
+            out(y++);
         }
         """.TrimIndents();
 
@@ -97,7 +97,7 @@ public class IfStatements
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -124,7 +124,7 @@ public class IfStatements
         add|i2 r1 1 r0
         sub|i2 fp 1 r1
         store r0 r1 _
-        call print _ _
+        call out _ _
         label _if0
         """.TrimIndents();
 
@@ -138,14 +138,14 @@ public class IfStatements
     {
         string source =
         """
-        import print;
+        import out;
         
         if (1 == 1) {
-            print(2);
+            out(2);
         }
         else
         {
-            print(3);
+            out(3);
         }
         """.TrimIndents();
 
@@ -154,7 +154,7 @@ public class IfStatements
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -162,11 +162,11 @@ public class IfStatements
         mov sp _ fp
         ifNotEq|i1|i2 1 1 _else0
         mov|i1 2 _ r0
-        call print _ _
+        call out _ _
         jump _ifElseEnd0 _ pc
         label _else0
         mov|i1 3 _ r0
-        call print _ _
+        call out _ _
         label _ifElseEnd0
         """.TrimIndents();
 
@@ -180,14 +180,14 @@ public class IfStatements
     {
         string source =
         """
-        import print;
+        import out;
         
         if (1 == 2) {
-            print(2);
+            out(2);
         }
         else
         {
-            print(3);
+            out(3);
         }
         """.TrimIndents();
 
@@ -196,7 +196,7 @@ public class IfStatements
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -204,11 +204,11 @@ public class IfStatements
         mov sp _ fp
         ifNotEq|i1|i2 1 2 _else0
         mov|i1 2 _ r0
-        call print _ _
+        call out _ _
         jump _ifElseEnd0 _ pc
         label _else0
         mov|i1 3 _ r0
-        call print _ _
+        call out _ _
         label _ifElseEnd0
         """.TrimIndents();
 
@@ -222,12 +222,12 @@ public class IfStatements
     {
         string source =
         """
-        import print;
+        import out;
         
         if (1 != 1) {
-            print(2);
+            out(2);
         }
-        print(3);
+        out(3);
         """.TrimIndents();
 
         string expected =
@@ -235,7 +235,7 @@ public class IfStatements
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -243,10 +243,10 @@ public class IfStatements
         mov sp _ fp
         ifEq|i1|i2 1 1 _if0
         mov|i1 2 _ r0
-        call print _ _
+        call out _ _
         label _if0
         mov|i1 3 _ r0
-        call print _ _
+        call out _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
@@ -259,12 +259,12 @@ public class IfStatements
     {
         string source =
         """
-        import print;
+        import out;
         
         if (1 < 1) {
-            print(2);
+            out(2);
         }
-        print(3);
+        out(3);
         """.TrimIndents();
 
         string expected =
@@ -272,7 +272,7 @@ public class IfStatements
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -280,10 +280,10 @@ public class IfStatements
         mov sp _ fp
         ifMoreOrEq|i1|i2 1 1 _if0
         mov|i1 2 _ r0
-        call print _ _
+        call out _ _
         label _if0
         mov|i1 3 _ r0
-        call print _ _
+        call out _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
@@ -296,12 +296,12 @@ public class IfStatements
     {
         string source =
         """
-        import print;
+        import out;
         
         if (1 <= 1) {
-            print(2);
+            out(2);
         }
-        print(3);
+        out(3);
         """.TrimIndents();
 
         string expected =
@@ -309,7 +309,7 @@ public class IfStatements
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -317,10 +317,10 @@ public class IfStatements
         mov sp _ fp
         ifMore|i1|i2 1 1 _if0
         mov|i1 2 _ r0
-        call print _ _
+        call out _ _
         label _if0
         mov|i1 3 _ r0
-        call print _ _
+        call out _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
@@ -333,12 +333,12 @@ public class IfStatements
     {
         string source =
         """
-        import print;
+        import out;
         
         if (1 > 1) {
-            print(2);
+            out(2);
         }
-        print(3);
+        out(3);
         """.TrimIndents();
 
         string expected =
@@ -346,7 +346,7 @@ public class IfStatements
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -354,10 +354,10 @@ public class IfStatements
         mov sp _ fp
         ifLessOrEq|i1|i2 1 1 _if0
         mov|i1 2 _ r0
-        call print _ _
+        call out _ _
         label _if0
         mov|i1 3 _ r0
-        call print _ _
+        call out _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
@@ -370,12 +370,12 @@ public class IfStatements
     {
         string source =
         """
-        import print;
+        import out;
         
         if (1 >= 1) {
-            print(2);
+            out(2);
         }
-        print(3);
+        out(3);
         """.TrimIndents();
 
         string expected =
@@ -383,7 +383,7 @@ public class IfStatements
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -391,10 +391,10 @@ public class IfStatements
         mov sp _ fp
         ifLess|i1|i2 1 1 _if0
         mov|i1 2 _ r0
-        call print _ _
+        call out _ _
         label _if0
         mov|i1 3 _ r0
-        call print _ _
+        call out _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
@@ -407,9 +407,9 @@ public class IfStatements
     {
         string source =
         """
-        import printBool;
+        import outBool;
         
-        printBool(2 == 2);
+        outBool(2 == 2);
         """.TrimIndents();
 
         string expected =
@@ -417,7 +417,7 @@ public class IfStatements
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label printBool
+        label outBool
         mov r0 _ out
         return _ _ _
 
@@ -429,7 +429,7 @@ public class IfStatements
         label _condition0
         mov|i1 0 _ r0
         label _conditionEnd0
-        call printBool _ _
+        call outBool _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
@@ -442,9 +442,9 @@ public class IfStatements
     {
         string source =
         """
-        import printBool;
+        import outBool;
 
-        printBool(1 == 2);
+        outBool(1 == 2);
         """.TrimIndents();
 
         string expected =
@@ -452,7 +452,7 @@ public class IfStatements
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label printBool
+        label outBool
         mov r0 _ out
         return _ _ _
 
@@ -464,7 +464,7 @@ public class IfStatements
         label _condition0
         mov|i1 0 _ r0
         label _conditionEnd0
-        call printBool _ _
+        call outBool _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
@@ -477,10 +477,10 @@ public class IfStatements
     {
         string source =
         """
-        import print;
+        import out;
 
         if (1) {
-            print(3);
+            out(3);
         }
         """.TrimIndents();
 
@@ -489,14 +489,14 @@ public class IfStatements
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
         label _start
         mov sp _ fp
         mov|i1 3 _ r0
-        call print _ _
+        call out _ _
         label _if0
         """.TrimIndents();
 
@@ -510,10 +510,10 @@ public class IfStatements
     {
         string source =
         """
-        import print;
+        import out;
 
         if (0) {
-            print(3);
+            out(3);
         }
         """.TrimIndents();
 
@@ -522,7 +522,7 @@ public class IfStatements
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -530,7 +530,7 @@ public class IfStatements
         mov sp _ fp
         jump _if0 _ pc
         mov|i1 3 _ r0
-        call print _ _
+        call out _ _
         label _if0
         """.TrimIndents();
 
@@ -544,11 +544,11 @@ public class IfStatements
     {
         string source =
         """
-        import print;
+        import out;
 
         int x = 1;
         if (x) {
-            print(3);
+            out(3);
         }
         """.TrimIndents();
 
@@ -557,7 +557,7 @@ public class IfStatements
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -570,7 +570,7 @@ public class IfStatements
         load r0 _ r1
         ifEq|i2 r1 0 _if0
         mov|i1 3 _ r0
-        call print _ _
+        call out _ _
         label _if0
         """.TrimIndents();
 
@@ -584,11 +584,11 @@ public class IfStatements
     {
         string source =
         """
-        import print;
+        import out;
 
         int x = 0;
         if (x) {
-            print(3);
+            out(3);
         }
         """.TrimIndents();
 
@@ -597,7 +597,7 @@ public class IfStatements
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -610,7 +610,7 @@ public class IfStatements
         load r0 _ r1
         ifEq|i2 r1 0 _if0
         mov|i1 3 _ r0
-        call print _ _
+        call out _ _
         label _if0
         """.TrimIndents();
 
@@ -624,10 +624,10 @@ public class IfStatements
     {
         string source =
         """
-        import print;
+        import out;
 
         if (true) {
-            print(3);
+            out(3);
         }
         """.TrimIndents();
 
@@ -636,14 +636,14 @@ public class IfStatements
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
         label _start
         mov sp _ fp
         mov|i1 3 _ r0
-        call print _ _
+        call out _ _
         label _if0
         """.TrimIndents();
 
@@ -657,10 +657,10 @@ public class IfStatements
     {
         string source =
         """
-        import print;
+        import out;
 
         if (false) {
-            print(3);
+            out(3);
         }
         """.TrimIndents();
 
@@ -669,7 +669,7 @@ public class IfStatements
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -677,7 +677,7 @@ public class IfStatements
         mov sp _ fp
         jump _if0 _ pc
         mov|i1 3 _ r0
-        call print _ _
+        call out _ _
         label _if0
         """.TrimIndents();
 

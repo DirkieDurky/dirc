@@ -10,14 +10,14 @@ static class StandardLibrary
 
     public static Dictionary<string, StandardFunction> Functions = new()
     {
-        {"print", new StandardFunction("print",
+        {"out", new StandardFunction("out",
         new FunctionSignature(
             Semantic.Void.Instance,
             [new FunctionParameterNode(T("value"), new NamedTypeNode(T("int"), "int"), "value")]
         ),
             "mov r0 _ out"
         )},
-        {"printBool", new StandardFunction("printBool",
+        {"outBool", new StandardFunction("outBool",
         new FunctionSignature(
             Semantic.Void.Instance,
             [new FunctionParameterNode(T("value"), new NamedTypeNode(T("bool"), "bool"), "value")]

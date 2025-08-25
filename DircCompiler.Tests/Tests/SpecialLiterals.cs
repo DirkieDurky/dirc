@@ -7,9 +7,9 @@ public class SpecialLiterals
     {
         string source =
         """
-        import printBool;
+        import outBool;
 
-        printBool(0b01000000 | 0b00000010);
+        outBool(0b01000000 | 0b00000010);
         """.TrimIndents();
 
         string expected =
@@ -17,14 +17,14 @@ public class SpecialLiterals
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label printBool
+        label outBool
         mov r0 _ out
         return _ _ _
 
         label _start
         mov sp _ fp
         mov|i1 0b01000000 | 0b00000010 _ r0
-        call printBool _ _
+        call outBool _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
@@ -37,9 +37,9 @@ public class SpecialLiterals
     {
         string source =
         """
-        import printBool;
+        import outBool;
 
-        printBool(0x0d | 0xd0);
+        outBool(0x0d | 0xd0);
         """.TrimIndents();
 
         string expected =
@@ -47,14 +47,14 @@ public class SpecialLiterals
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label printBool
+        label outBool
         mov r0 _ out
         return _ _ _
 
         label _start
         mov sp _ fp
         mov|i1 0x0d | 0xd0 _ r0
-        call printBool _ _
+        call outBool _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
@@ -67,10 +67,10 @@ public class SpecialLiterals
     {
         string source =
         """
-        import print;
+        import out;
 
         int x = 0b00110011;
-        print(x);
+        out(x);
         """.TrimIndents();
 
         string expected =
@@ -78,7 +78,7 @@ public class SpecialLiterals
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -90,7 +90,7 @@ public class SpecialLiterals
         mov fp _ r0
         load r0 _ r1
         mov r1 _ r0
-        call print _ _
+        call out _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
@@ -103,10 +103,10 @@ public class SpecialLiterals
     {
         string source =
         """
-        import print;
+        import out;
 
         int x = 0x0000d0;
-        print(x);
+        out(x);
         """.TrimIndents();
 
         string expected =
@@ -114,7 +114,7 @@ public class SpecialLiterals
         mov|i1 {CompilerContext.MaxRamValue} _ sp
         jump _start _ pc
 
-        label print
+        label out
         mov r0 _ out
         return _ _ _
 
@@ -126,7 +126,7 @@ public class SpecialLiterals
         mov fp _ r0
         load r0 _ r1
         mov r1 _ r0
-        call print _ _
+        call out _ _
         """.TrimIndents();
 
         string[] assembly = new Compiler().Compile(source, new([]), new("unittests"));
