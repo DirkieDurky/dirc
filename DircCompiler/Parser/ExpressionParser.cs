@@ -46,6 +46,13 @@ class ExpressionParser
         if (_parser.IsAtEnd())
             throw new SyntaxException("Unexpected end of text", _parser.Previous(), _parser.Options, _parser.Context);
 
+        if (_parser.Match(TokenType.LeftParen))
+        {
+            AstNode expr = ParseExpression();
+            _parser.Consume(TokenType.RightParen, "Expected ')' after expression");
+            return expr;
+        }
+
         if (_parser.Match(TokenType.Asterisk))
             return ParsePointerDereference();
 
