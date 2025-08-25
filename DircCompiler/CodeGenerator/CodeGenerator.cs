@@ -19,7 +19,7 @@ class CodeGenerator
         BinaryFactory binaryFactory = new BinaryFactory();
         IdentifierFactory identifierFactory = new IdentifierFactory();
         CallFactory callFactory = new CallFactory();
-        ConditionFactory conditionFactory = new ConditionFactory();
+        ControlFlowFactory conditionFactory = new ControlFlowFactory();
         ArrayFactory arrayFactory = new ArrayFactory();
         PointerFactory pointerFactory = new PointerFactory();
         Context = new CodeGenContext(

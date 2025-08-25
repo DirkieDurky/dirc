@@ -46,8 +46,8 @@ class ExpressionParser
         if (_parser.IsAtEnd())
             throw new SyntaxException("Unexpected end of text", _parser.Previous(), _parser.Options, _parser.Context);
 
-        AstNode? pointerDereference = ParsePointerDereference();
-        if (pointerDereference != null) return pointerDereference;
+        if (_parser.Match(TokenType.Asterisk))
+            return ParsePointerDereference();
 
         if (_parser.Match(TokenType.Ampersand))
         {
@@ -76,10 +76,8 @@ class ExpressionParser
         throw new SyntaxException("Unexpected token", _parser.Peek(), _parser.Options, _parser.Context);
     }
 
-    private AstNode? ParsePointerDereference()
+    private AstNode ParsePointerDereference()
     {
-        if (!_parser.Match(TokenType.Asterisk)) return null;
-
         AstNode expr;
         if (_parser.Match(TokenType.LeftParen))
         {

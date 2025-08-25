@@ -34,9 +34,9 @@ class ExpressionFactory
             case NumberLiteralNode number:
                 return number;
             case IfStatementNode ifStmt:
-                return context.ConditionFactory.GenerateIfStatement(ifStmt, context, _labelGenerator);
+                return context.ControlFlowFactory.GenerateIfStatement(ifStmt, context, _labelGenerator);
             case WhileStatementNode whileStmt:
-                return context.ConditionFactory.GenerateWhileStatement(whileStmt, context, _labelGenerator);
+                return context.ControlFlowFactory.GenerateWhileStatement(whileStmt, context, _labelGenerator);
             case ReturnStatementNode returnStmt:
                 return context.FunctionFactory.GenerateReturnStatement(returnStmt, context);
             case ArrayDeclarationNode arrayDecl:

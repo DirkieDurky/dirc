@@ -14,7 +14,7 @@ class CodeGenContext : ICloneable
     public BinaryFactory BinaryFactory { get; }
     public IdentifierFactory IdentifierFactory { get; }
     public CallFactory CallFactory { get; }
-    public ConditionFactory ConditionFactory { get; }
+    public ControlFlowFactory ControlFlowFactory { get; }
     public ArrayFactory ArrayFactory { get; }
     public PointerFactory PointerFactory { get; }
     public Dictionary<string, Register> SymbolTable { get; }
@@ -32,7 +32,7 @@ class CodeGenContext : ICloneable
         BinaryFactory binaryFactory,
         IdentifierFactory identifierFactory,
         CallFactory callFactory,
-        ConditionFactory conditionFactory,
+        ControlFlowFactory conditionFactory,
         ArrayFactory arrayFactory,
         PointerFactory pointerFactory,
         Dictionary<string, Register> symbolTable,
@@ -50,7 +50,7 @@ class CodeGenContext : ICloneable
         BinaryFactory = binaryFactory;
         IdentifierFactory = identifierFactory;
         CallFactory = callFactory;
-        ConditionFactory = conditionFactory;
+        ControlFlowFactory = conditionFactory;
         ArrayFactory = arrayFactory;
         PointerFactory = pointerFactory;
         SymbolTable = symbolTable;
@@ -71,7 +71,7 @@ class CodeGenContext : ICloneable
             BinaryFactory,
             IdentifierFactory,
             CallFactory,
-            ConditionFactory,
+            ControlFlowFactory,
             ArrayFactory,
             PointerFactory,
             SymbolTable.ToDictionary(x => x.Key, x => x.Value),

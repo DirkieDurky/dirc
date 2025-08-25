@@ -60,6 +60,6 @@ class ParserBase
 
     internal VariableAssignmentNode ParseVariableAssignment()
     {
-        return new StatementParser(this).ParseVariableAssignment();
+        return new VariableParser(this).ParseVariableAssignment();
     }
 }
