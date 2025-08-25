@@ -134,15 +134,13 @@ public class SemanticAnalyzer
                 }
                 return idType;
             case BinaryExpressionNode binNode:
-                if (!binNode.Operation.IsComparer()) return null;
-
                 Type leftType = AnalyzeNode(binNode.Left, null, options, context)!;
                 Type rightType = AnalyzeNode(binNode.Right, null, options, context)!;
                 if ((leftType != Int.Instance && leftType != Bool.Instance) || (rightType != Int.Instance && rightType != Bool.Instance))
                 {
                     throw new SemanticException($"Condition operands must be int or bool, got {leftType.Name} and {rightType.Name}", null, options, context);
                 }
-                return Bool.Instance;
+                return Helpers.ReturnTypes[binNode.Operation];
             case IfStatementNode ifStmt:
                 Type condType = AnalyzeNode(ifStmt.Condition, Bool.Instance, options, context)!;
                 if (condType != Bool.Instance && condType != Int.Instance)
