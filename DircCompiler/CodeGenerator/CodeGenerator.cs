@@ -100,11 +100,7 @@ class CodeGenerator
 
     public void EmitMov(IOperand item, Register result)
     {
-        string op = "mov" + (
-            item is NumberLiteralNode
-            || item is BooleanLiteralNode
-            || item is SimpleBinaryExpressionNode
-            ? "|i1" : "");
+        string op = "mov" + (IsAssemblyReady(item) ? "|i1" : "");
         string line = $"{op} {item.AsOperand()} _ {result}";
         // Prevent redundant mov (e.g., mov r0 _ r0)
         if (item is Register reg && reg.RegisterEnum == result.RegisterEnum) return;
@@ -124,8 +120,8 @@ class CodeGenerator
         }
 
         string opSuffix = "";
-        if (left is NumberLiteralNode) opSuffix += "|i1";
-        if (right is NumberLiteralNode) opSuffix += "|i2";
+        if (IsAssemblyReady(left)) opSuffix += "|i1";
+        if (right != null && IsAssemblyReady(right)) opSuffix += "|i2";
 
         switch (op)
         {
@@ -184,8 +180,8 @@ class CodeGenerator
     public void EmitIf(Comparer cond, IOperand left, IOperand right, string result)
     {
         string opSuffix = "";
-        if (left is NumberLiteralNode) opSuffix += "|i1";
-        if (right is NumberLiteralNode) opSuffix += "|i2";
+        if (IsAssemblyReady(left)) opSuffix += "|i1";
+        if (IsAssemblyReady(right)) opSuffix += "|i2";
 
         switch (cond)
         {
@@ -227,7 +223,7 @@ class CodeGenerator
     public void EmitPush(IOperand value)
     {
         string opSuffix = "";
-        if (value is NumberLiteralNode) opSuffix += "|i1";
+        if (IsAssemblyReady(value)) opSuffix += "|i1";
 
         Emit($"push{opSuffix} {value.AsOperand()} _ _");
     }
@@ -240,8 +236,8 @@ class CodeGenerator
     public void EmitStore(IOperand value, IOperand address)
     {
         string opSuffix = "";
-        if (value is NumberLiteralNode) opSuffix += "|i1";
-        if (address is NumberLiteralNode) opSuffix += "|i2";
+        if (IsAssemblyReady(value)) opSuffix += "|i1";
+        if (IsAssemblyReady(address)) opSuffix += "|i2";
 
         Emit($"store{opSuffix} {value.AsOperand()} {address.AsOperand()} _");
     }
@@ -249,7 +245,7 @@ class CodeGenerator
     public void EmitLoad(IOperand location, Register result)
     {
         string opSuffix = "";
-        if (location is NumberLiteralNode) opSuffix += "|i1";
+        if (IsAssemblyReady(location)) opSuffix += "|i1";
 
         Emit($"load{opSuffix} {location.AsOperand()} _ {result}");
     }
@@ -267,5 +263,12 @@ class CodeGenerator
     public void Emit(string assembly)
     {
         _code.Add(assembly);
+    }
+
+    private bool IsAssemblyReady(IOperand item)
+    {
+        return item is NumberLiteralNode
+            || item is BooleanLiteralNode
+            || item is SimpleBinaryExpressionNode;
     }
 }
