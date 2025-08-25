@@ -33,9 +33,10 @@ public class SemanticAnalyzer
     {
         // First pass: collect function signatures
         // Standard library
-        foreach ((string name, StandardFunction funcInfo) in StandardLibrary.Functions)
+        foreach (ImportStatementNode importNode in nodes.Where(node => node is ImportStatementNode))
         {
-            _functions.Add(name, funcInfo.Signature);
+            StandardFunction function = StandardLibrary.Functions[importNode.FunctionName];
+            _functions.Add(function.Name, function.Signature);
         }
 
         // Custom functions
