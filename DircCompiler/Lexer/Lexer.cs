@@ -67,6 +67,18 @@ class Lexer
             case '|': AddToken(TokenType.Pipe); break;
             case '&': AddToken(TokenType.Ampersand); break;
             case '^': AddToken(TokenType.Caret); break;
+            case '\'':
+                if (NextIs('\''))
+                {
+                    throw new LexicalException($"Empty char literal", c, _line, _compilerOptions, _compilerContext);
+                }
+                Advance();
+                if (!NextIs('\''))
+                {
+                    throw new LexicalException($"Expected single quote after character in character literal", c, _line, _compilerOptions, _compilerContext);
+                }
+                AddToken(TokenType.CharLiteral, _source[_current - 2]);
+                break;
             case '/':
                 if (NextIs('/'))
                 {

@@ -10,7 +10,7 @@ public class SemanticAnalyzer
     private CompilerOptions _compilerOptions;
     private CompilerContext _compilerContext;
 
-    private static readonly HashSet<Type> ValidTypes = new() { Int.Instance, Bool.Instance };
+    private static readonly HashSet<Type> ValidTypes = new() { Int.Instance, Bool.Instance, Char.Instance };
 
     private readonly Dictionary<string, Type> _validTypes = new();
     private readonly Dictionary<string, Type> _validReturnTypes = new();
@@ -35,7 +35,7 @@ public class SemanticAnalyzer
         // Standard library
         foreach (ImportStatementNode importNode in nodes.Where(node => node is ImportStatementNode))
         {
-            StandardFunction function = StandardLibrary.Functions[importNode.FunctionName];
+            StandardFunction function = StandardLibrary.GetFunction(importNode.FunctionName, null);
             _functions.Add(function.Name, function.Signature);
         }
 
@@ -60,7 +60,7 @@ public class SemanticAnalyzer
 
                 _functions[func.Name] = signature;
 
-                if (CompilerContext.AssemblyKeywords.ContainsKey(func.Name))
+                if (CompilerEnvironment.AssemblyKeywords.ContainsKey(func.Name))
                 {
                     throw new CodeGenException($"Can't declare function with name '{func.Name}'. Reserved keyword",
                         func.IdentifierToken, options, context

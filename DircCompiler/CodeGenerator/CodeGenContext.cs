@@ -22,6 +22,7 @@ class CodeGenContext : ICloneable
     public int NextVariableOffset { get; set; } = 0;
     public CompilerOptions CompilerOptions;
     public CompilerContext CompilerContext;
+    public Register ScreenPtr;
 
     public CodeGenContext(
         CodeGenerator codeGen,
@@ -39,7 +40,8 @@ class CodeGenContext : ICloneable
         Dictionary<string, Variable> variableTable,
         int nextVariableOffset,
         CompilerOptions compilerOptions,
-        CompilerContext compilerContext
+        CompilerContext compilerContext,
+        Register screenPtr
     )
     {
         CodeGen = codeGen;
@@ -58,6 +60,7 @@ class CodeGenContext : ICloneable
         NextVariableOffset = nextVariableOffset;
         CompilerOptions = compilerOptions;
         CompilerContext = compilerContext;
+        ScreenPtr = screenPtr;
     }
 
     public object Clone()
@@ -78,7 +81,8 @@ class CodeGenContext : ICloneable
             VariableTable.ToDictionary(x => x.Key, x => x.Value),
             NextVariableOffset,
             CompilerOptions,
-            CompilerContext
+            CompilerContext,
+            ScreenPtr
         );
         return newContext;
     }

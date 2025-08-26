@@ -13,6 +13,7 @@ class CodeGenerator
     public CodeGenerator(CompilerOptions compilerOptions, CompilerContext compilerContext)
     {
         Allocator allocator = new(compilerOptions);
+
         FunctionFactory funcFactory = new FunctionFactory(compilerOptions);
         ExpressionFactory exprFactory = new ExpressionFactory(compilerOptions, LabelGenerator);
         VariableFactory varFactory = new VariableFactory();
@@ -22,6 +23,7 @@ class CodeGenerator
         ControlFlowFactory conditionFactory = new ControlFlowFactory();
         ArrayFactory arrayFactory = new ArrayFactory();
         PointerFactory pointerFactory = new PointerFactory();
+        Register screenPtr = allocator.Allocate(Allocator.RegisterType.CalleeSaved);
         Context = new CodeGenContext(
             this,
             allocator,
@@ -38,7 +40,8 @@ class CodeGenerator
             [],
             0,
             compilerOptions,
-            compilerContext
+            compilerContext,
+            screenPtr
         );
     }
 
@@ -47,7 +50,7 @@ class CodeGenerator
         // Set the stack pointer to the end of the RAM to grow downwards
         // In other compilers the OS does this but since we don't have an OS we'll do it ourselves
         Context.CodeGen.EmitMov(
-            new NumberLiteralNode(CompilerContext.MaxRamValue),
+            new NumberLiteralNode(CompilerEnvironment.MaxRamValue),
             Context.Allocator.Use(RegisterEnum.sp)
         );
 
@@ -57,12 +60,12 @@ class CodeGenerator
         // Compile standard library
         foreach (ImportStatementNode importNode in nodes.Where(node => node is ImportStatementNode))
         {
-            if (!StandardLibrary.Functions.ContainsKey(importNode.FunctionName))
+            if (!StandardLibrary.HasFunction(importNode.FunctionName))
             {
                 throw new CodeGenException("Unknown import", importNode.Identifier, Context.CompilerOptions, Context.CompilerContext);
             }
 
-            Context.FunctionFactory.CompileStandardFunction(Context, StandardLibrary.Functions[importNode.FunctionName]);
+            Context.FunctionFactory.CompileStandardFunction(Context, StandardLibrary.GetFunction(importNode.FunctionName, Context));
         }
 
         // Compile functions before rest of the code so they're at the top
@@ -72,7 +75,10 @@ class CodeGenerator
         }
 
         EmitLabel("_start");
+
+        Context.CodeGen.EmitMov(new NumberLiteralNode(CompilerEnvironment.ScreenBufferStart), Context.ScreenPtr);
         Context.CodeGen.EmitMov(ReadonlyRegister.SP, Context.Allocator.Use(RegisterEnum.fp));
+
         foreach (AstNode node in nodes)
         {
             switch (node)
@@ -85,6 +91,7 @@ class CodeGenerator
                     break;
             }
         }
+        Context.ScreenPtr.Free();
         return _code.ToArray();
     }
 

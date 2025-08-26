@@ -2,7 +2,7 @@ namespace DircCompiler.Parsing;
 
 public class NumberLiteralNode : AstNode, CodeGen.IReturnable
 {
-    public string Value { get; }
+    public string Value { get; } // The number
     public NumberLiteralType Type { get; }
 
     public NumberLiteralNode(NumberLiteralType type, string value)

@@ -33,6 +33,8 @@ class ExpressionFactory
                 return boolean;
             case NumberLiteralNode number:
                 return number;
+            case CharNode charNode:
+                return new NumberLiteralNode(charNode.Value);
             case IfStatementNode ifStmt:
                 return context.ControlFlowFactory.GenerateIfStatement(ifStmt, context, _labelGenerator);
             case WhileStatementNode whileStmt:

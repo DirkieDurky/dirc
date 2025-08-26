@@ -80,6 +80,11 @@ class ExpressionParser
         if (_parser.Match(TokenType.Identifier))
             return ParseIdentifierExpression();
 
+        if (_parser.Match(TokenType.CharLiteral))
+        {
+            return new CharNode((char)_parser.Previous().Literal!);
+        }
+
         throw new SyntaxException("Unexpected token", _parser.Peek(), _parser.Options, _parser.Context);
     }
 

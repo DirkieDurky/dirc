@@ -9,6 +9,7 @@ public enum TokenType
     Comma, Semicolon,
     Plus, Minus, Asterisk, Slash, Percent, Pipe, Ampersand, Caret,
     Equals, ExclamationPoint,
+    SingleQuote,
 
     // Multi-character operators
     // Conditions
@@ -26,6 +27,7 @@ public enum TokenType
     HexNumber,
     True,
     False,
+    CharLiteral,
 
     // Keywords
     Import,

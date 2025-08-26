@@ -8,7 +8,7 @@ static class StandardLibrary
 {
     private static Token T(string lexeme) => new Token(TokenType.Identifier, lexeme, null, -1);
 
-    public static Dictionary<string, StandardFunction> Functions = new()
+    private static readonly Dictionary<string, StandardFunction> _functions = new()
     {
         {"out", new StandardFunction("out",
         new FunctionSignature(
@@ -23,6 +23,23 @@ static class StandardLibrary
             [new FunctionParameterNode(T("value"), new NamedTypeNode(T("bool"), "bool"), "value")]
         ),
             "mov r0 _ out"
+        )},
+        {"outChar", new StandardFunction("outChar",
+        new FunctionSignature(
+            Semantic.Void.Instance,
+            [new FunctionParameterNode(T("value"), new NamedTypeNode(T("char"), "char"), "value")]
+        ),
+            "mov r0 _ out"
+        )},
+        {"printChar", new StandardFunction("printChar",
+        new FunctionSignature(
+            Semantic.Void.Instance,
+            [new FunctionParameterNode(T("value"), new NamedTypeNode(T("char"), "char"), "value")]
+        ),
+            """
+            store r0 {{SCREEN_PTR}} _
+            add|i2 {{SCREEN_PTR}} 1 {{SCREEN_PTR}}
+            """.TrimIndents()
         )},
         {"input", new StandardFunction("input",
         new FunctionSignature(
@@ -78,4 +95,19 @@ static class StandardLibrary
             """.TrimIndents()
         )}
     };
+
+    public static bool HasFunction(string name)
+    {
+        return _functions.ContainsKey(name);
+    }
+
+    public static StandardFunction GetFunction(string name, CodeGenContext? context)
+    {
+        StandardFunction function = _functions[name];
+        if (context != null)
+        {
+            function.Code = function.Code.Replace("{{SCREEN_PTR}}", context.ScreenPtr.RegisterEnum.ToString());
+        }
+        return function;
+    }
 }
