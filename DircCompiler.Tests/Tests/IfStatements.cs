@@ -17,7 +17,8 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
 
         label out
@@ -54,7 +55,8 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
 
         label out
@@ -94,7 +96,8 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
 
         label out
@@ -151,7 +154,8 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
 
         label out
@@ -193,7 +197,8 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
 
         label out
@@ -232,7 +237,8 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
 
         label out
@@ -269,7 +275,8 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
 
         label out
@@ -306,7 +313,8 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
 
         label out
@@ -343,7 +351,8 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
 
         label out
@@ -380,7 +389,8 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
 
         label out
@@ -414,7 +424,8 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
 
         label outBool
@@ -449,7 +460,8 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
 
         label outBool
@@ -486,7 +498,8 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
 
         label out
@@ -519,7 +532,8 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
 
         label out
@@ -554,7 +568,8 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
 
         label out
@@ -594,7 +609,8 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
 
         label out
@@ -633,7 +649,8 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
 
         label out
@@ -666,7 +683,8 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
 
         label out

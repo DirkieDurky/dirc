@@ -7,7 +7,6 @@ public class Complex
     {
         string source =
         """
-        import out;
         void out4(int num) {
             out(num + 4);
         }
@@ -32,12 +31,9 @@ public class Complex
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
 
         label out4
         push lr _ _
@@ -136,7 +132,8 @@ public class Complex
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
 
         label out

@@ -38,13 +38,6 @@ class FunctionFactory
         context.CodeGen.EmitReturn();
     }
 
-    public void CompileStandardFunction(CodeGenContext context, StandardFunction function)
-    {
-        context.CodeGen.EmitLabel(function.Name);
-        context.CodeGen.Emit(function.Code);
-        context.CodeGen.EmitReturn();
-    }
-
     public IReturnable? GenerateReturnStatement(ReturnStatementNode node, CodeGenContext context)
     {
         IReturnable returnValue = context.ExprFactory.Generate(node.ReturnValue, context) ?? throw new Exception("return value didn't return anything");

@@ -53,19 +53,32 @@ class CodeGenerator
             new NumberLiteralNode(CompilerEnvironment.MaxRamValue),
             Context.Allocator.Use(RegisterEnum.sp)
         );
+        // Initialize the screen buffer
+        Context.CodeGen.EmitMov(new NumberLiteralNode(CompilerEnvironment.ScreenBufferStart), Context.ScreenPtr);
 
         EmitJump("_start");
         EmitEmptyLine();
 
-        // Compile standard library
-        foreach (ImportStatementNode importNode in nodes.Where(node => node is ImportStatementNode))
-        {
-            if (!StandardLibrary.HasFunction(importNode.FunctionName))
-            {
-                throw new CodeGenException("Unknown import", importNode.Identifier, Context.CompilerOptions, Context.CompilerContext);
-            }
+        // Compile calls to runtime or standard library functions or an imported library
+        List<string> compiledFunctions = new();
 
-            Context.FunctionFactory.CompileStandardFunction(Context, StandardLibrary.GetFunction(importNode.FunctionName, Context));
+        foreach (CallExpressionNode callNode in nodes.Where(node => node is CallExpressionNode))
+        {
+            if (RuntimeLibrary.HasFunction(callNode.Callee) && !compiledFunctions.Contains(callNode.Callee))
+            {
+                RuntimeLibrary.CompileFunction(callNode.Callee, Context);
+                compiledFunctions.Add(callNode.Callee);
+            }
+            else
+            {
+                string stdLibPath = Path.Combine(AppContext.BaseDirectory, "lib", "stdlib");
+                List<string> libraryFiles = Directory.EnumerateFiles(stdLibPath, "*.dirc", SearchOption.AllDirectories).ToList();
+
+                foreach (string file in libraryFiles)
+                {
+                    Console.WriteLine(file);
+                }
+            }
         }
 
         // Compile functions before rest of the code so they're at the top
@@ -76,7 +89,6 @@ class CodeGenerator
 
         EmitLabel("_start");
 
-        Context.CodeGen.EmitMov(new NumberLiteralNode(CompilerEnvironment.ScreenBufferStart), Context.ScreenPtr);
         Context.CodeGen.EmitMov(ReadonlyRegister.SP, Context.Allocator.Use(RegisterEnum.fp));
 
         foreach (AstNode node in nodes)

@@ -14,7 +14,8 @@ public class Pointers
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
 
         label _start
@@ -52,7 +53,8 @@ public class Pointers
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
 
         label getValue
@@ -102,7 +104,8 @@ public class Pointers
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
 
         label _start
@@ -138,7 +141,8 @@ public class Pointers
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
 
         label out
@@ -181,7 +185,8 @@ public class Pointers
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
 
         label out
@@ -236,7 +241,8 @@ public class Pointers
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
 
         label out
@@ -293,7 +299,8 @@ public class Pointers
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
 
         label malloc
@@ -379,7 +386,8 @@ public class Pointers
 
         string expected =
         $"""
-        mov|i1 {CompilerContext.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.MaxRamValue} _ sp
+        mov|i1 {CompilerEnvironment.ScreenBufferStart} _ r6
         jump _start _ pc
 
         label malloc

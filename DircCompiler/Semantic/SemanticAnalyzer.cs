@@ -32,10 +32,20 @@ public class SemanticAnalyzer
     public void Analyze(List<AstNode> nodes, CompilerOptions options, CompilerContext context)
     {
         // First pass: collect function signatures
-        // Standard library
-        foreach (ImportStatementNode importNode in nodes.Where(node => node is ImportStatementNode))
+        // Runtime library
+        string runtimeLibPath = Path.Combine(AppContext.BaseDirectory, "lib", "runtime");
+        List<string> runtimeLibFiles = Directory.EnumerateFiles(runtimeLibPath, "*.diric", SearchOption.AllDirectories).ToList();
+        foreach (string file in runtimeLibFiles)
         {
-            StandardFunction function = StandardLibrary.GetFunction(importNode.FunctionName, null);
+            RuntimeFunction function = RuntimeLibrary.GetFunctionSignature(Path.GetFileNameWithoutExtension(file));
+            _functions.Add(function.Name, function.Signature);
+        }
+        // Standard library
+        string stdLibPath = Path.Combine(AppContext.BaseDirectory, "lib", "stdlib");
+        List<string> stdLibraryFiles = Directory.EnumerateFiles(stdLibPath, "*.diric", SearchOption.AllDirectories).ToList();
+        foreach (string file in stdLibraryFiles)
+        {
+            RuntimeFunction function = RuntimeLibrary.GetFunctionSignature(Path.GetFileNameWithoutExtension(file));
             _functions.Add(function.Name, function.Signature);
         }
 

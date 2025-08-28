@@ -23,7 +23,7 @@ public class CompilerOptions
                 case "--debug":
                     if (splitString.Count() < 2)
                     {
-                        Console.WriteLine("Invalid flag. Please specify which debug options to enable. Options: ['all', 'general', 'lexer', 'parser', 'allocator']");
+                        Console.WriteLine("Invalid flag. Please specify which debug options to enable. Options: ['all', 'general', 'lexer', 'parser', 'allocator', 'stack-trace']");
                         break;
                     }
                     SetDebugOptions(splitString[1]);

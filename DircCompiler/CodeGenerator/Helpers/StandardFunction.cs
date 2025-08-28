@@ -2,14 +2,14 @@ using DircCompiler.Semantic;
 
 namespace DircCompiler.CodeGen;
 
-public class StandardFunction : Symbol
+public class RuntimeFunction : Symbol
 {
     public FunctionSignature Signature;
-    public string Code;
+    public string FilePath;
 
-    public StandardFunction(string name, FunctionSignature signature, string code) : base(name)
+    public RuntimeFunction(string name, FunctionSignature signature, string filePath) : base(name)
     {
         Signature = signature;
-        Code = code;
+        FilePath = filePath;
     }
 }

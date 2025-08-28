@@ -1,0 +1,2 @@
+store r0 {{SCREEN_PTR}} _
+add|i2 {{SCREEN_PTR}} 1 {{SCREEN_PTR}}
