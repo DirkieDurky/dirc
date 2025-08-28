@@ -5,12 +5,12 @@ namespace DircCompiler.Parsing;
 public class ImportStatementNode : AstNode
 {
     public Token Identifier;
-    public string FunctionName;
+    public string LibraryName;
 
     public ImportStatementNode(Token identifier, string function)
     {
         Identifier = identifier;
-        FunctionName = function;
+        LibraryName = function;
     }
-    public override string ToString() => $"Import({FunctionName})";
+    public override string ToString() => $"Import({LibraryName})";
 }

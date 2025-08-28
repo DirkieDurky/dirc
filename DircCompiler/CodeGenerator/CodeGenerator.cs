@@ -1,3 +1,4 @@
+using System.Text.Json;
 using DircCompiler.CodeGen.Allocating;
 using DircCompiler.Parsing;
 
@@ -59,32 +60,41 @@ class CodeGenerator
         EmitJump("_start");
         EmitEmptyLine();
 
-        // Compile calls to runtime or standard library functions or an imported library
         List<string> compiledFunctions = new();
+        // Compile functions before rest of the code so they're at the top
+        foreach (FunctionDeclarationNode funcNode in nodes.Where(node => node is FunctionDeclarationNode))
+        {
+            Context.FunctionFactory.Generate(funcNode, (CodeGenContext)Context.Clone());
+            compiledFunctions.Add(funcNode.Name);
+        }
+
+        // Compile calls to runtime or standard library functions or an imported library
 
         foreach (CallExpressionNode callNode in nodes.Where(node => node is CallExpressionNode))
         {
-            if (RuntimeLibrary.HasFunction(callNode.Callee) && !compiledFunctions.Contains(callNode.Callee))
+            // First look for the function in the file itself
+            if (compiledFunctions.Contains(callNode.Callee)) continue;
+
+            // Then in the runtime library
+            if (RuntimeLibrary.HasFunction(callNode.Callee))
             {
                 RuntimeLibrary.CompileFunction(callNode.Callee, Context);
                 compiledFunctions.Add(callNode.Callee);
             }
             else
             {
-                string stdLibPath = Path.Combine(AppContext.BaseDirectory, "lib", "stdlib");
-                List<string> libraryFiles = Directory.EnumerateFiles(stdLibPath, "*.dirc", SearchOption.AllDirectories).ToList();
-
-                foreach (string file in libraryFiles)
+                //Then the standard library
+                string stdLibMetaPath = Path.Combine(AppContext.BaseDirectory, "lib", "stdlib", "stdlib.meta");
+                MetaFile.Root libMetaFile = JsonSerializer.Deserialize<MetaFile.Root>(stdLibMetaPath) ?? throw new Exception($"Standard Library meta file could not be read");
+                if (libMetaFile.Functions.Any(f => f.Name == callNode.Callee))
                 {
-                    Console.WriteLine(file);
+
+                }
+                else
+                {
+                    //Finally look in imported libraries
                 }
             }
-        }
-
-        // Compile functions before rest of the code so they're at the top
-        foreach (FunctionDeclarationNode funcNode in nodes.Where(node => node is FunctionDeclarationNode))
-        {
-            Context.FunctionFactory.Generate(funcNode, (CodeGenContext)Context.Clone());
         }
 
         EmitLabel("_start");

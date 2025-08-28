@@ -1,4 +1,7 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using DircCompiler.CodeGen;
+using DircCompiler.Lexing;
 using DircCompiler.Parsing;
 
 namespace DircCompiler.Semantic;
@@ -40,13 +43,39 @@ public class SemanticAnalyzer
             RuntimeFunction function = RuntimeLibrary.GetFunctionSignature(Path.GetFileNameWithoutExtension(file));
             _functions.Add(function.Name, function.Signature);
         }
+
         // Standard library
-        string stdLibPath = Path.Combine(AppContext.BaseDirectory, "lib", "stdlib");
-        List<string> stdLibraryFiles = Directory.EnumerateFiles(stdLibPath, "*.diric", SearchOption.AllDirectories).ToList();
-        foreach (string file in stdLibraryFiles)
+        string stdLibMetaPath = Path.Combine(AppContext.BaseDirectory, "lib", "stdlib", "stdlib.meta");
+        MetaFile.Root stdMetaFile = JsonSerializer.Deserialize<MetaFile.Root>(File.ReadAllText(stdLibMetaPath)) ?? throw new Exception("Standard Library could not be read");
+        foreach (MetaFile.Function stdFunc in stdMetaFile.Functions)
         {
-            RuntimeFunction function = RuntimeLibrary.GetFunctionSignature(Path.GetFileNameWithoutExtension(file));
-            _functions.Add(function.Name, function.Signature);
+            List<FunctionParameter> funcParams = new();
+            foreach (MetaFile.Param param in stdFunc.Parameters)
+            {
+                funcParams.Add(new FunctionParameter(TypeFromString(param.Type, false), param.Name));
+            }
+            _functions.Add(stdFunc.Name, new FunctionSignature(TypeFromString(stdFunc.ReturnType, true), funcParams));
+        }
+
+        // Imported libraries
+        foreach (ImportStatementNode importNode in nodes.Where(n => n is ImportStatementNode))
+        {
+            string libraryName = importNode.LibraryName;
+            if (libraryName == "runtime") continue;
+
+            string libMetaPath = Path.Combine(AppContext.BaseDirectory, "lib", libraryName, libraryName + ".meta");
+            string libMetaText = File.ReadAllText(libMetaPath);
+
+            MetaFile.Root libMetaFile = JsonSerializer.Deserialize<MetaFile.Root>(libMetaText) ?? throw new Exception($"Library '{libraryName}' could not be read");
+            foreach (MetaFile.Function libFunc in libMetaFile.Functions)
+            {
+                List<FunctionParameter> funcParams = new();
+                foreach (MetaFile.Param param in libFunc.Parameters)
+                {
+                    funcParams.Add(new FunctionParameter(TypeFromString(param.Type, false), param.Name));
+                }
+                _functions.Add(libFunc.Name, new FunctionSignature(TypeFromString(libFunc.ReturnType, true), funcParams));
+            }
         }
 
         // Custom functions
@@ -58,11 +87,12 @@ public class SemanticAnalyzer
                 {
                     ResolveType(func.ReturnType);
                 }
+                List<FunctionParameter> parameters = new();
                 foreach (FunctionParameterNode param in func.Parameters)
                 {
-                    ResolveType(param.Type);
+                    parameters.Add(new FunctionParameter(ResolveType(param.Type), param.Name));
                 }
-                FunctionSignature signature = new FunctionSignature(_validReturnTypes[func.ReturnType.TypeName], func.Parameters);
+                FunctionSignature signature = new FunctionSignature(_validReturnTypes[func.ReturnType.TypeName], parameters);
                 if (_functions.ContainsKey(func.Name))
                 {
                     throw new SemanticException($"Function '{func.Name}' already declared", func.IdentifierToken, options, context);
@@ -180,14 +210,14 @@ public class SemanticAnalyzer
                 }
                 for (int i = 0; i < Math.Min(call.Arguments.Count, sig.Parameters.Count); i++)
                 {
-                    Type parameterType = ResolveType(sig.Parameters[i].Type);
+                    Type parameterType = sig.Parameters[i].Type;
                     Type? argType = AnalyzeNode(call.Arguments[i], parameterType, options, context);
                     if (argType != null && argType != parameterType)
                     {
                         // Allow anything for void pointers
                         if (parameterType is Pointer paramTypePtr && paramTypePtr.BaseType == Void.Instance) return sig.ReturnType;
 
-                        throw new SemanticException($"Type mismatch in argument {i + 1} of '{call.Callee}': expected {sig.Parameters[i].Type.TypeName}, got {argType.Name}", call.CalleeToken, options, context);
+                        throw new SemanticException($"Type mismatch in argument {i + 1} of '{call.Callee}': expected {sig.Parameters[i].Name}, got {argType.Name}", call.CalleeToken, options, context);
                     }
                 }
                 return sig.ReturnType;
@@ -339,5 +369,23 @@ public class SemanticAnalyzer
             return Pointer.Of(ResolveType(ptr.BaseType));
         }
         throw new SemanticException($"Unknown type node", null, _compilerOptions, _compilerContext);
+    }
+
+    private Type TypeFromString(string type, bool isReturnType)
+    {
+        if (type.EndsWith('*'))
+        {
+            return Pointer.Of(TypeFromString(type[..^1], isReturnType));
+        }
+
+        if (isReturnType)
+        {
+            if (_validReturnTypes.TryGetValue(type, out Type? t)) return t;
+        }
+        else
+        {
+            if (_validTypes.TryGetValue(type, out Type? t)) return t;
+        }
+        throw new SemanticException($"Unknown type '{type}'", new Token(TokenType.Identifier, type, null, -1), _compilerOptions, _compilerContext);
     }
 }

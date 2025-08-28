@@ -76,31 +76,6 @@ class Program
     {
         Compiler compiler = new();
 
-        //Compile any uncompiled .dirc files found in lib.
-        string libPath = Path.Combine(AppContext.BaseDirectory, "lib");
-        List<string> uncompiledFiles = Directory.EnumerateFiles(libPath, "*.dirc", SearchOption.AllDirectories).ToList();
-        bool logged = false;
-        foreach (string file in uncompiledFiles)
-        {
-            string fileName = Path.GetFileNameWithoutExtension(file);
-            string containingFolder = Path.GetDirectoryName(file)!;
-            string newFilePath = Path.Combine(containingFolder, fileName + ".diric");
-
-            if (!File.Exists(newFilePath))
-            {
-                if (!logged)
-                {
-                    Console.WriteLine("Found at least 1 uncompiled .dirc file in lib folder. Compiling those first...");
-                    logged = true;
-                }
-
-                string libFileText = File.ReadAllText(file);
-                CompilerContext libCompilerContext = new CompilerContext(file);
-                string[] libFileNewLines = compiler.Compile(libFileText, compilerOptions, libCompilerContext);
-                File.WriteAllLines(newFilePath, libFileNewLines);
-            }
-        }
-
         string text = File.ReadAllText(path);
         string[] newLines = compiler.Compile(text, compilerOptions, compilerContext);
 

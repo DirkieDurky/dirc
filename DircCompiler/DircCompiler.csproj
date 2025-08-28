@@ -12,10 +12,5 @@
       <Link>lib/runtime/%(RecursiveDir)%(Filename)%(Extension)</Link>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Libraries/Standard/**/*" CopyToOutputDirectory="Always">
-      <Link>lib/stdlib/%(RecursiveDir)%(Filename)%(Extension)</Link>
-    </None>
-  </ItemGroup>
 
 </Project>

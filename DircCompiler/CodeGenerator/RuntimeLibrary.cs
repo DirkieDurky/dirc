@@ -11,22 +11,22 @@ static class RuntimeLibrary
     private static readonly Dictionary<string, RuntimeFunction> _functions = new()
     {
         { "out", new RuntimeFunction("out", new FunctionSignature(
-            Semantic.Void.Instance, [new FunctionParameterNode(T("value"), new NamedTypeNode(T("int"), "int"), "value")]
+            Semantic.Void.Instance, [new FunctionParameter(Int.Instance, "value")]
         ), "out.diric" )},
         { "outBool", new RuntimeFunction("outBool",
         new FunctionSignature(
             Semantic.Void.Instance,
-            [new FunctionParameterNode(T("value"), new NamedTypeNode(T("bool"), "bool"), "value")]
+            [new FunctionParameter(Bool.Instance, "value")]
         ), "outBool.diric" )},
         { "outChar", new RuntimeFunction("outChar",
         new FunctionSignature(
             Semantic.Void.Instance,
-            [new FunctionParameterNode(T("value"), new NamedTypeNode(T("char"), "char"), "value")]
+            [new FunctionParameter(Semantic.Char.Instance, "value")]
         ), "outChar.diric" )},
         { "printChar", new RuntimeFunction("printChar",
         new FunctionSignature(
             Semantic.Void.Instance,
-            [new FunctionParameterNode(T("value"), new NamedTypeNode(T("char"), "char"), "value")]
+            [new FunctionParameter(Semantic.Char.Instance, "value")]
         ), "printChar.diric")},
         { "input", new RuntimeFunction("input",
         new FunctionSignature(
@@ -36,7 +36,7 @@ static class RuntimeLibrary
         { "malloc", new RuntimeFunction("malloc",
         new FunctionSignature(
             Pointer.Of(Semantic.Void.Instance),
-            [new FunctionParameterNode(T("size"), new NamedTypeNode(T("int"), "int"), "size")]
+            [new FunctionParameter(Int.Instance, "size")]
         ),
             // r0 = size
             // r1 = currentAddress
@@ -46,7 +46,7 @@ static class RuntimeLibrary
         { "free", new RuntimeFunction("free",
         new FunctionSignature(
             Semantic.Void.Instance,
-            [new FunctionParameterNode(T("ptr"), new PointerTypeNode(T("void*"), new NamedTypeNode(T("void"), "void")), "ptr")]
+            [new FunctionParameter(Pointer.Of(Semantic.Void.Instance), "ptr")]
         ), "free.diric")}
     };
 
