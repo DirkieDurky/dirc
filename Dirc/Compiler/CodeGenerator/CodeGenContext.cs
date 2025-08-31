@@ -7,6 +7,7 @@ class CodeGenContext : ICloneable
 {
     public const int StackAlignment = 1; // By how many bytes to align the stack
     public CodeGenerator CodeGen { get; }
+    public CodeGenBase CodeGenBase { get; }
     public Allocator Allocator { get; }
     public FunctionFactory FunctionFactory { get; }
     public ExpressionFactory ExprFactory { get; }
@@ -26,6 +27,7 @@ class CodeGenContext : ICloneable
 
     public CodeGenContext(
         CodeGenerator codeGen,
+        CodeGenBase codeGenBase,
         Allocator allocator,
         ExpressionFactory exprFactory,
         FunctionFactory funcFactory,
@@ -45,6 +47,7 @@ class CodeGenContext : ICloneable
     )
     {
         CodeGen = codeGen;
+        CodeGenBase = codeGenBase;
         Allocator = allocator;
         ExprFactory = exprFactory;
         FunctionFactory = funcFactory;
@@ -67,6 +70,7 @@ class CodeGenContext : ICloneable
     {
         CodeGenContext newContext = new(
             CodeGen,
+            CodeGenBase,
             new(BuildOptions),
             ExprFactory,
             FunctionFactory,
@@ -92,7 +96,7 @@ class CodeGenContext : ICloneable
         int offset = NextVariableOffset;
         NextVariableOffset++;
         VariableTable[name] = new Variable(name, offset);
-        CodeGen.EmitBinaryOperation(
+        CodeGenBase.EmitBinaryOperation(
             Operation.Sub,
             ReadonlyRegister.SP,
             new NumberLiteralNode(StackAlignment),
@@ -108,7 +112,7 @@ class CodeGenContext : ICloneable
         VariableTable[name] = new Variable(name, offset);
 
         // Allocate space for the array on the stack
-        CodeGen.EmitBinaryOperation(
+        CodeGenBase.EmitBinaryOperation(
             Operation.Sub,
             ReadonlyRegister.SP,
             new NumberLiteralNode(NumberLiteralType.Decimal, size.ToString()),

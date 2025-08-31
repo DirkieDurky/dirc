@@ -5,6 +5,13 @@ namespace Dirc.Compiling.CodeGen;
 
 class IdentifierFactory
 {
+    private readonly CodeGenBase _codeGenBase;
+
+    public IdentifierFactory(CodeGenBase codeGenBase)
+    {
+        _codeGenBase = codeGenBase;
+    }
+
     public IReturnable Generate(IdentifierNode node, CodeGenContext context)
     {
         if (context.SymbolTable.TryGetValue(node.Name, out Register? reg))
@@ -15,7 +22,7 @@ class IdentifierFactory
         if (context.VariableTable.TryGetValue(node.Name, out Variable? variable))
         {
             Register tmp = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
-            context.CodeGen.EmitBinaryOperation(
+            _codeGenBase.EmitBinaryOperation(
                 Operation.Sub,
                 ReadonlyRegister.FP,
                 new NumberLiteralNode(variable.FramePointerOffset * CodeGenContext.StackAlignment),
@@ -23,7 +30,7 @@ class IdentifierFactory
             );
 
             Register result = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
-            context.CodeGen.EmitLoad(new ReadonlyRegister(tmp), result);
+            _codeGenBase.EmitLoad(new ReadonlyRegister(tmp), result);
             tmp.Free();
 
             return new ReturnRegister(result);

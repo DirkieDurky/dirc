@@ -5,6 +5,13 @@ namespace Dirc.Compiling.CodeGen;
 
 class VariableFactory
 {
+    private readonly CodeGenBase _codeGenBase;
+
+    public VariableFactory(CodeGenBase codeGenBase)
+    {
+        _codeGenBase = codeGenBase;
+    }
+
     public IReturnable? GenerateVariableDeclaration(VariableDeclarationNode node, CodeGenContext context)
     {
         int offset = context.AllocateVariable(node.Name);
@@ -27,7 +34,7 @@ class VariableFactory
             IReturnable address = context.ExprFactory.Generate(target.PointerExpression, context) ?? throw new Exception("Pointer dereference failed to generate");
             IReturnable value = context.ExprFactory.Generate(node.Value, context) ?? throw new Exception("Initializer expression failed to generate");
 
-            context.CodeGen.EmitStore(value, address);
+            _codeGenBase.EmitStore(value, address);
             address.Free();
             value.Free();
 
@@ -44,13 +51,13 @@ class VariableFactory
         IReturnable value = context.ExprFactory.Generate(assignment, context) ?? throw new Exception("Initializer expression failed to generate");
         Register tmp = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
 
-        context.CodeGen.EmitBinaryOperation(
+        _codeGenBase.EmitBinaryOperation(
             Operation.Sub,
             ReadonlyRegister.FP,
             new NumberLiteralNode(NumberLiteralType.Decimal, offset.ToString()),
             tmp
         );
-        context.CodeGen.EmitStore(value, new ReadonlyRegister(tmp));
+        _codeGenBase.EmitStore(value, new ReadonlyRegister(tmp));
 
         tmp.Free();
         value.Free();

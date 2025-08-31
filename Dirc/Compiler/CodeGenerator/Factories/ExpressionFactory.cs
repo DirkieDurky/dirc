@@ -4,12 +4,12 @@ namespace Dirc.Compiling.CodeGen;
 
 class ExpressionFactory
 {
-    private readonly BuildOptions _buildOptions;
+    private readonly CodeGenBase _codeGenBase;
     private readonly LabelGenerator _labelGenerator;
 
-    public ExpressionFactory(BuildOptions buildOptions, LabelGenerator labelGenerator)
+    public ExpressionFactory(CodeGenBase codeGenBase, LabelGenerator labelGenerator)
     {
-        _buildOptions = buildOptions;
+        _codeGenBase = codeGenBase;
         _labelGenerator = labelGenerator;
     }
 

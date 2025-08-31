@@ -5,6 +5,13 @@ namespace Dirc.Compiling.CodeGen;
 
 class ControlFlowFactory
 {
+    private readonly CodeGenBase _codeGenBase;
+
+    public ControlFlowFactory(CodeGenBase codeGenBase)
+    {
+        _codeGenBase = codeGenBase;
+    }
+
     public IReturnable? GenerateCondition(BinaryExpressionNode node, CodeGenContext context, LabelGenerator labelGenerator)
     {
         string label = labelGenerator.Generate(LabelType.Condition);
@@ -12,20 +19,20 @@ class ControlFlowFactory
 
         IReturnable left = context.ExprFactory.Generate(node.Left, context) ?? throw new Exception("Part of if statement was not set");
         IReturnable right = context.ExprFactory.Generate(node.Right, context) ?? throw new Exception("Part of if statement was not set");
-        context.CodeGen.EmitIf(node.Operation.GetComparer().GetOpposite(), left, right, label);
+        _codeGenBase.EmitIf(node.Operation.GetComparer().GetOpposite(), left, right, label);
         left.Free();
         right.Free();
 
         Register resultRegister = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
         // If {
-        context.CodeGen.EmitMov(new NumberLiteralNode(1), resultRegister);
+        _codeGenBase.EmitMov(new NumberLiteralNode(1), resultRegister);
         // }
-        context.CodeGen.EmitJump(endLabel);
-        context.CodeGen.EmitLabel(label);
+        _codeGenBase.EmitJump(endLabel);
+        _codeGenBase.EmitLabel(label);
         // Else {
-        context.CodeGen.EmitMov(new NumberLiteralNode(0), resultRegister);
+        _codeGenBase.EmitMov(new NumberLiteralNode(0), resultRegister);
         // }
-        context.CodeGen.EmitLabel(endLabel);
+        _codeGenBase.EmitLabel(endLabel);
 
         return new ReturnRegister(resultRegister);
     }
@@ -48,7 +55,7 @@ class ControlFlowFactory
         {
             IReturnable left = context.ExprFactory.Generate(condition.Left, context) ?? throw new Exception("Part of if statement was not set");
             IReturnable right = context.ExprFactory.Generate(condition.Right, context) ?? throw new Exception("Part of if statement was not set");
-            context.CodeGen.EmitIf(condition.Operation.GetComparer().GetOpposite(), left, right, label);
+            _codeGenBase.EmitIf(condition.Operation.GetComparer().GetOpposite(), left, right, label);
             left.Free();
             right.Free();
         }
@@ -58,20 +65,20 @@ class ControlFlowFactory
 
             if (conditionResult is ReturnRegister reg)
             {
-                context.CodeGen.EmitIf(Comparer.IfEq, reg, new NumberLiteralNode(0), label);
+                _codeGenBase.EmitIf(Comparer.IfEq, reg, new NumberLiteralNode(0), label);
             }
             else if (conditionResult is NumberLiteralNode num)
             {
                 if (num.Value == "0")
                 {
-                    context.CodeGen.EmitJump(label);
+                    _codeGenBase.EmitJump(label);
                 }
             }
             else if (conditionResult is BooleanLiteralNode boolean)
             {
                 if (!boolean.Value)
                 {
-                    context.CodeGen.EmitJump(label);
+                    _codeGenBase.EmitJump(label);
                 }
             }
             else
@@ -87,10 +94,10 @@ class ControlFlowFactory
 
         if (endLabel != null)
         {
-            context.CodeGen.EmitJump(endLabel);
+            _codeGenBase.EmitJump(endLabel);
         }
 
-        context.CodeGen.EmitLabel(label);
+        _codeGenBase.EmitLabel(label);
 
         if (node.ElseBody != null)
         {
@@ -98,7 +105,7 @@ class ControlFlowFactory
             {
                 context.ExprFactory.Generate(stmt, (CodeGenContext)context.Clone());
             }
-            context.CodeGen.EmitLabel(endLabel!);
+            _codeGenBase.EmitLabel(endLabel!);
         }
         return null;
     }
@@ -108,7 +115,7 @@ class ControlFlowFactory
         string label;
         label = labelGenerator.Generate(LabelType.While);
 
-        context.CodeGen.EmitLabel(label);
+        _codeGenBase.EmitLabel(label);
 
         foreach (AstNode stmt in node.Body)
         {
@@ -119,7 +126,7 @@ class ControlFlowFactory
         {
             IReturnable left = context.ExprFactory.Generate(condition.Left, context) ?? throw new Exception("Part of while statement was not set");
             IReturnable right = context.ExprFactory.Generate(condition.Right, context) ?? throw new Exception("Part of while statement was not set");
-            context.CodeGen.EmitIf(condition.Operation.GetComparer(), left, right, label);
+            _codeGenBase.EmitIf(condition.Operation.GetComparer(), left, right, label);
             left.Free();
             right.Free();
         }
@@ -129,20 +136,20 @@ class ControlFlowFactory
 
             if (conditionResult is ReturnRegister reg)
             {
-                context.CodeGen.EmitIf(Comparer.IfNotEq, reg, new NumberLiteralNode(0), label);
+                _codeGenBase.EmitIf(Comparer.IfNotEq, reg, new NumberLiteralNode(0), label);
             }
             else if (conditionResult is NumberLiteralNode num)
             {
                 if (num.Value != "0")
                 {
-                    context.CodeGen.EmitJump(label);
+                    _codeGenBase.EmitJump(label);
                 }
             }
             else if (conditionResult is BooleanLiteralNode boolean)
             {
                 if (boolean.Value)
                 {
-                    context.CodeGen.EmitJump(label);
+                    _codeGenBase.EmitJump(label);
                 }
             }
             else

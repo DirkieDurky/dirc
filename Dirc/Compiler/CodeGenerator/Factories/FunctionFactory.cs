@@ -5,19 +5,21 @@ namespace Dirc.Compiling.CodeGen;
 
 class FunctionFactory
 {
+    private readonly CodeGenBase _codeGenBase;
     private readonly BuildOptions _buildOptions;
 
-    public FunctionFactory(BuildOptions buildOptions)
+    public FunctionFactory(CodeGenBase codeGenBase, BuildOptions buildOptions)
     {
+        _codeGenBase = codeGenBase;
         _buildOptions = buildOptions;
     }
 
     public void Generate(FunctionDeclarationNode node, CodeGenContext context)
     {
-        context.CodeGen.EmitLabel(node.Name);
-        context.CodeGen.EmitPush(ReadonlyRegister.LR);
-        context.CodeGen.EmitPush(ReadonlyRegister.FP);
-        context.CodeGen.EmitMov(ReadonlyRegister.SP, context.Allocator.Use(RegisterEnum.fp));
+        _codeGenBase.EmitLabel(node.Name);
+        _codeGenBase.EmitPush(ReadonlyRegister.LR);
+        _codeGenBase.EmitPush(ReadonlyRegister.FP);
+        _codeGenBase.EmitMov(ReadonlyRegister.SP, context.Allocator.Use(RegisterEnum.fp));
 
         CodeGenContext scopeSpecificContext = (CodeGenContext)context.Clone();
         if (node.Parameters.Count > Allocator.ArgumentRegisters.Count) throw new Exception($"More than {Allocator.ArgumentRegisters.Count} function parameters given.");
@@ -32,20 +34,20 @@ class FunctionFactory
         }
 
         // Reset stack pointer to free any local variables
-        context.CodeGen.EmitMov(ReadonlyRegister.FP, context.Allocator.Use(RegisterEnum.sp));
-        context.CodeGen.EmitPop(context.Allocator.Use(RegisterEnum.fp));
-        context.CodeGen.EmitPop(context.Allocator.Use(RegisterEnum.lr));
-        context.CodeGen.EmitReturn();
+        _codeGenBase.EmitMov(ReadonlyRegister.FP, context.Allocator.Use(RegisterEnum.sp));
+        _codeGenBase.EmitPop(context.Allocator.Use(RegisterEnum.fp));
+        _codeGenBase.EmitPop(context.Allocator.Use(RegisterEnum.lr));
+        _codeGenBase.EmitReturn();
     }
 
     public IReturnable? GenerateReturnStatement(ReturnStatementNode node, CodeGenContext context)
     {
         IReturnable returnValue = context.ExprFactory.Generate(node.ReturnValue, context) ?? throw new Exception("return value didn't return anything");
         Register r0 = context.Allocator.Use(RegisterEnum.r0, true);
-        context.CodeGen.EmitMov(returnValue, r0);
+        _codeGenBase.EmitMov(returnValue, r0);
         returnValue.Free();
         r0.Free();
-        context.CodeGen.EmitReturn(false);
+        _codeGenBase.EmitReturn(false);
 
         return returnValue;
     }

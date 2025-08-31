@@ -5,6 +5,13 @@ namespace Dirc.Compiling.CodeGen;
 
 class BinaryFactory
 {
+    private readonly CodeGenBase _codeGenBase;
+
+    public BinaryFactory(CodeGenBase codeGenBase)
+    {
+        _codeGenBase = codeGenBase;
+    }
+
     public IReturnable? Generate(BinaryExpressionNode node, CodeGenContext context, LabelGenerator labelGenerator)
     {
         if (node.Operation.IsComparer())
@@ -21,7 +28,7 @@ class BinaryFactory
 
         Operation op = node.Operation;
         Register result = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
-        context.CodeGen.EmitBinaryOperation(op, leftOperand, rightOperand, result);
+        _codeGenBase.EmitBinaryOperation(op, leftOperand, rightOperand, result);
         leftOperand.Free();
         rightOperand.Free();
 

@@ -5,13 +5,20 @@ namespace Dirc.Compiling.CodeGen;
 
 class CallFactory
 {
+    private readonly CodeGenBase _codeGenBase;
+
+    public CallFactory(CodeGenBase codeGenBase)
+    {
+        _codeGenBase = codeGenBase;
+    }
+
     public IReturnable? Generate(CallExpressionNode node, CodeGenContext context)
     {
         // Save in use caller saved registers
         List<Register> toSave = context.Allocator.TrackedCallerSavedRegisters.Where(x => x.InUse).ToList();
         foreach (Register reg in toSave)
         {
-            context.CodeGen.EmitPush(new ReadonlyRegister(reg));
+            _codeGenBase.EmitPush(new ReadonlyRegister(reg));
         }
 
         List<Register> registersToFree = new();
@@ -24,12 +31,12 @@ class CallFactory
             {
                 Register argumentSlot = context.Allocator.Use(argumentSlotEnum, true);
                 registersToFree.Add(argumentSlot);
-                context.CodeGen.EmitMov(argument, argumentSlot);
+                _codeGenBase.EmitMov(argument, argumentSlot);
             }
             argument.Free();
         }
 
-        context.CodeGen.EmitFunctionCall(node.Callee, !context.DeclaredFunctions.Contains(node.Callee));
+        _codeGenBase.EmitFunctionCall(node.Callee, !context.DeclaredFunctions.Contains(node.Callee));
 
         foreach (Register reg in registersToFree)
         {
@@ -40,7 +47,7 @@ class CallFactory
         toSave.Reverse();
         foreach (Register reg in toSave)
         {
-            context.CodeGen.EmitPop(reg);
+            _codeGenBase.EmitPop(reg);
         }
 
         return new ReturnRegister(context.Allocator.Use(RegisterEnum.r0));
