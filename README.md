@@ -445,7 +445,7 @@ Registers `r6-r10` are used as "callee-saved" registers.
 dirc sourcePath [flags]
 ```
 The source file should have the `.dirc` file extension.\
-If the source path points to a file, the compiler will output a `.asm` file with the same name as the `.dirc` file.
+If the source path points to a file, the compiler will output a `.out` file with the same name as the `.dirc` file.
 If the source path points to a folder, the compiler will compile all `.dirc` files in the folder and put them in a `builds` folder in the source folder.
 
 ### Flags

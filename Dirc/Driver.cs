@@ -7,7 +7,7 @@ public class Driver
 {
     public void Run(string file, BuildOptions buildOptions)
     {
-        string fileExtension = buildOptions.CompileOnly ? ".o" : ".asm";
+        string fileExtension = buildOptions.CompileOnly ? ".o" : ".out";
         string resultPath = Path.Combine(
             Path.GetDirectoryName(file) ?? "",
             Path.GetFileNameWithoutExtension(file) + fileExtension
