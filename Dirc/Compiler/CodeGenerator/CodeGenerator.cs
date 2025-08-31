@@ -48,23 +48,6 @@ class CodeGenerator
 
     public CompilerResult Generate(List<AstNode> nodes)
     {
-        // This is now all done in init.o
-
-        // Set the stack pointer to the end of the RAM to grow downwards
-        // In other compilers the OS does this but since we don't have an OS we'll do it ourselves
-        // Context.CodeGen.EmitMov(
-        //     new NumberLiteralNode(BuildEnvironment.MaxRamValue),
-        //     Context.Allocator.Use(RegisterEnum.sp)
-        // );
-        // Initialize the screen pointer
-        // Context.CodeGen.EmitStore(new NumberLiteralNode(1), new NumberLiteralNode(BuildEnvironment.ScreenPointerAddress - 1)); // Size of memory block
-        // Context.CodeGen.EmitStore(new NumberLiteralNode(BuildEnvironment.ScreenBufferStart), new NumberLiteralNode(BuildEnvironment.ScreenPointerAddress)); // Actual data (screen pointer)
-
-        // Context.CodeGen.EmitMov(ReadonlyRegister.SP, Context.Allocator.Use(RegisterEnum.fp)); // Initialize frame pointer
-
-        // EmitJump("_start");
-        // EmitEmptyLine();
-
         List<string> imports = new();
 
         foreach (ImportStatementNode importNode in nodes.Where(node => node is ImportStatementNode))
