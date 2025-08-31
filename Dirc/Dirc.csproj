@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="Compiler/Libraries/Runtime/**/*" CopyToOutputDirectory="Always">
+    <None Include="Libraries/Runtime/**/*" CopyToOutputDirectory="Always">
       <Link>lib/runtime/%(RecursiveDir)%(Filename)%(Extension)</Link>
     </None>
   </ItemGroup>
