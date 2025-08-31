@@ -1,0 +1,3 @@
+label input
+mov in _ r0
+return _ _ _

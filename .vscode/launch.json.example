@@ -7,7 +7,7 @@
             "preLaunchTask": "build",
             "program": "dotnet",
             "args": [
-                "${workspaceFolder}/DircCompiler/bin/Debug/net8.0/DircCompiler.dll",
+                "${workspaceFolder}/Dirc/bin/Debug/net8.0/Dirc.dll",
                 "test.dirc"
             ],
             "cwd": "${workspaceFolder}",

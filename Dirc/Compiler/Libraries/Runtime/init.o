@@ -1,0 +1,5 @@
+mov|i1 31 _ sp # Initialize stack pointer
+store|i1|i2 1 0 _ # Allocate memory for screen pointer
+store|i1|i2 256 1 _ # Initialize screen pointer
+mov sp _ fp # Initialize frame pointer
+jump _start _ pc

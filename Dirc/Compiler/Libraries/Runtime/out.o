@@ -1,0 +1,3 @@
+label out
+mov r0 _ out
+return _ _ _
