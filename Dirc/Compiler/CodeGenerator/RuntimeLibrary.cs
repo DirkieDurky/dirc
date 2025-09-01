@@ -11,9 +11,9 @@ static class RuntimeLibrary
 
     private static readonly Dictionary<string, RuntimeFunction> _functions = new()
     {
-        { "out", new RuntimeFunction("out", new FunctionSignature(
+        { "outInt", new RuntimeFunction("outInt", new FunctionSignature(
             Semantic.Void.Instance, [new FunctionParameter(Int.Instance, "value")]
-        ), "out.o" )},
+        ), "outInt.o" )},
         { "outBool", new RuntimeFunction("outBool",
         new FunctionSignature(
             Semantic.Void.Instance,
