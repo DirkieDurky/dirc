@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.dirc": "c",
+        "sstream": "c"
+    }
+}

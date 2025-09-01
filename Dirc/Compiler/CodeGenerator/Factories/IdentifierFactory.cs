@@ -21,6 +21,11 @@ class IdentifierFactory
 
         if (context.VariableTable.TryGetValue(node.Name, out Variable? variable))
         {
+            if (variable.IsArray)
+            {
+                return context.PointerFactory.GenerateAddressOf(new AddressOfNode(node), context);
+            }
+
             Register tmp = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
             _codeGenBase.EmitBinaryOperation(
                 Operation.Sub,

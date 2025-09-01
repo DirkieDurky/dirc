@@ -268,7 +268,7 @@ public class SemanticAnalyzer
                     throw new SemanticException($"Array size must be an integer, got {sizeType.Name}", null, options, context);
                 }
 
-                _variables[arrayDecl.Name] = arrayType;
+                _variables[arrayDecl.Name] = Pointer.Of(arrayType); // Array variables return a pointer to their first element
 
                 if (arrayDecl.Initializer != null)
                 {

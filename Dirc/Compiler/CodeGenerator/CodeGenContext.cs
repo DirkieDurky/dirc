@@ -134,7 +134,7 @@ class CodeGenContext : ICloneable
     {
         int offset = NextVariableOffset + size - StackAlignment;
         NextVariableOffset += size;
-        VariableTable[name] = new Variable(name, offset);
+        VariableTable[name] = new Variable(name, offset, true);
 
         // Allocate space for the array on the stack
         CodeGenBase.EmitBinaryOperation(

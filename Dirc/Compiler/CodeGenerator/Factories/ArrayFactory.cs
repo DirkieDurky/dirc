@@ -18,7 +18,7 @@ class ArrayFactory
 
         if (sizeResult is NumberLiteralNode sizeNode && int.TryParse(sizeNode.Value, out int size))
         {
-            int baseOffset = context.AllocateArray(node.Name, size);
+            context.AllocateArray(node.Name, size);
 
             if (node.Initializer != null)
             {
