@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Dirc.Compiling.Lexing;
 
 namespace Dirc.Compiling.Parsing;
@@ -39,6 +40,14 @@ internal class FunctionParser
             {
                 TypeNode paramType = _typeParser.ParseType();
                 Token paramName = _parser.Consume(TokenType.Identifier, "No parameter name provided");
+
+                // Array parameters
+                if (_parser.Match(TokenType.LeftBracket))
+                {
+                    paramType = new PointerTypeNode(paramType.IdentifierToken, paramType);
+                    _parser.Consume(TokenType.RightBracket, "Expected closing bracket after opening bracket");
+                }
+
                 parameters.Add(new FunctionParameterNode(paramName, paramType, paramName.Lexeme));
             } while (_parser.Match(TokenType.Comma));
         }
