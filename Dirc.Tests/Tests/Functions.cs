@@ -12,18 +12,9 @@ public class Functions
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         mov|i1 14 _ r0
-        call out _ _
+        call @out _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -43,28 +34,18 @@ public class Functions
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label myout
         push lr _ _
         push fp _ _
         mov sp _ fp
         push r0 _ _
-        call out _ _
+        call @out _ _
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp
         pop _ _ lr
         return _ _ _
-
-        label _start
-        mov sp _ fp
+        
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -86,20 +67,12 @@ public class Functions
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label myout
         push lr _ _
         push fp _ _
         mov sp _ fp
         push r0 _ _
-        call out _ _
+        call @out _ _
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp
@@ -107,7 +80,6 @@ public class Functions
         return _ _ _
 
         label _start
-        mov sp _ fp
         mov|i1 14 _ r0
         call myout _ _
         """.TrimIndents();
@@ -135,20 +107,12 @@ public class Functions
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label myout
         push lr _ _
         push fp _ _
         mov sp _ fp
         push r0 _ _
-        call out _ _
+        call @out _ _
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp
@@ -156,7 +120,6 @@ public class Functions
         return _ _ _
 
         label _start
-        mov sp _ fp
         mov|i1 14 _ r0
         call myout _ _
         push r0 _ _
@@ -245,20 +208,12 @@ public class Functions
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label rest
         push lr _ _
         push fp _ _
         mov sp _ fp
         mov|i1 1 _ r0
-        call out _ _
+        call @out _ _
         mov fp _ sp
         pop _ _ fp
         pop _ _ lr
@@ -285,7 +240,6 @@ public class Functions
         return _ _ _
 
         label _start
-        mov sp _ fp
         call test _ _
         """.TrimIndents();
 

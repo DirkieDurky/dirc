@@ -14,16 +14,7 @@ public class ForStatements
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         sub|i2 sp 1 sp
         mov fp _ r0
         store|i1 0 r0 _
@@ -31,7 +22,7 @@ public class ForStatements
         mov fp _ r0
         load r0 _ r1
         mov r1 _ r0
-        call out _ _
+        call @out _ _
         mov fp _ r0
         load r0 _ r1
         add|i2 r1 1 r0
@@ -59,19 +50,10 @@ public class ForStatements
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         label _while0
         mov|i1 4 _ r0
-        call out _ _
+        call @out _ _
         jump _while0 _ pc
         """.TrimIndents();
 

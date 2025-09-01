@@ -12,18 +12,9 @@ public class Calculations
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         mov|i1 4 + 3 _ r0
-        call out _ _
+        call @out _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -41,18 +32,9 @@ public class Calculations
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         mov|i1 4 - 3 _ r0
-        call out _ _
+        call @out _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -70,18 +52,9 @@ public class Calculations
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label outBool
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         mov|i1 0b11110000 & 0b00110000 _ r0
-        call outBool _ _
+        call @outBool _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -99,18 +72,9 @@ public class Calculations
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label outBool
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         mov|i1 0b11110000 | 0b00001100 _ r0
-        call outBool _ _
+        call @outBool _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -128,18 +92,9 @@ public class Calculations
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label outBool
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         mov|i1 0b11110000 ^ 0b00110000 _ r0
-        call outBool _ _
+        call @outBool _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;

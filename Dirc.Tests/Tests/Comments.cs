@@ -14,21 +14,12 @@ public class Comments
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         mov|i1 1 _ r0
-        call out _ _
+        call @out _ _
         push r0 _ _
         mov|i1 3 _ r0
-        call out _ _
+        call @out _ _
         pop _ _ r0
         """.TrimIndents();
 
@@ -50,21 +41,12 @@ public class Comments
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         mov|i1 1 _ r0
-        call out _ _
+        call @out _ _
         push r0 _ _
         mov|i1 4 _ r0
-        call out _ _
+        call @out _ _
         pop _ _ r0
         """.TrimIndents();
 

@@ -14,16 +14,7 @@ public class VariableCalculations
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         sub|i2 sp 1 sp
         mov fp _ r0
         store|i1 4 r0 _
@@ -35,7 +26,7 @@ public class VariableCalculations
         sub|i2 fp 1 r0
         load r0 _ r2
         add r1 r2 r0
-        call out _ _
+        call @out _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -55,16 +46,7 @@ public class VariableCalculations
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         sub|i2 sp 1 sp
         mov fp _ r0
         store|i1 4 r0 _
@@ -76,7 +58,7 @@ public class VariableCalculations
         sub|i2 fp 1 r0
         load r0 _ r2
         sub r1 r2 r0
-        call out _ _
+        call @out _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -96,16 +78,7 @@ public class VariableCalculations
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label outBool
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         sub|i2 sp 1 sp
         mov fp _ r0
         store|i1 0b11110000 r0 _
@@ -117,7 +90,7 @@ public class VariableCalculations
         sub|i2 fp 1 r0
         load r0 _ r2
         and r1 r2 r0
-        call outBool _ _
+        call @outBool _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -137,16 +110,7 @@ public class VariableCalculations
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label outBool
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         sub|i2 sp 1 sp
         mov fp _ r0
         store|i1 0b11110000 r0 _
@@ -158,7 +122,7 @@ public class VariableCalculations
         sub|i2 fp 1 r0
         load r0 _ r2
         or r1 r2 r0
-        call outBool _ _
+        call @outBool _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -178,16 +142,7 @@ public class VariableCalculations
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label outBool
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         sub|i2 sp 1 sp
         mov fp _ r0
         store|i1 0b11110000 r0 _
@@ -199,7 +154,7 @@ public class VariableCalculations
         sub|i2 fp 1 r0
         load r0 _ r2
         xor r1 r2 r0
-        call outBool _ _
+        call @outBool _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;

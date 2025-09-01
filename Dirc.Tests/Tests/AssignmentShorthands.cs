@@ -13,12 +13,7 @@ public class AssignmentShorthands
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
         label _start
-        mov sp _ fp
         sub|i2 sp 1 sp
         mov fp _ r0
         store|i1 2 r0 _
@@ -45,12 +40,7 @@ public class AssignmentShorthands
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
         label _start
-        mov sp _ fp
         sub|i2 sp 1 sp
         mov fp _ r0
         store|i1 2 r0 _
@@ -77,12 +67,7 @@ public class AssignmentShorthands
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
         label _start
-        mov sp _ fp
         sub|i2 sp 1 sp
         mov fp _ r0
         store|i1 2 r0 _
@@ -110,12 +95,7 @@ public class AssignmentShorthands
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
         label _start
-        mov sp _ fp
         sub|i2 sp 1 sp
         mov fp _ r0
         store|i1 2 r0 _
@@ -143,12 +123,7 @@ public class AssignmentShorthands
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
         label _start
-        mov sp _ fp
         sub|i2 sp 1 sp
         mov fp _ r0
         store|i1 2 r0 _
@@ -176,12 +151,7 @@ public class AssignmentShorthands
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
         label _start
-        mov sp _ fp
         sub|i2 sp 1 sp
         mov fp _ r0
         store|i1 2 r0 _
@@ -208,12 +178,7 @@ public class AssignmentShorthands
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
         label _start
-        mov sp _ fp
         sub|i2 sp 1 sp
         mov fp _ r0
         store|i1 2 r0 _

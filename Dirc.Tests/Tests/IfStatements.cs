@@ -15,22 +15,13 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         ifNotEq|i1|i2 1 1 _if0
         mov|i1 2 _ r0
-        call out _ _
+        call @out _ _
         label _if0
         mov|i1 3 _ r0
-        call out _ _
+        call @out _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -51,22 +42,13 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         ifNotEq|i1|i2 1 2 _if0
         mov|i1 2 _ r0
-        call out _ _
+        call @out _ _
         label _if0
         mov|i1 3 _ r0
-        call out _ _
+        call @out _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -90,16 +72,7 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         sub|i2 sp 1 sp
         mov fp _ r0
         store|i1 5 r0 _
@@ -121,7 +94,7 @@ public class IfStatements
         add|i2 r1 1 r0
         sub|i2 fp 1 r1
         store r0 r1 _
-        call out _ _
+        call @out _ _
         label _if0
         """.TrimIndents();
 
@@ -146,23 +119,14 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         ifNotEq|i1|i2 1 1 _else0
         mov|i1 2 _ r0
-        call out _ _
+        call @out _ _
         jump _ifElseEnd0 _ pc
         label _else0
         mov|i1 3 _ r0
-        call out _ _
+        call @out _ _
         label _ifElseEnd0
         """.TrimIndents();
 
@@ -187,23 +151,14 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         ifNotEq|i1|i2 1 2 _else0
         mov|i1 2 _ r0
-        call out _ _
+        call @out _ _
         jump _ifElseEnd0 _ pc
         label _else0
         mov|i1 3 _ r0
-        call out _ _
+        call @out _ _
         label _ifElseEnd0
         """.TrimIndents();
 
@@ -225,22 +180,13 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         ifEq|i1|i2 1 1 _if0
         mov|i1 2 _ r0
-        call out _ _
+        call @out _ _
         label _if0
         mov|i1 3 _ r0
-        call out _ _
+        call @out _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -261,22 +207,13 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         ifMoreOrEq|i1|i2 1 1 _if0
         mov|i1 2 _ r0
-        call out _ _
+        call @out _ _
         label _if0
         mov|i1 3 _ r0
-        call out _ _
+        call @out _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -297,22 +234,13 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         ifMore|i1|i2 1 1 _if0
         mov|i1 2 _ r0
-        call out _ _
+        call @out _ _
         label _if0
         mov|i1 3 _ r0
-        call out _ _
+        call @out _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -333,22 +261,13 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         ifLessOrEq|i1|i2 1 1 _if0
         mov|i1 2 _ r0
-        call out _ _
+        call @out _ _
         label _if0
         mov|i1 3 _ r0
-        call out _ _
+        call @out _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -369,22 +288,13 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         ifLess|i1|i2 1 1 _if0
         mov|i1 2 _ r0
-        call out _ _
+        call @out _ _
         label _if0
         mov|i1 3 _ r0
-        call out _ _
+        call @out _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -402,23 +312,14 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label outBool
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         ifNotEq|i1|i2 2 2 _condition0
         mov|i1 1 _ r0
         jump _conditionEnd0 _ pc
         label _condition0
         mov|i1 0 _ r0
         label _conditionEnd0
-        call outBool _ _
+        call @outBool _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -436,23 +337,14 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label outBool
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         ifNotEq|i1|i2 1 2 _condition0
         mov|i1 1 _ r0
         jump _conditionEnd0 _ pc
         label _condition0
         mov|i1 0 _ r0
         label _conditionEnd0
-        call outBool _ _
+        call @outBool _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -472,18 +364,9 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         mov|i1 3 _ r0
-        call out _ _
+        call @out _ _
         label _if0
         """.TrimIndents();
 
@@ -504,19 +387,10 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         jump _if0 _ pc
         mov|i1 3 _ r0
-        call out _ _
+        call @out _ _
         label _if0
         """.TrimIndents();
 
@@ -538,16 +412,7 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         sub|i2 sp 1 sp
         mov fp _ r0
         store|i1 1 r0 _
@@ -555,7 +420,7 @@ public class IfStatements
         load r0 _ r1
         ifEq|i2 r1 0 _if0
         mov|i1 3 _ r0
-        call out _ _
+        call @out _ _
         label _if0
         """.TrimIndents();
 
@@ -577,16 +442,7 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         sub|i2 sp 1 sp
         mov fp _ r0
         store|i1 0 r0 _
@@ -594,7 +450,7 @@ public class IfStatements
         load r0 _ r1
         ifEq|i2 r1 0 _if0
         mov|i1 3 _ r0
-        call out _ _
+        call @out _ _
         label _if0
         """.TrimIndents();
 
@@ -615,18 +471,9 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         mov|i1 3 _ r0
-        call out _ _
+        call @out _ _
         label _if0
         """.TrimIndents();
 
@@ -647,19 +494,10 @@ public class IfStatements
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label _start
-        mov sp _ fp
         jump _if0 _ pc
         mov|i1 3 _ r0
-        call out _ _
+        call @out _ _
         label _if0
         """.TrimIndents();
 

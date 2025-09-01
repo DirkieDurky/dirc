@@ -31,10 +31,6 @@ public class Complex
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
         label out4
         push lr _ _
         push fp _ _
@@ -42,7 +38,7 @@ public class Complex
         push r0 _ _
         add|i2 r0 4 r1
         mov r1 _ r0
-        call out _ _
+        call @out _ _
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp
@@ -56,7 +52,7 @@ public class Complex
         push r0 _ _
         add|i2 r0 25 r1
         mov r1 _ r0
-        call out _ _
+        call @out _ _
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp
@@ -70,7 +66,7 @@ public class Complex
         push r0 _ _
         add|i1 60 r0 r1
         mov r1 _ r0
-        call out _ _
+        call @out _ _
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp
@@ -84,7 +80,7 @@ public class Complex
         push r0 _ _
         add|i2 r0 10 r1
         mov r1 _ r0
-        call out _ _
+        call @out _ _
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp
@@ -92,7 +88,6 @@ public class Complex
         return _ _ _
 
         label _start
-        mov sp _ fp
         mov|i1 14 _ r0
         call out4 _ _
         push r0 _ _
@@ -131,14 +126,6 @@ public class Complex
 
         string expected =
         $"""
-        mov|i1 {BuildEnvironment.MaxRamValue} _ sp
-        mov|i1 {BuildEnvironment.ScreenBufferStart} _ r6
-        jump _start _ pc
-
-        label out
-        mov r0 _ out
-        return _ _ _
-
         label test
         push lr _ _
         push fp _ _
@@ -160,14 +147,13 @@ public class Complex
         sub|i2 fp 2 r0
         load r0 _ r1
         mov r1 _ r0
-        call out _ _
+        call @out _ _
         mov fp _ sp
         pop _ _ fp
         pop _ _ lr
         return _ _ _
 
         label _start
-        mov sp _ fp
         call test _ _
         """.TrimIndents();
 
