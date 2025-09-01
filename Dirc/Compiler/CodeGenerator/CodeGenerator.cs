@@ -63,7 +63,8 @@ class CodeGenerator
             Context.DeclaredFunctions.Add(funcNode.Name);
         }
 
-        _codeGenBase.EmitLabel("_start");
+        if (nodes.Any(node => node is not ImportStatementNode && node is not FunctionDeclarationNode))
+            _codeGenBase.EmitLabel("_start");
 
         foreach (AstNode node in nodes)
         {
@@ -78,6 +79,7 @@ class CodeGenerator
             }
         }
 
+        _codeGenBase.Code.Length--; // Remove double newline at the end
         return new(_codeGenBase.Code.ToString(), imports.ToArray());
     }
 }
