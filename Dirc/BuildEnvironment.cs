@@ -58,5 +58,5 @@ public class BuildEnvironment
 
     public static int HeapStart => 16;
 
-    public static int ScreenPointerAddress => 1;
+    public static int ScreenPointerAddress => 0;
 }
