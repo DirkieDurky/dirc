@@ -66,12 +66,37 @@ class CodeGenContext : ICloneable
         BuildContext = buildContext;
     }
 
-    public object Clone()
+    public object CloneAndResetAllocator()
     {
         CodeGenContext newContext = new(
             CodeGen,
             CodeGenBase,
             new(BuildOptions),
+            ExprFactory,
+            FunctionFactory,
+            VarFactory,
+            BinaryFactory,
+            IdentifierFactory,
+            CallFactory,
+            ControlFlowFactory,
+            ArrayFactory,
+            PointerFactory,
+            SymbolTable.ToDictionary(x => x.Key, x => x.Value),
+            VariableTable.ToDictionary(x => x.Key, x => x.Value),
+            DeclaredFunctions,
+            NextVariableOffset,
+            BuildOptions,
+            BuildContext
+        );
+        return newContext;
+    }
+
+    public object Clone()
+    {
+        CodeGenContext newContext = new(
+            CodeGen,
+            CodeGenBase,
+            Allocator,
             ExprFactory,
             FunctionFactory,
             VarFactory,

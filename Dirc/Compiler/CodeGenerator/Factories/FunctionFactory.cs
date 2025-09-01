@@ -21,7 +21,7 @@ class FunctionFactory
         _codeGenBase.EmitPush(ReadonlyRegister.FP);
         _codeGenBase.EmitMov(ReadonlyRegister.SP, context.Allocator.Use(RegisterEnum.fp));
 
-        CodeGenContext scopeSpecificContext = (CodeGenContext)context.Clone();
+        CodeGenContext scopeSpecificContext = (CodeGenContext)context.CloneAndResetAllocator();
         if (node.Parameters.Count > Allocator.ArgumentRegisters.Count) throw new Exception($"More than {Allocator.ArgumentRegisters.Count} function parameters given.");
         for (int i = 0; i < node.Parameters.Count; i++)
         {
