@@ -214,7 +214,7 @@ public class SemanticAnalyzer
                         // Allow anything for void pointers
                         if (parameterType is Pointer paramTypePtr && paramTypePtr.BaseType == Void.Instance) return sig.ReturnType;
 
-                        throw new SemanticException($"Type mismatch in argument {i + 1} of '{call.Callee}': expected {sig.Parameters[i].Name}, got {argType.Name}", call.CalleeToken, options, context);
+                        throw new SemanticException($"Type mismatch in argument {i + 1} of '{call.Callee}': expected {sig.Parameters[i].Type.Name}, got {argType.Name}", call.CalleeToken, options, context);
                     }
                 }
                 return sig.ReturnType;
