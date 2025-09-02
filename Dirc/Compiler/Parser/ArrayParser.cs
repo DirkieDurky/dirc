@@ -7,47 +7,43 @@ namespace Dirc.Compiling.Parsing;
 /// </summary>
 internal class ArrayParser
 {
-    private readonly ParserBase _parser;
-    private readonly TypeParser _typeParser;
-    private readonly ExpressionParser _expressionParser;
+    private readonly ParserContext _context;
 
-    public ArrayParser(ParserBase parser)
+    public ArrayParser(ParserContext context)
     {
-        _parser = parser;
-        _typeParser = new TypeParser(parser);
-        _expressionParser = new ExpressionParser(parser);
+        _context = context;
     }
 
     public ArrayDeclarationNode ParseArrayDeclaration()
     {
-        TypeNode type = _typeParser.ParseType();
-        Token name = _parser.Advance();
+        TypeNode type = _context.TypeParser.ParseType();
+        Token name = _context.ParserBase.Advance();
 
-        _parser.Consume(TokenType.LeftBracket, "Expected '[' in array declaration");
-        AstNode size = _expressionParser.ParseExpression();
-        _parser.Consume(TokenType.RightBracket, "Expected ']' after array size");
+        _context.ParserBase.Consume(TokenType.LeftBracket, "Expected '[' in array declaration");
+        AstNode size = _context.ExpressionParser.ParseExpression();
+        _context.ParserBase.Consume(TokenType.RightBracket, "Expected ']' after array size");
 
         AstNode? initializer = null;
-        if (_parser.Match(TokenType.Equals))
-            initializer = ParseArrayLiteral();
+        if (_context.ParserBase.Match(TokenType.Equals))
+            initializer = _context.ParserBase.Match(TokenType.String) ? new StringLiteralNode(_context.ParserBase.Previous()) : ParseArrayLiteral();
 
         return new ArrayDeclarationNode(type, name, size, initializer);
     }
 
-    private ArrayLiteralNode ParseArrayLiteral()
+    public ArrayLiteralNode ParseArrayLiteral()
     {
-        _parser.Consume(TokenType.LeftBrace, "Expected '{' at start of array literal");
+        _context.ParserBase.Consume(TokenType.LeftBrace, "Expected '{' at start of array literal");
         List<AstNode> elements = new();
 
-        if (!_parser.Check(TokenType.RightBrace))
+        if (!_context.ParserBase.Check(TokenType.RightBrace))
         {
             do
             {
-                elements.Add(_expressionParser.ParseExpression());
-            } while (_parser.Match(TokenType.Comma));
+                elements.Add(_context.ExpressionParser.ParseExpression());
+            } while (_context.ParserBase.Match(TokenType.Comma));
         }
 
-        _parser.Consume(TokenType.RightBrace, "Expected '}' at end of array literal");
+        _context.ParserBase.Consume(TokenType.RightBrace, "Expected '}' at end of array literal");
         return new ArrayLiteralNode(elements);
     }
 }

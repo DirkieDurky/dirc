@@ -43,9 +43,8 @@ class ExpressionFactory
                 return context.FunctionFactory.GenerateReturnStatement(returnStmt, context);
             case ArrayDeclarationNode arrayDecl:
                 return context.ArrayFactory.GenerateArrayDeclaration(arrayDecl, context);
-            case ArrayLiteralNode:
-                // Array literals should be handled by the receiver of the array
-                return null;
+            case ArrayLiteralNode arrayLiteral:
+                return context.ArrayFactory.GenerateArrayLiteralReturnBasePtr(arrayLiteral, context);
             case ArrayAccessNode arrayAccess:
                 return context.ArrayFactory.GenerateArrayAccess(arrayAccess, context);
             case ArrayAssignmentNode arrayAssign:
@@ -54,6 +53,8 @@ class ExpressionFactory
                 return context.PointerFactory.GenerateAddressOf(addressOf, context);
             case PointerDereferenceNode deref:
                 return context.PointerFactory.GeneratePointerDereference(deref, context);
+            case StringLiteralNode stringLiteral:
+                return context.StringFactory.GenerateStringLiteralReturnBasePtr(stringLiteral, context);
             default:
                 throw new Exception($"Unhandled node {node}");
         }

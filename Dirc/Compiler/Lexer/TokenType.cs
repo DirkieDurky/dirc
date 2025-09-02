@@ -27,7 +27,8 @@ public enum TokenType
     HexNumber,
     True,
     False,
-    CharLiteral,
+    Char,
+    String,
 
     // Keywords
     Import,

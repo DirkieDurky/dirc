@@ -7,135 +7,123 @@ namespace Dirc.Compiling.Parsing;
 /// </summary>
 class StatementParser
 {
-    private readonly ParserBase _parser;
-    private readonly ExpressionParser _expressionParser;
-    private readonly FunctionParser _functionParser;
-    private readonly ControlFlowParser _controlFlowParser;
-    private readonly VariableParser _variableParser;
-    private readonly ArrayParser _arrayParser;
-    private readonly PointerParser _pointerParser;
+    private readonly ParserContext _context;
 
-    public StatementParser(ParserBase parser)
+    public StatementParser(ParserContext context)
     {
-        _parser = parser;
-        _expressionParser = new ExpressionParser(_parser);
-        _variableParser = new VariableParser(_parser);
-        _functionParser = new FunctionParser(_parser, this);
-        _controlFlowParser = new ControlFlowParser(_parser, this, _variableParser);
-        _arrayParser = new ArrayParser(_parser);
-        _pointerParser = new PointerParser(_parser);
+        _context = context;
     }
 
     public List<AstNode> ParseStatement()
     {
-        if (_parser.Match(TokenType.Return))
+        if (_context.ParserBase.Match(TokenType.Return))
             return ParseReturnStatement();
 
-        if (_parser.Match(TokenType.Import))
+        if (_context.ParserBase.Match(TokenType.Import))
             return ParseImportStatement();
 
         // Function, array, or variable declarations
-        if (_parser.Check(TokenType.Identifier) && (_parser.CheckNext(TokenType.Identifier) || _parser.CheckNext(TokenType.Asterisk)))
+        if (_context.ParserBase.Check(TokenType.Identifier) && (_context.ParserBase.CheckNext(TokenType.Identifier) || _context.ParserBase.CheckNext(TokenType.Asterisk)))
             return ParseDeclaration();
 
-        if (_parser.Match(TokenType.If))
-            return _controlFlowParser.ParseIfStatement();
+        if (_context.ParserBase.Match(TokenType.If))
+            return _context.ControlFlowParser.ParseIfStatement();
 
-        if (_parser.Match(TokenType.While))
-            return _controlFlowParser.ParseWhileStatement();
+        if (_context.ParserBase.Match(TokenType.While))
+            return _context.ControlFlowParser.ParseWhileStatement();
 
-        if (_parser.Match(TokenType.For))
-            return _controlFlowParser.ParseForStatement();
+        if (_context.ParserBase.Match(TokenType.For))
+            return _context.ControlFlowParser.ParseForStatement();
 
-        if (_parser.Check(TokenType.Asterisk))
+        if (_context.ParserBase.Check(TokenType.Asterisk))
             return ParsePointerAssignment();
 
-        if (_parser.Check(TokenType.Identifier))
+        if (_context.ParserBase.Check(TokenType.Identifier))
             return ParseIdentifierStatement();
 
-        while (_parser.Match(TokenType.Semicolon)) { }
+        while (_context.ParserBase.Match(TokenType.Semicolon)) { }
 
-        if (_parser.IsAtEnd())
+        if (_context.ParserBase.IsAtEnd())
             return [];
 
-        AstNode expr = _expressionParser.ParseExpression();
-        _parser.Consume(TokenType.Semicolon, "Expected ';' after expression");
+        AstNode expr = _context.ExpressionParser.ParseExpression();
+        _context.ParserBase.Consume(TokenType.Semicolon, "Expected ';' after expression");
         return [new ExpressionStatementNode(expr)];
     }
 
     private List<AstNode> ParseReturnStatement()
     {
-        ReturnStatementNode node = new(_expressionParser.ParseExpression());
-        _parser.Consume(TokenType.Semicolon, "Expected ';' after expression");
+        ReturnStatementNode node = new(_context.ExpressionParser.ParseExpression());
+        _context.ParserBase.Consume(TokenType.Semicolon, "Expected ';' after expression");
         return [node];
     }
 
     private List<AstNode> ParseImportStatement()
     {
-        Token name = _parser.Consume(TokenType.Identifier, "No import function name provided");
-        _parser.Consume(TokenType.Semicolon, "Expected ';' after import");
+        Token name = _context.ParserBase.Consume(TokenType.Identifier, "No import function name provided");
+        _context.ParserBase.Consume(TokenType.Semicolon, "Expected ';' after import");
         return [new ImportStatementNode(name, name.Lexeme)];
     }
 
     private List<AstNode> ParseDeclaration()
     {
-        _parser.Advance();
-        _parser.Advance();
+        _context.ParserBase.Advance();
+        _context.ParserBase.Advance();
 
         // Function declaration
-        if (_parser.Check(TokenType.LeftParen))
+        if (_context.ParserBase.Check(TokenType.LeftParen))
         {
-            _parser.Rewind();
-            _parser.Rewind();
-            return [_functionParser.ParseFunctionDeclaration()];
+            _context.ParserBase.Rewind();
+            _context.ParserBase.Rewind();
+            return [_context.FunctionParser.ParseFunctionDeclaration()];
         }
         // Array declaration
-        else if (_parser.Check(TokenType.LeftBracket))
+        else if (_context.ParserBase.Check(TokenType.LeftBracket))
         {
-            _parser.Rewind();
-            _parser.Rewind();
-            AstNode node = _arrayParser.ParseArrayDeclaration();
-            _parser.Consume(TokenType.Semicolon, "Expected ';' after array declaration");
+            _context.ParserBase.Rewind();
+            _context.ParserBase.Rewind();
+            AstNode node = _context.ArrayParser.ParseArrayDeclaration();
+            _context.ParserBase.Consume(TokenType.Semicolon, "Expected ';' after array declaration");
             return [node];
         }
         // Variable declaration
         else
         {
-            _parser.Rewind();
-            _parser.Rewind();
-            VariableDeclarationNode node = _variableParser.ParseVariableDeclaration();
-            _parser.Consume(TokenType.Semicolon, "Expected ';' after variable declaration");
+            _context.ParserBase.Rewind();
+            _context.ParserBase.Rewind();
+            VariableDeclarationNode node = _context.VariableParser.ParseVariableDeclaration();
+            _context.ParserBase.Consume(TokenType.Semicolon, "Expected ';' after variable declaration");
             return [node];
         }
     }
 
     private List<AstNode> ParsePointerAssignment()
     {
-        VariableAssignmentNode node = _variableParser.ParseVariableAssignment();
-        _parser.Consume(TokenType.Semicolon, "Expected ';' after pointer assignment");
+        VariableAssignmentNode node = _context.VariableParser.ParseVariableAssignment();
+        _context.ParserBase.Consume(TokenType.Semicolon, "Expected ';' after pointer assignment");
         return [node];
     }
 
     private List<AstNode> ParseIdentifierStatement()
     {
-        if (_parser.CheckNext(TokenType.LeftBracket))
+        if (_context.ParserBase.CheckNext(TokenType.LeftBracket))
         {
-            AstNode arrayNode = _expressionParser.ParseExpression();
-            _parser.Consume(TokenType.Semicolon, "Expected ';' after array statement");
+            AstNode arrayNode = _context.ExpressionParser.ParseExpression();
+            _context.ParserBase.Consume(TokenType.Semicolon, "Expected ';' after array statement");
             return [arrayNode];
         }
 
-        Token name = _parser.Advance();
-        if (_parser.Match(TokenType.LeftParen))
+        Token name = _context.ParserBase.Advance();
+        if (_context.ParserBase.Match(TokenType.LeftParen))
         {
-            AstNode functionCallNode = _expressionParser.ParseFunctionCall(name);
-            _parser.Consume(TokenType.Semicolon, "Expected ';' after function call");
+            AstNode functionCallNode = _context.ExpressionParser.ParseFunctionCall(name);
+            _context.ParserBase.Consume(TokenType.Semicolon, "Expected ';' after function call");
             return [functionCallNode];
         }
 
-        _parser.Rewind();
-        VariableAssignmentNode node = _variableParser.ParseVariableAssignment();
-        _parser.Consume(TokenType.Semicolon, "Expected ';' after variable assignment");
+        _context.ParserBase.Rewind();
+        VariableAssignmentNode node = _context.VariableParser.ParseVariableAssignment();
+        _context.ParserBase.Consume(TokenType.Semicolon, "Expected ';' after variable assignment");
         return [node];
     }
 }

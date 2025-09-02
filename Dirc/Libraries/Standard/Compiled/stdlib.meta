@@ -1,0 +1,11 @@
+{
+    "Functions": [
+        {
+            "Name": "print",
+            "ReturnType": "void",
+            "Parameters": [
+                { "Name": "str", "Type": "char*" }
+            ]
+        }
+    ]
+}

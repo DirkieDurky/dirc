@@ -13,4 +13,10 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Libraries/Standard/Compiled/**/*" CopyToOutputDirectory="Always">
+      <Link>lib/stdlib/%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </None>
+  </ItemGroup>
+
 </Project>

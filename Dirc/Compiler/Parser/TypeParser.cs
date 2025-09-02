@@ -7,19 +7,19 @@ namespace Dirc.Compiling.Parsing;
 /// </summary>
 class TypeParser
 {
-    private readonly ParserBase _parser;
+    private readonly ParserContext _context;
 
-    public TypeParser(ParserBase parser)
+    public TypeParser(ParserContext context)
     {
-        _parser = parser;
+        _context = context;
     }
 
     public TypeNode ParseType()
     {
-        Token baseTypeToken = _parser.Consume(TokenType.Identifier, "Expected type name");
+        Token baseTypeToken = _context.ParserBase.Consume(TokenType.Identifier, "Expected type name");
         TypeNode type = new NamedTypeNode(baseTypeToken, baseTypeToken.Lexeme);
 
-        while (_parser.Match(TokenType.Asterisk))
+        while (_context.ParserBase.Match(TokenType.Asterisk))
         {
             type = new PointerTypeNode(baseTypeToken, type);
         }

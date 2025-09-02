@@ -5,22 +5,22 @@ namespace Dirc.Compiling.Parsing;
 class Parser
 {
     private readonly ParserBase _parserBase;
-    private readonly StatementParser _statementParser;
+    private readonly ParserContext _context;
 
     public Parser(BuildOptions buildOptions, BuildContext buildContext)
     {
-        _parserBase = new ParserBase(buildOptions, buildContext);
-        _statementParser = new StatementParser(_parserBase);
+        _parserBase = new(buildOptions, buildContext);
+        _context = new(_parserBase);
     }
 
     public List<AstNode> Parse(List<Token> tokens)
     {
-        _parserBase.Initialize(tokens);
+        _context.ParserBase.Initialize(tokens);
         List<AstNode> statements = new();
 
-        while (!_parserBase.IsAtEnd())
+        while (!_context.ParserBase.IsAtEnd())
         {
-            statements.AddRange(_statementParser.ParseStatement());
+            statements.AddRange(_context.StatementParser.ParseStatement());
         }
 
         return statements;

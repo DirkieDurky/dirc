@@ -68,24 +68,25 @@ class Lexer
             case '&': AddToken(TokenType.Ampersand); break;
             case '^': AddToken(TokenType.Caret); break;
             case '\'':
-                if (NextIs('\''))
+                if (Match('\''))
                 {
                     throw new LexicalException($"Empty char literal", c, _line, _buildOptions, _buildContext);
                 }
+                if (NextIs('\\')) Advance();
                 Advance();
-                if (!NextIs('\''))
+                if (!Match('\''))
                 {
                     throw new LexicalException($"Expected single quote after character in character literal", c, _line, _buildOptions, _buildContext);
                 }
-                AddToken(TokenType.CharLiteral, _source[_current - 2]);
+                AddToken(TokenType.Char, _source[_current - 2]);
                 break;
             case '/':
-                if (NextIs('/'))
+                if (Match('/'))
                 {
                     // Comment, skip to end of line
                     while (Peek() != '\n' && !IsAtEnd()) Advance();
                 }
-                else if (NextIs('*'))
+                else if (Match('*'))
                 {
                     // Multiline comment, skip to first "*/"
                     while (!(_source[_current - 1] == '*' && Peek() == '/') && !IsAtEnd()) Advance();
@@ -96,17 +97,26 @@ class Lexer
                     AddToken(TokenType.Slash);
                 }
                 break;
+            case '"':
+                {
+                    // String literal, consume until first '"' (except when escaped with '\')
+                    while ((Peek() != '"' || _source[_current - 1] == '\\') && !IsAtEnd()) Advance();
+                    Advance();
+                    string text = _source[(__start + 1)..(_current - 1)];
+                    AddToken(TokenType.String, FilterEscapes(text));
+                    break;
+                }
             case '=':
-                AddToken(NextIs('=') ? TokenType.EqualEqual : TokenType.Equals);
+                AddToken(Match('=') ? TokenType.EqualEqual : TokenType.Equals);
                 break;
             case '!':
-                AddToken(NextIs('=') ? TokenType.NotEqual : TokenType.ExclamationPoint);
+                AddToken(Match('=') ? TokenType.NotEqual : TokenType.ExclamationPoint);
                 break;
             case '<':
-                AddToken(NextIs('=') ? TokenType.LessEqual : TokenType.Less);
+                AddToken(Match('=') ? TokenType.LessEqual : TokenType.Less);
                 break;
             case '>':
-                AddToken(NextIs('=') ? TokenType.GreaterEqual : TokenType.Greater);
+                AddToken(Match('=') ? TokenType.GreaterEqual : TokenType.Greater);
                 break;
 
             // Whitespace
@@ -122,11 +132,11 @@ class Lexer
             default:
                 if (IsDigit(c))
                 {
-                    if (c == '0' && NextIs('b'))
+                    if (c == '0' && Match('b'))
                     {
                         BinaryNumber();
                     }
-                    else if (c == '0' && NextIs('x'))
+                    else if (c == '0' && Match('x'))
                     {
                         HexNumber();
                     }
@@ -196,6 +206,13 @@ class Lexer
     {
         if (IsAtEnd()) return false;
         if (_source[_current] != expected) return false;
+        return true;
+    }
+
+    private bool Match(char expected)
+    {
+        if (IsAtEnd()) return false;
+        if (_source[_current] != expected) return false;
         _current++;
         return true;
     }
@@ -225,4 +242,13 @@ class Lexer
     private static bool IsDigit(char c) => c >= '0' && c <= '9';
     private static bool IsAlpha(char c) => (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_';
     private static bool IsAlphaNumeric(char c) => IsAlpha(c) || IsDigit(c);
+
+    private static string FilterEscapes(string toValidate)
+    {
+        toValidate = toValidate.Replace("\\\\", "\\");
+        toValidate = toValidate.Replace("\\\"", "\"");
+        toValidate = toValidate.Replace("\\n", "\n");
+        toValidate = toValidate.Replace("\\t", "\t");
+        return toValidate;
+    }
 }

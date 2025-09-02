@@ -8,25 +8,21 @@ namespace Dirc.Compiling.Parsing;
 /// </summary>
 internal class FunctionParser
 {
-    private readonly ParserBase _parser;
-    private readonly TypeParser _typeParser;
-    private readonly StatementParser _statementParser;
+    private readonly ParserContext _context;
 
-    public FunctionParser(ParserBase parser, StatementParser statementParser)
+    public FunctionParser(ParserContext context)
     {
-        _parser = parser;
-        _typeParser = new TypeParser(parser);
-        _statementParser = statementParser;
+        _context = context;
     }
 
     public FunctionDeclarationNode ParseFunctionDeclaration()
     {
-        TypeNode returnType = _typeParser.ParseType();
-        Token name = _parser.Advance();
-        _parser.Consume(TokenType.LeftParen, "Expected '(' after function name");
+        TypeNode returnType = _context.TypeParser.ParseType();
+        Token name = _context.ParserBase.Advance();
+        _context.ParserBase.Consume(TokenType.LeftParen, "Expected '(' after function name");
 
         List<FunctionParameterNode> parameters = ParseFunctionParameters();
-        _parser.Consume(TokenType.RightParen, "Expected ')' after parameters");
+        _context.ParserBase.Consume(TokenType.RightParen, "Expected ')' after parameters");
 
         return new FunctionDeclarationNode(name, name.Lexeme, returnType, parameters, ParseBody("function"));
     }
@@ -34,35 +30,35 @@ internal class FunctionParser
     private List<FunctionParameterNode> ParseFunctionParameters()
     {
         List<FunctionParameterNode> parameters = new();
-        if (!_parser.Check(TokenType.RightParen))
+        if (!_context.ParserBase.Check(TokenType.RightParen))
         {
             do
             {
-                TypeNode paramType = _typeParser.ParseType();
-                Token paramName = _parser.Consume(TokenType.Identifier, "No parameter name provided");
+                TypeNode paramType = _context.TypeParser.ParseType();
+                Token paramName = _context.ParserBase.Consume(TokenType.Identifier, "No parameter name provided");
 
                 // Array parameters
-                if (_parser.Match(TokenType.LeftBracket))
+                if (_context.ParserBase.Match(TokenType.LeftBracket))
                 {
                     paramType = new PointerTypeNode(paramType.IdentifierToken, paramType);
-                    _parser.Consume(TokenType.RightBracket, "Expected closing bracket after opening bracket");
+                    _context.ParserBase.Consume(TokenType.RightBracket, "Expected closing bracket after opening bracket");
                 }
 
                 parameters.Add(new FunctionParameterNode(paramName, paramType, paramName.Lexeme));
-            } while (_parser.Match(TokenType.Comma));
+            } while (_context.ParserBase.Match(TokenType.Comma));
         }
         return parameters;
     }
 
     private List<AstNode> ParseBody(string kind)
     {
-        _parser.Consume(TokenType.LeftBrace, $"Expected '{{' after {kind}");
+        _context.ParserBase.Consume(TokenType.LeftBrace, $"Expected '{{' after {kind}");
         List<AstNode> body = new();
-        while (!_parser.Check(TokenType.RightBrace) && !_parser.IsAtEnd())
+        while (!_context.ParserBase.Check(TokenType.RightBrace) && !_context.ParserBase.IsAtEnd())
         {
-            body.AddRange(_statementParser.ParseStatement());
+            body.AddRange(_context.StatementParser.ParseStatement());
         }
-        _parser.Consume(TokenType.RightBrace, $"Expected '}}' after {kind} body");
+        _context.ParserBase.Consume(TokenType.RightBrace, $"Expected '}}' after {kind} body");
         return body;
     }
 }

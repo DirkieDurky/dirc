@@ -7,29 +7,27 @@ namespace Dirc.Compiling.Parsing;
 /// </summary>
 internal class PointerParser
 {
-    private readonly ParserBase _parser;
-    private readonly ExpressionParser _expressionParser;
+    private readonly ParserContext _context;
 
-    public PointerParser(ParserBase parser)
+    public PointerParser(ParserContext context)
     {
-        _parser = parser;
-        _expressionParser = new ExpressionParser(parser);
+        _context = context;
     }
 
     public AstNode? ParsePointerDereference()
     {
-        if (!_parser.Match(TokenType.Asterisk))
+        if (!_context.ParserBase.Match(TokenType.Asterisk))
             return null;
 
         AstNode expr;
-        if (_parser.Match(TokenType.LeftParen))
+        if (_context.ParserBase.Match(TokenType.LeftParen))
         {
-            expr = _expressionParser.ParseExpression();
-            _parser.Consume(TokenType.RightParen, "Expected ')' after expression");
+            expr = _context.ExpressionParser.ParseExpression();
+            _context.ParserBase.Consume(TokenType.RightParen, "Expected ')' after expression");
         }
         else
         {
-            Token name = _parser.Consume(TokenType.Identifier, "Expected identifier after '*'");
+            Token name = _context.ParserBase.Consume(TokenType.Identifier, "Expected identifier after '*'");
             expr = new IdentifierNode(name, name.Lexeme);
         }
         return new PointerDereferenceNode(expr);

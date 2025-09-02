@@ -57,9 +57,4 @@ class ParserBase
 
     public BuildContext Context => _context;
     public BuildOptions Options => _options;
-
-    internal VariableAssignmentNode ParseVariableAssignment()
-    {
-        return new VariableParser(this).ParseVariableAssignment();
-    }
 }

@@ -17,6 +17,7 @@ class CodeGenContext : ICloneable
     public CallFactory CallFactory { get; }
     public ControlFlowFactory ControlFlowFactory { get; }
     public ArrayFactory ArrayFactory { get; }
+    public StringFactory StringFactory { get; }
     public PointerFactory PointerFactory { get; }
     public Dictionary<string, Register> SymbolTable { get; }
     public Dictionary<string, Variable> VariableTable { get; set; } = new();
@@ -37,6 +38,7 @@ class CodeGenContext : ICloneable
         CallFactory callFactory,
         ControlFlowFactory conditionFactory,
         ArrayFactory arrayFactory,
+        StringFactory stringFactory,
         PointerFactory pointerFactory,
         Dictionary<string, Register> symbolTable,
         Dictionary<string, Variable> variableTable,
@@ -57,6 +59,7 @@ class CodeGenContext : ICloneable
         CallFactory = callFactory;
         ControlFlowFactory = conditionFactory;
         ArrayFactory = arrayFactory;
+        StringFactory = stringFactory;
         PointerFactory = pointerFactory;
         SymbolTable = symbolTable;
         VariableTable = variableTable;
@@ -80,6 +83,7 @@ class CodeGenContext : ICloneable
             CallFactory,
             ControlFlowFactory,
             ArrayFactory,
+            StringFactory,
             PointerFactory,
             SymbolTable.ToDictionary(x => x.Key, x => x.Value),
             VariableTable.ToDictionary(x => x.Key, x => x.Value),
@@ -105,6 +109,7 @@ class CodeGenContext : ICloneable
             CallFactory,
             ControlFlowFactory,
             ArrayFactory,
+            StringFactory,
             PointerFactory,
             SymbolTable.ToDictionary(x => x.Key, x => x.Value),
             VariableTable.ToDictionary(x => x.Key, x => x.Value),
@@ -130,11 +135,14 @@ class CodeGenContext : ICloneable
         return offset;
     }
 
-    public int AllocateArray(string name, int size)
+    public int AllocateArray(int size, string? name)
     {
         int offset = NextVariableOffset + size - StackAlignment;
         NextVariableOffset += size;
-        VariableTable[name] = new Variable(name, offset, true);
+        if (name != null)
+        {
+            VariableTable[name] = new Variable(name, offset, true);
+        }
 
         // Allocate space for the array on the stack
         CodeGenBase.EmitBinaryOperation(
@@ -145,5 +153,10 @@ class CodeGenContext : ICloneable
         );
 
         return offset;
+    }
+
+    public void AssignNameToArray(int offset, string name)
+    {
+        VariableTable[name] = new Variable(name, offset, true);
     }
 }

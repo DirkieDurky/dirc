@@ -7,29 +7,23 @@ namespace Dirc.Compiling.Parsing;
 /// </summary>
 internal class ControlFlowParser
 {
-    private readonly ParserBase _parser;
-    private readonly ExpressionParser _expressionParser;
-    private VariableParser _variableParser;
-    private StatementParser _statementParser;
+    private readonly ParserContext _context;
 
-    public ControlFlowParser(ParserBase parser, StatementParser statementParser, VariableParser variableParser)
+    public ControlFlowParser(ParserContext context)
     {
-        _parser = parser;
-        _expressionParser = new ExpressionParser(parser);
-        _statementParser = statementParser;
-        _variableParser = variableParser;
+        _context = context;
     }
 
     public List<AstNode> ParseIfStatement()
     {
-        _parser.Consume(TokenType.LeftParen, "Expected '(' after if keyword");
+        _context.ParserBase.Consume(TokenType.LeftParen, "Expected '(' after if keyword");
         AstNode condition = ParseCondition();
-        _parser.Consume(TokenType.RightParen, "Expected ')' after if condition");
+        _context.ParserBase.Consume(TokenType.RightParen, "Expected ')' after if condition");
 
         List<AstNode> body = ParseBody("if statement");
         List<AstNode>? elseBody = null;
 
-        if (_parser.Match(TokenType.Else))
+        if (_context.ParserBase.Match(TokenType.Else))
             elseBody = ParseBody("else statement");
 
         return [new IfStatementNode(condition, body, elseBody)];
@@ -37,9 +31,9 @@ internal class ControlFlowParser
 
     public List<AstNode> ParseWhileStatement()
     {
-        _parser.Consume(TokenType.LeftParen, "Expected '(' after while keyword");
+        _context.ParserBase.Consume(TokenType.LeftParen, "Expected '(' after while keyword");
         AstNode condition = ParseCondition();
-        _parser.Consume(TokenType.RightParen, "Expected ')' after while condition");
+        _context.ParserBase.Consume(TokenType.RightParen, "Expected ')' after while condition");
 
         List<AstNode> body = ParseBody("while statement");
         return [new WhileStatementNode(condition, body)];
@@ -47,32 +41,32 @@ internal class ControlFlowParser
 
     public List<AstNode> ParseForStatement()
     {
-        _parser.Consume(TokenType.LeftParen, "Expected '(' after for keyword");
+        _context.ParserBase.Consume(TokenType.LeftParen, "Expected '(' after for keyword");
 
         // Parse initialization
         AstNode? initial = null;
-        if (!_parser.Match(TokenType.Semicolon))
+        if (!_context.ParserBase.Match(TokenType.Semicolon))
         {
-            initial = _parser.Check(TokenType.Identifier) && _parser.CheckNext(TokenType.Identifier)
-                ? _variableParser.ParseVariableDeclaration()
-                : _expressionParser.ParseExpression();
-            _parser.Consume(TokenType.Semicolon, "Expected ';' after for initialization");
+            initial = _context.ParserBase.Check(TokenType.Identifier) && _context.ParserBase.CheckNext(TokenType.Identifier)
+                ? _context.VariableParser.ParseVariableDeclaration()
+                : _context.ExpressionParser.ParseExpression();
+            _context.ParserBase.Consume(TokenType.Semicolon, "Expected ';' after for initialization");
         }
 
         // Parse condition
         AstNode? condition = null;
-        if (!_parser.Match(TokenType.Semicolon))
+        if (!_context.ParserBase.Match(TokenType.Semicolon))
         {
             condition = ParseCondition();
-            _parser.Consume(TokenType.Semicolon, "Expected ';' after for condition");
+            _context.ParserBase.Consume(TokenType.Semicolon, "Expected ';' after for condition");
         }
 
         // Parse increment
         AstNode? increment = null;
-        if (!_parser.Match(TokenType.RightParen))
+        if (!_context.ParserBase.Match(TokenType.RightParen))
         {
-            increment = _expressionParser.ParseExpression();
-            _parser.Consume(TokenType.RightParen, "Expected ')' after for increment");
+            increment = _context.ExpressionParser.ParseExpression();
+            _context.ParserBase.Consume(TokenType.RightParen, "Expected ')' after for increment");
         }
 
         List<AstNode> body = ParseBody("for statement");
@@ -89,14 +83,14 @@ internal class ControlFlowParser
 
     private AstNode ParseCondition()
     {
-        AstNode expr = _expressionParser.ParseExpression();
-        while (_parser.Check(TokenType.EqualEqual) || _parser.Check(TokenType.NotEqual) ||
-               _parser.Check(TokenType.Less) || _parser.Check(TokenType.LessEqual) ||
-               _parser.Check(TokenType.Greater) || _parser.Check(TokenType.GreaterEqual))
+        AstNode expr = _context.ExpressionParser.ParseExpression();
+        while (_context.ParserBase.Check(TokenType.EqualEqual) || _context.ParserBase.Check(TokenType.NotEqual) ||
+               _context.ParserBase.Check(TokenType.Less) || _context.ParserBase.Check(TokenType.LessEqual) ||
+               _context.ParserBase.Check(TokenType.Greater) || _context.ParserBase.Check(TokenType.GreaterEqual))
         {
-            Token opToken = _parser.Advance();
+            Token opToken = _context.ParserBase.Advance();
             Comparer comparer = GetComparer(opToken);
-            AstNode right = _expressionParser.ParseExpression();
+            AstNode right = _context.ExpressionParser.ParseExpression();
             expr = new BinaryExpressionNode(comparer.ToOperation(), expr, right);
         }
         return expr;
@@ -104,13 +98,13 @@ internal class ControlFlowParser
 
     private List<AstNode> ParseBody(string kind)
     {
-        _parser.Consume(TokenType.LeftBrace, $"Expected '{{' after {kind}");
+        _context.ParserBase.Consume(TokenType.LeftBrace, $"Expected '{{' after {kind}");
         List<AstNode> body = new();
-        while (!_parser.Check(TokenType.RightBrace) && !_parser.IsAtEnd())
+        while (!_context.ParserBase.Check(TokenType.RightBrace) && !_context.ParserBase.IsAtEnd())
         {
-            body.AddRange(_statementParser.ParseStatement());
+            body.AddRange(_context.StatementParser.ParseStatement());
         }
-        _parser.Consume(TokenType.RightBrace, $"Expected '}}' after {kind} body");
+        _context.ParserBase.Consume(TokenType.RightBrace, $"Expected '}}' after {kind} body");
         return body;
     }
 
@@ -122,6 +116,6 @@ internal class ControlFlowParser
         TokenType.LessEqual => Comparer.IfLessOrEq,
         TokenType.Greater => Comparer.IfMore,
         TokenType.GreaterEqual => Comparer.IfMoreOrEq,
-        _ => throw new SyntaxException("Invalid comparer specified", token, _parser.Options, _parser.Context)
+        _ => throw new SyntaxException("Invalid comparer specified", token, _context.ParserBase.Options, _context.ParserBase.Context)
     };
 }

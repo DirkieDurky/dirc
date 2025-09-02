@@ -7,27 +7,21 @@ namespace Dirc.Compiling.Parsing;
 /// </summary>
 internal class VariableParser
 {
-    private readonly ParserBase _parser;
-    private readonly TypeParser _typeParser;
-    private readonly ExpressionParser _expressionParser;
-    private readonly PointerParser _pointerParser;
+    private readonly ParserContext _context;
 
-    public VariableParser(ParserBase parser)
+    public VariableParser(ParserContext context)
     {
-        _parser = parser;
-        _typeParser = new TypeParser(parser);
-        _expressionParser = new ExpressionParser(parser);
-        _pointerParser = new PointerParser(parser);
+        _context = context;
     }
 
     public VariableDeclarationNode ParseVariableDeclaration()
     {
-        TypeNode type = _typeParser.ParseType();
-        Token name = _parser.Advance();
+        TypeNode type = _context.TypeParser.ParseType();
+        Token name = _context.ParserBase.Advance();
 
         AstNode? initializer = null;
-        if (_parser.Match(TokenType.Equals))
-            initializer = _expressionParser.ParseExpression();
+        if (_context.ParserBase.Match(TokenType.Equals))
+            initializer = _context.ExpressionParser.ParseExpression();
 
         return new VariableDeclarationNode(type, name, initializer);
     }
@@ -37,44 +31,44 @@ internal class VariableParser
         AstNode target;
         Token? targetName = null;
 
-        var pointerDereference = _pointerParser.ParsePointerDereference();
+        var pointerDereference = _context.PointerParser.ParsePointerDereference();
         if (pointerDereference != null)
         {
             target = pointerDereference;
         }
         else
         {
-            Token identifierToken = _parser.Consume(TokenType.Identifier, "Expected identifier in variable assignment");
+            Token identifierToken = _context.ParserBase.Consume(TokenType.Identifier, "Expected identifier in variable assignment");
             target = new IdentifierNode(identifierToken, identifierToken.Lexeme);
             targetName = identifierToken;
         }
 
-        if (_parser.Match(TokenType.Equals))
+        if (_context.ParserBase.Match(TokenType.Equals))
         {
-            AstNode assignmentValue = _expressionParser.ParseExpression();
+            AstNode assignmentValue = _context.ExpressionParser.ParseExpression();
             return new VariableAssignmentNode(target, targetName, assignmentValue);
         }
 
-        if (_parser.Check(TokenType.Plus) && _parser.CheckNext(TokenType.Plus))
+        if (_context.ParserBase.Check(TokenType.Plus) && _context.ParserBase.CheckNext(TokenType.Plus))
         {
-            _parser.Advance();
-            _parser.Advance();
+            _context.ParserBase.Advance();
+            _context.ParserBase.Advance();
             return new VariableAssignmentNode(target, targetName,
                 new BinaryExpressionNode(Operation.Add, target, new NumberLiteralNode(1)));
         }
 
-        if (_parser.Check(TokenType.Minus) && _parser.CheckNext(TokenType.Minus))
+        if (_context.ParserBase.Check(TokenType.Minus) && _context.ParserBase.CheckNext(TokenType.Minus))
         {
-            _parser.Advance();
-            _parser.Advance();
+            _context.ParserBase.Advance();
+            _context.ParserBase.Advance();
             return new VariableAssignmentNode(target, targetName,
                 new BinaryExpressionNode(Operation.Sub, target, new NumberLiteralNode(1)));
         }
 
-        Operation op = GetOperation(_parser.Advance());
-        _parser.Consume(TokenType.Equals, "Expected '=' after operation in variable assignment");
+        Operation op = GetOperation(_context.ParserBase.Advance());
+        _context.ParserBase.Consume(TokenType.Equals, "Expected '=' after operation in variable assignment");
 
-        AstNode value = _expressionParser.ParseExpression();
+        AstNode value = _context.ExpressionParser.ParseExpression();
         return new VariableAssignmentNode(target, targetName,
             new BinaryExpressionNode(op, target, value));
     }
@@ -93,7 +87,7 @@ internal class VariableParser
         };
 
         if (!operations.ContainsKey(token.Type))
-            throw new SyntaxException("Invalid operation specified", token, _parser.Options, _parser.Context);
+            throw new SyntaxException("Invalid operation specified", token, _context.ParserBase.Options, _context.ParserBase.Context);
 
         return operations[token.Type];
     }

@@ -7,13 +7,11 @@ namespace Dirc.Compiling.Parsing;
 /// </summary>
 class ExpressionParser
 {
-    private readonly ParserBase _parser;
-    private readonly OperatorPrecedence _precedence;
+    private readonly ParserContext _context;
 
-    public ExpressionParser(ParserBase parser)
+    public ExpressionParser(ParserContext context)
     {
-        _parser = parser;
-        _precedence = new OperatorPrecedence();
+        _context = context;
     }
 
     public AstNode ParseExpression()
@@ -23,18 +21,18 @@ class ExpressionParser
 
     private AstNode ParseOperatorPrecedence(int precedenceLevel)
     {
-        if (precedenceLevel >= _precedence.MaxLevel)
+        if (precedenceLevel >= _context.OperatorPrecedence.MaxLevel)
         {
             return ParsePrimary();
         }
 
         AstNode left = ParseOperatorPrecedence(precedenceLevel + 1);
 
-        while (_precedence.IsOperatorAtLevel(precedenceLevel, _parser.Peek().Type))
+        while (_context.OperatorPrecedence.IsOperatorAtLevel(precedenceLevel, _context.ParserBase.Peek().Type))
         {
-            Token operatorToken = _parser.Advance();
+            Token operatorToken = _context.ParserBase.Advance();
             AstNode right = ParseOperatorPrecedence(precedenceLevel + 1);
-            Operation op = _precedence.GetOperation(operatorToken.Type);
+            Operation op = _context.OperatorPrecedence.GetOperation(operatorToken.Type);
             left = new BinaryExpressionNode(op, left, right);
         }
 
@@ -43,62 +41,72 @@ class ExpressionParser
 
     private AstNode ParsePrimary()
     {
-        if (_parser.IsAtEnd())
-            throw new SyntaxException("Unexpected end of text", _parser.Previous(), _parser.Options, _parser.Context);
+        if (_context.ParserBase.IsAtEnd())
+            throw new SyntaxException("Unexpected end of text", _context.ParserBase.Previous(), _context.ParserBase.Options, _context.ParserBase.Context);
 
-        if (_parser.Match(TokenType.LeftParen))
+        if (_context.ParserBase.Match(TokenType.LeftParen))
         {
             AstNode expr = ParseExpression();
-            _parser.Consume(TokenType.RightParen, "Expected ')' after expression");
+            _context.ParserBase.Consume(TokenType.RightParen, "Expected ')' after expression");
             return expr;
         }
 
-        if (_parser.Match(TokenType.Asterisk))
+        if (_context.ParserBase.Match(TokenType.Asterisk))
             return ParsePointerDereference();
 
-        if (_parser.Match(TokenType.Ampersand))
+        if (_context.ParserBase.Match(TokenType.Ampersand))
         {
-            Token name = _parser.Consume(TokenType.Identifier, "Expected identifier after '&'");
+            Token name = _context.ParserBase.Consume(TokenType.Identifier, "Expected identifier after '&'");
             return new AddressOfNode(new IdentifierNode(name, name.Lexeme));
         }
 
-        if (_parser.Match(TokenType.Number))
-            return new NumberLiteralNode(NumberLiteralType.Decimal, (string)_parser.Previous().Literal!);
+        if (_context.ParserBase.Match(TokenType.Number))
+            return new NumberLiteralNode(NumberLiteralType.Decimal, (string)_context.ParserBase.Previous().Literal!);
 
-        if (_parser.Match(TokenType.BinaryNumber))
-            return new NumberLiteralNode(NumberLiteralType.Binary, (string)_parser.Previous().Literal!);
+        if (_context.ParserBase.Match(TokenType.BinaryNumber))
+            return new NumberLiteralNode(NumberLiteralType.Binary, (string)_context.ParserBase.Previous().Literal!);
 
-        if (_parser.Match(TokenType.HexNumber))
-            return new NumberLiteralNode(NumberLiteralType.Hexadecimal, (string)_parser.Previous().Literal!);
+        if (_context.ParserBase.Match(TokenType.HexNumber))
+            return new NumberLiteralNode(NumberLiteralType.Hexadecimal, (string)_context.ParserBase.Previous().Literal!);
 
-        if (_parser.Match(TokenType.True))
+        if (_context.ParserBase.Match(TokenType.True))
             return new BooleanLiteralNode(true);
 
-        if (_parser.Match(TokenType.False))
+        if (_context.ParserBase.Match(TokenType.False))
             return new BooleanLiteralNode(false);
 
-        if (_parser.Match(TokenType.Identifier))
+        if (_context.ParserBase.Match(TokenType.Identifier))
             return ParseIdentifierExpression();
 
-        if (_parser.Match(TokenType.CharLiteral))
+        if (_context.ParserBase.Match(TokenType.Char))
         {
-            return new CharNode((char)_parser.Previous().Literal!);
+            return new CharNode((char)_context.ParserBase.Previous().Literal!);
         }
 
-        throw new SyntaxException("Unexpected token", _parser.Peek(), _parser.Options, _parser.Context);
+        if (_context.ParserBase.Match(TokenType.String))
+        {
+            return new StringLiteralNode(_context.ParserBase.Previous());
+        }
+
+        if (_context.ParserBase.Check(TokenType.LeftBracket))
+        {
+            _context.ArrayParser.ParseArrayLiteral();
+        }
+
+        throw new SyntaxException("Unexpected token", _context.ParserBase.Peek(), _context.ParserBase.Options, _context.ParserBase.Context);
     }
 
     private AstNode ParsePointerDereference()
     {
         AstNode expr;
-        if (_parser.Match(TokenType.LeftParen))
+        if (_context.ParserBase.Match(TokenType.LeftParen))
         {
             expr = ParseExpression();
-            _parser.Consume(TokenType.RightParen, "Expected ')' after expression");
+            _context.ParserBase.Consume(TokenType.RightParen, "Expected ')' after expression");
         }
         else
         {
-            Token name = _parser.Consume(TokenType.Identifier, "Expected identifier after '*'");
+            Token name = _context.ParserBase.Consume(TokenType.Identifier, "Expected identifier after '*'");
             expr = new IdentifierNode(name, name.Lexeme);
         }
         return new PointerDereferenceNode(expr);
@@ -106,32 +114,32 @@ class ExpressionParser
 
     private AstNode ParseIdentifierExpression()
     {
-        Token name = _parser.Previous();
+        Token name = _context.ParserBase.Previous();
 
-        if (_parser.Match(TokenType.LeftParen))
+        if (_context.ParserBase.Match(TokenType.LeftParen))
             return ParseFunctionCall(name);
 
-        if (_parser.Match(TokenType.LeftBracket))
+        if (_context.ParserBase.Match(TokenType.LeftBracket))
             return ParseArrayOperation(name);
 
-        if (_parser.Check(TokenType.Equals) ||
-            (_precedence.IsValidOperation(_parser.Peek().Type) && _parser.CheckNext(TokenType.Equals)) ||
-            (_parser.Check(TokenType.Plus) && _parser.CheckNext(TokenType.Plus)) ||
-            (_parser.Check(TokenType.Minus) && _parser.CheckNext(TokenType.Minus)))
+        if (_context.ParserBase.Check(TokenType.Equals) ||
+            (_context.OperatorPrecedence.IsValidOperation(_context.ParserBase.Peek().Type) && _context.ParserBase.CheckNext(TokenType.Equals)) ||
+            (_context.ParserBase.Check(TokenType.Plus) && _context.ParserBase.CheckNext(TokenType.Plus)) ||
+            (_context.ParserBase.Check(TokenType.Minus) && _context.ParserBase.CheckNext(TokenType.Minus)))
         {
-            _parser.Rewind();
-            return _parser.ParseVariableAssignment();
+            _context.ParserBase.Rewind();
+            return _context.VariableParser.ParseVariableAssignment();
         }
 
-        return new IdentifierNode(_parser.Previous(), _parser.Previous().Lexeme);
+        return new IdentifierNode(_context.ParserBase.Previous(), _context.ParserBase.Previous().Lexeme);
     }
 
     private AstNode ParseArrayOperation(Token name)
     {
         AstNode index = ParseExpression();
-        _parser.Consume(TokenType.RightBracket, "Expected ']' after array index");
+        _context.ParserBase.Consume(TokenType.RightBracket, "Expected ']' after array index");
 
-        if (_parser.Match(TokenType.Equals))
+        if (_context.ParserBase.Match(TokenType.Equals))
         {
             AstNode value = ParseExpression();
             return new ArrayAssignmentNode(name, index, value);
@@ -143,14 +151,14 @@ class ExpressionParser
     internal AstNode ParseFunctionCall(Token name)
     {
         List<AstNode> args = new();
-        if (!_parser.Check(TokenType.RightParen))
+        if (!_context.ParserBase.Check(TokenType.RightParen))
         {
             do
             {
                 args.Add(ParseExpression());
-            } while (_parser.Match(TokenType.Comma));
+            } while (_context.ParserBase.Match(TokenType.Comma));
         }
-        _parser.Consume(TokenType.RightParen, "Expected ')' after arguments");
+        _context.ParserBase.Consume(TokenType.RightParen, "Expected ')' after arguments");
         return new CallExpressionNode(name, name.Lexeme, args);
     }
 }

@@ -173,7 +173,7 @@ public class SemanticAnalyzer
             case BinaryExpressionNode binNode:
                 Type leftType = AnalyzeNode(binNode.Left, null, options, context)!;
                 Type rightType = AnalyzeNode(binNode.Right, null, options, context)!;
-                if ((leftType != Int.Instance && leftType != Bool.Instance) || (rightType != Int.Instance && rightType != Bool.Instance))
+                if (!(leftType is PrimitiveType && rightType is PrimitiveType || leftType == rightType))
                 {
                     throw new SemanticException($"Condition operands must be int or bool, got {leftType.Name} and {rightType.Name}", null, options, context);
                 }

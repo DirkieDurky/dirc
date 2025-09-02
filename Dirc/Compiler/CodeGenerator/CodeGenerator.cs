@@ -16,15 +16,16 @@ class CodeGenerator
 
         Allocator allocator = new(buildOptions);
 
-        FunctionFactory funcFactory = new FunctionFactory(_codeGenBase, buildOptions);
-        ExpressionFactory exprFactory = new ExpressionFactory(_codeGenBase, LabelGenerator);
-        VariableFactory varFactory = new VariableFactory(_codeGenBase);
-        BinaryFactory binaryFactory = new BinaryFactory(_codeGenBase);
-        IdentifierFactory identifierFactory = new IdentifierFactory(_codeGenBase);
-        CallFactory callFactory = new CallFactory(_codeGenBase);
-        ControlFlowFactory conditionFactory = new ControlFlowFactory(_codeGenBase);
-        ArrayFactory arrayFactory = new ArrayFactory(_codeGenBase);
-        PointerFactory pointerFactory = new PointerFactory(_codeGenBase);
+        FunctionFactory funcFactory = new(_codeGenBase, buildOptions);
+        ExpressionFactory exprFactory = new(_codeGenBase, LabelGenerator);
+        VariableFactory varFactory = new(_codeGenBase);
+        BinaryFactory binaryFactory = new(_codeGenBase);
+        IdentifierFactory identifierFactory = new(_codeGenBase);
+        CallFactory callFactory = new(_codeGenBase);
+        ControlFlowFactory conditionFactory = new(_codeGenBase);
+        ArrayFactory arrayFactory = new(_codeGenBase);
+        StringFactory stringFactory = new(_codeGenBase);
+        PointerFactory pointerFactory = new(_codeGenBase);
         Context = new CodeGenContext(
             this,
             _codeGenBase,
@@ -37,6 +38,7 @@ class CodeGenerator
             callFactory,
             conditionFactory,
             arrayFactory,
+            stringFactory,
             pointerFactory,
             [],
             [],
