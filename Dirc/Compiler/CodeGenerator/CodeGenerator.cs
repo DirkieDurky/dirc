@@ -76,7 +76,8 @@ class CodeGenerator
                 case FunctionDeclarationNode:
                     break;
                 default:
-                    Context.ExprFactory.Generate(node, Context);
+                    IReturnable? result = Context.ExprFactory.Generate(node, Context);
+                    result?.Free();
                     break;
             }
         }

@@ -8,7 +8,7 @@ public class ReturnValues
         string source =
         """
         int x = input();
-        out(x);
+        outInt(x);
         """.TrimIndents();
 
         string expected =
@@ -21,7 +21,7 @@ public class ReturnValues
         mov fp _ r0
         load r0 _ r1
         mov r1 _ r0
-        call @out _ _
+        call @outInt _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -34,14 +34,14 @@ public class ReturnValues
     {
         string source =
         """
-        out(input());
+        outInt(input());
         """.TrimIndents();
 
         string expected =
         $"""
         label _start
         call @input _ _
-        call @out _ _
+        call @outInt _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -58,7 +58,7 @@ public class ReturnValues
             return x + y;
         }
 
-        out(myAdd(1, 2));
+        outInt(myAdd(1, 2));
         """.TrimIndents();
 
         string expected =
@@ -79,7 +79,7 @@ public class ReturnValues
         mov|i1 1 _ r0
         mov|i1 2 _ r1
         call myAdd _ _
-        call @out _ _
+        call @outInt _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;

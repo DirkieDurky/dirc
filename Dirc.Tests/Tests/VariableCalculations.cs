@@ -9,7 +9,7 @@ public class VariableCalculations
         """
         int x = 4;
         int y = 3;
-        out(x + y);
+        outInt(x + y);
         """.TrimIndents();
 
         string expected =
@@ -26,7 +26,7 @@ public class VariableCalculations
         sub|i2 fp 1 r0
         load r0 _ r2
         add r1 r2 r0
-        call @out _ _
+        call @outInt _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -41,7 +41,7 @@ public class VariableCalculations
         """
         int x = 4;
         int y = 3;
-        out(x - y);
+        outInt(x - y);
         """.TrimIndents();
 
         string expected =
@@ -58,7 +58,7 @@ public class VariableCalculations
         sub|i2 fp 1 r0
         load r0 _ r2
         sub r1 r2 r0
-        call @out _ _
+        call @outInt _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;

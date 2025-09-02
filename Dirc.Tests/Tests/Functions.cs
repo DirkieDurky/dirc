@@ -7,14 +7,14 @@ public class Functions
     {
         string source =
         """
-        out(14);
+        outInt(14);
         """.TrimIndents();
 
         string expected =
         $"""
         label _start
         mov|i1 14 _ r0
-        call @out _ _
+        call @outInt _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -27,19 +27,19 @@ public class Functions
     {
         string source =
         """
-        void myout(int num) {
-            out(num);
+        void myoutInt(int num) {
+            outInt(num);
         }
         """.TrimIndents();
 
         string expected =
         $"""
-        label myout
+        label myoutInt
         push lr _ _
         push fp _ _
         mov sp _ fp
         push r0 _ _
-        call @out _ _
+        call @outInt _ _
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp
@@ -58,21 +58,21 @@ public class Functions
     {
         string source =
         """
-        void myout(int num) {
-            out(num);
+        void myoutInt(int num) {
+            outInt(num);
         }
 
-        myout(14);
+        myoutInt(14);
         """.TrimIndents();
 
         string expected =
         $"""
-        label myout
+        label myoutInt
         push lr _ _
         push fp _ _
         mov sp _ fp
         push r0 _ _
-        call @out _ _
+        call @outInt _ _
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp
@@ -81,7 +81,7 @@ public class Functions
 
         label _start
         mov|i1 14 _ r0
-        call myout _ _
+        call myoutInt _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -94,25 +94,25 @@ public class Functions
     {
         string source =
         """
-        void myout(int num) {
-            out(num);
+        void myoutInt(int num) {
+            outInt(num);
         }
 
-        myout(14);
-        myout(8);
-        myout(25);
-        myout(128);
-        myout(255);
+        myoutInt(14);
+        myoutInt(8);
+        myoutInt(25);
+        myoutInt(128);
+        myoutInt(255);
         """.TrimIndents();
 
         string expected =
         $"""
-        label myout
+        label myoutInt
         push lr _ _
         push fp _ _
         mov sp _ fp
         push r0 _ _
-        call @out _ _
+        call @outInt _ _
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp
@@ -121,23 +121,15 @@ public class Functions
 
         label _start
         mov|i1 14 _ r0
-        call myout _ _
-        push r0 _ _
+        call myoutInt _ _
         mov|i1 8 _ r0
-        call myout _ _
-        pop _ _ r0
-        push r0 _ _
+        call myoutInt _ _
         mov|i1 25 _ r0
-        call myout _ _
-        pop _ _ r0
-        push r0 _ _
+        call myoutInt _ _
         mov|i1 128 _ r0
-        call myout _ _
-        pop _ _ r0
-        push r0 _ _
+        call myoutInt _ _
         mov|i1 255 _ r0
-        call myout _ _
-        pop _ _ r0
+        call myoutInt _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -150,8 +142,8 @@ public class Functions
     {
         string source =
         """
-        void out() {
-            out(3);
+        void outInt() {
+            outInt(3);
         }
         """.TrimIndents();
 
@@ -194,7 +186,7 @@ public class Functions
         test();
 
         void rest() {
-            out(1);
+            outInt(1);
         }
 
         void best() {
@@ -213,7 +205,7 @@ public class Functions
         push fp _ _
         mov sp _ fp
         mov|i1 1 _ r0
-        call @out _ _
+        call @outInt _ _
         mov fp _ sp
         pop _ _ fp
         pop _ _ lr

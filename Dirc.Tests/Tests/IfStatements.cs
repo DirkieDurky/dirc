@@ -8,9 +8,9 @@ public class IfStatements
         string source =
         """
         if (1 == 1) {
-            out(2);
+            outInt(2);
         }
-        out(3);
+        outInt(3);
         """.TrimIndents();
 
         string expected =
@@ -18,10 +18,10 @@ public class IfStatements
         label _start
         ifNotEq|i1|i2 1 1 _if0
         mov|i1 2 _ r0
-        call @out _ _
+        call @outInt _ _
         label _if0
         mov|i1 3 _ r0
-        call @out _ _
+        call @outInt _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -35,9 +35,9 @@ public class IfStatements
         string source =
         """
         if (1 == 2) {
-            out(2);
+            outInt(2);
         }
-        out(3);
+        outInt(3);
         """.TrimIndents();
 
         string expected =
@@ -45,10 +45,10 @@ public class IfStatements
         label _start
         ifNotEq|i1|i2 1 2 _if0
         mov|i1 2 _ r0
-        call @out _ _
+        call @outInt _ _
         label _if0
         mov|i1 3 _ r0
-        call @out _ _
+        call @outInt _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -66,7 +66,7 @@ public class IfStatements
         y++;
 
         if (x == y) {
-            out(y++);
+            outInt(y++);
         }
         """.TrimIndents();
 
@@ -94,7 +94,7 @@ public class IfStatements
         add|i2 r1 1 r0
         sub|i2 fp 1 r1
         store r0 r1 _
-        call @out _ _
+        call @outInt _ _
         label _if0
         """.TrimIndents();
 
@@ -109,11 +109,11 @@ public class IfStatements
         string source =
         """
         if (1 == 1) {
-            out(2);
+            outInt(2);
         }
         else
         {
-            out(3);
+            outInt(3);
         }
         """.TrimIndents();
 
@@ -122,11 +122,11 @@ public class IfStatements
         label _start
         ifNotEq|i1|i2 1 1 _else0
         mov|i1 2 _ r0
-        call @out _ _
+        call @outInt _ _
         jump _ifElseEnd0 _ pc
         label _else0
         mov|i1 3 _ r0
-        call @out _ _
+        call @outInt _ _
         label _ifElseEnd0
         """.TrimIndents();
 
@@ -141,11 +141,11 @@ public class IfStatements
         string source =
         """
         if (1 == 2) {
-            out(2);
+            outInt(2);
         }
         else
         {
-            out(3);
+            outInt(3);
         }
         """.TrimIndents();
 
@@ -154,11 +154,11 @@ public class IfStatements
         label _start
         ifNotEq|i1|i2 1 2 _else0
         mov|i1 2 _ r0
-        call @out _ _
+        call @outInt _ _
         jump _ifElseEnd0 _ pc
         label _else0
         mov|i1 3 _ r0
-        call @out _ _
+        call @outInt _ _
         label _ifElseEnd0
         """.TrimIndents();
 
@@ -173,9 +173,9 @@ public class IfStatements
         string source =
         """
         if (1 != 1) {
-            out(2);
+            outInt(2);
         }
-        out(3);
+        outInt(3);
         """.TrimIndents();
 
         string expected =
@@ -183,10 +183,10 @@ public class IfStatements
         label _start
         ifEq|i1|i2 1 1 _if0
         mov|i1 2 _ r0
-        call @out _ _
+        call @outInt _ _
         label _if0
         mov|i1 3 _ r0
-        call @out _ _
+        call @outInt _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -200,9 +200,9 @@ public class IfStatements
         string source =
         """
         if (1 < 1) {
-            out(2);
+            outInt(2);
         }
-        out(3);
+        outInt(3);
         """.TrimIndents();
 
         string expected =
@@ -210,10 +210,10 @@ public class IfStatements
         label _start
         ifMoreOrEq|i1|i2 1 1 _if0
         mov|i1 2 _ r0
-        call @out _ _
+        call @outInt _ _
         label _if0
         mov|i1 3 _ r0
-        call @out _ _
+        call @outInt _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -227,9 +227,9 @@ public class IfStatements
         string source =
         """
         if (1 <= 1) {
-            out(2);
+            outInt(2);
         }
-        out(3);
+        outInt(3);
         """.TrimIndents();
 
         string expected =
@@ -237,10 +237,10 @@ public class IfStatements
         label _start
         ifMore|i1|i2 1 1 _if0
         mov|i1 2 _ r0
-        call @out _ _
+        call @outInt _ _
         label _if0
         mov|i1 3 _ r0
-        call @out _ _
+        call @outInt _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -254,9 +254,9 @@ public class IfStatements
         string source =
         """
         if (1 > 1) {
-            out(2);
+            outInt(2);
         }
-        out(3);
+        outInt(3);
         """.TrimIndents();
 
         string expected =
@@ -264,10 +264,10 @@ public class IfStatements
         label _start
         ifLessOrEq|i1|i2 1 1 _if0
         mov|i1 2 _ r0
-        call @out _ _
+        call @outInt _ _
         label _if0
         mov|i1 3 _ r0
-        call @out _ _
+        call @outInt _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -281,9 +281,9 @@ public class IfStatements
         string source =
         """
         if (1 >= 1) {
-            out(2);
+            outInt(2);
         }
-        out(3);
+        outInt(3);
         """.TrimIndents();
 
         string expected =
@@ -291,10 +291,10 @@ public class IfStatements
         label _start
         ifLess|i1|i2 1 1 _if0
         mov|i1 2 _ r0
-        call @out _ _
+        call @outInt _ _
         label _if0
         mov|i1 3 _ r0
-        call @out _ _
+        call @outInt _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -358,7 +358,7 @@ public class IfStatements
         string source =
         """
         if (1) {
-            out(3);
+            outInt(3);
         }
         """.TrimIndents();
 
@@ -366,7 +366,7 @@ public class IfStatements
         $"""
         label _start
         mov|i1 3 _ r0
-        call @out _ _
+        call @outInt _ _
         label _if0
         """.TrimIndents();
 
@@ -381,7 +381,7 @@ public class IfStatements
         string source =
         """
         if (0) {
-            out(3);
+            outInt(3);
         }
         """.TrimIndents();
 
@@ -390,7 +390,7 @@ public class IfStatements
         label _start
         jump _if0 _ pc
         mov|i1 3 _ r0
-        call @out _ _
+        call @outInt _ _
         label _if0
         """.TrimIndents();
 
@@ -406,7 +406,7 @@ public class IfStatements
         """
         int x = 1;
         if (x) {
-            out(3);
+            outInt(3);
         }
         """.TrimIndents();
 
@@ -420,7 +420,7 @@ public class IfStatements
         load r0 _ r1
         ifEq|i2 r1 0 _if0
         mov|i1 3 _ r0
-        call @out _ _
+        call @outInt _ _
         label _if0
         """.TrimIndents();
 
@@ -436,7 +436,7 @@ public class IfStatements
         """
         int x = 0;
         if (x) {
-            out(3);
+            outInt(3);
         }
         """.TrimIndents();
 
@@ -450,7 +450,7 @@ public class IfStatements
         load r0 _ r1
         ifEq|i2 r1 0 _if0
         mov|i1 3 _ r0
-        call @out _ _
+        call @outInt _ _
         label _if0
         """.TrimIndents();
 
@@ -465,7 +465,7 @@ public class IfStatements
         string source =
         """
         if (true) {
-            out(3);
+            outInt(3);
         }
         """.TrimIndents();
 
@@ -473,7 +473,7 @@ public class IfStatements
         $"""
         label _start
         mov|i1 3 _ r0
-        call @out _ _
+        call @outInt _ _
         label _if0
         """.TrimIndents();
 
@@ -488,7 +488,7 @@ public class IfStatements
         string source =
         """
         if (false) {
-            out(3);
+            outInt(3);
         }
         """.TrimIndents();
 
@@ -497,7 +497,7 @@ public class IfStatements
         label _start
         jump _if0 _ pc
         mov|i1 3 _ r0
-        call @out _ _
+        call @outInt _ _
         label _if0
         """.TrimIndents();
 

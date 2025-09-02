@@ -8,19 +8,19 @@ public class Complex
         string source =
         """
         void out4(int num) {
-            out(num + 4);
+            outInt(num + 4);
         }
 
         void out25(int num) {
-            out(num + 25);
+            outInt(num + 25);
         }
 
         void out60(int num) {
-            out(60 + num);
+            outInt(60 + num);
         }
 
         void out10(int bum) {
-            out(bum + 10);
+            outInt(bum + 10);
         }
 
         out4(14);
@@ -38,7 +38,7 @@ public class Complex
         push r0 _ _
         add|i2 r0 4 r1
         mov r1 _ r0
-        call @out _ _
+        call @outInt _ _
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp
@@ -52,7 +52,7 @@ public class Complex
         push r0 _ _
         add|i2 r0 25 r1
         mov r1 _ r0
-        call @out _ _
+        call @outInt _ _
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp
@@ -66,7 +66,7 @@ public class Complex
         push r0 _ _
         add|i1 60 r0 r1
         mov r1 _ r0
-        call @out _ _
+        call @outInt _ _
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp
@@ -80,7 +80,7 @@ public class Complex
         push r0 _ _
         add|i2 r0 10 r1
         mov r1 _ r0
-        call @out _ _
+        call @outInt _ _
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp
@@ -90,18 +90,12 @@ public class Complex
         label _start
         mov|i1 14 _ r0
         call out4 _ _
-        push r0 _ _
         mov|i1 14 _ r0
         call out25 _ _
-        pop _ _ r0
-        push r0 _ _
         mov|i1 14 _ r0
         call out60 _ _
-        pop _ _ r0
-        push r0 _ _
         mov|i1 14 _ r0
         call out10 _ _
-        pop _ _ r0
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -118,7 +112,7 @@ public class Complex
             int x = 5;
             int y = 10;
             int result = x + y;
-            out(result);
+            outInt(result);
         } 
 
         test();
@@ -147,7 +141,7 @@ public class Complex
         sub|i2 fp 2 r0
         load r0 _ r1
         mov r1 _ r0
-        call @out _ _
+        call @outInt _ _
         mov fp _ sp
         pop _ _ fp
         pop _ _ lr

@@ -18,7 +18,11 @@ class ArrayFactory
 
         if (sizeResult is NumberLiteralNode sizeNode && int.TryParse(sizeNode.Value, out int size))
         {
-            if (node.Initializer != null)
+            if (node.Initializer == null)
+            {
+                context.AllocateArray(5, node.Name);
+            }
+            else
             {
                 return GenerateArrayInitialization(node.Name, node.Initializer, true, context);
             }

@@ -119,7 +119,7 @@ public class Pointers
         """
         int* a = 5;
         *a = 10;
-        out(*a);
+        outInt(*a);
         """.TrimIndents();
 
         string expected =
@@ -134,7 +134,7 @@ public class Pointers
         mov fp _ r0
         load r0 _ r1
         load r1 _ r0
-        call @out _ _
+        call @outInt _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -152,7 +152,7 @@ public class Pointers
         *(a + 1) = 12;
         *(a + 2) = 9;
         *(a + 3) = 4;
-        out(*a);
+        outInt(*a);
         """.TrimIndents();
 
         string expected =
@@ -179,7 +179,7 @@ public class Pointers
         mov fp _ r0
         load r0 _ r1
         load r1 _ r0
-        call @out _ _
+        call @outInt _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -197,7 +197,7 @@ public class Pointers
         a[1] = 12;
         a[2] = 9;
         a[3] = 4;
-        out(a[2]);
+        outInt(a[2]);
         """.TrimIndents();
 
         string expected =
@@ -226,7 +226,7 @@ public class Pointers
         load r0 _ r1
         add|i2 r1 2 r2
         load r2 _ r0
-        call @out _ _
+        call @outInt _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -264,10 +264,8 @@ public class Pointers
         mov r1 _ r0
         call @free _ _
         sub|i2 sp 1 sp
-        push r0 _ _
         mov|i1 2 _ r0
         call @malloc _ _
-        pop _ _ r0
         sub|i2 fp 2 r1
         store r0 r1 _
         sub|i2 sp 1 sp
@@ -305,10 +303,8 @@ public class Pointers
         mov r1 _ r0
         call @free _ _
         sub|i2 sp 1 sp
-        push r0 _ _
         mov|i1 1 _ r0
         call @malloc _ _
-        pop _ _ r0
         sub|i2 fp 1 r1
         store r0 r1 _
         """.TrimIndents();

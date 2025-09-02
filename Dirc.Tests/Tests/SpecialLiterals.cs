@@ -48,7 +48,7 @@ public class SpecialLiterals
         string source =
         """
         int x = 0b00110011;
-        out(x);
+        outInt(x);
         """.TrimIndents();
 
         string expected =
@@ -60,7 +60,7 @@ public class SpecialLiterals
         mov fp _ r0
         load r0 _ r1
         mov r1 _ r0
-        call @out _ _
+        call @outInt _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -74,7 +74,7 @@ public class SpecialLiterals
         string source =
         """
         int x = 0x0000d0;
-        out(x);
+        outInt(x);
         """.TrimIndents();
 
         string expected =
@@ -86,7 +86,7 @@ public class SpecialLiterals
         mov fp _ r0
         load r0 _ r1
         mov r1 _ r0
-        call @out _ _
+        call @outInt _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;

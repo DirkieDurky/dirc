@@ -30,7 +30,8 @@ class FunctionFactory
 
         foreach (AstNode stmt in node.Body)
         {
-            context.ExprFactory.Generate(stmt, scopeSpecificContext);
+            IReturnable? result = context.ExprFactory.Generate(stmt, scopeSpecificContext);
+            result?.Free();
         }
 
         // Reset stack pointer to free any local variables

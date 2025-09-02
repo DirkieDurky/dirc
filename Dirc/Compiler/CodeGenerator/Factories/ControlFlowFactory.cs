@@ -85,11 +85,13 @@ class ControlFlowFactory
             {
                 throw new Exception("Invalid condition result type");
             }
+            conditionResult.Free();
         }
 
         foreach (AstNode stmt in node.Body)
         {
-            context.ExprFactory.Generate(stmt, (CodeGenContext)context.Clone());
+            IReturnable? result = context.ExprFactory.Generate(stmt, (CodeGenContext)context.Clone());
+            result?.Free();
         }
 
         if (endLabel != null)
@@ -103,7 +105,8 @@ class ControlFlowFactory
         {
             foreach (AstNode stmt in node.ElseBody)
             {
-                context.ExprFactory.Generate(stmt, (CodeGenContext)context.Clone());
+                IReturnable? result = context.ExprFactory.Generate(stmt, (CodeGenContext)context.Clone());
+                result?.Free();
             }
             _codeGenBase.EmitLabel(endLabel!);
         }
@@ -119,7 +122,8 @@ class ControlFlowFactory
 
         foreach (AstNode stmt in node.Body)
         {
-            context.ExprFactory.Generate(stmt, (CodeGenContext)context.Clone());
+            IReturnable? result = context.ExprFactory.Generate(stmt, (CodeGenContext)context.Clone());
+            result?.Free();
         }
 
         if (node.Condition is BinaryExpressionNode condition && condition.Operation.IsComparer())

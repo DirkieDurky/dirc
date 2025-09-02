@@ -9,7 +9,7 @@ public class WhileStatements
         """
         int i = 0;
         while (i < 5) {
-            out(i);
+            outInt(i);
             i++;
         }
         """.TrimIndents();
@@ -24,7 +24,7 @@ public class WhileStatements
         mov fp _ r0
         load r0 _ r1
         mov r1 _ r0
-        call @out _ _
+        call @outInt _ _
         mov fp _ r0
         load r0 _ r1
         add|i2 r1 1 r0
@@ -46,7 +46,7 @@ public class WhileStatements
         string source =
         """
         while (true) {
-            out(42);
+            outInt(42);
         }
         """.TrimIndents();
 
@@ -55,7 +55,7 @@ public class WhileStatements
         label _start
         label _while0
         mov|i1 42 _ r0
-        call @out _ _
+        call @outInt _ _
         jump _while0 _ pc
         """.TrimIndents();
 

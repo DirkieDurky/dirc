@@ -8,7 +8,7 @@ public class ForStatements
         string source =
         """
         for (int i = 0; i < 5; i++) {
-            out(i);
+            outInt(i);
         }
         """.TrimIndents();
 
@@ -22,7 +22,7 @@ public class ForStatements
         mov fp _ r0
         load r0 _ r1
         mov r1 _ r0
-        call @out _ _
+        call @outInt _ _
         mov fp _ r0
         load r0 _ r1
         add|i2 r1 1 r0
@@ -44,7 +44,7 @@ public class ForStatements
         string source =
         """
         for (;;) {
-            out(4);
+            outInt(4);
         }
         """.TrimIndents();
 
@@ -53,7 +53,7 @@ public class ForStatements
         label _start
         label _while0
         mov|i1 4 _ r0
-        call @out _ _
+        call @outInt _ _
         jump _while0 _ pc
         """.TrimIndents();
 

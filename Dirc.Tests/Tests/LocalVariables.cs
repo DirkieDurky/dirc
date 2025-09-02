@@ -8,7 +8,7 @@ public class LocalVariables
         string source =
         """
         int x = 3;
-        out(x);
+        outInt(x);
         """.TrimIndents();
 
         string expected =
@@ -20,7 +20,7 @@ public class LocalVariables
         mov fp _ r0
         load r0 _ r1
         mov r1 _ r0
-        call @out _ _
+        call @outInt _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -36,7 +36,7 @@ public class LocalVariables
         int x = 3;
         x = x + 1;
 
-        out(x);
+        outInt(x);
         """.TrimIndents();
 
         string expected =
@@ -53,7 +53,7 @@ public class LocalVariables
         mov fp _ r0
         load r0 _ r1
         mov r1 _ r0
-        call @out _ _
+        call @outInt _ _
         """.TrimIndents();
 
         string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
@@ -69,7 +69,7 @@ public class LocalVariables
         int x = 3;
         int x = 5;
 
-        out(x);
+        outInt(x);
         """.TrimIndents();
 
         Assert.Throws<SemanticException>(() => new Compiler().Compile(source, new([]), new("unittests")));
