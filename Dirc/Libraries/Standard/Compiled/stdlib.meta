@@ -7,12 +7,6 @@
             "Parameters": [
                 { "Name": "str", "Type": "char*" }
             ]
-        },
-        {
-            "File": "test2.o",
-            "Name": "test2",
-            "ReturnType": "char*",
-            "Parameters": []
         }
     ]
 }
