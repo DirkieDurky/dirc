@@ -19,7 +19,7 @@ class CodeGenContext : ICloneable
     public ArrayFactory ArrayFactory { get; }
     public StringFactory StringFactory { get; }
     public PointerFactory PointerFactory { get; }
-    public Dictionary<string, Register> SymbolTable { get; }
+    public Dictionary<string, Register> RegisterTable { get; }
     public Dictionary<string, Variable> VariableTable { get; set; } = new();
     public List<string> DeclaredFunctions { get; set; } = new();
     public int NextVariableOffset { get; set; } = 0;
@@ -61,7 +61,7 @@ class CodeGenContext : ICloneable
         ArrayFactory = arrayFactory;
         StringFactory = stringFactory;
         PointerFactory = pointerFactory;
-        SymbolTable = symbolTable;
+        RegisterTable = symbolTable;
         VariableTable = variableTable;
         DeclaredFunctions = declaredFunctions;
         NextVariableOffset = nextVariableOffset;
@@ -85,7 +85,7 @@ class CodeGenContext : ICloneable
             ArrayFactory,
             StringFactory,
             PointerFactory,
-            SymbolTable.ToDictionary(x => x.Key, x => x.Value),
+            RegisterTable.ToDictionary(x => x.Key, x => x.Value),
             VariableTable.ToDictionary(x => x.Key, x => x.Value),
             DeclaredFunctions,
             NextVariableOffset,
@@ -111,7 +111,7 @@ class CodeGenContext : ICloneable
             ArrayFactory,
             StringFactory,
             PointerFactory,
-            SymbolTable.ToDictionary(x => x.Key, x => x.Value),
+            RegisterTable.ToDictionary(x => x.Key, x => x.Value),
             VariableTable.ToDictionary(x => x.Key, x => x.Value),
             DeclaredFunctions,
             NextVariableOffset,

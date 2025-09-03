@@ -14,7 +14,7 @@ class IdentifierFactory
 
     public IReturnable Generate(IdentifierNode node, CodeGenContext context)
     {
-        if (context.SymbolTable.TryGetValue(node.Name, out Register? reg))
+        if (context.RegisterTable.TryGetValue(node.Name, out Register? reg))
         {
             return new ReturnRegister(reg);
         }
