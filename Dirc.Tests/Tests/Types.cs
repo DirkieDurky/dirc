@@ -1,6 +1,7 @@
 using Dirc.Compiling.Parsing;
 using Dirc.Compiling.Semantic;
 using Dirc.Compiling.Lexing;
+using Dirc.MetaFile;
 
 namespace Dirc.Compiling.Tests;
 
@@ -8,7 +9,7 @@ public class Types
 {
     private Token T(string lexeme) => new Token(TokenType.Identifier, lexeme, null, -1);
     private BuildOptions _options = new([]);
-    private BuildContext _context = new("unittests", new([]));
+    private BuildContext _context = new("unittests", new([]), true);
 
     [Fact]
     public void ThrowsOnDuplicateFunction()
@@ -18,7 +19,22 @@ public class Types
             new FunctionDeclarationNode(T("foo"), "foo", new NamedTypeNode(T("int"), "int"), new(), new()),
             new FunctionDeclarationNode(T("foo"), "foo", new NamedTypeNode(T("int"), "int"), new(), new()),
         };
-        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, _options, _context));
+        SymbolTable symbolTable = new()
+        {
+            FunctionTable = [new Function()
+            {
+                Name = "asd",
+                ReturnType = "int",
+                Parameters = [],
+            },
+            new Function()
+            {
+                Name = "asd",
+                ReturnType = "int",
+                Parameters = [],
+            }]
+        };
+        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, symbolTable, _options, _context));
     }
 
     [Fact]
@@ -29,7 +45,7 @@ public class Types
             new VariableDeclarationNode(new NamedTypeNode(T("int"), "int"), T("x")),
             new VariableDeclarationNode(new NamedTypeNode(T("int"), "int"), T("x")),
         };
-        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, _options, _context));
+        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, new(), _options, _context));
     }
 
     [Fact]
@@ -39,7 +55,7 @@ public class Types
         {
             new VariableAssignmentNode(new IdentifierNode(T("x"), "x"), T("x"), new NumberLiteralNode(NumberLiteralType.Decimal, "1")),
         };
-        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, _options, _context));
+        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, new(), _options, _context));
     }
 
     [Fact]
@@ -49,7 +65,7 @@ public class Types
         {
             new IdentifierNode(T("y"), "y"),
         };
-        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, _options, _context));
+        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, new(), _options, _context));
     }
 
     [Fact]
@@ -59,7 +75,7 @@ public class Types
         {
             new VariableDeclarationNode(new NamedTypeNode(T("bool"), "bool"), T("x"), new NumberLiteralNode(NumberLiteralType.Decimal, "1")),
         };
-        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, _options, _context));
+        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, new(), _options, _context));
     }
 
     [Fact]
@@ -70,7 +86,7 @@ public class Types
             new VariableDeclarationNode(new NamedTypeNode(T("int"), "int"), T("x")),
             new VariableAssignmentNode(new IdentifierNode(T("x"), "x"), T("x"), new BooleanLiteralNode(true)),
         };
-        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, _options, _context));
+        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, new(), _options, _context));
     }
 
     [Fact]
@@ -81,7 +97,7 @@ public class Types
             new IfStatementNode(new IdentifierNode(T("x"), "x"), new List<AstNode>(), null)
         };
         // x is undeclared, so this will throw for undeclared variable
-        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, _options, _context));
+        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, new(), _options, _context));
     }
 
     [Fact]
@@ -92,7 +108,7 @@ public class Types
             new WhileStatementNode(new IdentifierNode(T("x"), "x"), new List<AstNode>())
         };
         // x is undeclared, so this will throw for undeclared variable
-        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, _options, _context));
+        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, new(), _options, _context));
     }
 
     [Fact]
@@ -102,7 +118,7 @@ public class Types
         {
             new CallExpressionNode(T("foo"), "foo", new List<AstNode>())
         };
-        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, _options, _context));
+        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, new(), _options, _context));
     }
 
     [Fact]
@@ -114,7 +130,7 @@ public class Types
             new FunctionDeclarationNode(T("foo"), "foo", new NamedTypeNode(T("int"), "int"), parameters, new()),
             new CallExpressionNode(T("foo"), "foo", new List<AstNode>())
         };
-        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, _options, _context));
+        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, new(), _options, _context));
     }
 
     [Fact]
@@ -126,7 +142,7 @@ public class Types
             new FunctionDeclarationNode(T("foo"), "foo", new NamedTypeNode(T("int"), "int"), parameters, new()),
             new CallExpressionNode(T("foo"), "foo", new List<AstNode> { new BooleanLiteralNode(true) })
         };
-        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, _options, _context));
+        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, new(), _options, _context));
     }
 
     [Fact]
@@ -139,7 +155,7 @@ public class Types
                 new ReturnStatementNode(new BooleanLiteralNode(true))
             })
         };
-        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, _options, _context));
+        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, new(), _options, _context));
     }
 
     [Fact]
@@ -152,7 +168,7 @@ public class Types
                     new Token(TokenType.Identifier, "x", null, 1),
                     null)
             };
-        Exception e = Record.Exception(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, _options, _context));
+        Exception e = Record.Exception(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, new(), _options, _context));
         Assert.Null(e);
     }
 
@@ -166,7 +182,7 @@ public class Types
                     new Token(TokenType.Identifier, "x", null, 1),
                     null)
             };
-        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, _options, _context));
+        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, new(), _options, _context));
     }
 
     [Fact]
@@ -180,7 +196,16 @@ public class Types
             new List<AstNode>()
         );
         var nodes = new List<AstNode> { func };
-        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, _options, _context));
+        SymbolTable symbolTable = new()
+        {
+            FunctionTable = [new Function()
+            {
+                Name = "asd",
+                ReturnType = "foo",
+                Parameters = [],
+            }]
+        };
+        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, symbolTable, _options, _context));
     }
 
     [Fact]
@@ -194,6 +219,6 @@ public class Types
             new List<AstNode>()
         );
         var nodes = new List<AstNode> { func };
-        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, _options, _context));
+        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, new(), _options, _context));
     }
 }

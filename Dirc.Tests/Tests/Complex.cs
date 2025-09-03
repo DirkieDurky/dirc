@@ -98,7 +98,9 @@ public class Complex
         call out10 _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))).Code;
+        Compiler compiler = new Compiler();
+        FrontEndResult frontEndResult = compiler.RunFrontEnd(source, new([]), new("unittests", new([source]), true));
+        string assembly = compiler.RunBackEnd(frontEndResult.AstNodes, frontEndResult.SymbolTable, new([]), new("unittests", new([source]), true)).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -151,7 +153,9 @@ public class Complex
         call test _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))).Code;
+        Compiler compiler = new Compiler();
+        FrontEndResult frontEndResult = compiler.RunFrontEnd(source, new([]), new("unittests", new([source]), true));
+        string assembly = compiler.RunBackEnd(frontEndResult.AstNodes, frontEndResult.SymbolTable, new([]), new("unittests", new([source]), true)).Code;
 
         Assert.Equal(expected, assembly);
     }

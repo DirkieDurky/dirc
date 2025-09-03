@@ -30,7 +30,9 @@ public class Pointers
         store r0 r1 _
         """.TrimIndents();
 
-        string assembly = new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))).Code;
+        Compiler compiler = new Compiler();
+        FrontEndResult frontEndResult = compiler.RunFrontEnd(source, new([]), new("unittests", new([source]), true));
+        string assembly = compiler.RunBackEnd(frontEndResult.AstNodes, frontEndResult.SymbolTable, new([]), new("unittests", new([source]), true)).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -77,7 +79,9 @@ public class Pointers
         store r0 r1 _
         """.TrimIndents();
 
-        string assembly = new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))).Code;
+        Compiler compiler = new Compiler();
+        FrontEndResult frontEndResult = compiler.RunFrontEnd(source, new([]), new("unittests", new([source]), true));
+        string assembly = compiler.RunBackEnd(frontEndResult.AstNodes, frontEndResult.SymbolTable, new([]), new("unittests", new([source]), true)).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -107,7 +111,9 @@ public class Pointers
         store|i1 99 r1 _
         """.TrimIndents();
 
-        string assembly = new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))).Code;
+        Compiler compiler = new Compiler();
+        FrontEndResult frontEndResult = compiler.RunFrontEnd(source, new([]), new("unittests", new([source]), true));
+        string assembly = compiler.RunBackEnd(frontEndResult.AstNodes, frontEndResult.SymbolTable, new([]), new("unittests", new([source]), true)).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -137,7 +143,9 @@ public class Pointers
         call @outInt _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))).Code;
+        Compiler compiler = new Compiler();
+        FrontEndResult frontEndResult = compiler.RunFrontEnd(source, new([]), new("unittests", new([source]), true));
+        string assembly = compiler.RunBackEnd(frontEndResult.AstNodes, frontEndResult.SymbolTable, new([]), new("unittests", new([source]), true)).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -182,7 +190,9 @@ public class Pointers
         call @outInt _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))).Code;
+        Compiler compiler = new Compiler();
+        FrontEndResult frontEndResult = compiler.RunFrontEnd(source, new([]), new("unittests", new([source]), true));
+        string assembly = compiler.RunBackEnd(frontEndResult.AstNodes, frontEndResult.SymbolTable, new([]), new("unittests", new([source]), true)).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -229,7 +239,9 @@ public class Pointers
         call @outInt _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))).Code;
+        Compiler compiler = new Compiler();
+        FrontEndResult frontEndResult = compiler.RunFrontEnd(source, new([]), new("unittests", new([source]), true));
+        string assembly = compiler.RunBackEnd(frontEndResult.AstNodes, frontEndResult.SymbolTable, new([]), new("unittests", new([source]), true)).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -275,7 +287,9 @@ public class Pointers
         store r0 r1 _
         """.TrimIndents();
 
-        string assembly = new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))).Code;
+        Compiler compiler = new Compiler();
+        FrontEndResult frontEndResult = compiler.RunFrontEnd(source, new([]), new("unittests", new([source]), true));
+        string assembly = compiler.RunBackEnd(frontEndResult.AstNodes, frontEndResult.SymbolTable, new([]), new("unittests", new([source]), true)).Code;
 
         Assert.Equal(expected, string.Join("\n", assembly));
     }
@@ -309,7 +323,9 @@ public class Pointers
         store r0 r1 _
         """.TrimIndents();
 
-        string assembly = new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))).Code;
+        Compiler compiler = new Compiler();
+        FrontEndResult frontEndResult = compiler.RunFrontEnd(source, new([]), new("unittests", new([source]), true));
+        string assembly = compiler.RunBackEnd(frontEndResult.AstNodes, frontEndResult.SymbolTable, new([]), new("unittests", new([source]), true)).Code;
 
         Assert.Equal(expected, string.Join("\n", assembly));
     }

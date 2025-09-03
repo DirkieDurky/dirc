@@ -36,33 +36,6 @@ public class SemanticAnalyzer
     {
         // First pass: collect function signatures
 
-        // From the symbol table
-        foreach (MetaFile.Function function in symbolTable.FunctionTable)
-        {
-            Type returnType = TypeFromString(function.ReturnType, true);
-
-            List<FunctionParameter> functionParameters = [];
-            foreach (MetaFile.Param param in function.Parameters)
-            {
-                Type paramType = TypeFromString(param.Type, false);
-                functionParameters.Add(new(paramType, param.Name));
-            }
-
-            if (_functions.ContainsKey(function.Name))
-            {
-                throw new SemanticException($"Function '{function.Name}' already declared", null, options, context);
-            }
-
-            if (BuildEnvironment.AssemblyKeywords.ContainsKey(function.Name))
-            {
-                throw new CodeGenException($"Can't declare function with name '{function.Name}'. Reserved keyword",
-                    null, options, context
-                );
-            }
-
-            _functions.Add(function.Name, new FunctionSignature(returnType, functionParameters));
-        }
-
         // Runtime library
         foreach ((string name, FunctionSignature signature) in RuntimeLibrary.GetAllFunctionSignatures())
         {
@@ -101,6 +74,33 @@ public class SemanticAnalyzer
                 }
                 _functions.Add(libFunc.Name, new FunctionSignature(TypeFromString(libFunc.ReturnType, true), funcParams));
             }
+        }
+
+        // From the symbol table
+        foreach (MetaFile.Function function in symbolTable.FunctionTable)
+        {
+            Type returnType = TypeFromString(function.ReturnType, true);
+
+            List<FunctionParameter> functionParameters = [];
+            foreach (MetaFile.Param param in function.Parameters)
+            {
+                Type paramType = TypeFromString(param.Type, false);
+                functionParameters.Add(new(paramType, param.Name));
+            }
+
+            if (_functions.ContainsKey(function.Name))
+            {
+                throw new SemanticException($"Function '{function.Name}' already declared", null, options, context);
+            }
+
+            if (BuildEnvironment.AssemblyKeywords.ContainsKey(function.Name))
+            {
+                throw new CodeGenException($"Can't declare function with name '{function.Name}'. Reserved keyword",
+                    null, options, context
+                );
+            }
+
+            _functions.Add(function.Name, new FunctionSignature(returnType, functionParameters));
         }
 
         // Second pass: analyze all nodes

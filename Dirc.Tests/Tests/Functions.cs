@@ -17,7 +17,9 @@ public class Functions
         call @outInt _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))).Code;
+        Compiler compiler = new Compiler();
+        FrontEndResult frontEndResult = compiler.RunFrontEnd(source, new([]), new("unittests", new([source]), true));
+        string assembly = compiler.RunBackEnd(frontEndResult.AstNodes, frontEndResult.SymbolTable, new([]), new("unittests", new([source]), true)).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -48,7 +50,9 @@ public class Functions
         
         """.TrimIndents();
 
-        string assembly = new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))).Code;
+        Compiler compiler = new Compiler();
+        FrontEndResult frontEndResult = compiler.RunFrontEnd(source, new([]), new("unittests", new([source]), true));
+        string assembly = compiler.RunBackEnd(frontEndResult.AstNodes, frontEndResult.SymbolTable, new([]), new("unittests", new([source]), true)).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -84,7 +88,9 @@ public class Functions
         call myoutInt _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))).Code;
+        Compiler compiler = new Compiler();
+        FrontEndResult frontEndResult = compiler.RunFrontEnd(source, new([]), new("unittests", new([source]), true));
+        string assembly = compiler.RunBackEnd(frontEndResult.AstNodes, frontEndResult.SymbolTable, new([]), new("unittests", new([source]), true)).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -132,7 +138,9 @@ public class Functions
         call myoutInt _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))).Code;
+        Compiler compiler = new Compiler();
+        FrontEndResult frontEndResult = compiler.RunFrontEnd(source, new([]), new("unittests", new([source]), true));
+        string assembly = compiler.RunBackEnd(frontEndResult.AstNodes, frontEndResult.SymbolTable, new([]), new("unittests", new([source]), true)).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -147,7 +155,9 @@ public class Functions
         }
         """.TrimIndents();
 
-        Assert.Throws<SemanticException>(() => new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))));
+        Compiler compiler = new Compiler();
+        FrontEndResult frontEndResult = compiler.RunFrontEnd(source, new([]), new("unittests", new([source]), true));
+        Assert.Throws<SemanticException>(() => compiler.RunBackEnd(frontEndResult.AstNodes, frontEndResult.SymbolTable, new([]), new("unittests", new([source]), true)));
     }
 
     [Fact]
@@ -164,7 +174,9 @@ public class Functions
         }
         """.TrimIndents();
 
-        Assert.Throws<SemanticException>(() => new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))));
+        Compiler compiler = new Compiler();
+        FrontEndResult frontEndResult = compiler.RunFrontEnd(source, new([]), new("unittests", new([source]), true));
+        Assert.Throws<SemanticException>(() => compiler.RunBackEnd(frontEndResult.AstNodes, frontEndResult.SymbolTable, new([]), new("unittests", new([source]), true)));
     }
 
     [Fact]
@@ -175,7 +187,9 @@ public class Functions
         asd();
         """.TrimIndents();
 
-        Assert.Throws<SemanticException>(() => new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))));
+        Compiler compiler = new Compiler();
+        FrontEndResult frontEndResult = compiler.RunFrontEnd(source, new([]), new("unittests", new([source]), true));
+        Assert.Throws<SemanticException>(() => compiler.RunBackEnd(frontEndResult.AstNodes, frontEndResult.SymbolTable, new([]), new("unittests", new([source]), true)));
     }
 
     [Fact]
@@ -235,7 +249,9 @@ public class Functions
         call test _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))).Code;
+        Compiler compiler = new Compiler();
+        FrontEndResult frontEndResult = compiler.RunFrontEnd(source, new([]), new("unittests", new([source]), true));
+        string assembly = compiler.RunBackEnd(frontEndResult.AstNodes, frontEndResult.SymbolTable, new([]), new("unittests", new([source]), true)).Code;
         Assert.Equal(expected, assembly);
     }
 }

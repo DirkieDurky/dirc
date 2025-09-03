@@ -7,7 +7,9 @@ public class Arrays
     {
         string source = "int nums[5];";
 
-        string assembly = new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))).Code;
+        Compiler compiler = new Compiler();
+        FrontEndResult frontEndResult = compiler.RunFrontEnd(source, new([]), new("unittests", new([source]), true));
+        string assembly = compiler.RunBackEnd(frontEndResult.AstNodes, frontEndResult.SymbolTable, new([]), new("unittests", new([source]), true)).Code;
 
         Assert.NotNull(assembly);
         Assert.True(assembly.Length > 0);
@@ -18,7 +20,9 @@ public class Arrays
     {
         string source = "int nums[5]; nums[2] = 42;";
 
-        string assembly = new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))).Code;
+        Compiler compiler = new Compiler();
+        FrontEndResult frontEndResult = compiler.RunFrontEnd(source, new([]), new("unittests", new([source]), true));
+        string assembly = compiler.RunBackEnd(frontEndResult.AstNodes, frontEndResult.SymbolTable, new([]), new("unittests", new([source]), true)).Code;
 
         Assert.NotNull(assembly);
         Assert.True(assembly.Length > 0);
@@ -29,7 +33,9 @@ public class Arrays
     {
         string source = "int nums[5]; int x = nums[2];";
 
-        string assembly = new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))).Code;
+        Compiler compiler = new Compiler();
+        FrontEndResult frontEndResult = compiler.RunFrontEnd(source, new([]), new("unittests", new([source]), true));
+        string assembly = compiler.RunBackEnd(frontEndResult.AstNodes, frontEndResult.SymbolTable, new([]), new("unittests", new([source]), true)).Code;
 
         Assert.NotNull(assembly);
         Assert.True(assembly.Length > 0);
@@ -40,7 +46,9 @@ public class Arrays
     {
         string source = "int nums[5] = {1, 2, 3, 4, 5};";
 
-        string assembly = new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))).Code;
+        Compiler compiler = new Compiler();
+        FrontEndResult frontEndResult = compiler.RunFrontEnd(source, new([]), new("unittests", new([source]), true));
+        string assembly = compiler.RunBackEnd(frontEndResult.AstNodes, frontEndResult.SymbolTable, new([]), new("unittests", new([source]), true)).Code;
 
         Assert.NotNull(assembly);
         Assert.True(assembly.Length > 0);
@@ -56,7 +64,9 @@ public class Arrays
         outInt(nums[2]);
         """.TrimIndents();
 
-        string assembly = new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))).Code;
+        Compiler compiler = new Compiler();
+        FrontEndResult frontEndResult = compiler.RunFrontEnd(source, new([]), new("unittests", new([source]), true));
+        string assembly = compiler.RunBackEnd(frontEndResult.AstNodes, frontEndResult.SymbolTable, new([]), new("unittests", new([source]), true)).Code;
 
         Assert.NotNull(assembly);
         Assert.True(assembly.Length > 0);

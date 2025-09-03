@@ -7,3 +7,4 @@ tests/builds
 test.dirc
 test.o
 test.out
+test/*

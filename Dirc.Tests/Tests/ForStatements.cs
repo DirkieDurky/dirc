@@ -33,7 +33,9 @@ public class ForStatements
         ifLess|i2 r1 5 _while0
         """.TrimIndents();
 
-        string assembly = new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))).Code;
+        Compiler compiler = new Compiler();
+        FrontEndResult frontEndResult = compiler.RunFrontEnd(source, new([]), new("unittests", new([source]), true));
+        string assembly = compiler.RunBackEnd(frontEndResult.AstNodes, frontEndResult.SymbolTable, new([]), new("unittests", new([source]), true)).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -57,7 +59,9 @@ public class ForStatements
         jump _while0 _ pc
         """.TrimIndents();
 
-        string assembly = new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))).Code;
+        Compiler compiler = new Compiler();
+        FrontEndResult frontEndResult = compiler.RunFrontEnd(source, new([]), new("unittests", new([source]), true));
+        string assembly = compiler.RunBackEnd(frontEndResult.AstNodes, frontEndResult.SymbolTable, new([]), new("unittests", new([source]), true)).Code;
 
         Assert.Equal(expected, assembly);
     }
