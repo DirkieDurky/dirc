@@ -6,5 +6,5 @@ tests/builds
 .vscode/launch.json
 test.dirc
 test.o
-test.out
+a.out
 test/*

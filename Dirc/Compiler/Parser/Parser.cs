@@ -47,6 +47,7 @@ class Parser
 
                 functionTable.Add(new()
                 {
+                    File = Path.GetFileName(_parserBase.Context.CurrentFilePath),
                     Name = funcNode.Name,
                     ReturnType = funcNode.ReturnTypeName,
                     Parameters = parameters.ToArray()

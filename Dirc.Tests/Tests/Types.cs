@@ -2,6 +2,7 @@ using Dirc.Compiling.Parsing;
 using Dirc.Compiling.Semantic;
 using Dirc.Compiling.Lexing;
 using Dirc.MetaFile;
+using System.Reflection.Metadata;
 
 namespace Dirc.Compiling.Tests;
 
@@ -23,12 +24,14 @@ public class Types
         {
             FunctionTable = [new Function()
             {
+                File = "test.o",
                 Name = "asd",
                 ReturnType = "int",
                 Parameters = [],
             },
             new Function()
             {
+                File = "test.o",
                 Name = "asd",
                 ReturnType = "int",
                 Parameters = [],
@@ -200,6 +203,7 @@ public class Types
         {
             FunctionTable = [new Function()
             {
+                File = "test.o",
                 Name = "asd",
                 ReturnType = "foo",
                 Parameters = [],
@@ -219,6 +223,20 @@ public class Types
             new List<AstNode>()
         );
         var nodes = new List<AstNode> { func };
-        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, new(), _options, _context));
+
+        SymbolTable symbolTable = new()
+        {
+            FunctionTable = [new Function()
+            {
+                File = "test.o",
+                Name = "asd",
+                ReturnType = "int",
+                Parameters = [new Param() {
+                    Name = "x",
+                    Type = "asd"
+                }],
+            }]
+        };
+        Assert.Throws<SemanticException>(() => new SemanticAnalyzer(_options, _context).Analyze(nodes, symbolTable, _options, _context));
     }
 }

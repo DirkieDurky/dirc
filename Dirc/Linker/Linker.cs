@@ -9,7 +9,7 @@ partial class Linker
 {
     public string Link(string assembly, List<string> otherCompilationUnitCode, string[] searchLibs)
     {
-        HashSet<string> toImport = GetLibsToImport(assembly, searchLibs.ToList(), []);
+        HashSet<string> toImport = GetFilesToImport(assembly, searchLibs.ToList(), []);
 
         StringBuilder result = new();
         result.Append(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "lib", "runtime", "init.o")));
@@ -34,7 +34,7 @@ partial class Linker
         return resultStr;
     }
 
-    public HashSet<string> GetLibsToImport(string assembly, List<string> searchLibs, HashSet<string> libsToImport)
+    public HashSet<string> GetFilesToImport(string assembly, List<string> searchLibs, HashSet<string> libsToImport)
     {
         if (!searchLibs.Contains("stdlib")) searchLibs.Insert(0, "stdlib");
 
@@ -45,7 +45,7 @@ partial class Linker
             // Look in the runtime library
             if (RuntimeLibrary.HasFunction(symbol))
             {
-                libsToImport = GetLibsToImport(RuntimeLibrary.GetFunction(symbol), searchLibs, libsToImport);
+                libsToImport = GetFilesToImport(RuntimeLibrary.GetFunction(symbol), searchLibs, libsToImport);
                 libsToImport.Add($"runtime/{symbol}.o");
             }
             else
@@ -53,17 +53,19 @@ partial class Linker
                 foreach (string searchPath in searchLibs)
                 {
                     //Finally look at search paths
-                    string libPath = Path.Combine(AppContext.BaseDirectory, "lib", searchPath, $"{searchPath}.o");
-                    string libMetaPath = Path.Combine(AppContext.BaseDirectory, "lib", searchPath, $"{searchPath}.meta");
-                    string libText = File.ReadAllText(libPath);
+                    string libPath = Path.Combine(AppContext.BaseDirectory, "lib", searchPath);
+                    string libMetaPath = Path.Combine(libPath, $"{searchPath}.meta");
                     string libMetaText = File.ReadAllText(libMetaPath);
                     MetaFile.Root libMetaFile = JsonSerializer.Deserialize<MetaFile.Root>(libMetaText)
-                        ?? throw new Exception($"Standard Library meta file could not be read");
+                        ?? throw new Exception($"Library meta file could not be read");
 
-                    if (libMetaFile.Functions.Any(f => f.Name == symbol))
+                    MetaFile.Function? function = libMetaFile.Functions.FirstOrDefault(f => f.Name == symbol);
+                    if (function != null)
                     {
-                        libsToImport = GetLibsToImport(libText, searchLibs, libsToImport);
-                        libsToImport.Add(libPath);
+                        string filePath = Path.Combine(libPath, function.File);
+                        string fileText = File.ReadAllText(filePath);
+                        libsToImport = GetFilesToImport(fileText, searchLibs, libsToImport);
+                        libsToImport.Add(filePath);
                     }
                 }
             }

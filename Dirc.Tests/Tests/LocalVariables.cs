@@ -76,6 +76,8 @@ public class LocalVariables
         outInt(x);
         """.TrimIndents();
 
-        Assert.Throws<SemanticException>(() => new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]), true)));
+        Compiler compiler = new Compiler();
+        FrontEndResult frontEndResult = compiler.RunFrontEnd(source, new([]), new("unittests", new([source]), true));
+        Assert.Throws<SemanticException>(() => compiler.RunBackEnd(frontEndResult.AstNodes, frontEndResult.SymbolTable, new([]), new("unittests", new([source]), true)));
     }
 }
