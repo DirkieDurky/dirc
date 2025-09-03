@@ -7,7 +7,7 @@ namespace Dirc.Linking;
 
 partial class Linker
 {
-    public string Link(string assembly, string[] searchLibs)
+    public string Link(string assembly, List<string> otherCompilationUnitCode, string[] searchLibs)
     {
         HashSet<string> toImport = GetLibsToImport(assembly, searchLibs.ToList(), []);
 
@@ -17,6 +17,11 @@ partial class Linker
         foreach (string importPath in toImport)
         {
             result.Append(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "lib", importPath)));
+            result.AppendLine();
+        }
+        foreach (string code in otherCompilationUnitCode)
+        {
+            result.Append(code);
             result.AppendLine();
         }
         result.Append(assembly);
@@ -52,7 +57,7 @@ partial class Linker
                     string libMetaPath = Path.Combine(AppContext.BaseDirectory, "lib", searchPath, $"{searchPath}.meta");
                     string libText = File.ReadAllText(libPath);
                     string libMetaText = File.ReadAllText(libMetaPath);
-                    Compiling.MetaFile.Root libMetaFile = JsonSerializer.Deserialize<Compiling.MetaFile.Root>(libMetaText)
+                    MetaFile.Root libMetaFile = JsonSerializer.Deserialize<MetaFile.Root>(libMetaText)
                         ?? throw new Exception($"Standard Library meta file could not be read");
 
                     if (libMetaFile.Functions.Any(f => f.Name == symbol))

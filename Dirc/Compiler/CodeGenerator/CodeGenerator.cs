@@ -65,8 +65,15 @@ class CodeGenerator
             Context.DeclaredFunctions.Add(funcNode.Name);
         }
 
-        if (nodes.Any(node => node is not ImportStatementNode && node is not FunctionDeclarationNode))
+        AstNode? topLevelCode = nodes.FirstOrDefault(node => node is not ImportStatementNode && node is not FunctionDeclarationNode);
+        if (topLevelCode != null)
+        {
+            if (!Context.BuildContext.IsRootFile)
+            {
+                throw new CodeGenException("Non root-file contains top-level code. Only the root file may contain top-level code.", null, Context.BuildOptions, Context.BuildContext);
+            }
             _codeGenBase.EmitLabel("_start");
+        }
 
         foreach (AstNode node in nodes)
         {

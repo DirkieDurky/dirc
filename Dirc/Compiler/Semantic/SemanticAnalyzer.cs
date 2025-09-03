@@ -32,9 +32,37 @@ public class SemanticAnalyzer
         _validReturnTypes.Add(Void.Instance.Name, Void.Instance);
     }
 
-    public void Analyze(List<AstNode> nodes, BuildOptions options, BuildContext context)
+    public void Analyze(List<AstNode> nodes, SymbolTable symbolTable, BuildOptions options, BuildContext context)
     {
         // First pass: collect function signatures
+
+        // From the symbol table
+        foreach (MetaFile.Function function in symbolTable.FunctionTable)
+        {
+            Type returnType = TypeFromString(function.ReturnType, true);
+
+            List<FunctionParameter> functionParameters = [];
+            foreach (MetaFile.Param param in function.Parameters)
+            {
+                Type paramType = TypeFromString(param.Type, false);
+                functionParameters.Add(new(paramType, param.Name));
+            }
+
+            if (_functions.ContainsKey(function.Name))
+            {
+                throw new SemanticException($"Function '{function.Name}' already declared", null, options, context);
+            }
+
+            if (BuildEnvironment.AssemblyKeywords.ContainsKey(function.Name))
+            {
+                throw new CodeGenException($"Can't declare function with name '{function.Name}'. Reserved keyword",
+                    null, options, context
+                );
+            }
+
+            _functions.Add(function.Name, new FunctionSignature(returnType, functionParameters));
+        }
+
         // Runtime library
         foreach ((string name, FunctionSignature signature) in RuntimeLibrary.GetAllFunctionSignatures())
         {
@@ -75,37 +103,6 @@ public class SemanticAnalyzer
             }
         }
 
-        // Custom functions
-        foreach (AstNode node in nodes)
-        {
-            if (node is FunctionDeclarationNode func)
-            {
-                if (!_validReturnTypes.ContainsKey(func.ReturnType.TypeName))
-                {
-                    ResolveType(func.ReturnType);
-                }
-                List<FunctionParameter> parameters = new();
-                foreach (FunctionParameterNode param in func.Parameters)
-                {
-                    parameters.Add(new FunctionParameter(ResolveType(param.Type), param.Name));
-                }
-
-                FunctionSignature signature = new(TypeFromString(func.ReturnType.TypeName, true), parameters);
-                if (_functions.ContainsKey(func.Name))
-                {
-                    throw new SemanticException($"Function '{func.Name}' already declared", func.IdentifierToken, options, context);
-                }
-
-                _functions[func.Name] = signature;
-
-                if (BuildEnvironment.AssemblyKeywords.ContainsKey(func.Name))
-                {
-                    throw new CodeGenException($"Can't declare function with name '{func.Name}'. Reserved keyword",
-                        func.IdentifierToken, options, context
-                    );
-                }
-            }
-        }
         // Second pass: analyze all nodes
         for (int i = 0; i < nodes.Count; i++)
         {
@@ -226,16 +223,16 @@ public class SemanticAnalyzer
                 {
                     if (param.Type is PointerTypeNode pointerType)
                     {
-                        _variables[param.Name] = Pointer.Of(_validTypes[pointerType.BaseType.TypeName]);
+                        _variables[param.Name] = Pointer.Of(_validTypes[pointerType.BaseType.Name]);
                     }
                     else
                     {
-                        _variables[param.Name] = _validTypes[param.Type.TypeName];
+                        _variables[param.Name] = _validTypes[param.Type.Name];
                     }
                 }
                 foreach (AstNode stmt in func.Body)
                 {
-                    Type returnType = TypeFromString(func.ReturnType.TypeName, true);
+                    Type returnType = TypeFromString(func.ReturnType.Name, true);
                     AnalyzeNode(stmt, returnType, options, context);
                 }
                 _variables.Clear();
@@ -356,8 +353,8 @@ public class SemanticAnalyzer
     {
         if (node is NamedTypeNode named)
         {
-            if (_validTypes.TryGetValue(named.TypeName, out var t)) return t;
-            throw new SemanticException($"Unknown type '{named.TypeName}'", named.IdentifierToken, _buildOptions, _buildContext);
+            if (_validTypes.TryGetValue(named.Name, out var t)) return t;
+            throw new SemanticException($"Unknown type '{named.Name}'", named.IdentifierToken, _buildOptions, _buildContext);
         }
         if (node is PointerTypeNode ptr)
         {

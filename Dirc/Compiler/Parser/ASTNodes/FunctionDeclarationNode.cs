@@ -7,7 +7,7 @@ public class FunctionDeclarationNode : AstNode
     public Token IdentifierToken { get; }
     public string Name { get; }
     public TypeNode ReturnType { get; }
-    public string ReturnTypeName => ReturnType.TypeName;
+    public string ReturnTypeName => ReturnType.Name;
     public List<FunctionParameterNode> Parameters { get; }
     public List<AstNode> Body { get; }
     public FunctionDeclarationNode(Token identifierToken, string name, TypeNode returnType, List<FunctionParameterNode> parameters, List<AstNode> body)

@@ -1,6 +1,6 @@
-namespace Dirc.Compiling.MetaFile;
+namespace Dirc.MetaFile;
 
-class Root
+public class Root
 {
     public required Function[] Functions { get; set; }
 }

@@ -6,7 +6,7 @@ public class VariableDeclarationNode : AstNode
 {
     public TypeNode Type { get; }
     public Token IdentifierToken { get; }
-    public string TypeName => Type.TypeName;
+    public string TypeName => Type.Name;
     public string Name => IdentifierToken.Lexeme;
     public AstNode? Initializer { get; }
 

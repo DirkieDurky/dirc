@@ -2,7 +2,9 @@ namespace Dirc;
 
 public class BuildOptions
 {
-    public bool CompileOnly { get; set; } // If true: compile only; if false: also run linker
+    public bool CompileOnly { get; set; } = false; // If true: compile only; if false: also run linker
+    public bool EmitMeta { get; set; } = false; // If true: emit a .meta file used for libraries
+    public string OutPath { get; set; } = "a.out"; // If true: emit a .meta file used for libraries
 
     public bool ShowGeneralDebug { get; set; } = false;
     public bool ShowLexerOutput { get; set; } = false;
@@ -34,8 +36,16 @@ public class BuildOptions
                 case "--help":
                     Console.WriteLine(HelpText);
                     break;
+                case "--no-link":
                 case "-c":
                     CompileOnly = true;
+                    break;
+                case "--link":
+                    CompileOnly = false;
+                    break;
+                case "--emit-meta":
+                case "-m":
+                    EmitMeta = true;
                     break;
                 default:
                     Console.WriteLine($"Unknown flag '{flag}'");

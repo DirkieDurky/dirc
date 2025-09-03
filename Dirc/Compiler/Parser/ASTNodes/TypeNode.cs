@@ -5,11 +5,11 @@ namespace Dirc.Compiling.Parsing;
 public abstract class TypeNode : AstNode
 {
     public Token IdentifierToken { get; }
-    public string TypeName { get; }
-    public TypeNode(Token identifierToken, string typeName)
+    public string Name { get; }
+    public TypeNode(Token identifierToken, string name)
     {
         IdentifierToken = identifierToken;
-        TypeName = typeName;
+        Name = name;
     }
-    public override string ToString() => $"Type({TypeName})";
+    public override string ToString() => $"Type({Name})";
 }

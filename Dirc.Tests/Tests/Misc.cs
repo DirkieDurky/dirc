@@ -19,7 +19,7 @@ public class Misc
         call @outInt _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
+        string assembly = new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }

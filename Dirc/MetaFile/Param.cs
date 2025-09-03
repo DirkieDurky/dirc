@@ -1,6 +1,6 @@
-namespace Dirc.Compiling.MetaFile;
+namespace Dirc.MetaFile;
 
-class Param
+public class Param
 {
     public required string Name { get; set; }
     public required string Type { get; set; }

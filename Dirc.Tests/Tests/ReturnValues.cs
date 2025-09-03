@@ -24,7 +24,7 @@ public class ReturnValues
         call @outInt _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
+        string assembly = new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -44,7 +44,7 @@ public class ReturnValues
         call @outInt _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
+        string assembly = new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -82,7 +82,7 @@ public class ReturnValues
         call @outInt _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
+        string assembly = new Compiler().RunFrontEnd(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }

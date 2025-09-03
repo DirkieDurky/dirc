@@ -1,3 +1,4 @@
+using Dirc.Compiling.CodeGen;
 using Dirc.Compiling.Lexing;
 
 namespace Dirc.Compiling.Parsing;
@@ -13,16 +14,49 @@ class Parser
         _context = new(_parserBase);
     }
 
-    public List<AstNode> Parse(List<Token> tokens)
+    public FrontEndResult Parse(List<Token> tokens)
     {
         _context.ParserBase.Initialize(tokens);
-        List<AstNode> statements = new();
+        List<AstNode> nodes = new();
 
         while (!_context.ParserBase.IsAtEnd())
         {
-            statements.AddRange(_context.StatementParser.ParseStatement());
+            nodes.AddRange(_context.StatementParser.ParseStatement());
         }
 
-        return statements;
+        SymbolTable symbolTable = GetSymbolTable(nodes);
+        return new FrontEndResult(nodes, symbolTable);
+    }
+
+    public SymbolTable GetSymbolTable(List<AstNode> nodes)
+    {
+        List<MetaFile.Function> functionTable = [];
+        foreach (AstNode node in nodes)
+        {
+            if (node is FunctionDeclarationNode funcNode)
+            {
+                List<MetaFile.Param> parameters = [];
+                foreach (FunctionParameterNode paramNode in funcNode.Parameters)
+                {
+                    parameters.Add(new()
+                    {
+                        Name = paramNode.Name,
+                        Type = paramNode.Type.Name,
+                    });
+                }
+
+                functionTable.Add(new()
+                {
+                    Name = funcNode.Name,
+                    ReturnType = funcNode.ReturnTypeName,
+                    Parameters = parameters.ToArray()
+                });
+            }
+        }
+
+        SymbolTable symbolTable = new SymbolTable();
+        symbolTable.FunctionTable = functionTable;
+
+        return symbolTable;
     }
 }
