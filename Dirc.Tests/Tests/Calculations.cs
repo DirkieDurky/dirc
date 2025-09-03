@@ -17,7 +17,7 @@ public class Calculations
         call @outInt _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -37,7 +37,7 @@ public class Calculations
         call @outInt _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -57,7 +57,7 @@ public class Calculations
         call @outBool _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -77,7 +77,7 @@ public class Calculations
         call @outBool _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -97,7 +97,7 @@ public class Calculations
         call @outBool _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }

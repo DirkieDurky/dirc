@@ -17,7 +17,7 @@ public class Functions
         call @outInt _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -48,7 +48,7 @@ public class Functions
         
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -84,7 +84,7 @@ public class Functions
         call myoutInt _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -132,7 +132,7 @@ public class Functions
         call myoutInt _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -147,7 +147,7 @@ public class Functions
         }
         """.TrimIndents();
 
-        Assert.Throws<SemanticException>(() => new Compiler().Compile(source, new([]), new("unittests")));
+        Assert.Throws<SemanticException>(() => new Compiler().Compile(source, new([]), new("unittests", new([source]))));
     }
 
     [Fact]
@@ -164,7 +164,7 @@ public class Functions
         }
         """.TrimIndents();
 
-        Assert.Throws<SemanticException>(() => new Compiler().Compile(source, new([]), new("unittests")));
+        Assert.Throws<SemanticException>(() => new Compiler().Compile(source, new([]), new("unittests", new([source]))));
     }
 
     [Fact]
@@ -175,7 +175,7 @@ public class Functions
         asd();
         """.TrimIndents();
 
-        Assert.Throws<SemanticException>(() => new Compiler().Compile(source, new([]), new("unittests")));
+        Assert.Throws<SemanticException>(() => new Compiler().Compile(source, new([]), new("unittests", new([source]))));
     }
 
     [Fact]
@@ -235,7 +235,7 @@ public class Functions
         call test _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
         Assert.Equal(expected, assembly);
     }
 }

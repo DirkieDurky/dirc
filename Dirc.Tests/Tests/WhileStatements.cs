@@ -35,7 +35,7 @@ public class WhileStatements
         ifLess|i2 r1 5 _while0
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -59,7 +59,7 @@ public class WhileStatements
         jump _while0 _ pc
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }

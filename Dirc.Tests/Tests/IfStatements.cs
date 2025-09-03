@@ -24,7 +24,7 @@ public class IfStatements
         call @outInt _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -51,7 +51,7 @@ public class IfStatements
         call @outInt _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -98,7 +98,7 @@ public class IfStatements
         label _if0
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -130,7 +130,7 @@ public class IfStatements
         label _ifElseEnd0
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -162,7 +162,7 @@ public class IfStatements
         label _ifElseEnd0
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -189,7 +189,7 @@ public class IfStatements
         call @outInt _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -216,7 +216,7 @@ public class IfStatements
         call @outInt _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -243,7 +243,7 @@ public class IfStatements
         call @outInt _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -270,7 +270,7 @@ public class IfStatements
         call @outInt _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -297,7 +297,7 @@ public class IfStatements
         call @outInt _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -322,7 +322,7 @@ public class IfStatements
         call @outBool _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -347,7 +347,7 @@ public class IfStatements
         call @outBool _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -370,7 +370,7 @@ public class IfStatements
         label _if0
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -394,7 +394,7 @@ public class IfStatements
         label _if0
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -424,7 +424,7 @@ public class IfStatements
         label _if0
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -454,7 +454,7 @@ public class IfStatements
         label _if0
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -477,7 +477,7 @@ public class IfStatements
         label _if0
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -501,7 +501,7 @@ public class IfStatements
         label _if0
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }

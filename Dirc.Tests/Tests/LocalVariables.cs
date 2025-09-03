@@ -23,7 +23,7 @@ public class LocalVariables
         call @outInt _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -56,7 +56,7 @@ public class LocalVariables
         call @outInt _ _
         """.TrimIndents();
 
-        string assembly = new Compiler().Compile(source, new([]), new("unittests")).Code;
+        string assembly = new Compiler().Compile(source, new([]), new("unittests", new([source]))).Code;
 
         Assert.Equal(expected, assembly);
     }
@@ -72,6 +72,6 @@ public class LocalVariables
         outInt(x);
         """.TrimIndents();
 
-        Assert.Throws<SemanticException>(() => new Compiler().Compile(source, new([]), new("unittests")));
+        Assert.Throws<SemanticException>(() => new Compiler().Compile(source, new([]), new("unittests", new([source]))));
     }
 }

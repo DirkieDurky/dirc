@@ -26,16 +26,27 @@ class Program
             return;
         }
 
-        string sourcePath = argsList[0];
+        List<string> files = [];
 
-        if (File.Exists(sourcePath))
+        foreach (var arg in argsList)
         {
-            BuildOptions buildOptions = new(flags);
-            new Driver().Run(sourcePath, buildOptions);
+            if (File.Exists(arg))
+            {
+                files.Add(Path.GetFullPath(arg));
+            }
+            else
+            {
+                Console.Error.WriteLine($"Warning: File or pattern not found: {arg}");
+            }
         }
-        else
+
+        if (files.Count == 0)
         {
-            Console.WriteLine($"No file or directory found at {sourcePath}");
+            Console.Error.WriteLine("Couldn't find any given input files");
+            return;
         }
+
+        BuildOptions buildOptions = new(flags);
+        new Driver().Run(files, buildOptions);
     }
 }
