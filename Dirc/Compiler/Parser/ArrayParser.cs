@@ -14,9 +14,8 @@ internal class ArrayParser
         _context = context;
     }
 
-    public ArrayDeclarationNode ParseArrayDeclaration()
+    public ArrayDeclarationNode ParseArrayDeclaration(TypeNode type)
     {
-        TypeNode type = _context.TypeParser.ParseType();
         Token name = _context.ParserBase.Advance();
 
         _context.ParserBase.Consume(TokenType.LeftBracket, "Expected '[' in array declaration");

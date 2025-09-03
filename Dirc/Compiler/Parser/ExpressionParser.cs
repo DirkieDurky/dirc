@@ -88,7 +88,7 @@ class ExpressionParser
             return new StringLiteralNode(_context.ParserBase.Previous());
         }
 
-        if (_context.ParserBase.Check(TokenType.LeftBracket))
+        if (_context.ParserBase.Check(TokenType.LeftBrace))
         {
             _context.ArrayParser.ParseArrayLiteral();
         }

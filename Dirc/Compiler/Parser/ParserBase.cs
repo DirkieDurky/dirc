@@ -9,6 +9,7 @@ class ParserBase
 {
     private List<Token> _tokens = new();
     private int _current;
+    private int _checkpoint;
     private readonly BuildContext _context;
     private readonly BuildOptions _options;
 
@@ -53,6 +54,16 @@ class ParserBase
     {
         if (Check(type)) return Advance();
         throw new SyntaxException(message, Previous(), _options, _context);
+    }
+
+    public void SetCheckpoint()
+    {
+        _checkpoint = _current;
+    }
+
+    public void ReturnToCheckpoint()
+    {
+        _current = _checkpoint;
     }
 
     public BuildContext Context => _context;

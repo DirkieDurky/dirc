@@ -89,7 +89,8 @@ public class SemanticAnalyzer
                 {
                     parameters.Add(new FunctionParameter(ResolveType(param.Type), param.Name));
                 }
-                FunctionSignature signature = new FunctionSignature(_validReturnTypes[func.ReturnType.TypeName], parameters);
+
+                FunctionSignature signature = new(TypeFromString(func.ReturnType.TypeName, true), parameters);
                 if (_functions.ContainsKey(func.Name))
                 {
                     throw new SemanticException($"Function '{func.Name}' already declared", func.IdentifierToken, options, context);
@@ -234,11 +235,8 @@ public class SemanticAnalyzer
                 }
                 foreach (AstNode stmt in func.Body)
                 {
-                    if (!_validReturnTypes.ContainsKey(func.ReturnType.TypeName))
-                    {
-                        throw new SemanticException($"Unknown return type '{func.ReturnType.TypeName}' in function '{func.Name}'", func.ReturnType.IdentifierToken, options, context);
-                    }
-                    AnalyzeNode(stmt, _validReturnTypes[func.ReturnType.TypeName], options, context);
+                    Type returnType = TypeFromString(func.ReturnType.TypeName, true);
+                    AnalyzeNode(stmt, returnType, options, context);
                 }
                 _variables.Clear();
                 foreach (KeyValuePair<string, Type> kv in oldVars) _variables[kv.Key] = kv.Value;

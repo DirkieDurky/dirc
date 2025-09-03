@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Dirc.Compiling.Lexing;
 
 namespace Dirc.Compiling.Parsing;
@@ -16,14 +17,46 @@ class TypeParser
 
     public TypeNode ParseType()
     {
-        Token baseTypeToken = _context.ParserBase.Consume(TokenType.Identifier, "Expected type name");
-        TypeNode type = new NamedTypeNode(baseTypeToken, baseTypeToken.Lexeme);
+        TryParseType(out TypeNode? type, false);
+        return type!;
+    }
 
-        while (_context.ParserBase.Match(TokenType.Asterisk))
+    public bool TryParseType(out TypeNode? type, bool safe = true) // safe: if true, checks before everything that can fail
+    {
+        type = null;
+        _context.ParserBase.SetCheckpoint();
+
+        if (safe && _context.ParserBase.Peek().Type != TokenType.Identifier)
+        {
+            _context.ParserBase.ReturnToCheckpoint();
+            return false;
+        }
+        Token baseTypeToken = _context.ParserBase.Consume(TokenType.Identifier, "Expected type name");
+        type = new NamedTypeNode(baseTypeToken, baseTypeToken.Lexeme);
+
+        while (_context.ParserBase.Match(TokenType.Asterisk) || _context.ParserBase.Match(TokenType.LeftBracket))
         {
             type = new PointerTypeNode(baseTypeToken, type);
+            if (_context.ParserBase.Previous().Type == TokenType.LeftBracket)
+            {
+                if (safe && _context.ParserBase.Peek().Type != TokenType.RightBracket)
+                {
+                    _context.ParserBase.ReturnToCheckpoint();
+                    return false;
+                }
+                _context.ParserBase.Consume(TokenType.RightBracket, "Expected closing bracket after opening bracket");
+            }
         }
 
-        return type;
+        if (safe
+        && !_context.ParserBase.Check(TokenType.Identifier)
+        && !_context.ParserBase.CheckNext(TokenType.LeftBracket) // This would mean array type like char[] so char should be treated as a type
+        )
+        {
+            _context.ParserBase.ReturnToCheckpoint();
+            return false;
+        }
+
+        return true;
     }
 }

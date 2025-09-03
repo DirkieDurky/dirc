@@ -15,9 +15,8 @@ internal class FunctionParser
         _context = context;
     }
 
-    public FunctionDeclarationNode ParseFunctionDeclaration()
+    public FunctionDeclarationNode ParseFunctionDeclaration(TypeNode returnType)
     {
-        TypeNode returnType = _context.TypeParser.ParseType();
         Token name = _context.ParserBase.Advance();
         _context.ParserBase.Consume(TokenType.LeftParen, "Expected '(' after function name");
 
@@ -38,7 +37,7 @@ internal class FunctionParser
                 Token paramName = _context.ParserBase.Consume(TokenType.Identifier, "No parameter name provided");
 
                 // Array parameters
-                if (_context.ParserBase.Match(TokenType.LeftBracket))
+                while (_context.ParserBase.Match(TokenType.LeftBracket))
                 {
                     paramType = new PointerTypeNode(paramType.IdentifierToken, paramType);
                     _context.ParserBase.Consume(TokenType.RightBracket, "Expected closing bracket after opening bracket");

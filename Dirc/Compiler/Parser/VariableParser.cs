@@ -14,9 +14,9 @@ internal class VariableParser
         _context = context;
     }
 
-    public VariableDeclarationNode ParseVariableDeclaration()
+    public VariableDeclarationNode ParseVariableDeclaration(TypeNode? type = null)
     {
-        TypeNode type = _context.TypeParser.ParseType();
+        type ??= _context.TypeParser.ParseType();
         Token name = _context.ParserBase.Advance();
 
         AstNode? initializer = null;
