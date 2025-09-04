@@ -41,6 +41,6 @@ class IdentifierFactory
             return new ReturnRegister(result);
         }
 
-        throw new CodeGenException($"Undefined identifier was used", node.IdentifierToken, context.BuildOptions, context.BuildContext);
+        throw new CodeGenException($"Undefined identifier was used", node.IdentifierToken, context.Options, context.BuildContext);
     }
 }

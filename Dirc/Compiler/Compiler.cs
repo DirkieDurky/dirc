@@ -7,15 +7,15 @@ namespace Dirc.Compiling;
 
 public class Compiler
 {
-    public FrontEndResult RunFrontEnd(string source, BuildOptions buildOptions, BuildContext buildContext)
+    public FrontEndResult RunFrontEnd(string source, Options options, BuildContext buildContext)
     {
-        if (buildOptions.ShowGeneralDebug)
+        if (options.CheckDebugOption(DebugOption.General))
         {
             Console.WriteLine($"Running front-end for {buildContext.CurrentFilePath}...");
             Console.WriteLine("Running lexer...");
         }
-        List<Token> tokens = new Lexer(buildOptions, buildContext).Tokenize(source);
-        if (buildOptions.ShowLexerOutput)
+        List<Token> tokens = new Lexer(options, buildContext).Tokenize(source);
+        if (options.CheckDebugOption(DebugOption.Lexer))
         {
             foreach (Token token in tokens)
             {
@@ -26,12 +26,12 @@ public class Compiler
             Console.WriteLine();
         }
 
-        if (buildOptions.ShowGeneralDebug)
+        if (options.CheckDebugOption(DebugOption.General))
         {
             Console.WriteLine("Running parser...");
         }
-        FrontEndResult frontEndResult = new Parser(buildOptions, buildContext).Parse(tokens);
-        if (buildOptions.ShowParserOutput)
+        FrontEndResult frontEndResult = new Parser(options, buildContext).Parse(tokens);
+        if (options.CheckDebugOption(DebugOption.Parser))
         {
             foreach (AstNode node in frontEndResult.AstNodes)
             {
@@ -43,19 +43,19 @@ public class Compiler
         return frontEndResult;
     }
 
-    public CompilerResult RunBackEnd(List<AstNode> astNodes, SymbolTable symbolTable, BuildOptions buildOptions, BuildContext buildContext)
+    public CompilerResult RunBackEnd(List<AstNode> astNodes, SymbolTable symbolTable, Options options, BuildContext buildContext)
     {
-        if (buildOptions.ShowGeneralDebug)
+        if (options.CheckDebugOption(DebugOption.General))
         {
             Console.WriteLine($"Running back-end for {buildContext.CurrentFilePath}...");
             Console.WriteLine("Running semantic analyzer...");
         }
-        new SemanticAnalyzer(buildOptions, buildContext).Analyze(astNodes, symbolTable, buildOptions, buildContext);
-        if (buildOptions.ShowGeneralDebug)
+        new SemanticAnalyzer(options, buildContext).Analyze(astNodes, symbolTable);
+        if (options.CheckDebugOption(DebugOption.General))
         {
             Console.WriteLine("Running code generator...");
         }
 
-        return new CodeGenerator(buildOptions, buildContext).Generate(astNodes);
+        return new CodeGenerator(options, buildContext).Generate(astNodes);
     }
 }

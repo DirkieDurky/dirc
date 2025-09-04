@@ -17,7 +17,7 @@ class PointerFactory
         // Only support address of local variables for now
         if (!context.VariableTable.TryGetValue(node.Variable.Name, out Variable? variable))
         {
-            throw new CodeGenException($"Undefined variable '{node.Variable.Name}' for address-of", node.Variable.IdentifierToken, context.BuildOptions, context.BuildContext);
+            throw new CodeGenException($"Undefined variable '{node.Variable.Name}' for address-of", node.Variable.IdentifierToken, context.Options, context.BuildContext);
         }
         Register tmp = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
         _codeGenBase.EmitBinaryOperation(

@@ -21,12 +21,12 @@ class Lexer
     };
 
     private BuildContext _buildContext;
-    private BuildOptions _buildOptions;
+    private Options _options;
 
-    public Lexer(BuildOptions buildOptions, BuildContext buildContext)
+    public Lexer(Options options, BuildContext buildContext)
     {
         _buildContext = buildContext;
-        _buildOptions = buildOptions;
+        _options = options;
     }
 
     public List<Token> Tokenize(string source)
@@ -70,13 +70,13 @@ class Lexer
             case '\'':
                 if (Match('\''))
                 {
-                    throw new LexicalException($"Empty char literal", c, _line, _buildOptions, _buildContext);
+                    throw new LexicalException($"Empty char literal", c, _line, _options, _buildContext);
                 }
                 if (NextIs('\\')) Advance();
                 Advance();
                 if (!Match('\''))
                 {
-                    throw new LexicalException($"Expected single quote after character in character literal", c, _line, _buildOptions, _buildContext);
+                    throw new LexicalException($"Expected single quote after character in character literal", c, _line, _options, _buildContext);
                 }
                 AddToken(TokenType.Char, _source[_current - 2]);
                 break;
@@ -151,7 +151,7 @@ class Lexer
                 }
                 else
                 {
-                    throw new LexicalException($"Unknown character", c, _line, _buildOptions, _buildContext);
+                    throw new LexicalException($"Unknown character", c, _line, _options, _buildContext);
                 }
                 break;
         }

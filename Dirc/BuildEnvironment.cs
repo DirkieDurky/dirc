@@ -50,6 +50,8 @@ public class BuildEnvironment
     { "mod", 0b00001000 },
     };
 
+    public static string ObjectFileExtension = "o";
+
     public static int DataWidth => 64; // Computer is 64-bit now
                                        // public static int RamBytes { get; } = 536870912; // RAM is 512MiB
     public static int RamBytes => 256; // Fits in RAM display ingame

@@ -10,7 +10,7 @@ public class SemanticAnalyzer
 {
     private readonly Dictionary<string, Type> _variables = new(); // name -> type
     private readonly Dictionary<string, FunctionSignature> _functions = new(); // name -> signature
-    private BuildOptions _buildOptions;
+    private Options _options;
     private BuildContext _buildContext;
 
     private static readonly HashSet<Type> ValidTypes = new() { Int.Instance, Bool.Instance, Char.Instance };
@@ -18,10 +18,10 @@ public class SemanticAnalyzer
     private readonly Dictionary<string, Type> _validTypes = new();
     private readonly Dictionary<string, Type> _validReturnTypes = new();
 
-    public SemanticAnalyzer(BuildOptions buildOptions, BuildContext buildContext)
+    public SemanticAnalyzer(Options options, BuildContext buildContext)
     {
         _buildContext = buildContext;
-        _buildOptions = buildOptions;
+        _options = options;
 
         foreach (Type type in ValidTypes)
         {
@@ -32,7 +32,7 @@ public class SemanticAnalyzer
         _validReturnTypes.Add(Void.Instance.Name, Void.Instance);
     }
 
-    public void Analyze(List<AstNode> nodes, SymbolTable symbolTable, BuildOptions options, BuildContext context)
+    public void Analyze(List<AstNode> nodes, SymbolTable symbolTable)
     {
         // First pass: collect function signatures
 
@@ -77,7 +77,7 @@ public class SemanticAnalyzer
         }
 
         // From the symbol table
-        foreach (MetaFile.Function function in symbolTable.FunctionTable)
+        foreach (MetaFile.Function function in symbolTable.Functions)
         {
             Type returnType = TypeFromString(function.ReturnType, true);
 
@@ -90,13 +90,13 @@ public class SemanticAnalyzer
 
             if (_functions.ContainsKey(function.Name))
             {
-                throw new SemanticException($"Function '{function.Name}' already declared", null, options, context);
+                throw new SemanticException($"Function '{function.Name}' already declared", null, _options, _buildContext);
             }
 
             if (BuildEnvironment.AssemblyKeywords.ContainsKey(function.Name))
             {
                 throw new CodeGenException($"Can't declare function with name '{function.Name}'. Reserved keyword",
-                    null, options, context
+                    null, _options, _buildContext
                 );
             }
 
@@ -107,11 +107,11 @@ public class SemanticAnalyzer
         for (int i = 0; i < nodes.Count; i++)
         {
             AstNode node = nodes[i];
-            AnalyzeNode(node, null, options, context);
+            AnalyzeNode(node, null, _options, _buildContext);
         }
     }
 
-    private Type? AnalyzeNode(AstNode node, Type? expectedType, BuildOptions options, BuildContext context)
+    private Type? AnalyzeNode(AstNode node, Type? expectedType, Options options, BuildContext context)
     {
         switch (node)
         {
@@ -354,13 +354,13 @@ public class SemanticAnalyzer
         if (node is NamedTypeNode named)
         {
             if (_validTypes.TryGetValue(named.Name, out var t)) return t;
-            throw new SemanticException($"Unknown type '{named.Name}'", named.IdentifierToken, _buildOptions, _buildContext);
+            throw new SemanticException($"Unknown type '{named.Name}'", named.IdentifierToken, _options, _buildContext);
         }
         if (node is PointerTypeNode ptr)
         {
             return Pointer.Of(ResolveType(ptr.BaseType));
         }
-        throw new SemanticException($"Unknown type node", null, _buildOptions, _buildContext);
+        throw new SemanticException($"Unknown type node", null, _options, _buildContext);
     }
 
     private Type TypeFromString(string type, bool isReturnType)
@@ -378,6 +378,6 @@ public class SemanticAnalyzer
         {
             if (_validTypes.TryGetValue(type, out Type? t)) return t;
         }
-        throw new SemanticException($"Unknown type '{type}'", new Token(TokenType.Identifier, type, null, -1), _buildOptions, _buildContext);
+        throw new SemanticException($"Unknown type '{type}'", new Token(TokenType.Identifier, type, null, -1), _options, _buildContext);
     }
 }

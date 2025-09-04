@@ -42,7 +42,7 @@ class VariableFactory
         }
         else
         {
-            throw new CodeGenException("Invalid node type of left side of variable assignment", node.TargetName, context.BuildOptions, context.BuildContext);
+            throw new CodeGenException("Invalid node type of left side of variable assignment", node.TargetName, context.Options, context.BuildContext);
         }
     }
 

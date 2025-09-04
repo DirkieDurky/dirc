@@ -21,7 +21,7 @@ class Register
     public void Free()
     {
         InUse = false;
-        if (_allocator.BuildOptions.LogAllocation)
+        if (_allocator.Options.CheckDebugOption(DebugOption.Allocator))
         {
             Console.Write($"Freed register {this} ");
             Allocator.StackTrace(1, 1);

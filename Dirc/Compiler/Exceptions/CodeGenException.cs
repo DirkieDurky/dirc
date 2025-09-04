@@ -8,13 +8,13 @@ public class CodeGenException : Exception
     private readonly string _message;
     private readonly Token? _identifierToken;
     private readonly BuildContext _buildContext;
-    private readonly BuildOptions _buildOptions;
+    private readonly Options _options;
 
-    public CodeGenException(string message, Token? identifierToken, BuildOptions buildOptions, BuildContext buildContext) : base(message)
+    public CodeGenException(string message, Token? identifierToken, Options options, BuildContext buildContext) : base(message)
     {
         _message = message;
         _identifierToken = identifierToken;
-        _buildOptions = buildOptions;
+        _options = options;
         _buildContext = buildContext;
     }
 
@@ -25,7 +25,7 @@ public class CodeGenException : Exception
         string lineString = _identifierToken != null ? $":line {_identifierToken.Line}" : "";
         builder.AppendLine($"CodeGenException: {_message} at {tokenString} at {_buildContext.CurrentFilePath}{lineString}");
 
-        if (_buildOptions.DebugStackTrace)
+        if (_options.CheckDebugOption(DebugOption.StackTrace))
         {
             builder.AppendLine();
             builder.AppendLine("Debugging stack trace:");

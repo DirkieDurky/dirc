@@ -29,7 +29,7 @@ class ArrayFactory
         }
         else
         {
-            throw new CodeGenException("Invalid array size specified", node.IdentifierToken, context.BuildOptions, context.BuildContext);
+            throw new CodeGenException("Invalid array size specified", node.IdentifierToken, context.Options, context.BuildContext);
         }
 
         sizeResult.Free();
@@ -42,7 +42,7 @@ class ArrayFactory
         {
             if (!context.VariableTable.TryGetValue(arrayName, out Variable? variable))
             {
-                throw new CodeGenException($"Undefined array '{arrayName}'", null, context.BuildOptions, context.BuildContext);
+                throw new CodeGenException($"Undefined array '{arrayName}'", null, context.Options, context.BuildContext);
             }
             //TODO: Free variable
         }
@@ -70,7 +70,7 @@ class ArrayFactory
                     return new ReturnRegister(arrayLiteral.BasePtr);
                 }
             default:
-                throw new CodeGenException("Invalid node given as array initializer. Expected an array- or string literal.", null, context.BuildOptions, context.BuildContext);
+                throw new CodeGenException("Invalid node given as array initializer. Expected an array- or string literal.", null, context.Options, context.BuildContext);
         }
     }
 
@@ -119,7 +119,7 @@ class ArrayFactory
 
         if (!context.VariableTable.TryGetValue(node.ArrayName, out Variable? variable))
         {
-            throw new CodeGenException($"Undefined array '{node.ArrayName}'", node.ArrayToken, context.BuildOptions, context.BuildContext);
+            throw new CodeGenException($"Undefined array '{node.ArrayName}'", node.ArrayToken, context.Options, context.BuildContext);
         }
 
         IReturnable indexResult = context.ExprFactory.Generate(node.Index, context) ?? throw new Exception("Array index expression failed to generate");
@@ -170,7 +170,7 @@ class ArrayFactory
         if (node.ArrayIsPointer) return GenerateArrayPointerAssignment(node, context);
         if (!context.VariableTable.TryGetValue(node.ArrayName, out Variable? variable))
         {
-            throw new CodeGenException($"Undefined array '{node.ArrayName}'", node.ArrayToken, context.BuildOptions, context.BuildContext);
+            throw new CodeGenException($"Undefined array '{node.ArrayName}'", node.ArrayToken, context.Options, context.BuildContext);
         }
 
         IReturnable valueResult = context.ExprFactory.Generate(node.Value, context) ?? throw new Exception("Array assignment value failed to generate");

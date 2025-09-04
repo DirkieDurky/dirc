@@ -10,13 +10,13 @@ class CodeGenerator
 
     private readonly CodeGenBase _codeGenBase;
 
-    public CodeGenerator(BuildOptions buildOptions, BuildContext buildContext)
+    public CodeGenerator(Options options, BuildContext buildContext)
     {
         _codeGenBase = new CodeGenBase();
 
-        Allocator allocator = new(buildOptions);
+        Allocator allocator = new(options);
 
-        FunctionFactory funcFactory = new(_codeGenBase, buildOptions);
+        FunctionFactory funcFactory = new(_codeGenBase, options);
         ExpressionFactory exprFactory = new(_codeGenBase, LabelGenerator);
         VariableFactory varFactory = new(_codeGenBase);
         BinaryFactory binaryFactory = new(_codeGenBase);
@@ -44,7 +44,7 @@ class CodeGenerator
             [],
             [],
             0,
-            buildOptions,
+            options,
             buildContext
         );
     }
@@ -70,7 +70,7 @@ class CodeGenerator
         {
             if (!Context.BuildContext.IsRootFile)
             {
-                throw new CodeGenException("Non root-file contains top-level code. Only the root file may contain top-level code.", null, Context.BuildOptions, Context.BuildContext);
+                throw new CodeGenException("Non root-file contains top-level code. Only the root file may contain top-level code.", null, Context.Options, Context.BuildContext);
             }
             _codeGenBase.EmitLabel("_start");
         }

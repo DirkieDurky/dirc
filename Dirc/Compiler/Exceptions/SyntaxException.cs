@@ -8,14 +8,14 @@ public class SyntaxException : Exception
     private readonly string _message;
     private readonly Token _token;
     private readonly BuildContext _buildContext;
-    private readonly BuildOptions _buildOptions;
+    private readonly Options _options;
 
-    public SyntaxException(string message, Token token, BuildOptions buildOptions, BuildContext buildContext) : base(message)
+    public SyntaxException(string message, Token token, Options options, BuildContext buildContext) : base(message)
     {
         _message = message;
         _token = token;
         _buildContext = buildContext;
-        _buildOptions = buildOptions;
+        _options = options;
     }
 
     public override string ToString()
@@ -23,7 +23,7 @@ public class SyntaxException : Exception
         StringBuilder builder = new();
         builder.AppendLine($"SyntaxException: {_message} at '{_token.Lexeme}' at {_buildContext.CurrentFilePath}:line {_token.Line}");
 
-        if (_buildOptions.DebugStackTrace)
+        if (_options.CheckDebugOption(DebugOption.StackTrace))
         {
             builder.AppendLine();
             builder.AppendLine("Debugging stack trace:");

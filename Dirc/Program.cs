@@ -1,4 +1,6 @@
-﻿using Dirc.Compiling;
+﻿using CommandLine;
+using CommandLine.Text;
+using Dirc.Compiling;
 
 namespace Dirc;
 
@@ -6,47 +8,35 @@ class Program
 {
     static void Main(string[] args)
     {
-        List<string> flags = new();
-        List<string> argsList = new();
-        foreach (string arg in args)
+        var parser = new Parser(with => { with.HelpWriter = null; with.AutoVersion = false; with.AutoHelp = false; with.CaseInsensitiveEnumValues = true; });
+        ParserResult<Options> result = parser.ParseArguments<Options>(args);
+        result.WithParsed(options =>
         {
-            if (arg.StartsWith("-"))
+            if (options.InputFiles.Count() == 0)
             {
-                flags.Add(arg);
+                Console.WriteLine("No input files given.");
             }
-            else
-            {
-                argsList.Add(arg);
-            }
-        }
 
-        if (argsList.Count == 0)
+            if (options.LibName != null) options.CompileOnly = true;
+
+            new Driver().Run(options);
+        })
+        .WithNotParsed(errs => DisplayHelp(result, errs));
+    }
+
+    static void DisplayHelp<T>(ParserResult<T> result, IEnumerable<Error> errs)
+    {
+        HelpText helpText = HelpText.AutoBuild(result, h =>
         {
-            Console.WriteLine("No file argument provided.");
-            return;
-        }
+            h.AdditionalNewLineAfterOption = false;
+            h.AutoVersion = false;
+            h.AddEnumValuesToHelpText = true;
 
-        List<string> files = [];
+            h.Heading = "Usage: dirc [options] file...";
+            h.Copyright = "";
 
-        foreach (var arg in argsList)
-        {
-            if (File.Exists(arg))
-            {
-                files.Add(Path.GetFullPath(arg));
-            }
-            else
-            {
-                Console.Error.WriteLine($"Warning: File or pattern not found: {arg}");
-            }
-        }
-
-        if (files.Count == 0)
-        {
-            Console.Error.WriteLine("Couldn't find any given input files");
-            return;
-        }
-
-        BuildOptions buildOptions = new(flags);
-        new Driver().Run(files, buildOptions);
+            return HelpText.DefaultParsingErrorsHandler(result, h);
+        }, e => e);
+        Console.WriteLine(helpText);
     }
 }

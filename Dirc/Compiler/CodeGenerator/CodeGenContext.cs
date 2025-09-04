@@ -23,7 +23,7 @@ class CodeGenContext : ICloneable
     public Dictionary<string, Variable> VariableTable { get; set; } = new();
     public List<string> DeclaredFunctions { get; set; } = new();
     public int NextVariableOffset { get; set; } = 0;
-    public BuildOptions BuildOptions;
+    public Options Options;
     public BuildContext BuildContext;
 
     public CodeGenContext(
@@ -44,7 +44,7 @@ class CodeGenContext : ICloneable
         Dictionary<string, Variable> variableTable,
         List<string> declaredFunctions,
         int nextVariableOffset,
-        BuildOptions buildOptions,
+        Options options,
         BuildContext buildContext
     )
     {
@@ -65,7 +65,7 @@ class CodeGenContext : ICloneable
         VariableTable = variableTable;
         DeclaredFunctions = declaredFunctions;
         NextVariableOffset = nextVariableOffset;
-        BuildOptions = buildOptions;
+        Options = options;
         BuildContext = buildContext;
     }
 
@@ -74,7 +74,7 @@ class CodeGenContext : ICloneable
         CodeGenContext newContext = new(
             CodeGen,
             CodeGenBase,
-            new(BuildOptions),
+            new(Options),
             ExprFactory,
             FunctionFactory,
             VarFactory,
@@ -89,7 +89,7 @@ class CodeGenContext : ICloneable
             VariableTable.ToDictionary(x => x.Key, x => x.Value),
             DeclaredFunctions,
             NextVariableOffset,
-            BuildOptions,
+            Options,
             BuildContext
         );
         return newContext;
@@ -115,7 +115,7 @@ class CodeGenContext : ICloneable
             VariableTable.ToDictionary(x => x.Key, x => x.Value),
             DeclaredFunctions,
             NextVariableOffset,
-            BuildOptions,
+            Options,
             BuildContext
         );
         return newContext;

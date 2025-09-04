@@ -6,12 +6,12 @@ namespace Dirc.Compiling.CodeGen;
 class FunctionFactory
 {
     private readonly CodeGenBase _codeGenBase;
-    private readonly BuildOptions _buildOptions;
+    private readonly Options _options;
 
-    public FunctionFactory(CodeGenBase codeGenBase, BuildOptions buildOptions)
+    public FunctionFactory(CodeGenBase codeGenBase, Options options)
     {
         _codeGenBase = codeGenBase;
-        _buildOptions = buildOptions;
+        _options = options;
     }
 
     public void Generate(FunctionDeclarationNode node, CodeGenContext context)

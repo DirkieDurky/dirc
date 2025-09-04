@@ -11,9 +11,12 @@ class ParserBase
     private int _current;
     private int _checkpoint;
     private readonly BuildContext _context;
-    private readonly BuildOptions _options;
+    private readonly Options _options;
 
-    public ParserBase(BuildOptions options, BuildContext context)
+    public BuildContext Context => _context;
+    public Options Options => _options;
+
+    public ParserBase(Options options, BuildContext context)
     {
         _context = context;
         _options = options;
@@ -65,7 +68,4 @@ class ParserBase
     {
         _current = _checkpoint;
     }
-
-    public BuildContext Context => _context;
-    public BuildOptions Options => _options;
 }

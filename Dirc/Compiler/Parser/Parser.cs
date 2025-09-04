@@ -8,9 +8,9 @@ class Parser
     private readonly ParserBase _parserBase;
     private readonly ParserContext _context;
 
-    public Parser(BuildOptions buildOptions, BuildContext buildContext)
+    public Parser(Options options, BuildContext buildContext)
     {
-        _parserBase = new(buildOptions, buildContext);
+        _parserBase = new(options, buildContext);
         _context = new(_parserBase);
     }
 
@@ -47,7 +47,7 @@ class Parser
 
                 functionTable.Add(new()
                 {
-                    File = Path.GetFileName(_parserBase.Context.CurrentFilePath),
+                    File = Path.GetFileNameWithoutExtension(_parserBase.Context.CurrentFilePath) + '.' + BuildEnvironment.ObjectFileExtension,
                     Name = funcNode.Name,
                     ReturnType = funcNode.ReturnTypeName,
                     Parameters = parameters.ToArray()
@@ -56,7 +56,7 @@ class Parser
         }
 
         SymbolTable symbolTable = new SymbolTable();
-        symbolTable.FunctionTable = functionTable;
+        symbolTable.Functions = functionTable;
 
         return symbolTable;
     }
