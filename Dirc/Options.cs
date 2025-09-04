@@ -45,6 +45,11 @@ public class Options
     {
         InputFiles = inputFiles;
     }
+
+    public Options()
+    {
+        InputFiles = [];
+    }
 }
 
 [Flags]
