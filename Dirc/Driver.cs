@@ -32,7 +32,7 @@ public class Driver
         string rootFile;
         if (options.EntryPoint != null)
         {
-            rootFile = files.First(f => FilesMatch(f, options.EntryPoint));
+            rootFile = files.First(f => Helper.FilesMatch(f, options.EntryPoint));
         }
         else
         {
@@ -47,7 +47,7 @@ public class Driver
         for (int i = 0; i < files.Count; i++)
         {
             string file = files[i];
-            BuildContext buildContext = new(file, compilationUnit, FilesMatch(file, rootFile));
+            BuildContext buildContext = new(file, compilationUnit, Helper.FilesMatch(file, rootFile));
             frontEndResults.Add(file, new Compiler().RunFrontEnd(File.ReadAllText(file), options, buildContext));
         }
 
@@ -59,9 +59,9 @@ public class Driver
 
         foreach ((string file, FrontEndResult result) in frontEndResults)
         {
-            BuildContext buildContext = new(file, compilationUnit, FilesMatch(file, rootFile));
+            BuildContext buildContext = new(file, compilationUnit, Helper.FilesMatch(file, rootFile));
             backEndResults.Add(file, new Compiler().RunBackEnd(result.AstNodes, finalSymbolTable, options, buildContext));
-            Console.WriteLine($"Successfully compiled '{GetRelativePath(file)}'");
+            Console.WriteLine($"Successfully compiled '{Helper.GetRelativePath(file)}'");
         }
 
         if (options.OutPath == null)
@@ -93,12 +93,12 @@ public class Driver
                 string fileName = $"{options.LibName}.meta";
                 string resultPath = Path.Combine(options.OutPath, fileName);
                 File.WriteAllText(resultPath, JsonSerializer.Serialize(finalSymbolTable));
-                Console.WriteLine($"Wrote meta file at '{GetRelativePath(resultPath)}'");
+                Console.WriteLine($"Wrote meta file at '{Helper.GetRelativePath(resultPath)}'");
             }
 
             foreach ((string file, CompilerResult result) in backEndResults)
             {
-                string sourceFilePath = GetRelativePath(Path.GetDirectoryName(file)!);
+                string sourceFilePath = Helper.GetRelativePath(Path.GetDirectoryName(file)!);
                 string originalFolderStructure;
                 if (sourceFilePath.Contains(Path.DirectorySeparatorChar))
                 {
@@ -116,12 +116,12 @@ public class Driver
 
                 Directory.CreateDirectory(Path.GetDirectoryName(resultPath)!);
                 File.WriteAllText(resultPath, result.Code);
-                Console.WriteLine($"Wrote results of source file '{GetRelativePath(file)}' at '{GetRelativePath(resultPath)}'");
+                Console.WriteLine($"Wrote results of source file '{Helper.GetRelativePath(file)}' at '{Helper.GetRelativePath(resultPath)}'");
             }
 
             if (options.LibName != null)
             {
-                Console.WriteLine($"Final library at '{GetRelativePath(options.OutPath)}{Path.DirectorySeparatorChar}'");
+                Console.WriteLine($"Final library at '{Helper.GetRelativePath(options.OutPath)}{Path.DirectorySeparatorChar}'");
             }
         }
         else
@@ -135,19 +135,7 @@ public class Driver
 
             new FileInfo(options.OutPath).Directory!.Create();
             File.WriteAllText(options.OutPath, linkerResult);
-            Console.WriteLine($"Executable file at '{GetRelativePath(options.OutPath)}'");
+            Console.WriteLine($"Executable file at '{Helper.GetRelativePath(options.OutPath)}'");
         }
-    }
-
-    string GetRelativePath(string path)
-    {
-        Uri pathUri = new(Path.GetFullPath(path));
-        Uri folderUri = new(Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar);
-        return Uri.UnescapeDataString(folderUri.MakeRelativeUri(pathUri).ToString().Replace('/', Path.DirectorySeparatorChar));
-    }
-
-    bool FilesMatch(string a, string b)
-    {
-        return a == b || Path.GetFileName(a) == Path.GetFileName(b);
     }
 }
