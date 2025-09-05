@@ -7,11 +7,25 @@ public class Options
     [Option('c', "no-link", Required = false, Default = false, HelpText = "Don't run linker after compiling.")]
     public bool CompileOnly { get; set; } = false;
 
+    private string? _libName;
     [Option('m', "make-lib", MetaValue = "libname", Required = false, HelpText = "Compile files as library.")]
-    public string? LibName { get; set; }
+    public string? LibName
+    {
+        get => _libName;
+        set
+        {
+            _libName = value;
+            ExportingAsLibrary = value != null;
+        }
+    }
+    public bool ExportingAsLibrary { get; set; } = false;
 
-    [Option('o', "out-file", MetaValue = "filename", Required = false, Default = "a.out", HelpText = "Set output file name.")]
-    public string OutPath { get; set; } = "a.out";
+    [Option('o', "out-file", MetaValue = "filename", Required = false, Default = "'a.out' when executable", HelpText = "Output file path when compiling to an executable. Output folder when compiling to a library.")]
+    public string? OutPath { get; set; } = null;
+
+    // If true, ignores functions from stdlib when checking for duplicate functions. Useful for compiling stdlib itself
+    [Option("ignore-stdlib", Required = false, Hidden = true)]
+    public bool IgnoreStdlib { get; set; } = false;
 
     private List<DebugOption> _debugOptions { get; } = [];
     [Option("debug", MetaValue = "option...", Required = false, Separator = ',', HelpText = "Set debug mode. Valid values: General, Lexer, Parser, Allocator, StackTrace, None, All")]

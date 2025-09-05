@@ -13,6 +13,7 @@ add r0 r2 r3
 load r3 _ r1
 mov r1 _ r0
 call @printChar _ _
+mov r0 _ r1
 pop _ _ r0
 mov fp _ r1
 load r1 _ r2

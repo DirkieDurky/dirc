@@ -1,12 +1,1 @@
-{
-    "Functions": [
-        {
-            "File": "print.o",
-            "Name": "print",
-            "ReturnType": "void",
-            "Parameters": [
-                { "Name": "str", "Type": "char*" }
-            ]
-        }
-    ]
-}
+{"Functions":[{"File":"print.o","Name":"print","ReturnType":"void","Parameters":[{"Name":"str","Type":"char*"}]}]}

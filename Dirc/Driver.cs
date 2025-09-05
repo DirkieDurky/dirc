@@ -41,7 +41,7 @@ public class Driver
             string file = files[i];
             BuildContext buildContext = new(file, compilationUnit, i == 0);
             frontEndResults.Add(file, new Compiler().RunFrontEnd(File.ReadAllText(file), options, buildContext));
-            Console.WriteLine($"Successfully compiled {file}");
+            Console.WriteLine($"Successfully compiled '{GetRelativePath(file)}'");
         }
 
         SymbolTable finalSymbolTable = new();
@@ -56,32 +56,44 @@ public class Driver
             backEndResults.Add(file, new Compiler().RunBackEnd(result.AstNodes, finalSymbolTable, options, buildContext));
         }
 
+        if (options.OutPath == null)
+        {
+            if (options.LibName == null)
+            {
+                options.OutPath = "a.out";
+            }
+            else
+            {
+                options.OutPath = options.LibName;
+            }
+        }
+
         Console.WriteLine("Successfully compiled all files. Writing...");
         if (options.CompileOnly)
         {
-            if (options.LibName != null)
+            if (options.ExportingAsLibrary)
             {
-                Directory.CreateDirectory(options.LibName);
+                Directory.CreateDirectory(options.OutPath);
                 string fileName = $"{options.LibName}.meta";
-                string resultPath = Path.Combine(options.LibName, fileName);
+                string resultPath = Path.Combine(options.OutPath, fileName);
                 File.WriteAllText(resultPath, JsonSerializer.Serialize(finalSymbolTable));
-                Console.WriteLine($"Wrote file '{fileName}' at '{resultPath}'");
+                Console.WriteLine($"Wrote meta file at '{GetRelativePath(resultPath)}'");
             }
 
             foreach ((string file, CompilerResult result) in backEndResults)
             {
                 string resultPath = Path.Combine(
-                    options.LibName ?? Path.GetDirectoryName(file) ?? "",
+                    options.OutPath,
                     Path.GetFileNameWithoutExtension(file) + '.' + BuildEnvironment.ObjectFileExtension
                 );
 
                 File.WriteAllText(resultPath, result.Code);
-                Console.WriteLine($"Wrote file '{file}' at '{resultPath}'");
+                Console.WriteLine($"Wrote results of source file '{GetRelativePath(file)}' at '{GetRelativePath(resultPath)}'");
             }
 
             if (options.LibName != null)
             {
-                Console.WriteLine($"Created library at '{options.LibName}/'");
+                Console.WriteLine($"Final library at '{GetRelativePath(options.OutPath)}{Path.DirectorySeparatorChar}'");
             }
         }
         else
@@ -95,7 +107,16 @@ public class Driver
 
             new FileInfo(options.OutPath).Directory!.Create();
             File.WriteAllText(options.OutPath, linkerResult);
-            Console.WriteLine($"Executable file at '{options.OutPath}'");
+            Console.WriteLine($"Executable file at '{GetRelativePath(options.OutPath)}'");
         }
+    }
+
+    string GetRelativePath(string path)
+    {
+        // Console.WriteLine(Path.GetFullPath(path));
+        // Console.WriteLine(Directory.GetCurrentDirectory());
+        Uri pathUri = new Uri(Path.GetFullPath(path));
+        Uri folderUri = new Uri(Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar);
+        return Uri.UnescapeDataString(folderUri.MakeRelativeUri(pathUri).ToString().Replace('/', Path.DirectorySeparatorChar));
     }
 }

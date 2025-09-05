@@ -90,6 +90,9 @@ public class SemanticAnalyzer
 
             if (_functions.ContainsKey(function.Name))
             {
+                // Ignore the error if we're compiling stdlib itself
+                if (_options.IgnoreStdlib && stdMetaFile.Functions.Any(f => f.Name == function.Name)) continue;
+
                 throw new SemanticException($"Function '{function.Name}' already declared", null, _options, _buildContext);
             }
 
