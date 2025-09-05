@@ -4,7 +4,7 @@ namespace Dirc;
 
 public class Options
 {
-    [Option('c', "no-link", Required = false, Default = false, HelpText = "Don't run linker after compiling.")]
+    [Option('c', "no-link", Required = false, HelpText = "Don't run linker after compiling.")]
     public bool CompileOnly { get; set; } = false;
 
     private string? _libName;
