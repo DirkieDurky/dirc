@@ -72,6 +72,10 @@ class CodeGenerator
             {
                 throw new CodeGenException("Non root-file contains top-level code. Only the root file may contain top-level code.", null, Context.Options, Context.BuildContext);
             }
+            if (Context.Options.ExportingAsLibrary)
+            {
+                throw new CodeGenException("File contains top-level code. Libraries may not contain any top-level code.", null, Context.Options, Context.BuildContext);
+            }
             _codeGenBase.EmitLabel("_start");
         }
 
