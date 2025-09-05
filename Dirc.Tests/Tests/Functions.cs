@@ -42,6 +42,7 @@ public class Functions
         mov sp _ fp
         push r0 _ _
         call @outInt _ _
+        mov r0 _ r1
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp
@@ -77,6 +78,7 @@ public class Functions
         mov sp _ fp
         push r0 _ _
         call @outInt _ _
+        mov r0 _ r1
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp
@@ -119,6 +121,7 @@ public class Functions
         mov sp _ fp
         push r0 _ _
         call @outInt _ _
+        mov r0 _ r1
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp

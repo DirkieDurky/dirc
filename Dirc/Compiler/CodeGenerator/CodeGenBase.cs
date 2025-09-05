@@ -23,7 +23,8 @@ class CodeGenBase
         string op = "mov" + (IsAssemblyReady(item) ? "|i1" : "");
         string line = $"{op} {item.AsOperand()} _ {result}";
         // Prevent redundant mov (e.g., mov r0 _ r0)
-        if (item is Register reg && reg.RegisterEnum == result.RegisterEnum) return;
+        if (item is ReturnRegister reg && reg.RegisterEnum == result.RegisterEnum) return;
+        if (item is ReadonlyRegister reg2 && reg2.Register == result.RegisterEnum) return;
         Emit(line);
     }
 

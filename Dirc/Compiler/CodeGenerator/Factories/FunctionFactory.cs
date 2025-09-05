@@ -47,9 +47,8 @@ class FunctionFactory
         Register r0 = context.Allocator.Use(RegisterEnum.r0, true);
         _codeGenBase.EmitMov(returnValue, r0);
         returnValue.Free();
-        r0.Free();
         _codeGenBase.EmitReturn(false);
 
-        return returnValue;
+        return new ReturnRegister(r0);
     }
 }

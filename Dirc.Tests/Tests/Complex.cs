@@ -39,6 +39,7 @@ public class Complex
         add|i2 r0 4 r1
         mov r1 _ r0
         call @outInt _ _
+        mov r0 _ r1
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp
@@ -53,6 +54,7 @@ public class Complex
         add|i2 r0 25 r1
         mov r1 _ r0
         call @outInt _ _
+        mov r0 _ r1
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp
@@ -67,6 +69,7 @@ public class Complex
         add|i1 60 r0 r1
         mov r1 _ r0
         call @outInt _ _
+        mov r0 _ r1
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp
@@ -81,6 +84,7 @@ public class Complex
         add|i2 r0 10 r1
         mov r1 _ r0
         call @outInt _ _
+        mov r0 _ r1
         pop _ _ r0
         mov fp _ sp
         pop _ _ fp

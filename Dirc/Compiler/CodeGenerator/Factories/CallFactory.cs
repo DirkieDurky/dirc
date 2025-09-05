@@ -43,13 +43,23 @@ class CallFactory
             reg.Free();
         }
 
-        // Restore saved registers
+        // Allocate space for the toSave values
+        foreach (Register reg in toSave)
+        {
+            context.Allocator.Use(reg.RegisterEnum);
+        }
+
+        // Move the return value to a register that won't be overwritten by popping all the values
+        Register returnValue = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
+        _codeGenBase.EmitMov(ReadonlyRegister.R0, returnValue);
+
+        // Restore saved values (and put them in the same registers they were in before)
         toSave.Reverse();
         foreach (Register reg in toSave)
         {
             _codeGenBase.EmitPop(reg);
         }
 
-        return new ReturnRegister(context.Allocator.Use(RegisterEnum.r0));
+        return new ReturnRegister(returnValue);
     }
 }
