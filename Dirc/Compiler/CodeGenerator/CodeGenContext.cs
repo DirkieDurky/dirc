@@ -5,7 +5,6 @@ namespace Dirc.Compiling.CodeGen;
 
 class CodeGenContext : ICloneable
 {
-    public const int StackAlignment = 1; // By how many bytes to align the stack
     public CodeGenerator CodeGen { get; }
     public CodeGenBase CodeGenBase { get; }
     public Allocator Allocator { get; }
@@ -129,7 +128,7 @@ class CodeGenContext : ICloneable
         CodeGenBase.EmitBinaryOperation(
             Operation.Sub,
             ReadonlyRegister.SP,
-            new NumberLiteralNode(StackAlignment),
+            new NumberLiteralNode(BuildEnvironment.StackAlignment),
             Allocator.Use(RegisterEnum.sp)
         );
         return offset;
@@ -137,7 +136,7 @@ class CodeGenContext : ICloneable
 
     public int AllocateArray(int size, string? name)
     {
-        int offset = NextVariableOffset + size - StackAlignment;
+        int offset = NextVariableOffset + size - BuildEnvironment.StackAlignment;
         NextVariableOffset += size;
         if (name != null)
         {
