@@ -17,8 +17,6 @@ class Program
                 Console.WriteLine("No input files given.");
             }
 
-            if (options.LibName != null) options.CompileOnly = true;
-
             new Driver().Run(options);
         })
         .WithNotParsed(errs => DisplayHelp(result, errs));

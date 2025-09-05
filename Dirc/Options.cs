@@ -8,7 +8,7 @@ public class Options
     public bool CompileOnly { get; set; } = false;
 
     private string? _libName;
-    [Option('m', "make-lib", MetaValue = "libname", Required = false, HelpText = "Compile files as library.")]
+    [Option('m', "make-lib", MetaValue = "library_name", Required = false, HelpText = "Compile files as library.")]
     public string? LibName
     {
         get => _libName;
@@ -16,16 +16,20 @@ public class Options
         {
             _libName = value;
             ExportingAsLibrary = value != null;
+            CompileOnly = ExportingAsLibrary;
         }
     }
     public bool ExportingAsLibrary { get; set; } = false;
 
-    [Option('o', "out-file", MetaValue = "filename", Required = false, Default = "'a.out' when executable", HelpText = "Output file path when compiling to an executable. Output folder when compiling to a library.")]
+    [Option('o', "out-file", MetaValue = "file_name", Required = false, HelpText = "Output file path when compiling to an executable. Output folder when compiling with -c or -m.")]
     public string? OutPath { get; set; } = null;
 
     // If true, ignores functions from stdlib when checking for duplicate functions. Useful for compiling stdlib itself
     [Option("ignore-stdlib", Required = false, Hidden = true)]
     public bool IgnoreStdlib { get; set; } = false;
+
+    [Option('e', "entry-point", Required = false, HelpText = "The path to the 'root' or 'main' file of the program. Only this file may contain top-level code.")]
+    public string? EntryPoint { get; set; }
 
     private List<DebugOption> _debugOptions { get; } = [];
     [Option("debug", MetaValue = "option...", Required = false, Separator = ',', HelpText = "Set debug mode. Valid values: General, Lexer, Parser, Allocator, StackTrace, None, All")]

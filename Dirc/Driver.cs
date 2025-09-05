@@ -29,7 +29,15 @@ public class Driver
             return;
         }
 
-        string rootFile = files.First();
+        string rootFile;
+        if (options.EntryPoint != null)
+        {
+            rootFile = files.First(f => FilesMatch(f, options.EntryPoint));
+        }
+        else
+        {
+            rootFile = files.First();
+        }
 
         CompilationUnit compilationUnit = new CompilationUnit(files);
 
@@ -39,9 +47,8 @@ public class Driver
         for (int i = 0; i < files.Count; i++)
         {
             string file = files[i];
-            BuildContext buildContext = new(file, compilationUnit, i == 0);
+            BuildContext buildContext = new(file, compilationUnit, FilesMatch(file, rootFile));
             frontEndResults.Add(file, new Compiler().RunFrontEnd(File.ReadAllText(file), options, buildContext));
-            Console.WriteLine($"Successfully compiled '{GetRelativePath(file)}'");
         }
 
         SymbolTable finalSymbolTable = new();
@@ -52,20 +59,30 @@ public class Driver
 
         foreach ((string file, FrontEndResult result) in frontEndResults)
         {
-            BuildContext buildContext = new(file, compilationUnit, file == rootFile);
+            BuildContext buildContext = new(file, compilationUnit, FilesMatch(file, rootFile));
             backEndResults.Add(file, new Compiler().RunBackEnd(result.AstNodes, finalSymbolTable, options, buildContext));
+            Console.WriteLine($"Successfully compiled '{GetRelativePath(file)}'");
         }
 
         if (options.OutPath == null)
         {
-            if (options.LibName == null)
+            if (options.ExportingAsLibrary)
             {
-                options.OutPath = "a.out";
+                options.OutPath = options.LibName!;
+            }
+            else if (options.CompileOnly)
+            {
+                options.OutPath = "out";
             }
             else
             {
-                options.OutPath = options.LibName;
+                options.OutPath = "a.out";
             }
+        }
+
+        if (options.CompileOnly && !Directory.Exists(options.OutPath))
+        {
+            Directory.CreateDirectory(options.OutPath);
         }
 
         Console.WriteLine("Successfully compiled all files. Writing...");
@@ -73,7 +90,6 @@ public class Driver
         {
             if (options.ExportingAsLibrary)
             {
-                Directory.CreateDirectory(options.OutPath);
                 string fileName = $"{options.LibName}.meta";
                 string resultPath = Path.Combine(options.OutPath, fileName);
                 File.WriteAllText(resultPath, JsonSerializer.Serialize(finalSymbolTable));
@@ -82,11 +98,23 @@ public class Driver
 
             foreach ((string file, CompilerResult result) in backEndResults)
             {
+                string sourceFilePath = GetRelativePath(Path.GetDirectoryName(file)!);
+                string originalFolderStructure;
+                if (sourceFilePath.Contains(Path.DirectorySeparatorChar))
+                {
+                    originalFolderStructure = sourceFilePath.Substring(sourceFilePath.IndexOf("/"));
+                }
+                else
+                {
+                    originalFolderStructure = "";
+                }
+
                 string resultPath = Path.Combine(
-                    options.OutPath,
+                    options.OutPath + originalFolderStructure,
                     Path.GetFileNameWithoutExtension(file) + '.' + BuildEnvironment.ObjectFileExtension
                 );
 
+                Directory.CreateDirectory(Path.GetDirectoryName(resultPath)!);
                 File.WriteAllText(resultPath, result.Code);
                 Console.WriteLine($"Wrote results of source file '{GetRelativePath(file)}' at '{GetRelativePath(resultPath)}'");
             }
@@ -113,10 +141,13 @@ public class Driver
 
     string GetRelativePath(string path)
     {
-        // Console.WriteLine(Path.GetFullPath(path));
-        // Console.WriteLine(Directory.GetCurrentDirectory());
-        Uri pathUri = new Uri(Path.GetFullPath(path));
-        Uri folderUri = new Uri(Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar);
+        Uri pathUri = new(Path.GetFullPath(path));
+        Uri folderUri = new(Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar);
         return Uri.UnescapeDataString(folderUri.MakeRelativeUri(pathUri).ToString().Replace('/', Path.DirectorySeparatorChar));
+    }
+
+    bool FilesMatch(string a, string b)
+    {
+        return a == b || Path.GetFileName(a) == Path.GetFileName(b);
     }
 }
