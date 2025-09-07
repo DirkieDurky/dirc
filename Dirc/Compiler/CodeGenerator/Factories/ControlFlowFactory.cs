@@ -88,9 +88,10 @@ class ControlFlowFactory
             conditionResult.Free();
         }
 
+        CodeGenContext scopeSpecificContext = (CodeGenContext)context.Clone();
         foreach (AstNode stmt in node.Body)
         {
-            IReturnable? result = context.ExprFactory.Generate(stmt, (CodeGenContext)context.Clone());
+            IReturnable? result = context.ExprFactory.Generate(stmt, scopeSpecificContext);
             result?.Free();
         }
 
@@ -120,9 +121,10 @@ class ControlFlowFactory
 
         _codeGenBase.EmitLabel(label);
 
+        CodeGenContext scopeSpecificContext = (CodeGenContext)context.Clone();
         foreach (AstNode stmt in node.Body)
         {
-            IReturnable? result = context.ExprFactory.Generate(stmt, (CodeGenContext)context.Clone());
+            IReturnable? result = context.ExprFactory.Generate(stmt, scopeSpecificContext);
             result?.Free();
         }
 
