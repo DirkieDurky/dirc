@@ -46,7 +46,7 @@ class CallFactory
         // Allocate space for the toSave values
         foreach (Register reg in toSave)
         {
-            context.Allocator.Use(reg.RegisterEnum);
+            context.Allocator.Use(reg.RegisterEnum, true);
         }
 
         // Move the return value to a register that won't be overwritten by popping all the values
