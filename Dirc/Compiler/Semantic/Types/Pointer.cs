@@ -1,8 +1,10 @@
+using System.Collections.Concurrent;
+
 namespace Dirc.Compiling.Semantic;
 
 class Pointer : Type
 {
-    private static readonly Dictionary<Type, Pointer> _cache = new();
+    private static readonly ConcurrentDictionary<Type, Pointer> _cache = new();
 
     public Type BaseType { get; }
 
@@ -10,12 +12,7 @@ class Pointer : Type
 
     public static Pointer Of(Type baseType)
     {
-        if (!_cache.TryGetValue(baseType, out var pointerType))
-        {
-            pointerType = new Pointer(baseType);
-            _cache[baseType] = pointerType;
-        }
-        return pointerType;
+        return _cache.GetOrAdd(baseType, e => new Pointer(baseType));
     }
 
     public override string Name => $"{BaseType.Name}*";
