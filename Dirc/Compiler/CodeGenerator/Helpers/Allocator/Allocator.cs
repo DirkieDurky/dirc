@@ -56,7 +56,7 @@ class Allocator
         return register;
     }
 
-    public Register Use(RegisterEnum r, bool overwrite = false)
+    public Register Use(RegisterEnum r, bool overwrite = false, bool forFunctionArgument = false)
     {
         Register foundRegister = GetRegisterFromEnum(r);
 
@@ -72,6 +72,7 @@ class Allocator
         }
 
         foundRegister.InUse = true;
+        foundRegister.RefersToFunctionArgument = forFunctionArgument;
         return foundRegister;
     }
 
