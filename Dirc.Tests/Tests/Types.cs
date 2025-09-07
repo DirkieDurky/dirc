@@ -10,7 +10,7 @@ public class Types
 {
     private Token T(string lexeme) => new Token(TokenType.Identifier, lexeme, null, -1);
     private Options _options = new([]);
-    private BuildContext _context = new("unittests", new([]), true);
+    private BuildContext _context = new("unittests/test.dirc", new([]), true);
 
     [Fact]
     public void ThrowsOnDuplicateFunction()
