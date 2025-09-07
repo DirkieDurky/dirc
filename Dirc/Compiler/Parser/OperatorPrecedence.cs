@@ -15,8 +15,17 @@ class OperatorPrecedence
         // Setup precedence levels from lowest to highest
         _precedenceLevels = new Dictionary<int, HashSet<TokenType>>
         {
-            // Level 0: Comparison operators
-            { 0, new HashSet<TokenType>
+            // Level 0: Bitwise OR
+            { 0, new HashSet<TokenType> { TokenType.Pipe } },
+            
+            // Level 1: Bitwise XOR
+            { 1, new HashSet<TokenType> { TokenType.Caret } },
+            
+            // Level 2: Bitwise AND
+            { 2, new HashSet<TokenType> { TokenType.Ampersand } },
+            
+            // Level 3: Comparison operators
+            { 3, new HashSet<TokenType>
                 {
                     TokenType.EqualEqual, TokenType.NotEqual,
                     TokenType.Less, TokenType.LessEqual,
@@ -24,20 +33,11 @@ class OperatorPrecedence
                 }
             },
 
-            // Level 1: Bitwise OR
-            { 1, new HashSet<TokenType> { TokenType.Pipe } },
-            
-            // Level 2: Bitwise XOR
-            { 2, new HashSet<TokenType> { TokenType.Caret } },
-            
-            // Level 3: Bitwise AND
-            { 3, new HashSet<TokenType> { TokenType.Ampersand } },
-            
             // Level 4: Addition/Subtraction
             { 4, new HashSet<TokenType> { TokenType.Plus, TokenType.Minus } },
             
             // Level 5: Multiplication/Division/Modulo
-            { 5, new HashSet<TokenType> { TokenType.Asterisk, TokenType.Slash, TokenType.Percent } }
+            { 5, new HashSet<TokenType> { TokenType.Asterisk, TokenType.Slash, TokenType.Percent } },
         };
 
         // Map tokens to operations
