@@ -14,20 +14,18 @@ class VariableFactory
 
     public IReturnable? GenerateVariableDeclaration(VariableDeclarationNode node, CodeGenContext context)
     {
-        int offset = context.AllocateVariable(node.Name);
+        context.AllocateVariable(node.Name);
 
         if (node.Initializer == null) return null;
 
-        return AssignVariable(offset, node.Initializer, context);
+        return AssignVariable(node.Name, node.Initializer, context);
     }
 
     public IReturnable? GenerateVariableAssignment(VariableAssignmentNode node, CodeGenContext context)
     {
         if (node.Target is IdentifierNode)
         {
-            int offset = context.VariableTable[node.Name!].FramePointerOffset;
-
-            return AssignVariable(offset, node.Value, context);
+            return AssignVariable(node.Name!, node.Value, context);
         }
         else if (node.Target is PointerDereferenceNode target)
         {
@@ -46,8 +44,10 @@ class VariableFactory
         }
     }
 
-    public IReturnable? AssignVariable(int offset, AstNode assignment, CodeGenContext context)
+    public IReturnable? AssignVariable(string name, AstNode assignment, CodeGenContext context)
     {
+        int offset = context.VariableTable[name].FramePointerOffset;
+
         IReturnable value = context.ExprFactory.Generate(assignment, context) ?? throw new Exception("Initializer expression failed to generate");
         Register tmp = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
 
