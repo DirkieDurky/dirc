@@ -40,11 +40,14 @@ class ArrayFactory
     {
         if (!isDeclaration)
         {
-            if (!context.VariableTable.TryGetValue(arrayName, out Variable? variable))
+            if (context.VariableTable[arrayName] is StackStoredVariable)
             {
-                throw new CodeGenException($"Undefined array '{arrayName}'", null, context.Options, context.BuildContext);
+                //TODO: Free variable
             }
-            //TODO: Free variable
+            else
+            {
+                throw new CodeGenException("Variable was of unsupported type", null, context.Options, context.BuildContext);
+            }
         }
 
         switch (initializer)
@@ -117,9 +120,9 @@ class ArrayFactory
     {
         if (node.ArrayIsPointer!) return GenerateArrayPointerAccess(node, context);
 
-        if (!context.VariableTable.TryGetValue(node.ArrayName, out Variable? variable))
+        if (context.VariableTable[node.ArrayName] is not StackStoredVariable stackVar)
         {
-            throw new CodeGenException($"Undefined array '{node.ArrayName}'", node.ArrayToken, context.Options, context.BuildContext);
+            throw new CodeGenException("Variable was of unsupported type", null, context.Options, context.BuildContext);
         }
 
         IReturnable indexResult = context.ExprFactory.Generate(node.Index, context) ?? throw new Exception("Array index expression failed to generate");
@@ -129,7 +132,7 @@ class ArrayFactory
         _codeGenBase.EmitBinaryOperation(
             Operation.Sub,
             ReadonlyRegister.FP,
-            new NumberLiteralNode(NumberLiteralType.Decimal, variable.FramePointerOffset.ToString()),
+            new NumberLiteralNode(NumberLiteralType.Decimal, stackVar.FramePointerOffset.ToString()),
             basePtr
         );
 
@@ -168,9 +171,9 @@ class ArrayFactory
     public IReturnable? GenerateArrayAssignment(ArrayAssignmentNode node, CodeGenContext context)
     {
         if (node.ArrayIsPointer) return GenerateArrayPointerAssignment(node, context);
-        if (!context.VariableTable.TryGetValue(node.ArrayName, out Variable? variable))
+        if (context.VariableTable[node.ArrayName] is not StackStoredVariable stackVar)
         {
-            throw new CodeGenException($"Undefined array '{node.ArrayName}'", node.ArrayToken, context.Options, context.BuildContext);
+            throw new CodeGenException("Variable was of unsupported type", null, context.Options, context.BuildContext);
         }
 
         IReturnable valueResult = context.ExprFactory.Generate(node.Value, context) ?? throw new Exception("Array assignment value failed to generate");
@@ -182,7 +185,7 @@ class ArrayFactory
         _codeGenBase.EmitBinaryOperation(
             Operation.Sub,
             ReadonlyRegister.FP,
-            new NumberLiteralNode(NumberLiteralType.Decimal, variable.FramePointerOffset.ToString()),
+            new NumberLiteralNode(NumberLiteralType.Decimal, stackVar.FramePointerOffset.ToString()),
             basePtr
         );
 

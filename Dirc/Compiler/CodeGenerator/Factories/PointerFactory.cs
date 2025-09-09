@@ -14,19 +14,21 @@ class PointerFactory
 
     public IReturnable GenerateAddressOf(AddressOfNode node, CodeGenContext context)
     {
-        // Only support address of local variables for now
-        if (!context.VariableTable.TryGetValue(node.Variable.Name, out Variable? variable))
+        if (context.VariableTable[node.Variable.Name] is StackStoredVariable stackVar)
+        {
+            Register tmp = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
+            _codeGenBase.EmitBinaryOperation(
+                Operation.Sub,
+                ReadonlyRegister.FP,
+                new NumberLiteralNode(NumberLiteralType.Decimal, stackVar.FramePointerOffset.ToString()),
+                tmp
+            );
+            return new ReturnRegister(tmp);
+        }
+        else
         {
             throw new CodeGenException($"Undefined variable '{node.Variable.Name}' for address-of", node.Variable.IdentifierToken, context.Options, context.BuildContext);
         }
-        Register tmp = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
-        _codeGenBase.EmitBinaryOperation(
-            Operation.Sub,
-            ReadonlyRegister.FP,
-            new NumberLiteralNode(NumberLiteralType.Decimal, variable.FramePointerOffset.ToString()),
-            tmp
-        );
-        return new ReturnRegister(tmp);
     }
 
     public IReturnable GeneratePointerDereference(PointerDereferenceNode node, CodeGenContext context)

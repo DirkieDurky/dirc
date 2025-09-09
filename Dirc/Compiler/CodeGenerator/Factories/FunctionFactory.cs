@@ -25,7 +25,8 @@ class FunctionFactory
         if (node.Parameters.Count > Allocator.ArgumentRegisters.Count) throw new Exception($"More than {Allocator.ArgumentRegisters.Count} function parameters given.");
         for (int i = 0; i < node.Parameters.Count; i++)
         {
-            scopeSpecificContext.RegisterTable[node.Parameters.Select(p => p.Name).ToList()[i]] = scopeSpecificContext.Allocator.Use(Allocator.ArgumentRegisters.ElementAt(i), false, true);
+            FunctionParameterNode parameter = node.Parameters[i];
+            scopeSpecificContext.VariableTable[node.Parameters.Select(p => p.Name).ToList()[i]] = new RegisterStoredVariable(parameter.Name, scopeSpecificContext.Allocator.Use(Allocator.ArgumentRegisters.ElementAt(i), false, true));
         }
 
         foreach (AstNode stmt in node.Body)

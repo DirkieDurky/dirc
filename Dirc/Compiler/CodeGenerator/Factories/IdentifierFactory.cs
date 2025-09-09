@@ -14,14 +14,15 @@ class IdentifierFactory
 
     public IReturnable Generate(IdentifierNode node, CodeGenContext context)
     {
-        if (context.RegisterTable.TryGetValue(node.Name, out Register? reg))
-        {
-            return new ReturnRegister(reg);
-        }
+        Variable var = context.VariableTable[node.Name];
 
-        if (context.VariableTable.TryGetValue(node.Name, out Variable? variable))
+        if (var is RegisterStoredVariable regVar)
         {
-            if (variable.IsArray)
+            return new ReturnRegister(regVar.Register);
+        }
+        else if (var is StackStoredVariable stackVar)
+        {
+            if (stackVar.IsArray)
             {
                 return context.PointerFactory.GenerateAddressOf(new AddressOfNode(node), context);
             }
@@ -30,7 +31,7 @@ class IdentifierFactory
             _codeGenBase.EmitBinaryOperation(
                 Operation.Sub,
                 ReadonlyRegister.FP,
-                new NumberLiteralNode(variable.FramePointerOffset * BuildEnvironment.StackAlignment),
+                new NumberLiteralNode(stackVar.FramePointerOffset * BuildEnvironment.StackAlignment),
                 tmp
             );
 
@@ -40,7 +41,9 @@ class IdentifierFactory
 
             return new ReturnRegister(result);
         }
-
-        throw new CodeGenException($"Undefined identifier was used", node.IdentifierToken, context.Options, context.BuildContext);
+        else
+        {
+            throw new CodeGenException("Variable was of unsupported type", null, context.Options, context.BuildContext);
+        }
     }
 }

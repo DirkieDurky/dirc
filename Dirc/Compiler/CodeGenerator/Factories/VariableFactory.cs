@@ -1,3 +1,4 @@
+using System.Reflection.Metadata.Ecma335;
 using Dirc.Compiling.CodeGen.Allocating;
 using Dirc.Compiling.Parsing;
 
@@ -46,22 +47,35 @@ class VariableFactory
 
     public IReturnable? AssignVariable(string name, AstNode assignment, CodeGenContext context)
     {
-        int offset = context.VariableTable[name].FramePointerOffset;
+        Variable var = context.VariableTable[name];
+        IReturnable resultValue = context.ExprFactory.Generate(assignment, context) ?? throw new Exception("Initializer expression failed to generate");
 
-        IReturnable value = context.ExprFactory.Generate(assignment, context) ?? throw new Exception("Initializer expression failed to generate");
-        Register tmp = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
+        if (var is StackStoredVariable stackVar)
+        {
+            int offset = stackVar.FramePointerOffset;
 
-        _codeGenBase.EmitBinaryOperation(
-            Operation.Sub,
-            ReadonlyRegister.FP,
-            new NumberLiteralNode(NumberLiteralType.Decimal, offset.ToString()),
-            tmp
-        );
-        _codeGenBase.EmitStore(value, new ReadonlyRegister(tmp));
+            Register tmp = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
 
-        tmp.Free();
-        value.Free();
+            _codeGenBase.EmitBinaryOperation(
+                Operation.Sub,
+                ReadonlyRegister.FP,
+                new NumberLiteralNode(NumberLiteralType.Decimal, offset.ToString()),
+                tmp
+            );
+            _codeGenBase.EmitStore(resultValue, new ReadonlyRegister(tmp));
 
-        return value;
+            tmp.Free();
+        }
+        else if (var is RegisterStoredVariable regVar)
+        {
+            _codeGenBase.EmitMov(resultValue, regVar.Register);
+        }
+        else
+        {
+            throw new CodeGenException("Variable was of unsupported type", null, context.Options, context.BuildContext);
+        }
+
+        resultValue.Free();
+        return resultValue;
     }
 }

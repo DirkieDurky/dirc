@@ -42,7 +42,6 @@ class CodeGenerator
             pointerFactory,
             [],
             [],
-            [],
             0,
             options,
             buildContext
