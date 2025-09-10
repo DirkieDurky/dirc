@@ -14,8 +14,8 @@ class ControlFlowFactory
 
     public IReturnable? GenerateCondition(BinaryExpressionNode node, CodeGenContext context, LabelGenerator labelGenerator)
     {
-        string label = labelGenerator.Generate(LabelType.Condition);
-        string endLabel = labelGenerator.Generate(LabelType.ConditionEnd);
+        string label = labelGenerator.Generate(LabelType.Condition, context);
+        string endLabel = labelGenerator.Generate(LabelType.ConditionEnd, context);
 
         IReturnable left = context.ExprFactory.Generate(node.Left, context) ?? throw new Exception("Part of if statement was not set");
         IReturnable right = context.ExprFactory.Generate(node.Right, context) ?? throw new Exception("Part of if statement was not set");
@@ -43,12 +43,12 @@ class ControlFlowFactory
         string? endLabel = null;
         if (node.ElseBody == null)
         {
-            label = labelGenerator.Generate(LabelType.If);
+            label = labelGenerator.Generate(LabelType.If, context);
         }
         else
         {
-            label = labelGenerator.Generate(LabelType.Else);
-            endLabel = labelGenerator.Generate(LabelType.IfElseEnd);
+            label = labelGenerator.Generate(LabelType.Else, context);
+            endLabel = labelGenerator.Generate(LabelType.IfElseEnd, context);
         }
 
         if (node.Condition is BinaryExpressionNode condition && condition.Operation.IsComparer())
@@ -108,7 +108,7 @@ class ControlFlowFactory
     public IReturnable? GenerateWhileStatement(WhileStatementNode node, CodeGenContext context, LabelGenerator labelGenerator)
     {
         string label;
-        label = labelGenerator.Generate(LabelType.While);
+        label = labelGenerator.Generate(LabelType.While, context);
 
         _codeGenBase.EmitLabel(label);
 

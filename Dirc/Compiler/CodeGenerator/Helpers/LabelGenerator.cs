@@ -12,7 +12,7 @@ class LabelGenerator
         }
     }
 
-    public string Generate(LabelType prefix) => $"_{FirstCharToLowerCase(prefix.ToString())}{_counter[prefix]++}";
+    public string Generate(LabelType prefix, CodeGenContext context) => $"_{Path.GetFileNameWithoutExtension(context.BuildContext.CurrentFilePath)}_{FirstCharToLowerCase(prefix.ToString())}{_counter[prefix]++}";
 
     public static string? FirstCharToLowerCase(string? str)
     {
