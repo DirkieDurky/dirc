@@ -2,7 +2,7 @@ using System.Diagnostics;
 
 namespace Dirc.Compiling.CodeGen.Allocating;
 
-class Allocator
+public class Allocator
 {
     public static IReadOnlyCollection<RegisterEnum> ArgumentRegisters = [RegisterEnum.r0, RegisterEnum.r1, RegisterEnum.r2, RegisterEnum.r3];
     public static IReadOnlyCollection<RegisterEnum> CallerSavedRegisters = [RegisterEnum.r0, RegisterEnum.r1, RegisterEnum.r2, RegisterEnum.r3, RegisterEnum.r4, RegisterEnum.r5];

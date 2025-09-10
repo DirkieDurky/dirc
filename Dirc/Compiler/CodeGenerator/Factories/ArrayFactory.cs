@@ -20,7 +20,7 @@ class ArrayFactory
         {
             if (node.Initializer == null)
             {
-                context.AllocateArray(5, node.Name);
+                context.AllocateStackArray(5, node.Name);
             }
             else
             {
@@ -84,7 +84,7 @@ class ArrayFactory
 
     public ArrayLiteral GenerateArrayLiteral(ArrayLiteralNode arrayLiteralNode, CodeGenContext context)
     {
-        int offset = context.AllocateArray(arrayLiteralNode.Elements.Count, null);
+        int offset = context.AllocateStackArray(arrayLiteralNode.Elements.Count, null);
 
         Register basePtr = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
         _codeGenBase.EmitBinaryOperation(

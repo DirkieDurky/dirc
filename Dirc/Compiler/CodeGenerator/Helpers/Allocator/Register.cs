@@ -1,6 +1,6 @@
 namespace Dirc.Compiling.CodeGen.Allocating;
 
-class Register
+public class Register
 {
     public RegisterEnum RegisterEnum { get; }
     public bool InUse = false;

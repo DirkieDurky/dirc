@@ -1,6 +1,6 @@
 namespace Dirc.Compiling.CodeGen.Allocating;
 
-enum RegisterEnum
+public enum RegisterEnum
 {
     r0,
     r1,

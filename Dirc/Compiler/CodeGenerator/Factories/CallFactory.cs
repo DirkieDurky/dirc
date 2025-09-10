@@ -1,3 +1,5 @@
+using System.Collections.Specialized;
+using System.Linq;
 using Dirc.Compiling.CodeGen.Allocating;
 using Dirc.Compiling.Parsing;
 
@@ -15,10 +17,22 @@ class CallFactory
     public IReturnable? Generate(CallExpressionNode node, CodeGenContext context)
     {
         // Save in use caller saved registers
-        List<Register> toSave = context.Allocator.TrackedCallerSavedRegisters.Where(x => x.InUse).ToList();
-        foreach (Register reg in toSave)
+        List<(Register reg, string? name)> toSave = context.Allocator.TrackedCallerSavedRegisters
+            .Where(x => x.InUse)
+            .Select(x => (x, (string?)null))
+            .ToList();
+
+        for (int i = 0; i < toSave.Count; i++)
         {
-            _codeGenBase.EmitPush(new ReadonlyRegister(reg));
+            Register reg = toSave[i].reg;
+
+            Variable? var = context.VariableTable.GetByRegister(reg);
+            int offset = context.Push(new ReadonlyRegister(reg));
+            if (var != null)
+            {
+                context.VariableTable[var.Name] = new StackStoredVariable(var.Name, offset);
+                toSave[i] = (reg, var.Name);
+            }
         }
 
         List<Register> registersToFree = new();
@@ -44,7 +58,7 @@ class CallFactory
         }
 
         // Allocate space for the toSave values
-        foreach (Register reg in toSave)
+        foreach (Register reg in toSave.Select(x => x.reg))
         {
             context.Allocator.Use(reg.RegisterEnum, true);
         }
@@ -55,9 +69,13 @@ class CallFactory
 
         // Restore saved values (and put them in the same registers they were in before)
         toSave.Reverse();
-        foreach (Register reg in toSave)
+        foreach ((Register reg, string? name) in toSave)
         {
             _codeGenBase.EmitPop(reg);
+            if (name != null)
+            {
+                context.VariableTable[name] = new RegisterStoredVariable(name, reg);
+            }
         }
 
         return new ReturnRegister(returnValue);

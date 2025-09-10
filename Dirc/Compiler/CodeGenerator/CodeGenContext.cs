@@ -95,7 +95,7 @@ class CodeGenContext : ICloneable
         CodeGenContext newContext = new(
             CodeGen,
             CodeGenBase,
-            Allocator,
+            (Allocator)Allocator.Clone(),
             ExprFactory,
             FunctionFactory,
             VarFactory,
@@ -115,7 +115,7 @@ class CodeGenContext : ICloneable
         return newContext;
     }
 
-    public int AllocateVariable(string name)
+    public int AllocateStackVariable(string name)
     {
         int offset = NextVariableOffset;
         NextVariableOffset++;
@@ -129,7 +129,16 @@ class CodeGenContext : ICloneable
         return offset;
     }
 
-    public int AllocateArray(int size, string? name)
+    public int Push(IOperand operand)
+    {
+        int offset = NextVariableOffset;
+        NextVariableOffset++;
+
+        CodeGenBase.EmitPush(operand);
+        return offset;
+    }
+
+    public int AllocateStackArray(int size, string? name)
     {
         int offset = NextVariableOffset + size - BuildEnvironment.StackAlignment;
         NextVariableOffset += size;

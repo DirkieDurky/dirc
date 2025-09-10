@@ -15,7 +15,7 @@ class VariableFactory
 
     public IReturnable? GenerateVariableDeclaration(VariableDeclarationNode node, CodeGenContext context)
     {
-        context.AllocateVariable(node.Name);
+        context.AllocateStackVariable(node.Name);
 
         if (node.Initializer == null) return null;
 
