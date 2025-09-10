@@ -99,18 +99,9 @@ public class Driver
             foreach ((string file, CompilerResult result) in backEndResults)
             {
                 string sourceFilePath = Helper.GetRelativePath(Path.GetDirectoryName(file)!);
-                string originalFolderStructure;
-                if (sourceFilePath.Contains(Path.DirectorySeparatorChar))
-                {
-                    originalFolderStructure = sourceFilePath.Substring(sourceFilePath.IndexOf("/"));
-                }
-                else
-                {
-                    originalFolderStructure = "";
-                }
 
                 string resultPath = Path.Combine(
-                    options.OutPath + originalFolderStructure,
+                    options.OutPath,
                     Path.GetFileNameWithoutExtension(file) + '.' + BuildEnvironment.ObjectFileExtension
                 );
 

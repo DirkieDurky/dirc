@@ -45,22 +45,11 @@ class Parser
                     });
                 }
 
-                string sourceFilePath = Helper.GetRelativePath(Path.GetDirectoryName(_parserBase.Context.CurrentFilePath)!);
-                string originalFolderStructure;
-                if (sourceFilePath.Contains(Path.DirectorySeparatorChar))
-                {
-                    originalFolderStructure = sourceFilePath.Substring(sourceFilePath.IndexOf("/") + 1);
-                }
-                else
-                {
-                    originalFolderStructure = "";
-                }
-
                 string fileName = Path.GetFileNameWithoutExtension(_parserBase.Context.CurrentFilePath);
 
                 functionTable.Add(new()
                 {
-                    File = Path.Combine(originalFolderStructure, fileName) + '.' + BuildEnvironment.ObjectFileExtension,
+                    File = fileName + '.' + BuildEnvironment.ObjectFileExtension,
                     Name = funcNode.Name,
                     ReturnType = funcNode.ReturnTypeName,
                     Parameters = parameters.ToArray()
