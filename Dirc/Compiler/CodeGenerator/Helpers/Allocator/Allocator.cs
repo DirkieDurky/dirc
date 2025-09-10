@@ -2,7 +2,7 @@ using System.Diagnostics;
 
 namespace Dirc.Compiling.CodeGen.Allocating;
 
-public class Allocator
+public class Allocator : ICloneable
 {
     public static IReadOnlyCollection<RegisterEnum> ArgumentRegisters = [RegisterEnum.r0, RegisterEnum.r1, RegisterEnum.r2, RegisterEnum.r3];
     public static IReadOnlyCollection<RegisterEnum> CallerSavedRegisters = [RegisterEnum.r0, RegisterEnum.r1, RegisterEnum.r2, RegisterEnum.r3, RegisterEnum.r4, RegisterEnum.r5];
@@ -110,5 +110,27 @@ public class Allocator
             Console.WriteLine($"at {method.DeclaringType}.{method.Name} in {frame.GetFileName()}:line {frame.GetFileLineNumber()}");
             if (--amount <= 0) return;
         }
+    }
+
+    public object Clone()
+    {
+        Allocator newAllocator = new Allocator(Options);
+
+        newAllocator.TrackedCallerSavedRegisters = CloneRegisterCollection(newAllocator, TrackedCallerSavedRegisters);
+        newAllocator.TrackedCalleeSavedRegisters = CloneRegisterCollection(newAllocator, TrackedCalleeSavedRegisters);
+
+        return newAllocator;
+    }
+
+    public static IReadOnlyCollection<Register> CloneRegisterCollection(Allocator newAllocator, IReadOnlyCollection<Register> collection)
+    {
+        List<Register> result = [];
+        foreach (Register oldRegister in collection)
+        {
+            Register newRegister = new Register(newAllocator, oldRegister.RegisterEnum, oldRegister.RefersToFunctionArgument);
+            newRegister.InUse = oldRegister.InUse;
+            result.Add(newRegister);
+        }
+        return result;
     }
 }

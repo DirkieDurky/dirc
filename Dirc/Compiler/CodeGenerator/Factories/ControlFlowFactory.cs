@@ -88,12 +88,7 @@ class ControlFlowFactory
             conditionResult.Free();
         }
 
-        CodeGenContext scopeSpecificContext = (CodeGenContext)context.Clone();
-        foreach (AstNode stmt in node.Body)
-        {
-            IReturnable? result = context.ExprFactory.Generate(stmt, scopeSpecificContext);
-            result?.Free();
-        }
+        GenerateBody(node.Body, context);
 
         if (endLabel != null)
         {
@@ -104,11 +99,7 @@ class ControlFlowFactory
 
         if (node.ElseBody != null)
         {
-            foreach (AstNode stmt in node.ElseBody)
-            {
-                IReturnable? result = context.ExprFactory.Generate(stmt, (CodeGenContext)context.Clone());
-                result?.Free();
-            }
+            GenerateBody(node.ElseBody, context);
             _codeGenBase.EmitLabel(endLabel!);
         }
         return null;
@@ -121,12 +112,7 @@ class ControlFlowFactory
 
         _codeGenBase.EmitLabel(label);
 
-        CodeGenContext scopeSpecificContext = (CodeGenContext)context.Clone();
-        foreach (AstNode stmt in node.Body)
-        {
-            IReturnable? result = context.ExprFactory.Generate(stmt, scopeSpecificContext);
-            result?.Free();
-        }
+        GenerateBody(node.Body, context);
 
         if (node.Condition is BinaryExpressionNode condition && condition.Operation.IsComparer())
         {
@@ -165,5 +151,15 @@ class ControlFlowFactory
         }
 
         return null;
+    }
+
+    public void GenerateBody(List<AstNode> body, CodeGenContext context)
+    {
+        CodeGenContext scopeSpecificContext = (CodeGenContext)context.Clone();
+        foreach (AstNode stmt in body)
+        {
+            IReturnable? result = context.ExprFactory.Generate(stmt, scopeSpecificContext);
+            result?.Free();
+        }
     }
 }
