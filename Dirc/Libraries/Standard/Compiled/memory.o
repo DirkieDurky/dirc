@@ -1,0 +1,121 @@
+label malloc
+push lr _ _
+push fp _ _
+mov sp _ fp
+sub|i2 sp 6 sp
+mov fp _ r1
+store|i1 2 r1 _
+mov fp _ r1
+load r1 _ r2
+add r0 r2 r1
+sub|i2 fp 1 r2
+store r1 r2 _
+sub|i2 fp 2 r1
+store|i1 16 r1 _
+label _while0
+sub|i2 fp 2 r1
+load r1 _ r2
+load r2 _ r1
+ifNotEq|i2 r1 0 _condition0
+mov|i1 1 _ r1
+jump _conditionEnd0 _ pc
+label _condition0
+mov|i1 0 _ r1
+label _conditionEnd0
+sub|i2 fp 3 r2
+store r1 r2 _
+sub|i2 fp 2 r1
+load r1 _ r2
+add|i2 r2 1 r1
+load r1 _ r2
+sub|i2 fp 4 r1
+store r2 r1 _
+sub|i2 fp 4 r1
+load r1 _ r2
+sub|i2 fp 1 r1
+load r1 _ r3
+ifLess r2 r3 _condition1
+mov|i1 1 _ r1
+jump _conditionEnd1 _ pc
+label _condition1
+mov|i1 0 _ r1
+label _conditionEnd1
+sub|i2 fp 4 r2
+load r2 _ r3
+ifNotEq|i2 r3 0 _condition2
+mov|i1 1 _ r2
+jump _conditionEnd2 _ pc
+label _condition2
+mov|i1 0 _ r2
+label _conditionEnd2
+or r1 r2 r3
+sub|i2 fp 5 r1
+store r3 r1 _
+sub|i2 fp 3 r1
+load r1 _ r2
+sub|i2 fp 5 r1
+load r1 _ r3
+and r2 r3 r1
+ifEq|i2 r1 0 _else0
+push r0 _ _
+sub|i2 fp 2 r1
+load r1 _ r2
+mov r2 _ r0
+sub|i2 fp 6 r1
+load r1 _ r2
+mov r2 _ r1
+call allocate _ _
+mov r0 _ r1
+pop _ _ r0
+mov r1 _ r0
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
+jump _ifElseEnd0 _ pc
+label _else0
+sub|i2 fp 2 r1
+load r1 _ r2
+sub|i2 fp 4 r1
+load r1 _ r3
+mov fp _ r1
+load r1 _ r4
+add r3 r4 r1
+add r2 r1 r3
+sub|i2 fp 2 r1
+store r3 r1 _
+label _ifElseEnd0
+jump _while0 _ pc
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
+
+label allocate
+push lr _ _
+push fp _ _
+mov sp _ fp
+store|i1 1 r0 _
+add|i2 r0 1 r2
+store r1 r2 _
+add|i2 r0 2 r2
+mov r2 _ r0
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
+
+label free
+push lr _ _
+push fp _ _
+mov sp _ fp
+sub|i2 r0 2 r1
+store|i1 0 r1 _
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _

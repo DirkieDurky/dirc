@@ -34,21 +34,6 @@ static class RuntimeLibrary
             Int.Instance,
             []
         ), "input.o")},
-        { "malloc", new RuntimeFunction("malloc",
-        new FunctionSignature(
-            Pointer.Of(Semantic.Void.Instance),
-            [new FunctionParameter(Int.Instance, "size")]
-        ),
-            // r0 = size
-            // r1 = currentAddress
-            // r2 = currentValue
-            "malloc.o"
-        )},
-        { "free", new RuntimeFunction("free",
-        new FunctionSignature(
-            Semantic.Void.Instance,
-            [new FunctionParameter(Pointer.Of(Semantic.Void.Instance), "ptr")]
-        ), "free.o")}
     };
 
     public static bool HasFunction(string name)

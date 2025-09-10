@@ -1,1 +1,1 @@
-{"Functions":[{"File":"print.o","Name":"print","ReturnType":"void","Parameters":[{"Name":"str","Type":"char*"}]}]}
+{"Functions":[{"File":"memory.o","Name":"malloc","ReturnType":"void*","Parameters":[{"Name":"size","Type":"int"}]},{"File":"memory.o","Name":"allocate","ReturnType":"void*","Parameters":[{"Name":"index","Type":"int*"},{"Name":"size","Type":"int"}]},{"File":"memory.o","Name":"free","ReturnType":"void","Parameters":[{"Name":"ptr","Type":"void*"}]},{"File":"print.o","Name":"print","ReturnType":"void","Parameters":[{"Name":"str","Type":"char*"}]}]}

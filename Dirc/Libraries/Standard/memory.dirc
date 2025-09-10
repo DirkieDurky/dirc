@@ -1,0 +1,32 @@
+void* malloc(int size) {
+    // Require 2 bytes of space for the header
+    int headerSize = 2;
+    int requiredSpace = size + headerSize;
+
+    // Find enough free space
+    int *i = 16;
+    while (true) {
+        bool blockIsFree = *i == 0;
+        int blockSize = *(i + 1);
+        bool enoughSpace = blockSize >= requiredSpace | blockSize == 0;
+        
+        if (blockIsFree & enoughSpace) {
+            return allocate(i, size);
+        } else {
+            i += blockSize + headerSize;
+        }
+    }
+}
+
+void* allocate(int* index, int size) {
+    // We store both whether it's occupied and the size
+    // That way when freeing we can mark the block as free but keep the size
+    // Then we know how much free space there is
+    *index = 1; // Mark as occupied
+    *(index + 1) = size; // Set size
+    return index + 2;
+}
+
+void free(void* ptr) {
+    *(ptr - 2) = 0;
+}
