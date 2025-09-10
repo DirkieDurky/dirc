@@ -131,6 +131,14 @@ public class SemanticAnalyzer
                 {
                     return Int.Instance;
                 }
+            case CharNode:
+                {
+                    return Char.Instance;
+                }
+            case StringLiteralNode:
+                {
+                    return null;
+                }
             case VariableDeclarationNode varDecl:
                 {
                     Type varType = ResolveType(varDecl.Type);
@@ -208,7 +216,7 @@ public class SemanticAnalyzer
 
                     if (!(leftType is PrimitiveType && rightType is PrimitiveType || leftType == rightType))
                     {
-                        throw new SemanticException($"Condition operands must be int or bool, got {leftType.Name} and {rightType.Name}", null, options, context);
+                        throw new SemanticException($"Condition operands must be a primitive type, got {leftType.Name} and {rightType.Name}", null, options, context);
                     }
                     return returnTypeOverride ?? Helpers.ReturnTypes[binNode.Operation];
                 }

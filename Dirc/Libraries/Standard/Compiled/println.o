@@ -1,4 +1,4 @@
-label print
+label println
 push lr _ _
 push fp _ _
 mov sp _ fp
@@ -6,17 +6,6 @@ sub|i2 sp 1 sp
 mov fp _ r1
 store|i1 0 r1 _
 label _while0
-mov fp _ r1
-load r1 _ r2
-add r0 r2 r3
-load r3 _ r1
-ifNotEq|i2 r1 10 _else0
-push r0 _ _
-call @printNewline _ _
-mov r0 _ r1
-pop _ _ r0
-jump _ifElseEnd0 _ pc
-label _else0
 push r0 _ _
 sub|i2 fp 1 r1
 load r1 _ r2
@@ -28,7 +17,6 @@ mov r1 _ r0
 call @printChar _ _
 mov r0 _ r1
 pop _ _ r0
-label _ifElseEnd0
 mov fp _ r1
 load r1 _ r2
 add|i2 r2 1 r1
@@ -39,6 +27,10 @@ load r1 _ r2
 add r0 r2 r3
 load r3 _ r1
 ifNotEq|i2 r1 0 _while0
+push r0 _ _
+call @printNewline _ _
+mov r0 _ r1
+pop _ _ r0
 mov fp _ sp
 pop _ _ fp
 pop _ _ lr

@@ -72,13 +72,27 @@ class Lexer
                 {
                     throw new LexicalException($"Empty char literal", c, _line, _options, _buildContext);
                 }
-                if (NextIs('\\')) Advance();
+                char? escapeSequence = null;
+
+                if (Match('\\'))
+                {
+                    switch (Peek())
+                    {
+                        case '\'':
+                            break;
+                        case 'n':
+                            escapeSequence = '\n';
+                            break;
+                        default:
+                            throw new LexicalException($"Unknown escape sequence", c, _line, _options, _buildContext);
+                    }
+                }
                 Advance();
                 if (!Match('\''))
                 {
                     throw new LexicalException($"Expected single quote after character in character literal", c, _line, _options, _buildContext);
                 }
-                AddToken(TokenType.Char, _source[_current - 2]);
+                AddToken(TokenType.Char, escapeSequence ?? _source[_current - 2]);
                 break;
             case '/':
                 if (Match('/'))
