@@ -18,6 +18,7 @@ public class NumberLiteralNode : AstNode, CodeGen.IReturnable
     }
 
     public override string ToString() => $"Number({Value})";
+    public override IEnumerable<AstNode> GetChildNodes() => [];
     public string AsOperand() => Value.ToString();
 
     public void Free()

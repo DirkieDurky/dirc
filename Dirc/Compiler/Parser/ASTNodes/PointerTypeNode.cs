@@ -12,4 +12,5 @@ public class PointerTypeNode : TypeNode
     }
 
     public override string ToString() => $"PointerType({Name})";
+    public override IEnumerable<AstNode> GetChildNodes() => [];
 }

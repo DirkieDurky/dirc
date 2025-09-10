@@ -12,4 +12,5 @@ public abstract class TypeNode : AstNode
         Name = name;
     }
     public override string ToString() => $"Type({Name})";
+    public override IEnumerable<AstNode> GetChildNodes() => [];
 }

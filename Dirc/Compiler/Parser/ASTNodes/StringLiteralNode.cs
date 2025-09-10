@@ -10,4 +10,5 @@ public class StringLiteralNode : AstNode
         Str = str;
     }
     public override string ToString() => $"StringLiteral({Str.Literal})";
+    public override IEnumerable<AstNode> GetChildNodes() => [];
 }

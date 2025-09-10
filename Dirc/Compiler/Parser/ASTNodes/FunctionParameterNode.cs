@@ -2,7 +2,7 @@ using Dirc.Compiling.Lexing;
 
 namespace Dirc.Compiling.Parsing;
 
-public class FunctionParameterNode
+public class FunctionParameterNode : AstNode
 {
     public Token IdentifierToken { get; }
     public TypeNode Type { get; }
@@ -14,4 +14,5 @@ public class FunctionParameterNode
         Name = name;
     }
     public override string ToString() => $"{Type} {Name}";
+    public override IEnumerable<AstNode> GetChildNodes() => [Type];
 }

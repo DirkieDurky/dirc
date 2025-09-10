@@ -13,4 +13,5 @@ public class CharNode : AstNode
     {
         return $"CharNode({Value})";
     }
+    public override IEnumerable<AstNode> GetChildNodes() => [];
 }

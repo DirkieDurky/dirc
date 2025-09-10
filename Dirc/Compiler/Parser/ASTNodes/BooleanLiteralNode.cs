@@ -22,4 +22,6 @@ public class BooleanLiteralNode : AstNode, CodeGen.IReturnable
     {
         return Value ? "1" : "0";
     }
+
+    public override IEnumerable<AstNode> GetChildNodes() => [];
 }

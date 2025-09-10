@@ -12,4 +12,5 @@ public class IdentifierNode : AstNode
         Name = name;
     }
     public override string ToString() => $"Identifier({Name})";
+    public override IEnumerable<AstNode> GetChildNodes() => [];
 }

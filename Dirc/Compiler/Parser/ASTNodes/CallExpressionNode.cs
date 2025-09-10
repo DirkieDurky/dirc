@@ -14,4 +14,6 @@ public class CallExpressionNode : AstNode
         Arguments = arguments;
     }
     public override string ToString() => $"Call({Callee}, [{string.Join(", ", Arguments)}])";
+
+    public override IEnumerable<AstNode> GetChildNodes() => Arguments;
 }

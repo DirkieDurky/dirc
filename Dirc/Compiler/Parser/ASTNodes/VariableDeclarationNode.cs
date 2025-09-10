@@ -18,4 +18,7 @@ public class VariableDeclarationNode : AstNode
     }
 
     public override string ToString() => $"VariableDeclaration({Type} {Name}, {Initializer})";
+
+    public override IEnumerable<AstNode> GetChildNodes() =>
+        Initializer != null ? [Type, Initializer] : [Type];
 }

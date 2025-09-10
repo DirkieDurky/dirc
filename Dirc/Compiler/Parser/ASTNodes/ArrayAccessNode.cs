@@ -18,4 +18,5 @@ public class ArrayAccessNode : AstNode
     }
 
     public override string ToString() => $"ArrayAccess({ArrayName}[{Index}])";
+    public override IEnumerable<AstNode> GetChildNodes() => [Index];
 }

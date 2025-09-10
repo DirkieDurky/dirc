@@ -20,4 +20,6 @@ public class ArrayAssignmentNode : AstNode
     }
 
     public override string ToString() => $"ArrayAssignment({ArrayName}[{Index}] = {Value})";
+
+    public override IEnumerable<AstNode> GetChildNodes() => [Index, Value];
 }

@@ -9,4 +9,5 @@ public class NamedTypeNode : TypeNode
     }
 
     public override string ToString() => $"NamedType({Name})";
+    public override IEnumerable<AstNode> GetChildNodes() => [];
 }

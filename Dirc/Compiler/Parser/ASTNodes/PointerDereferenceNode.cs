@@ -10,4 +10,6 @@ public class PointerDereferenceNode : AstNode
         PointerExpression = pointerExpression;
     }
     public override string ToString() => $"PointerDereference({PointerExpression})";
+
+    public override IEnumerable<AstNode> GetChildNodes() => [PointerExpression];
 }

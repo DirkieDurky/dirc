@@ -40,30 +40,6 @@ class FunctionFactory
         _codeGenBase.EmitReturn();
     }
 
-    public void AllocateSpaceForLocalVariables(List<AstNode> body, CodeGenContext context)
-    {
-        _codeGenBase.EmitBinaryOperation(
-            Operation.Sub,
-            ReadonlyRegister.SP,
-            new NumberLiteralNode(BuildEnvironment.StackAlignment * GetLocalVariablesCount(body)),
-            context.Allocator.Use(RegisterEnum.sp)
-        );
-    }
-
-    public int GetLocalVariablesCount(List<AstNode> body)
-    {
-        int variableDeclarationCount = body.Count(n => n is VariableDeclarationNode);
-        foreach (IfStatementNode ifNode in body.Where(n => n is IfStatementNode))
-        {
-            variableDeclarationCount += GetLocalVariablesCount(ifNode.Body);
-        }
-        foreach (WhileStatementNode whileNode in body.Where(n => n is WhileStatementNode))
-        {
-            variableDeclarationCount += GetLocalVariablesCount(whileNode.Body);
-        }
-        return variableDeclarationCount;
-    }
-
     public IReturnable? GenerateReturnStatement(ReturnStatementNode node, CodeGenContext context)
     {
         IReturnable returnValue = context.ExprFactory.Generate(node.ReturnValue, context) ?? throw new Exception("return value didn't return anything");
@@ -83,5 +59,51 @@ class FunctionFactory
         // Restore fp and lr
         _codeGenBase.EmitPop(context.Allocator.Use(RegisterEnum.fp));
         _codeGenBase.EmitPop(context.Allocator.Use(RegisterEnum.lr));
+    }
+
+    public void AllocateSpaceForLocalVariables(List<AstNode> body, CodeGenContext context)
+    {
+        _codeGenBase.EmitBinaryOperation(
+            Operation.Sub,
+            ReadonlyRegister.SP,
+            new NumberLiteralNode(BuildEnvironment.StackAlignment * GetLocalVariablesCount(body)),
+            context.Allocator.Use(RegisterEnum.sp)
+        );
+    }
+
+    public int GetLocalVariablesCount(List<AstNode> body)
+    {
+        var allNodes = GetAllDescendantNodes(body);
+        int variableDeclarationCount = 0;
+
+        variableDeclarationCount += allNodes.Count(n => n is VariableDeclarationNode);
+
+        foreach (var arrNode in allNodes.OfType<ArrayDeclarationNode>())
+        {
+            variableDeclarationCount += arrNode.Size;
+        }
+
+        foreach (var arrLiteralNode in allNodes.OfType<ArrayLiteralNode>())
+        {
+            variableDeclarationCount += arrLiteralNode.Elements.Count;
+        }
+
+        foreach (var strLiteralNode in allNodes.OfType<StringLiteralNode>())
+        {
+            variableDeclarationCount += strLiteralNode.Str.Literal!.ToString()!.Length + 1;
+        }
+
+        return variableDeclarationCount;
+    }
+
+    private IEnumerable<AstNode> GetAllDescendantNodes(IEnumerable<AstNode> nodes)
+    {
+        var result = new List<AstNode>();
+        foreach (var node in nodes)
+        {
+            result.Add(node);
+            result.AddRange(GetAllDescendantNodes(node.GetChildNodes()));
+        }
+        return result;
     }
 }

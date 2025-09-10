@@ -30,4 +30,6 @@ public class SimpleBinaryExpressionNode : AstNode, CodeGen.IReturnable
     {
         // Doesn't need to be freed
     }
+
+    public override IEnumerable<AstNode> GetChildNodes() => [Left, Right];
 }

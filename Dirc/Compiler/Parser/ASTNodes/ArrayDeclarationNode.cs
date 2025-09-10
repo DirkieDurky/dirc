@@ -20,4 +20,7 @@ public class ArrayDeclarationNode : AstNode
     }
 
     public override string ToString() => $"ArrayDeclaration({Type} {Name}[{Size}], {Initializer})";
+
+    public override IEnumerable<AstNode> GetChildNodes() =>
+        Initializer != null ? new[] { Type, Initializer } : [Type];
 }

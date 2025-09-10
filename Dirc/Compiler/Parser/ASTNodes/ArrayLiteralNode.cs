@@ -12,4 +12,6 @@ public class ArrayLiteralNode : AstNode
     }
 
     public override string ToString() => $"ArrayLiteral([{string.Join(", ", Elements)}])";
+
+    public override IEnumerable<AstNode> GetChildNodes() => Elements;
 }

@@ -17,4 +17,6 @@ public class VariableAssignmentNode : AstNode
     }
 
     public override string ToString() => $"VariableAssignment({Target}, {Value})";
+
+    public override IEnumerable<AstNode> GetChildNodes() => [Target, Value];
 }

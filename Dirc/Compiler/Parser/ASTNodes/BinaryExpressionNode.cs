@@ -12,4 +12,6 @@ public class BinaryExpressionNode : AstNode
         Right = right;
     }
     public override string ToString() => $"BinaryExpression({Left}, {Operation}, {Right})";
+
+    public override IEnumerable<AstNode> GetChildNodes() => [Left, Right];
 }

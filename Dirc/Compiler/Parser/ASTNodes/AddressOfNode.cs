@@ -10,4 +10,6 @@ public class AddressOfNode : AstNode
         Variable = variable;
     }
     public override string ToString() => $"AddressOf({Variable})";
+
+    public override IEnumerable<AstNode> GetChildNodes() => [Variable];
 }

@@ -13,4 +13,5 @@ public class ImportStatementNode : AstNode
         LibraryName = function;
     }
     public override string ToString() => $"Import({LibraryName})";
+    public override IEnumerable<AstNode> GetChildNodes() => [];
 }

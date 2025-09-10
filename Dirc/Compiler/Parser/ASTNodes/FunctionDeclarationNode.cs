@@ -19,4 +19,6 @@ public class FunctionDeclarationNode : AstNode
         Body = body;
     }
     public override string ToString() => $"FunctionDeclaration({ReturnType} {Name}, [{string.Join(", ", Parameters)}], [\n  {string.Join(",\n  ", Body)}\n])";
+
+    public override IEnumerable<AstNode> GetChildNodes() => Parameters.Concat(Body).Append(ReturnType);
 }

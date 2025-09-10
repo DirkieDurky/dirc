@@ -141,14 +141,6 @@ class CodeGenContext : ICloneable
             VariableTable[name] = new StackStoredVariable(name, offset, true);
         }
 
-        // Allocate space for the array on the stack
-        CodeGenBase.EmitBinaryOperation(
-            Operation.Sub,
-            ReadonlyRegister.SP,
-            new NumberLiteralNode(NumberLiteralType.Decimal, size.ToString()),
-            Allocator.Use(RegisterEnum.sp)
-        );
-
         return offset;
     }
 
