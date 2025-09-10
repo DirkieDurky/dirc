@@ -34,6 +34,11 @@ static class RuntimeLibrary
             Int.Instance,
             []
         ), "input.o")},
+        { "printNewline", new RuntimeFunction("printNewline",
+        new FunctionSignature(
+            Semantic.Void.Instance,
+            []
+        ), "printNewline.o")},
     };
 
     public static bool HasFunction(string name)
