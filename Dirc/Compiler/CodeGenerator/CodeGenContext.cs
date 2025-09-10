@@ -120,12 +120,6 @@ class CodeGenContext : ICloneable
         int offset = NextVariableOffset;
         NextVariableOffset++;
         VariableTable[name] = new StackStoredVariable(name, offset);
-        CodeGenBase.EmitBinaryOperation(
-            Operation.Sub,
-            ReadonlyRegister.SP,
-            new NumberLiteralNode(BuildEnvironment.StackAlignment),
-            Allocator.Use(RegisterEnum.sp)
-        );
         return offset;
     }
 

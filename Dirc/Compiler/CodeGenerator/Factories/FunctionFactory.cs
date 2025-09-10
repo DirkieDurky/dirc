@@ -20,6 +20,7 @@ class FunctionFactory
         _codeGenBase.EmitPush(ReadonlyRegister.LR);
         _codeGenBase.EmitPush(ReadonlyRegister.FP);
         _codeGenBase.EmitMov(ReadonlyRegister.SP, context.Allocator.Use(RegisterEnum.fp));
+        AllocateSpaceForLocalVariables(node.Body, context);
 
         CodeGenContext scopeSpecificContext = (CodeGenContext)context.CloneAndResetAllocator();
         if (node.Parameters.Count > Allocator.ArgumentRegisters.Count) throw new Exception($"More than {Allocator.ArgumentRegisters.Count} function parameters given.");
@@ -37,6 +38,30 @@ class FunctionFactory
 
         EmitFunctionEpilogue(context);
         _codeGenBase.EmitReturn();
+    }
+
+    public void AllocateSpaceForLocalVariables(List<AstNode> body, CodeGenContext context)
+    {
+        _codeGenBase.EmitBinaryOperation(
+            Operation.Sub,
+            ReadonlyRegister.SP,
+            new NumberLiteralNode(BuildEnvironment.StackAlignment * GetLocalVariablesCount(body)),
+            context.Allocator.Use(RegisterEnum.sp)
+        );
+    }
+
+    public int GetLocalVariablesCount(List<AstNode> body)
+    {
+        int variableDeclarationCount = body.Count(n => n is VariableDeclarationNode);
+        foreach (IfStatementNode ifNode in body.Where(n => n is IfStatementNode))
+        {
+            variableDeclarationCount += GetLocalVariablesCount(ifNode.Body);
+        }
+        foreach (WhileStatementNode whileNode in body.Where(n => n is WhileStatementNode))
+        {
+            variableDeclarationCount += GetLocalVariablesCount(whileNode.Body);
+        }
+        return variableDeclarationCount;
     }
 
     public IReturnable? GenerateReturnStatement(ReturnStatementNode node, CodeGenContext context)
