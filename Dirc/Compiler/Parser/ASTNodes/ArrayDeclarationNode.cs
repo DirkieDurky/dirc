@@ -6,12 +6,12 @@ public class ArrayDeclarationNode : AstNode
 {
     public TypeNode Type { get; }
     public Token IdentifierToken { get; }
-    public AstNode Size { get; }
+    public int Size { get; }
     public AstNode? Initializer { get; }
     public string TypeName => Type.Name;
     public string Name => IdentifierToken.Lexeme;
 
-    public ArrayDeclarationNode(TypeNode type, Token identifierToken, AstNode size, AstNode? initializer = null)
+    public ArrayDeclarationNode(TypeNode type, Token identifierToken, int size, AstNode? initializer = null)
     {
         Type = type;
         IdentifierToken = identifierToken;

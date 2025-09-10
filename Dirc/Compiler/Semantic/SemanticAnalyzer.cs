@@ -306,13 +306,6 @@ public class SemanticAnalyzer
                         throw new SemanticException($"Variable '{arrayDecl.Name}' already declared", arrayDecl.IdentifierToken, options, context);
                     }
 
-                    // Check that size is an integer
-                    Type sizeType = AnalyzeNode(arrayDecl.Size, Int.Instance, options, context)!;
-                    if (sizeType != Int.Instance)
-                    {
-                        throw new SemanticException($"Array size must be an integer, got {sizeType.Name}", null, options, context);
-                    }
-
                     _variables[arrayDecl.Name] = Pointer.Of(arrayType); // Array variables return a pointer to their first element
 
                     if (arrayDecl.Initializer != null)

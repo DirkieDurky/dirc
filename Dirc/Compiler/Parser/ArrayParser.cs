@@ -19,14 +19,18 @@ internal class ArrayParser
         Token name = _context.ParserBase.Advance();
 
         _context.ParserBase.Consume(TokenType.LeftBracket, "Expected '[' in array declaration");
-        AstNode size = _context.ExpressionParser.ParseExpression();
+        AstNode sizeNode = _context.ExpressionParser.ParseExpression();
+        if (sizeNode is not NumberLiteralNode sizeNum)
+        {
+            throw new SyntaxException("Size in array declaration must be a number", name, _context.ParserBase.Options, _context.ParserBase.Context);
+        }
         _context.ParserBase.Consume(TokenType.RightBracket, "Expected ']' after array size");
 
         AstNode? initializer = null;
         if (_context.ParserBase.Match(TokenType.Equals))
             initializer = _context.ParserBase.Match(TokenType.String) ? new StringLiteralNode(_context.ParserBase.Previous()) : ParseArrayLiteral();
 
-        return new ArrayDeclarationNode(type, name, size, initializer);
+        return new ArrayDeclarationNode(type, name, int.Parse(sizeNum.Value), initializer);
     }
 
     public ArrayLiteralNode ParseArrayLiteral()

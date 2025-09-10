@@ -14,25 +14,15 @@ class ArrayFactory
 
     public IReturnable? GenerateArrayDeclaration(ArrayDeclarationNode node, CodeGenContext context)
     {
-        IReturnable sizeResult = context.ExprFactory.Generate(node.Size, context) ?? throw new Exception("Array size expression failed to generate");
-
-        if (sizeResult is NumberLiteralNode sizeNode && int.TryParse(sizeNode.Value, out int size))
+        if (node.Initializer == null)
         {
-            if (node.Initializer == null)
-            {
-                context.AllocateStackArray(5, node.Name);
-            }
-            else
-            {
-                return GenerateArrayInitialization(node.Name, node.Initializer, true, context);
-            }
+            context.AllocateStackArray(node.Size, node.Name);
         }
         else
         {
-            throw new CodeGenException("Invalid array size specified", node.IdentifierToken, context.Options, context.BuildContext);
+            return GenerateArrayInitialization(node.Name, node.Initializer, true, context);
         }
 
-        sizeResult.Free();
         return null;
     }
 
