@@ -1,3 +1,37 @@
+# DIRC Compiler
+This repository contains the compiler for the DIRC Programming Language and compiles from DIRC Programming Language to DIRIC v2.4 assembly.
+DIRIC 2.4 is a computer architecture built in Turing Complete. If you own the game, in the schematic hub, look for "DIRIC 2_4 (16-bit)" to try it out.
+## Usage
+```
+dirc sourcePath [flags]
+```
+The source file should have the `.dirc` file extension.\
+If the source path points to a file, the compiler will output a `.out` file with the same name as the `.dirc` file.
+If the source path points to a folder, the compiler will compile all `.dirc` files in the folder and put them in a `builds` folder in the source folder.
+
+### Flags
+The following flags can be used by the compiler:
+- `--help` or `-h`
+Used to view compiler usage.
+- `--debug`
+Used to set the amount of debug logging you would like to receive while compiling. For more information, see the Debug chapter below.
+
+#### Debug
+The debug flag takes a comma-separated array of any of the following options:
+- `all`
+Logs all types of debugging.
+- `general`
+Logs general information, such as the stage the compiler is in.
+- `lexer`
+Logs the output of the lexer.
+- `parser`
+Logs the output of the parser.
+- `allocator`
+Logs when registers are allocated and freed by the allocator.
+- `stack-trace`
+Normally when an exception occurs only the stack trace of the source code is shown.\
+Use this option enabled to show the stack trace of the compiler as well.
+
 # Dirc Programming language
 A programming language inspired by the C family that compiles to DIRIC assembly.\
 Dirc stands for Directly Implemented and Reduced C.
@@ -432,41 +466,9 @@ Copies the value at the specified location in memory to the register specified b
 - `noop _ _ _`
 Does nothing at all for a tick.
 
-
-# DIRC Compiler
-This repository contains the compiler for the DIRC Programming Language and compiles from DIRC Programming Language to DIRIC v2.1 assembly.
+# ABI
 
 Registers `r0-r3` are used to pass arguments to functions.\
 Register `r0` is used for return values out of functions.\
 Registers `r0-r5` are used as "caller-saved" registers.\
 Registers `r6-r10` are used as "callee-saved" registers.
-## Usage
-```
-dirc sourcePath [flags]
-```
-The source file should have the `.dirc` file extension.\
-If the source path points to a file, the compiler will output a `.out` file with the same name as the `.dirc` file.
-If the source path points to a folder, the compiler will compile all `.dirc` files in the folder and put them in a `builds` folder in the source folder.
-
-### Flags
-The following flags can be used by the compiler:
-- `--help` or `-h`
-Used to view compiler usage.
-- `--debug`
-Used to set the amount of debug logging you would like to receive while compiling. For more information, see the Debug chapter below.
-
-#### Debug
-The debug flag takes a comma-separated array of any of the following options:
-- `all`
-Logs all types of debugging.
-- `general`
-Logs general information, such as the stage the compiler is in.
-- `lexer`
-Logs the output of the lexer.
-- `parser`
-Logs the output of the parser.
-- `allocator`
-Logs when registers are allocated and freed by the allocator.
-- `stack-trace`
-Normally when an exception occurs only the stack trace of the source code is shown.\
-Use this option enabled to show the stack trace of the compiler as well.

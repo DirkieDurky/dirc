@@ -1,0 +1,119 @@
+mov|i1 127 _ sp # Initialize stack pointer
+store|i1|i2 256 0 _ # Initialize screen pointer
+mov sp _ fp # Initialize frame pointer
+jump _start _ pc
+
+label printChar
+load|i1 0 _ r1
+store r0 r1 _
+add|i2 r1 1 r1
+store|i2 r1 0 _
+return _ _ _
+
+label printNewline
+load|i1 0 _ r0
+sub|i2 r0 256 r0
+mod|i2 r0 80 r1
+sub r0 r1 r0
+add|i2 r0 80 r0
+add|i2 r0 256 r0
+store|i2 r0 0 _
+return _ _ _
+
+label println
+push lr _ _
+push fp _ _
+mov sp _ fp
+sub|i2 sp 1 sp
+mov fp _ r1
+store|i1 0 r1 _
+label _while0
+push r0 _ _
+sub|i2 fp 1 r1
+load r1 _ r2
+mov fp _ r1
+load r1 _ r3
+add r2 r3 r4
+load r4 _ r1
+mov r1 _ r0
+call printChar _ _
+mov r0 _ r1
+pop _ _ r0
+mov fp _ r1
+load r1 _ r2
+add|i2 r2 1 r1
+mov fp _ r2
+store r1 r2 _
+mov fp _ r1
+load r1 _ r2
+add r0 r2 r3
+load r3 _ r1
+ifNotEq|i2 r1 0 _while0
+push r0 _ _
+call printNewline _ _
+mov r0 _ r1
+pop _ _ r0
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
+
+label outInt
+mov r0 _ out
+return _ _ _
+
+label _start
+sub|i2 sp 11 sp
+mov fp _ r0
+store|i1 0 r0 _
+label _Fizzbuzz_while0
+mov fp _ r0
+load r0 _ r1
+mod|i2 r1 3 r0
+ifNotEq|i2 r0 0 _Fizzbuzz_else0
+sub|i2 fp 5 r0
+mov r0 _ r1
+store|i1 70 r1 _
+add|i2 r0 1 r1
+store|i1 105 r1 _
+add|i2 r0 2 r1
+store|i1 122 r1 _
+add|i2 r0 3 r1
+store|i1 122 r1 _
+add|i2 r0 4 r1
+store|i1 0 r1 _
+call println _ _
+jump _Fizzbuzz_ifElseEnd0 _ pc
+label _Fizzbuzz_else0
+mov fp _ r0
+load r0 _ r1
+mod|i2 r1 5 r0
+ifNotEq|i2 r0 0 _Fizzbuzz_else1
+sub|i2 fp 5 r0
+mov r0 _ r1
+store|i1 66 r1 _
+add|i2 r0 1 r1
+store|i1 117 r1 _
+add|i2 r0 2 r1
+store|i1 122 r1 _
+add|i2 r0 3 r1
+store|i1 122 r1 _
+add|i2 r0 4 r1
+store|i1 0 r1 _
+call println _ _
+jump _Fizzbuzz_ifElseEnd1 _ pc
+label _Fizzbuzz_else1
+mov fp _ r0
+load r0 _ r1
+mov r1 _ r0
+call outInt _ _
+label _Fizzbuzz_ifElseEnd1
+label _Fizzbuzz_ifElseEnd0
+mov fp _ r0
+load r0 _ r1
+add|i2 r1 1 r0
+mov fp _ r1
+store r0 r1 _
+mov fp _ r0
+load r0 _ r1
+ifLess|i2 r1 100 _Fizzbuzz_while0
