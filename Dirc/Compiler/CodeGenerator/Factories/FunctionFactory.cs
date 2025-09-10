@@ -35,10 +35,7 @@ class FunctionFactory
             result?.Free();
         }
 
-        // Reset stack pointer to free any local variables
-        _codeGenBase.EmitMov(ReadonlyRegister.FP, context.Allocator.Use(RegisterEnum.sp));
-        _codeGenBase.EmitPop(context.Allocator.Use(RegisterEnum.fp));
-        _codeGenBase.EmitPop(context.Allocator.Use(RegisterEnum.lr));
+        EmitFunctionEpilogue(context);
         _codeGenBase.EmitReturn();
     }
 
@@ -48,8 +45,18 @@ class FunctionFactory
         Register r0 = context.Allocator.Use(RegisterEnum.r0, true);
         _codeGenBase.EmitMov(returnValue, r0);
         returnValue.Free();
+        EmitFunctionEpilogue(context);
         _codeGenBase.EmitReturn(false);
 
         return new ReturnRegister(r0);
+    }
+
+    private void EmitFunctionEpilogue(CodeGenContext context)
+    {
+        // Free local variables
+        _codeGenBase.EmitMov(ReadonlyRegister.FP, context.Allocator.Use(RegisterEnum.sp));
+        // Restore fp and lr
+        _codeGenBase.EmitPop(context.Allocator.Use(RegisterEnum.fp));
+        _codeGenBase.EmitPop(context.Allocator.Use(RegisterEnum.lr));
     }
 }
