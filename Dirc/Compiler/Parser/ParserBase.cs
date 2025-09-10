@@ -47,7 +47,11 @@ class ParserBase
 
     public bool IsAtEnd() => _current >= _tokens.Count;
 
-    public Token Peek() => _tokens[_current];
+    public Token Peek()
+    {
+        if (IsAtEnd()) throw new SyntaxException("Unexpected end of file", Previous(), _options, _context);
+        return _tokens[_current];
+    }
 
     public Token Previous() => _tokens[_current - 1];
 
