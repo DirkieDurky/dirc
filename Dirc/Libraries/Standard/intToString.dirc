@@ -1,7 +1,3 @@
-void printInt(int num) {
-    print(intToString(num));
-}
-
 char[] intToString(int num)
 {
     int stringLength = getDigitCountInInt(num);
