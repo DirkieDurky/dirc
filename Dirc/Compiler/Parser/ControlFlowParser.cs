@@ -14,17 +14,29 @@ internal class ControlFlowParser
         _context = context;
     }
 
-    public List<AstNode> ParseIfStatement()
+    public List<AstNode> ParseIfStatement(bool isElseIf = false)
     {
         _context.ParserBase.Consume(TokenType.LeftParen, "Expected '(' after if keyword");
         AstNode condition = ParseCondition();
         _context.ParserBase.Consume(TokenType.RightParen, "Expected ')' after if condition");
 
-        List<AstNode> body = ParseBody("if statement");
+        string bodyKind = isElseIf ? "else if statement" : "else statement";
+        List<AstNode> body = ParseBody(bodyKind);
         List<AstNode>? elseBody = null;
 
         if (_context.ParserBase.Match(TokenType.Else))
-            elseBody = ParseBody("else statement");
+        {
+            elseBody = [];
+
+            if (_context.ParserBase.Match(TokenType.If))
+            {
+                elseBody = ParseIfStatement(true);
+            }
+            else
+            {
+                elseBody.AddRange(ParseBody("else statement"));
+            }
+        }
 
         return [new IfStatementNode(condition, body, elseBody)];
     }
