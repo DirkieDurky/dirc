@@ -162,6 +162,9 @@ public class SemanticAnalyzer
                             // Allow anything for void pointers
                             if (initType is Pointer initTypePtr && initTypePtr.BaseType == Void.Instance) return null;
 
+                            // Since we currently don't have typecasts yet, just allow when both types are primitives
+                            if (initType is PrimitiveType && varType is PrimitiveType) return null;
+
                             throw new SemanticException($"Type mismatch in initialization of '{varDecl.Name}': expected {varType.Name}, got {initType.Name}", varDecl.IdentifierToken, options, context);
                         }
                     }
@@ -265,6 +268,9 @@ public class SemanticAnalyzer
                         {
                             // Allow anything for void pointers
                             if (parameterType is Pointer paramTypePtr && paramTypePtr.BaseType == Void.Instance) return sig.ReturnType;
+
+                            // Since we currently don't have typecasts yet, just allow when both types are primitives
+                            if (parameterType is PrimitiveType && argType is PrimitiveType) return sig.ReturnType;
 
                             throw new SemanticException($"Type mismatch in argument {i + 1} of '{call.Callee}': expected {sig.Parameters[i].Type.Name}, got {argType.Name}", call.CalleeToken, options, context);
                         }
