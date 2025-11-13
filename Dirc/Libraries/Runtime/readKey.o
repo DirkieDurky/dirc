@@ -1,0 +1,3 @@
+label readKey
+read _ _ r0
+return _ _ _

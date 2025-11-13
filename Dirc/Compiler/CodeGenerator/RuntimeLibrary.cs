@@ -29,16 +29,21 @@ static class RuntimeLibrary
             Semantic.Void.Instance,
             [new FunctionParameter(Semantic.Char.Instance, "value")]
         ), "printChar.o")},
-        { "input", new RuntimeFunction("input",
+        { "in", new RuntimeFunction("in",
         new FunctionSignature(
             Int.Instance,
             []
-        ), "input.o")},
+        ), "in.o")},
         { "printNewline", new RuntimeFunction("printNewline",
         new FunctionSignature(
             Semantic.Void.Instance,
             []
         ), "printNewline.o")},
+        { "readKey", new RuntimeFunction("readKey",
+        new FunctionSignature(
+            Int.Instance,
+            []
+        ), "readKey.o")},
     };
 
     public static bool HasFunction(string name)

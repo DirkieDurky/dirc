@@ -1,3 +1,3 @@
-label input
+label in
 mov in _ r0
 return _ _ _
