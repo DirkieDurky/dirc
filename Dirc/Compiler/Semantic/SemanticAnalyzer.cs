@@ -111,6 +111,8 @@ public class SemanticAnalyzer
             _functions.Add(function.Name, new FunctionSignature(returnType, functionParameters));
         }
 
+        if (_options.DisableSemanticAnalysis) return;
+
         // Second pass: analyze all nodes
         for (int i = 0; i < nodes.Count; i++)
         {

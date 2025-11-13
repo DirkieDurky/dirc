@@ -54,6 +54,9 @@ public class Options
     [Value(0, MetaName = "input files", HelpText = "The input files to compile.")]
     public IEnumerable<string> InputFiles { get; set; }
 
+    [Option("no-semcheck", Required = false, HelpText = "Don't run semantic analysis.")]
+    public bool DisableSemanticAnalysis { get; set; } = false;
+
     public bool CheckDebugOption(DebugOption debugOption)
     {
         return _debugOptions.Contains(DebugOption.All) || _debugOptions.Contains(debugOption);
