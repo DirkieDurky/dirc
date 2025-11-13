@@ -90,7 +90,7 @@ class ExpressionParser
 
         if (_context.ParserBase.Check(TokenType.LeftBrace))
         {
-            _context.ArrayParser.ParseArrayLiteral();
+            return _context.ArrayParser.ParseArrayLiteral();
         }
 
         throw new SyntaxException("Unexpected token", _context.ParserBase.Peek(), _context.ParserBase.Options, _context.ParserBase.Context);
