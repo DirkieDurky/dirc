@@ -107,18 +107,16 @@ class ControlFlowFactory
 
     public IReturnable? GenerateWhileStatement(WhileStatementNode node, CodeGenContext context, LabelGenerator labelGenerator)
     {
-        string label;
-        label = labelGenerator.Generate(LabelType.While, context);
+        string loopLabel = labelGenerator.Generate(LabelType.While, context);
+        string loopEndLabel = labelGenerator.Generate(LabelType.WhileEnd, context);
 
-        _codeGenBase.EmitLabel(label);
-
-        GenerateBody(node.Body, context);
+        _codeGenBase.EmitLabel(loopLabel);
 
         if (node.Condition is BinaryExpressionNode condition && condition.Operation.IsComparer())
         {
             IReturnable left = context.ExprFactory.Generate(condition.Left, context) ?? throw new Exception("Part of while statement was not set");
             IReturnable right = context.ExprFactory.Generate(condition.Right, context) ?? throw new Exception("Part of while statement was not set");
-            _codeGenBase.EmitIf(condition.Operation.GetComparer(), left, right, label);
+            _codeGenBase.EmitIf(condition.Operation.GetComparer().GetOpposite(), left, right, loopEndLabel);
             left.Free();
             right.Free();
         }
@@ -128,20 +126,20 @@ class ControlFlowFactory
 
             if (conditionResult is ReturnRegister reg)
             {
-                _codeGenBase.EmitIf(Comparer.IfNotEq, reg, new NumberLiteralNode(0), label);
+                _codeGenBase.EmitIf(Comparer.IfEq, reg, new NumberLiteralNode(0), loopEndLabel);
             }
             else if (conditionResult is NumberLiteralNode num)
             {
-                if (num.Value != "0")
+                if (num.Value == "0")
                 {
-                    _codeGenBase.EmitJump(label);
+                    _codeGenBase.EmitJump(loopEndLabel);
                 }
             }
             else if (conditionResult is BooleanLiteralNode boolean)
             {
-                if (boolean.Value)
+                if (!boolean.Value)
                 {
-                    _codeGenBase.EmitJump(label);
+                    _codeGenBase.EmitJump(loopEndLabel);
                 }
             }
             else
@@ -149,6 +147,12 @@ class ControlFlowFactory
                 throw new Exception("Invalid condition result type");
             }
         }
+
+        GenerateBody(node.Body, context);
+
+        _codeGenBase.EmitJump(loopLabel);
+
+        _codeGenBase.EmitLabel(loopEndLabel);
 
         return null;
     }
