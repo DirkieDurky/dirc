@@ -256,7 +256,7 @@ pop _ _ lr
 return _ _ _
 
 label _start
-sub|i2 sp 11 sp
+sub|i2 sp 21 sp
 mov fp _ r0
 store|i1 1 r0 _
 label _fizzbuzz_while0
@@ -265,9 +265,9 @@ load r0 _ r1
 ifMoreOrEq|i2 r1 100 _fizzbuzz_whileEnd0
 mov fp _ r0
 load r0 _ r1
-mod|i2 r1 3 r0
+mod|i2 r1 15 r0
 ifNotEq|i2 r0 0 _fizzbuzz_else0
-sub|i2 fp 5 r0
+sub|i2 fp 10 r0
 mov r0 _ r1
 store|i1 70 r1 _
 add|i2 r0 1 r1
@@ -277,6 +277,16 @@ store|i1 122 r1 _
 add|i2 r0 3 r1
 store|i1 122 r1 _
 add|i2 r0 4 r1
+store|i1 98 r1 _
+add|i2 r0 5 r1
+store|i1 117 r1 _
+add|i2 r0 6 r1
+store|i1 122 r1 _
+add|i2 r0 7 r1
+store|i1 122 r1 _
+add|i2 r0 8 r1
+store|i1 33 r1 _
+add|i2 r0 9 r1
 store|i1 0 r1 _
 call println _ _
 jump _fizzbuzz_ifElseEnd0 _ pc
@@ -301,9 +311,28 @@ jump _fizzbuzz_ifElseEnd1 _ pc
 label _fizzbuzz_else1
 mov fp _ r0
 load r0 _ r1
+mod|i2 r1 3 r0
+ifNotEq|i2 r0 0 _fizzbuzz_else2
+sub|i2 fp 5 r0
+mov r0 _ r1
+store|i1 70 r1 _
+add|i2 r0 1 r1
+store|i1 105 r1 _
+add|i2 r0 2 r1
+store|i1 122 r1 _
+add|i2 r0 3 r1
+store|i1 122 r1 _
+add|i2 r0 4 r1
+store|i1 0 r1 _
+call println _ _
+jump _fizzbuzz_ifElseEnd2 _ pc
+label _fizzbuzz_else2
+mov fp _ r0
+load r0 _ r1
 mov r1 _ r0
 call intToString _ _
 call println _ _
+label _fizzbuzz_ifElseEnd2
 label _fizzbuzz_ifElseEnd1
 label _fizzbuzz_ifElseEnd0
 mov fp _ r0
