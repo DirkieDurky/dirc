@@ -182,6 +182,9 @@ public class SemanticAnalyzer
                             // Allow int assigned to pointer for now
                             if (!(assignType is Pointer && valueType == Int.Instance))
                             {
+                                // Since we currently don't have typecasts yet, just allow when both types are primitives
+                                if (assignType is PrimitiveType && valueType is PrimitiveType) return assignType;
+
                                 throw new SemanticException($"Type mismatch in assignment to '{varAssign.Name}': expected {assignType.Name}, got {valueType.Name}", varAssign.TargetName, options, context);
                             }
                         }
@@ -392,6 +395,9 @@ public class SemanticAnalyzer
 
                     if (assignValueType != null && assignValueType != assignArrayType)
                     {
+                        // Since we currently don't have typecasts yet, just allow when both types are primitives
+                        if (assignValueType is PrimitiveType && assignArrayType is PrimitiveType) return assignArrayType;
+
                         throw new SemanticException($"Type mismatch in array assignment to '{arrayAssign.ArrayName}': expected {assignArrayType.Name}, got {assignValueType.Name}", arrayAssign.ArrayToken, options, context);
                     }
 
