@@ -30,4 +30,12 @@ public class Register
             Allocator.StackTrace(1, 1);
         }
     }
+
+    public Register Clone()
+    {
+        Register newReg = new Register(_allocator, RegisterEnum, RefersToFunctionArgument);
+        newReg.InUse = InUse;
+
+        return newReg;
+    }
 }

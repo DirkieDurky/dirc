@@ -16,10 +16,10 @@ class CallFactory
 
     public IReturnable? Generate(CallExpressionNode node, CodeGenContext context)
     {
-        // Save in use caller saved registers
+        // Save in use caller saved registers so they can be restored after the call
         List<(Register reg, string? name)> toSave = context.Allocator.TrackedCallerSavedRegisters
             .Where(x => x.InUse)
-            .Select(x => (x, (string?)null))
+            .Select(x => (x.Clone(), (string?)null))
             .ToList();
 
         for (int i = 0; i < toSave.Count; i++)
