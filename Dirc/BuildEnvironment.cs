@@ -57,6 +57,7 @@ public class BuildEnvironment
     public static int DataWidth => 16;
     // public static int RamBytes { get; } = 536870912; // RAM is 512MiB
     public static int RamBytes => 1024; // Fits in RAM display ingame for a data width of 16
+    // public static int RamBytes => 256; // Fits in RAM display ingame for a data width of 64
     public static int ScreenBufferStart => RamBytes;
     // When changing RamBytes the number in the first line of init.o should match this value. I currently have no way to automate that.
     public static int MaxRamValue => (RamBytes / 8) - 1;
