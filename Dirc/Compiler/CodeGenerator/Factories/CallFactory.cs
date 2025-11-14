@@ -71,19 +71,9 @@ class CallFactory
         toSave.Reverse();
         foreach ((Register reg, string? name) in toSave)
         {
+            _codeGenBase.EmitPop(reg);
             if (name != null)
             {
-                StackStoredVariable stackVar = (StackStoredVariable)context.VariableTable[name];
-                Register tmp = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
-                _codeGenBase.EmitBinaryOperation(
-                    Operation.Sub,
-                    ReadonlyRegister.FP,
-                    new NumberLiteralNode(stackVar.FramePointerOffset * BuildEnvironment.StackAlignment),
-                    tmp
-                );
-                _codeGenBase.EmitLoad(new ReadonlyRegister(tmp), reg);
-                tmp.Free();
-
                 context.VariableTable[name] = new RegisterStoredVariable(name, reg);
             }
         }
