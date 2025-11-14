@@ -16,13 +16,15 @@ class FunctionFactory
 
     public void Generate(FunctionDeclarationNode node, CodeGenContext context)
     {
+        CodeGenContext scopeSpecificContext = (CodeGenContext)context.CloneAndResetAllocator();
+
         _codeGenBase.EmitLabel(node.Name);
         _codeGenBase.EmitPush(ReadonlyRegister.LR);
         _codeGenBase.EmitPush(ReadonlyRegister.FP);
         _codeGenBase.EmitMov(ReadonlyRegister.SP, context.Allocator.Use(RegisterEnum.fp));
-        AllocateSpaceForLocalVariables(node.Body, context);
+        scopeSpecificContext.StackframeSize = CalculateStackframeSize(node.Body);
+        AllocateStackframe(scopeSpecificContext);
 
-        CodeGenContext scopeSpecificContext = (CodeGenContext)context.CloneAndResetAllocator();
         if (node.Parameters.Count > Allocator.ArgumentRegisters.Count) throw new Exception($"More than {Allocator.ArgumentRegisters.Count} function parameters given.");
         for (int i = 0; i < node.Parameters.Count; i++)
         {
@@ -61,17 +63,17 @@ class FunctionFactory
         _codeGenBase.EmitPop(context.Allocator.Use(RegisterEnum.lr));
     }
 
-    public void AllocateSpaceForLocalVariables(List<AstNode> body, CodeGenContext context)
+    public void AllocateStackframe(CodeGenContext context)
     {
         _codeGenBase.EmitBinaryOperation(
             Operation.Sub,
             ReadonlyRegister.SP,
-            new NumberLiteralNode(BuildEnvironment.StackAlignment * GetLocalVariablesCount(body)),
+            new NumberLiteralNode(BuildEnvironment.StackAlignment * context.StackframeSize),
             context.Allocator.Use(RegisterEnum.sp)
         );
     }
 
-    public int GetLocalVariablesCount(List<AstNode> body)
+    public int CalculateStackframeSize(List<AstNode> body)
     {
         var allNodes = GetAllDescendantNodes(body);
         int variableDeclarationCount = 0;

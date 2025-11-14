@@ -20,7 +20,11 @@ class CodeGenContext : ICloneable
     public PointerFactory PointerFactory { get; }
     public Dictionary<string, Variable> VariableTable { get; set; } = new();
     public List<string> DeclaredFunctions { get; set; } = new();
+    // The offset to put the next variable on the stack
     public int NextVariableOffset { get; set; } = 0;
+    // How many words the stack pointer is from the start
+    public int StackPointerOffset { get; set; } = 0;
+    public int StackframeSize { get; set; } = 0;
     public Options Options;
     public BuildContext BuildContext;
 
@@ -41,6 +45,8 @@ class CodeGenContext : ICloneable
         Dictionary<string, Variable> variableTable,
         List<string> declaredFunctions,
         int nextVariableOffset,
+        int stackPointerOffset,
+        int stackframeSize,
         Options options,
         BuildContext buildContext
     )
@@ -61,6 +67,8 @@ class CodeGenContext : ICloneable
         VariableTable = variableTable;
         DeclaredFunctions = declaredFunctions;
         NextVariableOffset = nextVariableOffset;
+        StackPointerOffset = stackPointerOffset;
+        StackframeSize = stackframeSize;
         Options = options;
         BuildContext = buildContext;
     }
@@ -84,6 +92,8 @@ class CodeGenContext : ICloneable
             VariableTable.ToDictionary(x => x.Key, x => x.Value),
             DeclaredFunctions,
             NextVariableOffset,
+            StackPointerOffset,
+            StackframeSize,
             Options,
             BuildContext
         );
@@ -109,6 +119,8 @@ class CodeGenContext : ICloneable
             VariableTable.ToDictionary(x => x.Key, x => x.Value),
             DeclaredFunctions,
             NextVariableOffset,
+            StackPointerOffset,
+            StackframeSize,
             Options,
             BuildContext
         );
@@ -123,12 +135,16 @@ class CodeGenContext : ICloneable
         return offset;
     }
 
-    public int Push(IOperand operand)
+    public int Push(IOperand operand, CodeGenContext context)
     {
-        int offset = NextVariableOffset;
-        NextVariableOffset++;
+        int offset = context.StackframeSize - StackPointerOffset;
+        StackPointerOffset++;
 
         CodeGenBase.EmitPush(operand);
+        if (offset < 0)
+        {
+            throw new Exception("Oh no");
+        }
         return offset;
     }
 

@@ -43,6 +43,8 @@ class CodeGenerator
             [],
             [],
             0,
+            0,
+            0,
             options,
             buildContext
         );
@@ -81,7 +83,8 @@ class CodeGenerator
                 throw new CodeGenException("File contains top-level code. Libraries may not contain any top-level code.", null, Context.Options, Context.BuildContext);
             }
             _codeGenBase.EmitLabel("_start");
-            Context.FunctionFactory.AllocateSpaceForLocalVariables(nodes, Context);
+            Context.StackframeSize = Context.FunctionFactory.CalculateStackframeSize(nodes);
+            Context.FunctionFactory.AllocateStackframe(Context);
         }
 
         foreach (AstNode node in nodes)

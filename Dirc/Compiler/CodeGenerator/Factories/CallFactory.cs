@@ -27,7 +27,7 @@ class CallFactory
             Register reg = toSave[i].reg;
 
             Variable? var = context.VariableTable.GetByRegister(reg);
-            int offset = context.Push(new ReadonlyRegister(reg));
+            int offset = context.Push(new ReadonlyRegister(reg), context);
             if (var != null)
             {
                 context.VariableTable[var.Name] = new StackStoredVariable(var.Name, offset);
