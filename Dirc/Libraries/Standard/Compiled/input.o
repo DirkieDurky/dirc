@@ -3,9 +3,6 @@ push lr _ _
 push fp _ _
 mov sp _ fp
 sub|i2 sp 82 sp
-sub|i2 fp 79 r0
-add|i2 r0 79 r2
-store|i1 0 r2 _
 sub|i2 fp 80 r0
 store|i1 0 r0 _
 call @readKey _ _
@@ -36,6 +33,11 @@ sub|i2 fp 81 r1
 store r0 r1 _
 jump _input_while0 _ pc
 label _input_whileEnd0
+sub|i2 fp 79 r0
+sub|i2 fp 80 r1
+load r1 _ r2
+add r0 r2 r3
+store|i1 0 r3 _
 call @printNewline _ _
 sub|i2 fp 79 r0
 mov fp _ sp

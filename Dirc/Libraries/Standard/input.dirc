@@ -1,7 +1,6 @@
 char[] input()
 {
     char line[80];
-    line[79] = 0;
     int lineIndex = 0;
     char c = readKey();
     while (c != 5)
@@ -11,6 +10,7 @@ char[] input()
         lineIndex++;
         c = readKey();
     }
+    line[lineIndex] = 0;
     printNewline();
 
     return line;
