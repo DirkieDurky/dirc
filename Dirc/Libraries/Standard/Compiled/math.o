@@ -1,0 +1,44 @@
+label power
+push lr _ _
+push fp _ _
+mov sp _ fp
+sub|i2 sp 2 sp
+ifNotEq|i2 r1 0 _math_if0
+mov|i1 1 _ r0
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
+label _math_if0
+mov fp _ r2
+store r0 r2 _
+sub|i2 fp 1 r2
+store|i1 0 r2 _
+label _math_while0
+sub|i2 fp 1 r2
+load r2 _ r3
+sub|i2 r1 1 r2
+ifMoreOrEq r3 r2 _math_whileEnd0
+mov fp _ r2
+load r2 _ r3
+mul r3 r0 r2
+mov fp _ r3
+store r2 r3 _
+sub|i2 fp 1 r2
+load r2 _ r3
+add|i2 r3 1 r2
+sub|i2 fp 1 r3
+store r2 r3 _
+jump _math_while0 _ pc
+label _math_whileEnd0
+mov fp _ r2
+load r2 _ r3
+mov r3 _ r0
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
