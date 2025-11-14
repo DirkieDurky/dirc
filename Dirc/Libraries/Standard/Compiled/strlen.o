@@ -1,0 +1,31 @@
+label strlen
+push lr _ _
+push fp _ _
+mov sp _ fp
+sub|i2 sp 1 sp
+mov fp _ r1
+store|i1 0 r1 _
+label _strlen_while0
+mov fp _ r1
+load r1 _ r2
+add r0 r2 r3
+load r3 _ r1
+ifEq|i2 r1 0 _strlen_whileEnd0
+mov fp _ r1
+load r1 _ r2
+add|i2 r2 1 r1
+mov fp _ r2
+store r1 r2 _
+jump _strlen_while0 _ pc
+label _strlen_whileEnd0
+mov fp _ r1
+load r1 _ r2
+mov r2 _ r0
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
