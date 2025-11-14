@@ -1,4 +1,4 @@
-mov|i1 127 _ sp # Initialize stack pointer
-store|i1|i2 256 0 _ # Initialize screen pointer
+mov|i1 8191 _ sp # Initialize stack pointer
+store|i1|i2 65536 0 _ # Initialize screen pointer
 mov sp _ fp # Initialize frame pointer
 jump _start _ pc
