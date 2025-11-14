@@ -1,0 +1,10 @@
+println("Number 1:");
+int num1 = stringToInt(input());
+println("Number 2:");
+int num2 = stringToInt(input());
+
+print(intToString(num1));
+print(" + ");
+print(intToString(num2));
+print(" = ");
+println(intToString(num1 + num2));
