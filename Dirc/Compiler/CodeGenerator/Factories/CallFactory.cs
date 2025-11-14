@@ -27,21 +27,12 @@ class CallFactory
             Register reg = toSave[i].reg;
 
             Variable? var = context.VariableTable.GetByRegister(reg);
+            int offset = context.Push(new ReadonlyRegister(reg));
             if (var != null)
             {
+                context.VariableTable[var.Name] = new StackStoredVariable(var.Name, offset);
                 toSave[i] = (reg, var.Name);
-                int offset = context.AllocateStackVariable(var.Name);
-
-                Register tmp = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
-                _codeGenBase.EmitBinaryOperation(
-                    Operation.Sub,
-                    ReadonlyRegister.FP,
-                    new NumberLiteralNode(NumberLiteralType.Decimal, offset.ToString()),
-                    tmp
-                );
-                _codeGenBase.EmitStore(new ReadonlyRegister(reg), new ReadonlyRegister(tmp));
             }
-
         }
 
         List<Register> registersToFree = new();
