@@ -176,6 +176,11 @@ class CodeGenBase
         Emit($"noop _ _ _");
     }
 
+    public void EmitHalt()
+    {
+        Emit("halt _ _ _");
+    }
+
     public void EmitEmptyLine()
     {
         Emit("");

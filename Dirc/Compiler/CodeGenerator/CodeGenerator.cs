@@ -98,6 +98,11 @@ class CodeGenerator
             }
         }
 
+        if (topLevelCode != null)
+        {
+            _codeGenBase.EmitHalt();
+        }
+
         _codeGenBase.Code.Length--; // Remove double newline at the end
         return new(_codeGenBase.Code.ToString(), imports.ToArray());
     }

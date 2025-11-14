@@ -24,6 +24,7 @@ public class BuildEnvironment
     { "mov", 0b00010010 },
     { "noop", 0b00010111 },
     { "read", 0b00011000 },
+    { "halt", 0b00011111 },
     { "not", 0b00000100 },
     { "or", 0b00000011 },
     { "out", 0b10001111 },
