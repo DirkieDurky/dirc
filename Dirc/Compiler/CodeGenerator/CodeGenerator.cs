@@ -68,7 +68,7 @@ class CodeGenerator
         // Compile functions before rest of the code so they're at the top
         foreach (FunctionDeclarationNode funcNode in nodes.Where(node => node is FunctionDeclarationNode))
         {
-            Context.FunctionFactory.Generate(funcNode, (CodeGenContext)Context.CloneAndResetAllocator());
+            Context.FunctionFactory.Generate(funcNode, (CodeGenContext)Context.GetSubcontext());
         }
 
         AstNode? topLevelCode = nodes.FirstOrDefault(node => node is not ImportStatementNode && node is not FunctionDeclarationNode);

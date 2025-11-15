@@ -73,7 +73,7 @@ class CodeGenContext : ICloneable
         BuildContext = buildContext;
     }
 
-    public object CloneAndResetAllocator()
+    public object GetSubcontext()
     {
         CodeGenContext newContext = new(
             CodeGen,
@@ -92,7 +92,7 @@ class CodeGenContext : ICloneable
             VariableTable.ToDictionary(x => x.Key, x => x.Value),
             DeclaredFunctions,
             NextVariableOffset,
-            StackPointerOffset,
+            0,
             StackframeSize,
             Options,
             BuildContext
@@ -141,10 +141,6 @@ class CodeGenContext : ICloneable
         StackPointerOffset++;
 
         CodeGenBase.EmitPush(operand);
-        if (offset < 0)
-        {
-            throw new Exception("Oh no");
-        }
         return offset;
     }
 

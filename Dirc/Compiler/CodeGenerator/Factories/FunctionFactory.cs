@@ -16,7 +16,7 @@ class FunctionFactory
 
     public void Generate(FunctionDeclarationNode node, CodeGenContext context)
     {
-        CodeGenContext scopeSpecificContext = (CodeGenContext)context.CloneAndResetAllocator();
+        CodeGenContext scopeSpecificContext = (CodeGenContext)context.GetSubcontext();
 
         _codeGenBase.EmitLabel(node.Name);
         _codeGenBase.EmitPush(ReadonlyRegister.LR);
