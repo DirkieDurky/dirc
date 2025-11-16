@@ -138,6 +138,14 @@ Arrays can be initialized with values:
 ```
 int nums[5] = {1, 2, 3, 4, 5};
 ```
+or like this:
+```
+int[] nums = {1, 2, 3, 4, 5};
+```
+or like this:
+```
+int* nums = {1, 2, 3, 4, 5};
+```
 
 Array elements can be accessed and modified using square bracket notation:
 ```
@@ -147,6 +155,19 @@ out(nums[0]);      // Print the first element
 ```
 
 Array indices must be integers and are zero-based.
+
+Arrays can also contain other arrays, creating multidimensional arrays:
+```
+int[][] twoDArray = {
+    {1, 2, 3},
+    {4, 5, 6},
+    {7, 8, 9}
+};
+
+int[] subArray = twoDArray[2];
+println(intToString(subArray[1]));
+```
+This example gets the 3rd array out of twoDArray and then the 2nd element out of that array, so this should result '8'.
 
 ## Calculations
 Calculations can be done using the declared variables as follows:
