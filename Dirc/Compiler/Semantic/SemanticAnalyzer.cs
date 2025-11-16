@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Dirc.Compiling.CodeGen;
@@ -111,8 +112,25 @@ public class SemanticAnalyzer
             _functions.Add(function.Name, new FunctionSignature(returnType, functionParameters));
         }
 
-        if (_options.DisableSemanticAnalysis) return;
+        if (_options.IgnoreSemanticErrors)
+        {
+            try
+            {
+                AnalyzeNodes(nodes);
+            }
+            catch (SemanticException ex)
+            {
+                Console.WriteLine("Semantic exception ignored: " + ex.Message);
+            }
+        }
+        else
+        {
+            AnalyzeNodes(nodes);
+        }
+    }
 
+    private void AnalyzeNodes(List<AstNode> nodes)
+    {
         // Second pass: analyze all nodes
         for (int i = 0; i < nodes.Count; i++)
         {
