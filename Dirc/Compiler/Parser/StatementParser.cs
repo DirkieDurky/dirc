@@ -75,7 +75,7 @@ class StatementParser
             return [_context.FunctionParser.ParseFunctionDeclaration(type)];
         }
         // Array declaration
-        else if (_context.ParserBase.CheckNext(TokenType.LeftBracket))
+        else if (type.IsArray)
         {
             AstNode node = _context.ArrayParser.ParseArrayDeclaration(type);
             _context.ParserBase.Consume(TokenType.Semicolon, "Expected ';' after array declaration");

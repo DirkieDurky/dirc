@@ -39,7 +39,7 @@ internal class FunctionParser
                 // Array parameters
                 while (_context.ParserBase.Match(TokenType.LeftBracket))
                 {
-                    paramType = new PointerTypeNode(paramType.IdentifierToken, paramType);
+                    paramType = new PointerTypeNode(paramType.IdentifierToken, paramType, true);
                     _context.ParserBase.Consume(TokenType.RightBracket, "Expected closing bracket after opening bracket");
                 }
 

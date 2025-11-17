@@ -33,12 +33,25 @@ class TypeParser
         }
         Token baseTypeToken = _context.ParserBase.Consume(TokenType.Identifier, "Expected type name");
         type = new NamedTypeNode(baseTypeToken, baseTypeToken.Lexeme);
+        List<int> arraySizes = [];
 
         while (_context.ParserBase.Match(TokenType.Asterisk) || _context.ParserBase.Match(TokenType.LeftBracket))
         {
-            type = new PointerTypeNode(baseTypeToken, type);
-            if (_context.ParserBase.Previous().Type == TokenType.LeftBracket)
+            bool previousWasBracket = _context.ParserBase.Previous().Type == TokenType.LeftBracket;
+            type = new PointerTypeNode(baseTypeToken, type, previousWasBracket);
+            if (previousWasBracket)
             {
+                if (_context.ParserBase.Peek().Type != TokenType.RightBracket)
+                {
+                    AstNode sizeNode = _context.ExpressionParser.ParseExpression();
+                    if (sizeNode is not NumberLiteralNode sizeNum || sizeNum.Value.Any(c => !char.IsDigit(c)))
+                    {
+                        throw new SyntaxException("Size in array declaration must be a number", baseTypeToken, _context.ParserBase.Options, _context.ParserBase.Context);
+                    }
+
+                    arraySizes.Add(int.Parse(sizeNum.Value));
+                }
+
                 if (safe && _context.ParserBase.Peek().Type != TokenType.RightBracket)
                 {
                     _context.ParserBase.ReturnToCheckpoint();
@@ -47,6 +60,8 @@ class TypeParser
                 _context.ParserBase.Consume(TokenType.RightBracket, "Expected closing bracket after opening bracket");
             }
         }
+
+        type.ArraySizes.AddRange(arraySizes);
 
         if (safe
         && !_context.ParserBase.Check(TokenType.Identifier)

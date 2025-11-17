@@ -82,7 +82,7 @@ class FunctionFactory
 
         foreach (var arrNode in allNodes.OfType<ArrayDeclarationNode>())
         {
-            variableDeclarationCount += arrNode.Size;
+            variableDeclarationCount += arrNode.TotalSize();
         }
 
         foreach (var arrLiteralNode in allNodes.OfType<ArrayLiteralNode>())

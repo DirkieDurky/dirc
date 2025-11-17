@@ -6,7 +6,7 @@ public class PointerTypeNode : TypeNode
 {
     public TypeNode BaseType { get; }
 
-    public PointerTypeNode(Token identifierToken, TypeNode baseType) : base(identifierToken, baseType.Name + "*")
+    public PointerTypeNode(Token identifierToken, TypeNode baseType, bool isArray) : base(identifierToken, baseType.Name + "*", isArray, [])
     {
         BaseType = baseType;
     }

@@ -16,7 +16,7 @@ class ArrayFactory
     {
         if (node.Initializer == null)
         {
-            context.AllocateStackArray(node.Size, node.Name);
+            context.AllocateStackArray(node.TotalSize(), node.Name);
         }
         else
         {
