@@ -54,8 +54,8 @@ public class Options
     [Value(0, MetaName = "input files", HelpText = "The input files to compile.")]
     public IEnumerable<string> InputFiles { get; set; }
 
-    [Option("ignore-semantic-errors", Required = false, HelpText = "Ignore semantic errors")]
-    public bool IgnoreSemanticErrors { get; set; } = false;
+    [Option("enable-semantic-errors", Required = false, HelpText = "Ignore semantic errors")]
+    public bool EnableSemanticErrors { get; set; } = false;
 
     public bool CheckDebugOption(DebugOption debugOption)
     {
