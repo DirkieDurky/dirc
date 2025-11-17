@@ -2,7 +2,7 @@ namespace Dirc.Compiling.Semantic;
 
 class Helpers
 {
-    public static Dictionary<Operation, Type> ReturnTypes = new() {
+    public static Dictionary<Operation, SimpleType> ReturnTypes = new() {
         {Operation.Add, Int.Instance},
         {Operation.And, Bool.Instance},
         {Operation.Div, Int.Instance},

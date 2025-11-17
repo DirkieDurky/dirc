@@ -2,7 +2,7 @@ namespace Dirc.Compiling.Semantic;
 
 class Int : PrimitiveType
 {
-    public static Type Instance = new Int();
+    public static SimpleType Instance = new Int();
 
     public override string Name => "int";
 

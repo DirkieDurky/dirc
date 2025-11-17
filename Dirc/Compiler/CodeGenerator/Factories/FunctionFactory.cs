@@ -75,7 +75,7 @@ class FunctionFactory
 
     public int CalculateStackframeSize(List<AstNode> body)
     {
-        var allNodes = GetAllDescendantNodes(body);
+        var allNodes = Helpers.GetAllDescendantNodes(body);
         int variableDeclarationCount = 0;
 
         variableDeclarationCount += allNodes.Count(n => n is VariableDeclarationNode);
@@ -96,16 +96,5 @@ class FunctionFactory
         }
 
         return variableDeclarationCount;
-    }
-
-    private IEnumerable<AstNode> GetAllDescendantNodes(IEnumerable<AstNode> nodes)
-    {
-        var result = new List<AstNode>();
-        foreach (var node in nodes)
-        {
-            result.Add(node);
-            result.AddRange(GetAllDescendantNodes(node.GetChildNodes()));
-        }
-        return result;
     }
 }

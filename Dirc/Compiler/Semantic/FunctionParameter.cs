@@ -2,10 +2,10 @@ namespace Dirc.Compiling.Semantic;
 
 public class FunctionParameter
 {
-    public Type Type;
+    public SimpleType Type;
     public string Name;
 
-    public FunctionParameter(Type type, string name)
+    public FunctionParameter(SimpleType type, string name)
     {
         Type = type;
         Name = name;

@@ -55,6 +55,8 @@ class ExpressionFactory
                 return context.PointerFactory.GeneratePointerDereference(deref, context);
             case StringLiteralNode stringLiteral:
                 return context.StringFactory.GenerateStringLiteralReturnBasePtr(stringLiteral, context);
+            case ArrLenNode arrLenNode:
+                return new NumberLiteralNode(arrLenNode.ComputedLength);
             default:
                 throw new Exception($"Unhandled node {node}");
         }

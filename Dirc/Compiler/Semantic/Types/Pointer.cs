@@ -2,15 +2,15 @@ using System.Collections.Concurrent;
 
 namespace Dirc.Compiling.Semantic;
 
-class Pointer : Type
+class Pointer : SimpleType
 {
-    private static readonly ConcurrentDictionary<Type, Pointer> _cache = new();
+    private static readonly ConcurrentDictionary<SimpleType, Pointer> _cache = new();
 
-    public Type BaseType { get; }
+    public SimpleType BaseType { get; }
 
-    private Pointer(Type baseType) => BaseType = baseType;
+    private Pointer(SimpleType baseType) => BaseType = baseType;
 
-    public static Pointer Of(Type baseType)
+    public static Pointer Of(SimpleType baseType)
     {
         return _cache.GetOrAdd(baseType, e => new Pointer(baseType));
     }

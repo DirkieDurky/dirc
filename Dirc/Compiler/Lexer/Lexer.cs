@@ -18,6 +18,7 @@ class Lexer
         { "false", TokenType.False },
         { "while", TokenType.While },
         { "for", TokenType.For },
+        { "arrlen", TokenType.ArrLen },
     };
 
     private BuildContext _buildContext;

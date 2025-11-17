@@ -50,7 +50,7 @@ public class Compiler
             Console.WriteLine($"Running back-end for {buildContext.CurrentFilePath}...");
             Console.WriteLine("Running semantic analyzer...");
         }
-        new SemanticAnalyzer(options, buildContext).Analyze(astNodes, symbolTable);
+        astNodes = new SemanticAnalyzer(options, buildContext).Analyze(astNodes, symbolTable);
         if (options.CheckDebugOption(DebugOption.General))
         {
             Console.WriteLine("Running code generator...");

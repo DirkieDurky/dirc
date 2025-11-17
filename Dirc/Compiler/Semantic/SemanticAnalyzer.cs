@@ -12,17 +12,17 @@ public class SemanticAnalyzer
     private Options _options;
     private BuildContext _buildContext;
 
-    private static readonly HashSet<Type> ValidTypes = new() { Int.Instance, Bool.Instance, Char.Instance };
+    private static readonly HashSet<SimpleType> ValidTypes = new() { Int.Instance, Bool.Instance, Char.Instance };
 
-    private readonly Dictionary<string, Type> _validTypes = new();
-    private readonly Dictionary<string, Type> _validReturnTypes = new();
+    private readonly Dictionary<string, SimpleType> _validTypes = new();
+    private readonly Dictionary<string, SimpleType> _validReturnTypes = new();
 
     public SemanticAnalyzer(Options options, BuildContext buildContext)
     {
         _buildContext = buildContext;
         _options = options;
 
-        foreach (Type type in ValidTypes)
+        foreach (SimpleType type in ValidTypes)
         {
             _validTypes.Add(type.Name, type);
         }
@@ -31,7 +31,7 @@ public class SemanticAnalyzer
         _validReturnTypes.Add(Void.Instance.Name, Void.Instance);
     }
 
-    public void Analyze(List<AstNode> nodes, SymbolTable symbolTable)
+    public List<AstNode> Analyze(List<AstNode> nodes, SymbolTable symbolTable)
     {
         // First pass: collect function signatures
 
@@ -78,12 +78,12 @@ public class SemanticAnalyzer
         // From the symbol table
         foreach (MetaFile.Function function in symbolTable.Functions)
         {
-            Type returnType = TypeFromString(function.ReturnType, true);
+            SimpleType returnType = TypeFromString(function.ReturnType, true);
 
             List<FunctionParameter> functionParameters = [];
             foreach (MetaFile.Param param in function.Parameters)
             {
-                Type paramType = TypeFromString(param.Type, false);
+                SimpleType paramType = TypeFromString(param.Type, false);
                 functionParameters.Add(new(paramType, param.Name));
             }
 
@@ -126,19 +126,20 @@ public class SemanticAnalyzer
                 // Console.WriteLine("Semantic exception ignored: " + ex.Message);
             }
         }
+
+        return nodes;
     }
 
     private void AnalyzeNodes(List<AstNode> nodes)
     {
         // Second pass: analyze all nodes
-        for (int i = 0; i < nodes.Count; i++)
+        foreach (AstNode node in nodes)
         {
-            AstNode node = nodes[i];
             AnalyzeNode(node, null, _options, _buildContext);
         }
     }
 
-    private Type? AnalyzeNode(AstNode node, Type? expectedType, Options options, BuildContext context)
+    private SimpleType? AnalyzeNode(AstNode node, SimpleType? expectedType, Options options, BuildContext context)
     {
         switch (node)
         {
@@ -160,18 +161,19 @@ public class SemanticAnalyzer
                 }
             case VariableDeclarationNode varDecl:
                 {
-                    Type varType = ResolveType(varDecl.Type);
+                    Type varComplexType = ResolveType(varDecl.Type);
+                    SimpleType varType = varComplexType.SimpleType;
                     if (_variables.ContainsKey(varDecl.Name))
                     {
                         throw new SemanticException($"Variable '{varDecl.Name}' already declared", varDecl.IdentifierToken, options, context);
                     }
                     else
                     {
-                        _variables[varDecl.Name] = varType;
+                        _variables[varDecl.Name] = varComplexType;
                     }
                     if (varDecl.Initializer != null)
                     {
-                        Type? initType = AnalyzeNode(varDecl.Initializer, varType, options, context);
+                        SimpleType? initType = AnalyzeNode(varDecl.Initializer, varType, options, context);
                         if (initType != null && initType != varType)
                         {
                             // Allow int assigned to pointer for now
@@ -194,22 +196,23 @@ public class SemanticAnalyzer
                     {
                         throw new SemanticException($"Assignment to undeclared variable '{varAssign.Name}'", varAssign.TargetName, options, context);
                     }
+                    SimpleType simpleAssignType = assignType!.SimpleType;
                     if (varAssign.Value != null)
                     {
-                        Type? valueType = AnalyzeNode(varAssign.Value, assignType, options, context);
-                        if (assignType != null && valueType != null && valueType != assignType)
+                        SimpleType? valueType = AnalyzeNode(varAssign.Value, simpleAssignType, options, context);
+                        if (assignType != null && valueType != null && valueType != simpleAssignType)
                         {
                             // Allow int assigned to pointer for now
-                            if (!(assignType is Pointer && valueType == Int.Instance))
+                            if (!(simpleAssignType is Pointer && valueType == Int.Instance))
                             {
                                 // Since we currently don't have typecasts yet, just allow when both types are primitives
-                                if (assignType is PrimitiveType && valueType is PrimitiveType) return assignType;
+                                if (simpleAssignType is PrimitiveType && valueType is PrimitiveType) return simpleAssignType;
 
-                                throw new SemanticException($"Type mismatch in assignment to '{varAssign.Name}': expected {assignType.Name}, got {valueType.Name}", varAssign.TargetName, options, context);
+                                throw new SemanticException($"Type mismatch in assignment to '{varAssign.Name}': expected {simpleAssignType.Name}, got {valueType.Name}", varAssign.TargetName, options, context);
                             }
                         }
                     }
-                    return assignType;
+                    return simpleAssignType;
                 }
             case IdentifierNode id:
                 {
@@ -217,21 +220,21 @@ public class SemanticAnalyzer
                     {
                         throw new SemanticException($"Use of undeclared variable '{id.Name}'", id.IdentifierToken, options, context);
                     }
-                    return idType;
+                    return idType.SimpleType;
                 }
             case BinaryExpressionNode binNode:
                 {
-                    Type? returnTypeOverride = null;
+                    SimpleType? returnTypeOverride = null;
 
                     bool supportPointerOperands = binNode.Operation == Operation.Add || binNode.Operation == Operation.Sub;
 
-                    Type leftType = AnalyzeNode(binNode.Left, null, options, context)!;
+                    SimpleType leftType = AnalyzeNode(binNode.Left, null, options, context)!;
                     if (supportPointerOperands && leftType is Pointer leftPtr)
                     {
                         leftType = leftPtr.BaseType;
                         returnTypeOverride = leftPtr;
                     }
-                    Type rightType = AnalyzeNode(binNode.Right, null, options, context)!;
+                    SimpleType rightType = AnalyzeNode(binNode.Right, null, options, context)!;
                     if (supportPointerOperands && rightType is Pointer rightPtr)
                     {
                         rightType = rightPtr.BaseType;
@@ -247,7 +250,7 @@ public class SemanticAnalyzer
                 }
             case IfStatementNode ifStmt:
                 {
-                    Type condType = AnalyzeNode(ifStmt.Condition, Bool.Instance, options, context)!;
+                    SimpleType condType = AnalyzeNode(ifStmt.Condition, Bool.Instance, options, context)!;
                     if (condType != Bool.Instance && condType != Int.Instance)
                     {
                         throw new SemanticException($"If condition must be bool or int, got {condType.Name}", null, options, context);
@@ -258,7 +261,7 @@ public class SemanticAnalyzer
                 }
             case WhileStatementNode whileStmt:
                 {
-                    Type? whileCondType = AnalyzeNode(whileStmt.Condition, Bool.Instance, options, context);
+                    SimpleType? whileCondType = AnalyzeNode(whileStmt.Condition, Bool.Instance, options, context);
                     if (whileCondType != Bool.Instance && whileCondType != Int.Instance)
                     {
                         string typeString = whileCondType == null ? "null" : whileCondType.Name;
@@ -279,8 +282,8 @@ public class SemanticAnalyzer
                     }
                     for (int i = 0; i < Math.Min(call.Arguments.Count, sig.Parameters.Count); i++)
                     {
-                        Type parameterType = sig.Parameters[i].Type;
-                        Type? argType = AnalyzeNode(call.Arguments[i], parameterType, options, context);
+                        SimpleType parameterType = sig.Parameters[i].Type;
+                        SimpleType? argType = AnalyzeNode(call.Arguments[i], parameterType, options, context);
                         if (argType != null && argType != parameterType)
                         {
                             // Allow anything for void pointers
@@ -302,16 +305,16 @@ public class SemanticAnalyzer
                     {
                         if (param.Type is PointerTypeNode pointerType)
                         {
-                            _variables[param.Name] = Pointer.Of(_validTypes[pointerType.BaseType.Name]);
+                            _variables[param.Name] = new Type(Pointer.Of(_validTypes[pointerType.BaseType.Name]), param.Type.ArraySizes);
                         }
                         else
                         {
-                            _variables[param.Name] = _validTypes[param.Type.Name];
+                            _variables[param.Name] = new Type(_validTypes[param.Type.Name], param.Type.ArraySizes);
                         }
                     }
                     foreach (AstNode stmt in func.Body)
                     {
-                        Type returnType = TypeFromString(func.ReturnType.Name, true);
+                        SimpleType returnType = TypeFromString(func.ReturnType.Name, true);
                         AnalyzeNode(stmt, returnType, options, context);
                     }
                     _variables.Clear();
@@ -320,7 +323,7 @@ public class SemanticAnalyzer
                 }
             case ReturnStatementNode ret:
                 {
-                    Type? retType = AnalyzeNode(ret.ReturnValue, expectedType, options, context);
+                    SimpleType? retType = AnalyzeNode(ret.ReturnValue, expectedType, options, context);
                     if (expectedType != null && retType != null && retType != expectedType)
                     {
                         // When expected type is void*, allow any pointer for return type
@@ -332,22 +335,27 @@ public class SemanticAnalyzer
                 }
             case ArrayDeclarationNode arrayDecl:
                 {
-                    if (!_validTypes.ContainsKey(arrayDecl.TypeName))
+                    string trimmedTypeName = arrayDecl.TypeName.TrimEnd('*');
+                    if (!_validTypes.ContainsKey(trimmedTypeName))
                     {
-                        throw new SemanticException($"Unknown type '{arrayDecl.TypeName}' for array '{arrayDecl.Name}'", arrayDecl.IdentifierToken, options, context);
+                        throw new SemanticException($"Unknown type '{trimmedTypeName}' for array '{arrayDecl.Name}'", arrayDecl.IdentifierToken, options, context);
                     }
-                    Type arrayType = _validTypes[arrayDecl.TypeName];
                     if (_variables.ContainsKey(arrayDecl.Name))
                     {
                         throw new SemanticException($"Variable '{arrayDecl.Name}' already declared", arrayDecl.IdentifierToken, options, context);
                     }
 
-                    _variables[arrayDecl.Name] = Pointer.Of(arrayType); // Array variables return a pointer to their first element
+                    SimpleType arrayType = _validTypes[trimmedTypeName];
+                    for (int i = 0; i < arrayDecl.Type.ArraySizes.Count; i++)
+                    {
+                        arrayType = Pointer.Of(arrayType);
+                    }
+                    _variables[arrayDecl.Name] = new Type(arrayType, arrayDecl.Sizes); // Array variables return a pointer to their first element
 
                     if (arrayDecl.Initializer != null)
                     {
-                        Type? initType = AnalyzeNode(arrayDecl.Initializer, arrayType, options, context);
-                        if (initType != null && initType != arrayType)
+                        SimpleType? initType = AnalyzeNode(arrayDecl.Initializer, arrayType, options, context);
+                        if (initType != null && initType.Name != trimmedTypeName) // Ignore differences in pointer type for now
                         {
                             throw new SemanticException($"Type mismatch in array initialization of '{arrayDecl.Name}': expected {arrayType.Name}, got {initType.Name}", arrayDecl.IdentifierToken, options, context);
                         }
@@ -361,10 +369,10 @@ public class SemanticAnalyzer
                         return Int.Instance; // Default type for empty arrays
                     }
 
-                    Type firstType = AnalyzeNode(arrayLit.Elements[0], null, options, context)!;
+                    SimpleType firstType = AnalyzeNode(arrayLit.Elements[0], null, options, context)!;
                     foreach (AstNode element in arrayLit.Elements.Skip(1))
                     {
-                        Type elementType = AnalyzeNode(element, firstType, options, context)!;
+                        SimpleType elementType = AnalyzeNode(element, firstType, options, context)!;
                         if (elementType != firstType)
                         {
                             throw new SemanticException($"All array elements must have the same type, got {firstType.Name} and {elementType.Name}", null, options, context);
@@ -387,7 +395,7 @@ public class SemanticAnalyzer
                         throw new Exception("Array access array was of invalid type");
                     }
 
-                    Type arrayType = _variables[arrayIdentifier.Name];
+                    SimpleType arrayType = _variables[arrayIdentifier.Name].SimpleType;
 
                     if (arrayType is not Pointer)
                     {
@@ -407,15 +415,15 @@ public class SemanticAnalyzer
                     }
 
                     // Check that index is an integer
-                    Type assignIndexType = AnalyzeNode(arrayAssign.Index, Int.Instance, options, context)!;
+                    SimpleType assignIndexType = AnalyzeNode(arrayAssign.Index, Int.Instance, options, context)!;
                     if (assignIndexType != Int.Instance)
                     {
                         throw new SemanticException($"Array index must be an integer, got {assignIndexType.Name}", null, options, context);
                     }
 
-                    Type valueType = ((Pointer)assignArrayType).BaseType;
+                    SimpleType valueType = ((Pointer)assignArrayType.SimpleType).BaseType;
                     // Check that value matches array type
-                    Type assignValueType = AnalyzeNode(arrayAssign.Value, valueType, options, context)!;
+                    SimpleType assignValueType = AnalyzeNode(arrayAssign.Value, valueType, options, context)!;
 
                     if (assignValueType != valueType)
                     {
@@ -425,40 +433,46 @@ public class SemanticAnalyzer
                         throw new SemanticException($"Type mismatch in array assignment to '{arrayIdentifier.Name}': expected {valueType.Name}, got {assignValueType.Name}", arrayIdentifier.IdentifierToken, options, context);
                     }
 
-                    return assignArrayType;
+                    return assignArrayType.SimpleType;
                 }
             case PointerDereferenceNode deref:
                 {
-                    Type ptrType = AnalyzeNode(deref.PointerExpression, null, options, context)!;
+                    SimpleType ptrType = AnalyzeNode(deref.PointerExpression, null, options, context)!;
                     if (ptrType is Pointer p) return p.BaseType;
                     throw new SemanticException($"Cannot dereference non-pointer type {ptrType.Name}", null, options, context);
                 }
             case AddressOfNode addr:
                 {
-                    Type varType2 = AnalyzeNode(addr.Variable, null, options, context)!;
+                    SimpleType varType2 = AnalyzeNode(addr.Variable, null, options, context)!;
                     return Pointer.Of(varType2);
+                }
+            case ArrLenNode arrLenNode:
+                {
+                    int length = _variables[arrLenNode.Array.Name].ArraySizes[arrLenNode.Dimension];
+                    arrLenNode.ComputedLength = length;
+                    return Int.Instance;
                 }
             default:
                 return null;
         }
     }
 
-    private Type AnalyzeArrayAccess(ArrayAccessNode arrayAccess, Type arrayType, Options options, BuildContext context)
+    private SimpleType AnalyzeArrayAccess(ArrayAccessNode arrayAccess, SimpleType arrayType, Options options, BuildContext context)
     {
         if (arrayType is not Pointer)
         {
             throw new SemanticException($"Trying to index on variable of type {arrayType.Name}", null, options, context);
         }
 
-        Type arrayValuesType = ((Pointer)arrayType).BaseType;
-        Type finalType = arrayValuesType;
+        SimpleType arrayValuesType = ((Pointer)arrayType).BaseType;
+        SimpleType finalType = arrayValuesType;
         if (arrayAccess.Array is ArrayAccessNode subArrayAccess)
         {
             finalType = AnalyzeArrayAccess(subArrayAccess, arrayValuesType, options, context);
         }
 
         // Check that index is an integer
-        Type indexType = AnalyzeNode(arrayAccess.Index, Int.Instance, options, context)!;
+        SimpleType indexType = AnalyzeNode(arrayAccess.Index, Int.Instance, options, context)!;
         if (indexType != Int.Instance)
         {
             throw new SemanticException($"Array index must be an integer, got {indexType.Name}", null, options, context);
@@ -467,7 +481,7 @@ public class SemanticAnalyzer
         return finalType;
     }
 
-    private Type ResolveType(TypeNode node)
+    private SimpleType ResolveSimpleType(TypeNode node)
     {
         if (node is NamedTypeNode named)
         {
@@ -476,12 +490,17 @@ public class SemanticAnalyzer
         }
         if (node is PointerTypeNode ptr)
         {
-            return Pointer.Of(ResolveType(ptr.BaseType));
+            return Pointer.Of(ResolveSimpleType(ptr.BaseType));
         }
         throw new SemanticException($"Unknown type node", null, _options, _buildContext);
     }
 
-    private Type TypeFromString(string type, bool isReturnType)
+    private Type ResolveType(TypeNode node)
+    {
+        return new Type(ResolveSimpleType(node), node.ArraySizes);
+    }
+
+    private SimpleType TypeFromString(string type, bool isReturnType)
     {
         if (type.EndsWith('*'))
         {
@@ -490,11 +509,11 @@ public class SemanticAnalyzer
 
         if (isReturnType)
         {
-            if (_validReturnTypes.TryGetValue(type, out Type? t)) return t;
+            if (_validReturnTypes.TryGetValue(type, out SimpleType? t)) return t;
         }
         else
         {
-            if (_validTypes.TryGetValue(type, out Type? t)) return t;
+            if (_validTypes.TryGetValue(type, out SimpleType? t)) return t;
         }
         throw new SemanticException($"Unknown type '{type}'", new Token(TokenType.Identifier, type, null, -1), _options, _buildContext);
     }

@@ -93,6 +93,16 @@ class ExpressionParser
             return _context.ArrayParser.ParseArrayLiteral();
         }
 
+        if (_context.ParserBase.Match(TokenType.ArrLen))
+        {
+            _context.ParserBase.Consume(TokenType.LeftParen, "Expected opening parenthesis in arrlen call");
+            Token array = _context.ParserBase.Consume(TokenType.Identifier, "Expected array identifier in arrlen call");
+            _context.ParserBase.Consume(TokenType.Comma, "arrlen takes 2 arguments");
+            Token dimension = _context.ParserBase.Consume(TokenType.Number, "dimension in arrlen call should be a compile-constant number");
+            _context.ParserBase.Consume(TokenType.RightParen, "Expected closing parenthesis in arrlen call");
+            return new ArrLenNode(new IdentifierNode(array, array.Lexeme), int.Parse(dimension.Lexeme));
+        }
+
         throw new SyntaxException("Unexpected token", _context.ParserBase.Peek(), _context.ParserBase.Options, _context.ParserBase.Context);
     }
 

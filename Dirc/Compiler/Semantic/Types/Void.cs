@@ -1,8 +1,8 @@
 namespace Dirc.Compiling.Semantic;
 
-class Void : Type
+class Void : SimpleType
 {
-    public static Type Instance = new Void();
+    public static SimpleType Instance = new Void();
 
     public override string Name => "void";
 

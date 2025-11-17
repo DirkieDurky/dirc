@@ -36,4 +36,5 @@ public enum TokenType
     Return,
     While,
     For,
+    ArrLen,
 }
