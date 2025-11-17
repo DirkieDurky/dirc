@@ -134,18 +134,34 @@ class ExpressionParser
         return new IdentifierNode(_context.ParserBase.Previous(), _context.ParserBase.Previous().Lexeme);
     }
 
-    private AstNode ParseArrayOperation(Token name)
+    private AstNode ParseArrayOperation(Token name, ArrayAccessNode? subArrayAccess = null)
     {
         AstNode index = ParseExpression();
         _context.ParserBase.Consume(TokenType.RightBracket, "Expected ']' after array index");
 
+        AstNode array;
+        if (subArrayAccess != null)
+        {
+            array = subArrayAccess;
+        }
+        else
+        {
+            array = new IdentifierNode(name, name.Lexeme);
+        }
+
         if (_context.ParserBase.Match(TokenType.Equals))
         {
             AstNode value = ParseExpression();
-            return new ArrayAssignmentNode(name, index, value);
+
+            return new ArrayAssignmentNode(array, index, value);
         }
 
-        return new ArrayAccessNode(name, index);
+        if (_context.ParserBase.Match(TokenType.LeftBracket))
+        {
+            return ParseArrayOperation(name, new ArrayAccessNode(array, index));
+        }
+
+        return new ArrayAccessNode(array, index);
     }
 
     internal AstNode ParseFunctionCall(Token name)

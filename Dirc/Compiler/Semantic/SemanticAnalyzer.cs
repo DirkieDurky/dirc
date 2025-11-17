@@ -1,6 +1,4 @@
-using System.Linq.Expressions;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Dirc.Compiling.CodeGen;
 using Dirc.Compiling.Lexing;
 using Dirc.Compiling.Parsing;
@@ -375,30 +373,36 @@ public class SemanticAnalyzer
                 }
             case ArrayAccessNode arrayAccess:
                 {
-                    if (!_variables.TryGetValue(arrayAccess.ArrayName, out Type? accessArrayType))
+                    // Get array at the root
+                    ArrayAccessNode currentArrayAccess = arrayAccess;
+
+                    while (currentArrayAccess.Array is ArrayAccessNode subArrayAccess)
                     {
-                        throw new SemanticException($"Use of undeclared array '{arrayAccess.ArrayName}'", arrayAccess.ArrayToken, options, context);
+                        currentArrayAccess = subArrayAccess;
                     }
 
-                    // Check that index is an integer
-                    Type indexType = AnalyzeNode(arrayAccess.Index, Int.Instance, options, context)!;
-                    if (indexType != Int.Instance)
+                    if (currentArrayAccess.Array is not IdentifierNode arrayIdentifier)
                     {
-                        throw new SemanticException($"Array index must be an integer, got {indexType.Name}", null, options, context);
+                        throw new Exception("Array access array was of invalid type");
                     }
 
-                    if (accessArrayType is Pointer ptr)
+                    Type arrayType = _variables[arrayIdentifier.Name];
+
+                    if (arrayType is not Pointer)
                     {
-                        accessArrayType = ptr.BaseType;
-                        arrayAccess.ArrayIsPointer = true;
+                        throw new SemanticException($"Trying to index on variable of type {arrayType.Name}", null, options, context);
                     }
-                    return accessArrayType;
+
+                    return AnalyzeArrayAccess(arrayAccess, arrayType, options, context);
                 }
             case ArrayAssignmentNode arrayAssign:
                 {
-                    if (!_variables.TryGetValue(arrayAssign.ArrayName, out Type? assignArrayType))
+                    if (arrayAssign.Array is ArrayAccessNode) return AnalyzeNode(arrayAssign.Array, null, options, context);
+                    IdentifierNode arrayIdentifier = (IdentifierNode)arrayAssign.Array;
+
+                    if (!_variables.TryGetValue(arrayIdentifier.Name, out Type? assignArrayType))
                     {
-                        throw new SemanticException($"Assignment to undeclared array '{arrayAssign.ArrayName}'", arrayAssign.ArrayToken, options, context);
+                        throw new SemanticException($"Assignment to undeclared array '{arrayIdentifier.Name}'", arrayIdentifier.IdentifierToken, options, context);
                     }
 
                     // Check that index is an integer
@@ -408,21 +412,16 @@ public class SemanticAnalyzer
                         throw new SemanticException($"Array index must be an integer, got {assignIndexType.Name}", null, options, context);
                     }
 
+                    Type valueType = ((Pointer)assignArrayType).BaseType;
                     // Check that value matches array type
-                    Type assignValueType = AnalyzeNode(arrayAssign.Value, assignArrayType, options, context)!;
+                    Type assignValueType = AnalyzeNode(arrayAssign.Value, valueType, options, context)!;
 
-                    if (assignArrayType is Pointer assignPtr)
-                    {
-                        assignArrayType = assignPtr.BaseType;
-                        arrayAssign.ArrayIsPointer = true;
-                    }
-
-                    if (assignValueType != null && assignValueType != assignArrayType)
+                    if (assignValueType != valueType)
                     {
                         // Since we currently don't have typecasts yet, just allow when both types are primitives
-                        if (assignValueType is PrimitiveType && assignArrayType is PrimitiveType) return assignArrayType;
+                        if (assignValueType is PrimitiveType && valueType is PrimitiveType) return valueType;
 
-                        throw new SemanticException($"Type mismatch in array assignment to '{arrayAssign.ArrayName}': expected {assignArrayType.Name}, got {assignValueType.Name}", arrayAssign.ArrayToken, options, context);
+                        throw new SemanticException($"Type mismatch in array assignment to '{arrayIdentifier.Name}': expected {valueType.Name}, got {assignValueType.Name}", arrayIdentifier.IdentifierToken, options, context);
                     }
 
                     return assignArrayType;
@@ -441,6 +440,30 @@ public class SemanticAnalyzer
             default:
                 return null;
         }
+    }
+
+    private Type AnalyzeArrayAccess(ArrayAccessNode arrayAccess, Type arrayType, Options options, BuildContext context)
+    {
+        if (arrayType is not Pointer)
+        {
+            throw new SemanticException($"Trying to index on variable of type {arrayType.Name}", null, options, context);
+        }
+
+        Type arrayValuesType = ((Pointer)arrayType).BaseType;
+        Type finalType = arrayValuesType;
+        if (arrayAccess.Array is ArrayAccessNode subArrayAccess)
+        {
+            finalType = AnalyzeArrayAccess(subArrayAccess, arrayValuesType, options, context);
+        }
+
+        // Check that index is an integer
+        Type indexType = AnalyzeNode(arrayAccess.Index, Int.Instance, options, context)!;
+        if (indexType != Int.Instance)
+        {
+            throw new SemanticException($"Array index must be an integer, got {indexType.Name}", null, options, context);
+        }
+
+        return finalType;
     }
 
     private Type ResolveType(TypeNode node)

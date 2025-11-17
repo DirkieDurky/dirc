@@ -4,22 +4,18 @@ namespace Dirc.Compiling.Parsing;
 
 public class ArrayAssignmentNode : AstNode
 {
-    public Token ArrayToken { get; }
+    public AstNode Array { get; }
     public AstNode Index { get; }
     public AstNode Value { get; }
-    public string ArrayName => ArrayToken.Lexeme;
-    // The semantic analyzer will fill this in
-    public bool ArrayIsPointer { get; set; }
 
-    public ArrayAssignmentNode(Token arrayToken, AstNode index, AstNode value, bool arrayIsPointer = false)
+    public ArrayAssignmentNode(AstNode array, AstNode index, AstNode value)
     {
-        ArrayToken = arrayToken;
+        Array = array;
         Index = index;
         Value = value;
-        ArrayIsPointer = arrayIsPointer;
     }
 
-    public override string ToString() => $"ArrayAssignment({ArrayName}[{Index}] = {Value})";
+    public override string ToString() => $"ArrayAssignment({Array}[{Index}] = {Value})";
 
     public override IEnumerable<AstNode> GetChildNodes() => [Index, Value];
 }

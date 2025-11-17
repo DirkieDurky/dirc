@@ -108,45 +108,7 @@ class ArrayFactory
 
     public IReturnable GenerateArrayAccess(ArrayAccessNode node, CodeGenContext context)
     {
-        if (node.ArrayIsPointer!) return GenerateArrayPointerAccess(node, context);
-
-        if (context.VariableTable[node.ArrayName] is not StackStoredVariable stackVar)
-        {
-            throw new CodeGenException("Variable was of unsupported type", null, context.Options, context.BuildContext);
-        }
-
-        IReturnable indexResult = context.ExprFactory.Generate(node.Index, context) ?? throw new Exception("Array index expression failed to generate");
-
-        // Calculate the address: base + index
-        Register basePtr = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
-        _codeGenBase.EmitBinaryOperation(
-            Operation.Sub,
-            ReadonlyRegister.FP,
-            new NumberLiteralNode(NumberLiteralType.Decimal, stackVar.FramePointerOffset.ToString()),
-            basePtr
-        );
-
-        Register address = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
-        _codeGenBase.EmitBinaryOperation(
-            Operation.Add,
-            new ReadonlyRegister(basePtr),
-            indexResult,
-            address
-        );
-
-        Register result = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
-        _codeGenBase.EmitLoad(new ReadonlyRegister(address), result);
-
-        indexResult.Free();
-        basePtr.Free();
-        address.Free();
-
-        return new ReturnRegister(result);
-    }
-
-    public IReturnable GenerateArrayPointerAccess(ArrayAccessNode node, CodeGenContext context)
-    {
-        IReturnable pointerValue = context.ExprFactory.Generate(new IdentifierNode(node.ArrayToken, node.ArrayName), context) ?? throw new Exception("Pointer expression failed to generate");
+        IReturnable pointerValue = context.ExprFactory.Generate(node.Array, context) ?? throw new Exception("Pointer expression failed to generate");
         IReturnable indexValue = context.ExprFactory.Generate(node.Index, context) ?? throw new Exception("Array index failed to generate");
         Register result = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
         Register additionResult = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
@@ -160,46 +122,7 @@ class ArrayFactory
 
     public IReturnable? GenerateArrayAssignment(ArrayAssignmentNode node, CodeGenContext context)
     {
-        if (node.ArrayIsPointer) return GenerateArrayPointerAssignment(node, context);
-        if (context.VariableTable[node.ArrayName] is not StackStoredVariable stackVar)
-        {
-            throw new CodeGenException("Variable was of unsupported type", null, context.Options, context.BuildContext);
-        }
-
-        IReturnable valueResult = context.ExprFactory.Generate(node.Value, context) ?? throw new Exception("Array assignment value failed to generate");
-
-        IReturnable indexResult = context.ExprFactory.Generate(node.Index, context) ?? throw new Exception("Array index expression failed to generate");
-
-        // Calculate the address: base + index
-        Register basePtr = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
-        _codeGenBase.EmitBinaryOperation(
-            Operation.Sub,
-            ReadonlyRegister.FP,
-            new NumberLiteralNode(NumberLiteralType.Decimal, stackVar.FramePointerOffset.ToString()),
-            basePtr
-        );
-
-        Register address = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
-        _codeGenBase.EmitBinaryOperation(
-            Operation.Add,
-            new ReadonlyRegister(basePtr),
-            indexResult,
-            address
-        );
-        basePtr.Free();
-        indexResult.Free();
-
-        _codeGenBase.EmitStore(valueResult, new ReadonlyRegister(address));
-
-        valueResult.Free();
-        address.Free();
-
-        return valueResult;
-    }
-
-    public IReturnable? GenerateArrayPointerAssignment(ArrayAssignmentNode node, CodeGenContext context)
-    {
-        IReturnable pointerValue = context.ExprFactory.Generate(new IdentifierNode(node.ArrayToken, node.ArrayName), context) ?? throw new Exception("Pointer expression failed to generate");
+        IReturnable pointerValue = context.ExprFactory.Generate(node.Array, context) ?? throw new Exception("Pointer expression failed to generate");
         IReturnable indexValue = context.ExprFactory.Generate(node.Index, context) ?? throw new Exception("Array index failed to generate");
         Register result = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
         Register additionResult = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
