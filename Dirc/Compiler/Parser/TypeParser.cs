@@ -46,7 +46,8 @@ class TypeParser
                     AstNode sizeNode = _context.ExpressionParser.ParseExpression();
                     if (sizeNode is not NumberLiteralNode sizeNum || sizeNum.Value.Any(c => !char.IsDigit(c)))
                     {
-                        throw new SyntaxException("Size in array declaration must be a number", baseTypeToken, _context.ParserBase.Options, _context.ParserBase.Context);
+                        _context.ParserBase.ReturnToCheckpoint();
+                        return false;
                     }
 
                     arraySizes.Add(int.Parse(sizeNum.Value));
@@ -61,8 +62,6 @@ class TypeParser
             }
         }
 
-        type.ArraySizes.AddRange(arraySizes);
-
         if (safe
         && !_context.ParserBase.Check(TokenType.Identifier)
         && !_context.ParserBase.CheckNext(TokenType.LeftBracket) // This would mean array type like char[] so char should be treated as a type
@@ -71,6 +70,14 @@ class TypeParser
             _context.ParserBase.ReturnToCheckpoint();
             return false;
         }
+
+        if (safe && _context.ParserBase.CheckNext(TokenType.Identifier))
+        {
+            _context.ParserBase.ReturnToCheckpoint();
+            return false;
+        }
+
+        type.ArraySizes.AddRange(arraySizes);
 
         return true;
     }

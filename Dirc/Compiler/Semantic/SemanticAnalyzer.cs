@@ -196,11 +196,11 @@ public class SemanticAnalyzer
                     {
                         throw new SemanticException($"Assignment to undeclared variable '{varAssign.Name}'", varAssign.TargetName, options, context);
                     }
-                    SimpleType simpleAssignType = assignType!.SimpleType;
+                    SimpleType? simpleAssignType = assignType == null ? null : assignType.SimpleType;
                     if (varAssign.Value != null)
                     {
                         SimpleType? valueType = AnalyzeNode(varAssign.Value, simpleAssignType, options, context);
-                        if (assignType != null && valueType != null && valueType != simpleAssignType)
+                        if (simpleAssignType != null && valueType != null && valueType != simpleAssignType)
                         {
                             // Allow int assigned to pointer for now
                             if (!(simpleAssignType is Pointer && valueType == Int.Instance))

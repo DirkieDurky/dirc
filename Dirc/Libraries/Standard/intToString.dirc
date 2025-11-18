@@ -1,7 +1,7 @@
 char[] intToString(int num)
 {
     int stringLength = getDigitCountInInt(num);
-    char chars[20];
+    char[20] chars;
 
     int i = stringLength - 1;
     chars[stringLength] = 0;
