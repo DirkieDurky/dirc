@@ -345,7 +345,23 @@ public class SemanticAnalyzer
                                 AstNode currentArrayLiteral = arrayDecl.Initializer;
                                 while (currentArrayLiteral is ArrayLiteralNode arrayLiteral)
                                 {
-                                    foundSizes.Add(arrayLiteral.Elements.Count);
+                                    int size = arrayLiteral.Elements.Count;
+                                    foundSizes.Add(size);
+
+                                    // Check if sizes of subArrays match with each other
+                                    int? firstSize = null;
+                                    if (arrayLiteral.Elements[0] is ArrayLiteralNode subArrayLiteral && subArrayLiteral.Elements.Count > 1)
+                                    {
+                                        firstSize = ((ArrayLiteralNode)arrayLiteral.Elements[0]).Elements.Count;
+                                        for (int i = 1; i < arrayLiteral.Elements.Count; i++)
+                                        {
+                                            size = ((ArrayLiteralNode)arrayLiteral.Elements[i]).Elements.Count;
+                                            if (firstSize != size)
+                                            {
+                                                throw new SemanticException($"Sizes of arrays in array literal don't match", null, options, context);
+                                            }
+                                        }
+                                    }
                                     currentArrayLiteral = arrayLiteral.Elements[0];
                                 }
                                 break;
