@@ -373,7 +373,7 @@ public class SemanticAnalyzer
                             {
                                 // Get the array at the root
                                 ArrayAccessNode currentArrayAccess = arrayAccessNode;
-                                int depth = 0;
+                                int depth = 1;
 
                                 while (currentArrayAccess.Array is ArrayAccessNode subArrayAccess)
                                 {
@@ -402,7 +402,7 @@ public class SemanticAnalyzer
                     }
                     else
                     {
-                        if (arrayDecl.Sizes != foundSizes)
+                        if (arrayDecl.Sizes.Except(foundSizes).Count() > 0)
                         {
                             throw new SemanticException(
                                 $"Given array size(s) don't match initalizer. Given: {string.Join("", arrayDecl.Sizes.Select(x => $"[{x}]"))}. Initializer: {string.Join("", foundSizes.Select(x => $"[{x}]"))}",
