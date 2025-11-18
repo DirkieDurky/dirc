@@ -27,6 +27,7 @@ partial class Linker
         result.Append(assembly);
 
         result = result.Replace("[SCREEN_PTR]", BuildEnvironment.ScreenPointerAddress.ToString());
+        result = result.Replace("[RAM_SIZE]", BuildEnvironment.RamBytes.ToString());
 
         string resultStr = result.ToString();
         resultStr = UnresolvedSymbol().Replace(resultStr, "$1");
