@@ -17,35 +17,15 @@ class ArrayFactory
         if (node.Initializer == null)
         {
             context.AllocateStackArray(node.TotalSize(), node.Name);
-        }
-        else
-        {
-            return GenerateArrayInitialization(node.Name, node.Initializer, true, context);
+            return null;
         }
 
-        return null;
-    }
-
-    public IReturnable? GenerateArrayInitialization(string arrayName, AstNode initializer, bool isDeclaration, CodeGenContext context)
-    {
-        if (!isDeclaration)
-        {
-            if (context.VariableTable[arrayName] is StackStoredVariable)
-            {
-                //TODO: Free variable
-            }
-            else
-            {
-                throw new CodeGenException("Variable was of unsupported type", null, context.Options, context.BuildContext);
-            }
-        }
-
-        switch (initializer)
+        switch (node.Initializer)
         {
             case ArrayLiteralNode arrayLiteralNode:
                 {
                     ArrayLiteral arrayLiteral = GenerateArrayLiteral(arrayLiteralNode, context);
-                    context.AssignNameToArray(arrayLiteral.Offset, arrayName);
+                    context.AssignNameToArray(arrayLiteral.Offset, node.Name);
 
                     return new ReturnRegister(arrayLiteral.BasePtr);
                 }
@@ -58,13 +38,31 @@ class ArrayFactory
                     }
                     ArrayLiteralNode arrayLiteralNode = new(chars);
                     ArrayLiteral arrayLiteral = GenerateArrayLiteral(arrayLiteralNode, context);
-                    context.AssignNameToArray(arrayLiteral.Offset, arrayName);
+                    context.AssignNameToArray(arrayLiteral.Offset, node.Name);
 
                     return new ReturnRegister(arrayLiteral.BasePtr);
                 }
             default:
-                throw new CodeGenException("Invalid node given as array initializer. Expected an array- or string literal.", null, context.Options, context.BuildContext);
+                IReturnable value = context.ExprFactory.Generate(node.Initializer, context) ?? throw new Exception("Array assignment value failed to generate");
+
+                int offset = context.AllocateStackVariable(node.Name);
+                Register tmp = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
+
+                _codeGenBase.EmitBinaryOperation(
+                    Operation.Sub,
+                    ReadonlyRegister.FP,
+                    new NumberLiteralNode(NumberLiteralType.Decimal, offset.ToString()),
+                    tmp
+                );
+
+                _codeGenBase.EmitStore(value, new ReadonlyRegister(tmp));
+                value.Free();
+                break;
+                // default:
+                //     throw new CodeGenException("Invalid node given as array initializer. Expected an array- or string literal.", null, context.Options, context.BuildContext);
         }
+
+        return null;
     }
 
     public ReturnRegister GenerateArrayLiteralReturnBasePtr(ArrayLiteralNode arrayLiteralNode, CodeGenContext context)

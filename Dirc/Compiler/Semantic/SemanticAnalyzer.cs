@@ -355,22 +355,22 @@ public class SemanticAnalyzer
                     if (arrayDecl.Initializer != null)
                     {
                         SimpleType? initType = AnalyzeNode(arrayDecl.Initializer, arrayType, options, context);
-                        if (initType != null && initType.Name != trimmedTypeName) // Ignore differences in pointer type for now
+                        if (initType != null && initType.Name != arrayType.Name) // Ignore differences in pointer type for now
                         {
                             throw new SemanticException($"Type mismatch in array initialization of '{arrayDecl.Name}': expected {arrayType.Name}, got {initType.Name}", arrayDecl.IdentifierToken, options, context);
                         }
                     }
                     return null;
                 }
-            case ArrayLiteralNode arrayLit:
+            case ArrayLiteralNode arrayLiteral:
                 {
-                    if (arrayLit.Elements.Count == 0)
+                    if (arrayLiteral.Elements.Count == 0)
                     {
                         return Int.Instance; // Default type for empty arrays
                     }
 
-                    SimpleType firstType = AnalyzeNode(arrayLit.Elements[0], null, options, context)!;
-                    foreach (AstNode element in arrayLit.Elements.Skip(1))
+                    SimpleType firstType = AnalyzeNode(arrayLiteral.Elements[0], null, options, context)!;
+                    foreach (AstNode element in arrayLiteral.Elements.Skip(1))
                     {
                         SimpleType elementType = AnalyzeNode(element, firstType, options, context)!;
                         if (elementType != firstType)
@@ -378,7 +378,16 @@ public class SemanticAnalyzer
                             throw new SemanticException($"All array elements must have the same type, got {firstType.Name} and {elementType.Name}", null, options, context);
                         }
                     }
-                    return firstType;
+
+                    ArrayLiteralNode currentNode = arrayLiteral;
+                    SimpleType finalType = Pointer.Of(firstType);
+                    while (currentNode.Elements[0] is ArrayLiteralNode subArrayLiteral)
+                    {
+                        finalType = Pointer.Of(firstType);
+                        currentNode = subArrayLiteral;
+                    }
+
+                    return finalType;
                 }
             case ArrayAccessNode arrayAccess:
                 {

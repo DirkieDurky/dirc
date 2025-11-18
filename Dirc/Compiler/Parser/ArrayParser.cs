@@ -20,7 +20,7 @@ internal class ArrayParser
 
         AstNode? initializer = null;
         if (_context.ParserBase.Match(TokenType.Equals))
-            initializer = _context.ParserBase.Match(TokenType.String) ? new StringLiteralNode(_context.ParserBase.Previous()) : ParseArrayLiteral();
+            initializer = _context.ExpressionParser.ParseExpression();
 
         return new ArrayDeclarationNode(type, name, type.ArraySizes, initializer);
     }
