@@ -335,6 +335,65 @@ public class SemanticAnalyzer
                 }
             case ArrayDeclarationNode arrayDecl:
                 {
+                    List<int> foundSizes = [];
+
+                    // Find array sizes (in all dimensions) based on initializer
+                    switch (arrayDecl.Initializer)
+                    {
+                        case ArrayLiteralNode:
+                            {
+                                AstNode currentArrayLiteral = arrayDecl.Initializer;
+                                while (currentArrayLiteral is ArrayLiteralNode arrayLiteral)
+                                {
+                                    foundSizes.Add(arrayLiteral.Elements.Count);
+                                    currentArrayLiteral = arrayLiteral.Elements[0];
+                                }
+                                break;
+                            }
+                        case IdentifierNode identifierNode:
+                            foundSizes.Add(_variables[identifierNode.Name].ArraySizes[0]);
+                            break;
+                        case ArrayAccessNode arrayAccessNode:
+                            {
+                                // Get the array at the root
+                                ArrayAccessNode currentArrayAccess = arrayAccessNode;
+                                int depth = 0;
+
+                                while (currentArrayAccess.Array is ArrayAccessNode subArrayAccess)
+                                {
+                                    currentArrayAccess = subArrayAccess;
+                                    depth++;
+                                }
+
+                                if (currentArrayAccess.Array is not IdentifierNode identifierNode)
+                                {
+                                    throw new Exception("Array access array was of invalid type");
+                                }
+
+                                foundSizes.Add(_variables[identifierNode.Name].ArraySizes[depth]);
+                                break;
+                            }
+                    }
+
+                    // Fill missing sizes if possible
+                    if (arrayDecl.Sizes.Count == 0)
+                    {
+                        if (foundSizes.Count == 0)
+                        {
+                            throw new SemanticException($"Can't find out array length of '{arrayDecl.Name}' implicitly. Please specify array length.", arrayDecl.IdentifierToken, options, context);
+                        }
+                        arrayDecl.Sizes.AddRange(foundSizes);
+                    }
+                    else
+                    {
+                        if (arrayDecl.Sizes != foundSizes)
+                        {
+                            throw new SemanticException(
+                                $"Given array size(s) don't match initalizer. Given: {string.Join("", arrayDecl.Sizes.Select(x => $"[{x}]"))}. Initializer: {string.Join("", foundSizes.Select(x => $"[{x}]"))}",
+                            arrayDecl.IdentifierToken, options, context);
+                        }
+                    }
+
                     string trimmedTypeName = arrayDecl.TypeName.TrimEnd('*');
                     if (!_validTypes.ContainsKey(trimmedTypeName))
                     {
