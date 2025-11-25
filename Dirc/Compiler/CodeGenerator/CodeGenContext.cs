@@ -142,10 +142,16 @@ class CodeGenContext : ICloneable
     public int Push(IOperand operand, CodeGenContext context)
     {
         int offset = context.StackframeSize - StackPointerOffset;
-        StackPointerOffset++;
+        StackPointerOffset--;
 
         CodeGenBase.EmitPush(operand);
         return offset;
+    }
+
+    public void Pop(Register reg)
+    {
+        StackPointerOffset++;
+        CodeGenBase.EmitPop(reg);
     }
 
     public int AllocateStackArray(int size, string? name)

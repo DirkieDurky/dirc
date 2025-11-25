@@ -71,7 +71,7 @@ class CallFactory
         toSave.Reverse();
         foreach ((Register reg, string? name) in toSave)
         {
-            _codeGenBase.EmitPop(reg);
+            context.Pop(reg);
             if (name != null)
             {
                 context.VariableTable[name] = new RegisterStoredVariable(name, reg);
