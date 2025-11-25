@@ -299,6 +299,10 @@ public class SemanticAnalyzer
                 }
             case FunctionDeclarationNode func:
                 {
+                    if (func.ReturnType.IsArray)
+                    {
+                        throw new SemanticException("Functions may not return arrays. Please allocate an array on the heap and return it's pointer instead.", func.IdentifierToken, options, context);
+                    }
                     // New scope for parameters
                     Dictionary<string, Type> oldVars = new(_variables);
                     foreach (FunctionParameterNode param in func.Parameters)
