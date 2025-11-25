@@ -2,9 +2,33 @@ label intToString
 push lr _ _
 push fp _ _
 mov sp _ fp
-sub|i2 sp 22 sp
+sub|i2 sp 4 sp
+ifNotEq|i2 r0 0 _intToString_if0
 push r0 _ _
-sub|i2 fp 22 r1
+mov|i1 2 _ r0
+call @malloc _ _
+mov r0 _ r1
+pop _ _ r0
+mov fp _ r2
+store r1 r2 _
+mov fp _ r1
+load r1 _ r2
+mov r2 _ r3
+store|i1 48 r3 _
+mov fp _ r1
+load r1 _ r2
+add|i2 r2 1 r3
+store|i1 0 r3 _
+mov fp _ r1
+load r1 _ r2
+mov r2 _ r0
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
+label _intToString_if0
+push r0 _ _
+sub|i2 fp 4 r1
 load r1 _ r2
 mov r2 _ r0
 call getDigitCountInInt _ _
@@ -12,36 +36,49 @@ mov r0 _ r1
 pop _ _ r0
 mov fp _ r2
 store r1 r2 _
+push r0 _ _
+mov fp _ r1
+load r1 _ r2
+add|i2 r2 1 r1
+mov r1 _ r0
+call @malloc _ _
+mov r0 _ r1
+pop _ _ r0
+sub|i2 fp 1 r2
+store r1 r2 _
 mov fp _ r1
 load r1 _ r2
 sub|i2 r2 1 r1
-sub|i2 fp 21 r2
+sub|i2 fp 2 r2
 store r1 r2 _
-sub|i2 fp 20 r1
-mov fp _ r2
-load r2 _ r3
-add r1 r3 r4
+sub|i2 fp 1 r1
+load r1 _ r2
+mov fp _ r1
+load r1 _ r3
+add r2 r3 r4
 store|i1 0 r4 _
 label _intToString_while0
 ifLessOrEq|i2 r0 0 _intToString_whileEnd0
-sub|i2 fp 20 r1
-sub|i2 fp 21 r2
-load r2 _ r3
-add r1 r3 r4
-mod|i2 r0 10 r1
-add|i2 r1 48 r3
+sub|i2 fp 1 r1
+load r1 _ r2
+sub|i2 fp 2 r1
+load r1 _ r3
+add r2 r3 r4
+mod|i2 r0 10 r2
+add|i2 r2 48 r3
 store r3 r4 _
 div|i2 r0 10 r1
 mov r1 _ r0
-sub|i2 fp 21 r1
+sub|i2 fp 2 r1
 load r1 _ r2
 sub|i2 r2 1 r1
-sub|i2 fp 21 r2
+sub|i2 fp 2 r2
 store r1 r2 _
 jump _intToString_while0 _ pc
 label _intToString_whileEnd0
-sub|i2 fp 20 r1
-mov r1 _ r0
+sub|i2 fp 1 r1
+load r1 _ r2
+mov r2 _ r0
 mov fp _ sp
 pop _ _ fp
 pop _ _ lr
@@ -58,7 +95,7 @@ mov sp _ fp
 sub|i2 sp 1 sp
 mov fp _ r1
 store|i1 1 r1 _
-ifLess|i2 r0 10000 _intToString_if0
+ifLess|i2 r0 10000 _intToString_if1
 mov fp _ r1
 load r1 _ r2
 add|i2 r2 4 r1
@@ -66,8 +103,8 @@ mov fp _ r2
 store r1 r2 _
 div|i2 r0 10000 r1
 mov r1 _ r0
-label _intToString_if0
-ifLess|i2 r0 100 _intToString_if1
+label _intToString_if1
+ifLess|i2 r0 100 _intToString_if2
 mov fp _ r1
 load r1 _ r2
 add|i2 r2 2 r1
@@ -75,14 +112,14 @@ mov fp _ r2
 store r1 r2 _
 div|i2 r0 100 r1
 mov r1 _ r0
-label _intToString_if1
-ifLess|i2 r0 10 _intToString_if2
+label _intToString_if2
+ifLess|i2 r0 10 _intToString_if3
 mov fp _ r1
 load r1 _ r2
 add|i2 r2 1 r1
 mov fp _ r2
 store r1 r2 _
-label _intToString_if2
+label _intToString_if3
 mov fp _ r1
 load r1 _ r2
 mov r2 _ r0

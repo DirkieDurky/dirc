@@ -1,7 +1,14 @@
-char[] intToString(int num)
+char* intToString(int num)
 {
+    if (num == 0)
+    {
+        char* zeroStr = malloc(2);
+        zeroStr[0] = '0';
+        zeroStr[1] = 0;
+        return zeroStr;
+    }
     int stringLength = getDigitCountInInt(num);
-    char[20] chars;
+    char* chars = malloc(stringLength + 1);
 
     int i = stringLength - 1;
     chars[stringLength] = 0;
