@@ -110,21 +110,20 @@ public class SemanticAnalyzer
             _functions.Add(function.Name, new FunctionSignature(returnType, functionParameters));
         }
 
-        if (_options.EnableSemanticErrors)
-        {
-            AnalyzeNodes(nodes);
-        }
-        else
+        if (_options.IgnoreSemanticErrors)
         {
             try
             {
                 AnalyzeNodes(nodes);
             }
-            // catch (SemanticException ex)
-            catch (SemanticException)
+            catch (SemanticException ex)
             {
-                // Console.WriteLine("Semantic exception ignored: " + ex.Message);
+                Console.WriteLine("Semantic exception ignored: " + ex.Message);
             }
+        }
+        else
+        {
+            AnalyzeNodes(nodes);
         }
 
         return nodes;
