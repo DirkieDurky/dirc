@@ -16,6 +16,7 @@ public enum TokenType
     EqualEqual, NotEqual,
     Less, LessEqual,
     Greater, GreaterEqual,
+    BitshiftLeft, BitshiftRight,
     // Assignment shorthands
     PlusEqual, MinusEqual, AsteriskEqual,
     SlashEqual, PipeEqual, AmpersandEqual, CaretEqual,

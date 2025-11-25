@@ -16,7 +16,9 @@ public enum Operation
     LessThan,
     LessEqual,
     GreaterThan,
-    GreaterEqual
+    GreaterEqual,
+    BitshiftLeft,
+    BitshiftRight,
 }
 
 public static class OperationExtensions

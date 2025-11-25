@@ -1,4 +1,3 @@
-using Dirc.Compiling.CodeGen;
 using Dirc.Compiling.Lexing;
 
 namespace Dirc.Compiling.Parsing;

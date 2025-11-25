@@ -95,6 +95,12 @@ class CodeGenBase
             case Operation.Mod:
                 Emit($"mod{opSuffix} {left.AsOperand()} {right!.AsOperand()} {result}");
                 break;
+            case Operation.BitshiftLeft:
+                Emit($"shl{opSuffix} {left.AsOperand()} {right!.AsOperand()} {result}");
+                break;
+            case Operation.BitshiftRight:
+                Emit($"shr{opSuffix} {left.AsOperand()} {right!.AsOperand()} {result}");
+                break;
         }
     }
 

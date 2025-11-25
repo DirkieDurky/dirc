@@ -128,10 +128,14 @@ class Lexer
                 AddToken(Match('=') ? TokenType.NotEqual : TokenType.ExclamationPoint);
                 break;
             case '<':
-                AddToken(Match('=') ? TokenType.LessEqual : TokenType.Less);
+                if (Match('<')) AddToken(TokenType.BitshiftLeft);
+                else
+                    AddToken(Match('=') ? TokenType.LessEqual : TokenType.Less);
                 break;
             case '>':
-                AddToken(Match('=') ? TokenType.GreaterEqual : TokenType.Greater);
+                if (Match('>')) AddToken(TokenType.BitshiftRight);
+                else
+                    AddToken(Match('=') ? TokenType.GreaterEqual : TokenType.Greater);
                 break;
 
             // Whitespace

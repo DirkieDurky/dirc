@@ -18,5 +18,7 @@ class Helpers
         {Operation.Or, Bool.Instance},
         {Operation.Sub, Int.Instance},
         {Operation.Xor, Bool.Instance},
+        {Operation.BitshiftLeft, Int.Instance},
+        {Operation.BitshiftRight, Int.Instance},
     };
 }

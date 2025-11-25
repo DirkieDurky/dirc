@@ -13,18 +13,19 @@ class OperatorPrecedence
     public OperatorPrecedence()
     {
         // Setup precedence levels from lowest to highest
+        // Higher level means done earlier
         _precedenceLevels = new Dictionary<int, HashSet<TokenType>>
         {
-            // Level 0: Bitwise OR
+            // Bitwise OR
             { 0, new HashSet<TokenType> { TokenType.Pipe } },
             
-            // Level 1: Bitwise XOR
+            // Bitwise XOR
             { 1, new HashSet<TokenType> { TokenType.Caret } },
             
-            // Level 2: Bitwise AND
+            // Bitwise AND
             { 2, new HashSet<TokenType> { TokenType.Ampersand } },
             
-            // Level 3: Comparison operators
+            // Comparison operators
             { 3, new HashSet<TokenType>
                 {
                     TokenType.EqualEqual, TokenType.NotEqual,
@@ -33,11 +34,14 @@ class OperatorPrecedence
                 }
             },
 
-            // Level 4: Addition/Subtraction
-            { 4, new HashSet<TokenType> { TokenType.Plus, TokenType.Minus } },
+            // Bitshifts
+            { 4, new HashSet<TokenType> { TokenType.BitshiftLeft, TokenType.BitshiftRight } },
+
+            // Addition/Subtraction
+            { 5, new HashSet<TokenType> { TokenType.Plus, TokenType.Minus } },
             
-            // Level 5: Multiplication/Division/Modulo
-            { 5, new HashSet<TokenType> { TokenType.Asterisk, TokenType.Slash, TokenType.Percent } },
+            // Multiplication/Division/Modulo
+            { 6, new HashSet<TokenType> { TokenType.Asterisk, TokenType.Slash, TokenType.Percent } },
         };
 
         // Map tokens to operations
@@ -51,6 +55,8 @@ class OperatorPrecedence
             { TokenType.Percent, Operation.Mod },
             
             // Bitwise operators
+            { TokenType.BitshiftLeft, Operation.BitshiftLeft },
+            { TokenType.BitshiftRight, Operation.BitshiftRight },
             { TokenType.Pipe, Operation.Or },
             { TokenType.Ampersand, Operation.And },
             { TokenType.Caret, Operation.Xor },
