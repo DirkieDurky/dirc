@@ -58,25 +58,7 @@ mov sp _ fp
 sub|i2 sp 1 sp
 mov fp _ r1
 store|i1 1 r1 _
-ifLess|i2 r0 10000000000000000 _intToString_if0
-mov fp _ r1
-load r1 _ r2
-add|i2 r2 16 r1
-mov fp _ r2
-store r1 r2 _
-div|i2 r0 10000000000000000 r1
-mov r1 _ r0
-label _intToString_if0
-ifLess|i2 r0 100000000 _intToString_if1
-mov fp _ r1
-load r1 _ r2
-add|i2 r2 8 r1
-mov fp _ r2
-store r1 r2 _
-div|i2 r0 100000000 r1
-mov r1 _ r0
-label _intToString_if1
-ifLess|i2 r0 10000 _intToString_if2
+ifLess|i2 r0 10000 _intToString_if0
 mov fp _ r1
 load r1 _ r2
 add|i2 r2 4 r1
@@ -84,8 +66,8 @@ mov fp _ r2
 store r1 r2 _
 div|i2 r0 10000 r1
 mov r1 _ r0
-label _intToString_if2
-ifLess|i2 r0 100 _intToString_if3
+label _intToString_if0
+ifLess|i2 r0 100 _intToString_if1
 mov fp _ r1
 load r1 _ r2
 add|i2 r2 2 r1
@@ -93,14 +75,14 @@ mov fp _ r2
 store r1 r2 _
 div|i2 r0 100 r1
 mov r1 _ r0
-label _intToString_if3
-ifLess|i2 r0 10 _intToString_if4
+label _intToString_if1
+ifLess|i2 r0 10 _intToString_if2
 mov fp _ r1
 load r1 _ r2
 add|i2 r2 1 r1
 mov fp _ r2
 store r1 r2 _
-label _intToString_if4
+label _intToString_if2
 mov fp _ r1
 load r1 _ r2
 mov r2 _ r0

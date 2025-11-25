@@ -55,16 +55,13 @@ public class BuildEnvironment
     public static string ObjectFileExtension = "o";
 
     public static int StackAlignment = 1; // By how many bytes to align the stack
-    // public static int DataWidth => 16;
-    public static int DataWidth => 64; // Width of data in the computer in bits
+    public static int DataWidth => 16;
+    // public static int DataWidth => 64; // Width of data in the computer in bits
 
     // public static int RamBytes { get; } = 536870912; // RAM is 512MiB
-    // public static int RamBytes => 16384 / DataWidth; // Fits in RAM display ingame
-    public static int RamBytes { get; } = 65536;
-    // When changing RamBytes the number in the first line of init.o should match this value.
-    // The number on the second line should match RamBytes.
-    // I currently have no way to automate that.
-    public static int MaxRamValue => (RamBytes / 8) - 1;
+    public static int RamBytes => 16384 / DataWidth; // Fits in RAM display ingame
+    // public static int RamBytes { get; } = 65536;
+    public static int MaxRamAddress => (RamBytes / 8) - 1;
 
     public static int ScreenBufferStart => RamBytes;
 
