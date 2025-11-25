@@ -486,6 +486,13 @@ Writes a value to the specified location in memory.
 Copies the value at the specified location in memory to the register specified by the return address.
 - `noop _ _ _`
 Does nothing at all for a tick.
+- `read _ _ reg`
+Waits until an input from the user's keyboard is received.
+When an input is received, writes it to the specified register
+- `file fileNum fileOffset reg`
+Reads 8 bytes from a file and writes it to the specified register.
+fileNum specifies the file to read from. Currently the only possible value here is 0 because there is only 1 file to read from.
+fileOffset specifies the start of where to read from in the file. We will read byte fileOffset to fileOffset + 7 (8 bytes total).
 
 # ABI
 

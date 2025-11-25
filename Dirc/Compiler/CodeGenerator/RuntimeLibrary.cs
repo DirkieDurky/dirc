@@ -44,6 +44,11 @@ static class RuntimeLibrary
             Int.Instance,
             []
         ), "readKey.o")},
+        { "readFileBytes", new RuntimeFunction("readFileBytes",
+        new FunctionSignature(
+            Int.Instance,
+            [new FunctionParameter(Int.Instance, "fileNum"), new FunctionParameter(Int.Instance, "fileOffset")]
+        ), "readFileBytes.o")},
     };
 
     public static bool HasFunction(string name)

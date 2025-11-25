@@ -1,0 +1,3 @@
+label readFileBytes
+file r0 r1 r0
+return _ _ _
