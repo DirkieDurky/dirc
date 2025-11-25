@@ -1,0 +1,12 @@
+char* fileStr = readFile(0);
+char** fileLines = splitString(fileStr, '\n');
+
+for (int i = 0; i < getSize(fileLines); i++) {
+    char* fileLine = fileLines[i];
+    char** lineWords = splitString(fileLine, ' ');
+
+    for (int j = 0; j < getSize(lineWords); j++) {
+        char* lineWord = lineWords[j];
+        println(lineWord);
+    }
+}
