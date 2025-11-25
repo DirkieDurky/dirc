@@ -241,7 +241,7 @@ public class SemanticAnalyzer
                         returnTypeOverride = rightPtr;
                     }
 
-                    if (!(leftType is PrimitiveType && rightType is PrimitiveType || leftType == rightType))
+                    if (!(leftType is PrimitiveType or Void && rightType is PrimitiveType or Void || leftType == rightType))
                     {
                         throw new SemanticException($"Condition operands must be a primitive type, got {leftType.Name} and {rightType.Name}", null, options, context);
                     }
@@ -331,6 +331,8 @@ public class SemanticAnalyzer
                     {
                         // When expected type is void*, allow any pointer for return type
                         if (expectedType is Pointer expPtr && expPtr.BaseType is Void && retType is Pointer) return retType;
+
+                        if (retType is Void && expectedType is PrimitiveType) return retType;
 
                         throw new SemanticException($"Return type mismatch: expected {expectedType.Name}, got {retType.Name}", null, options, context);
                     }
