@@ -35,24 +35,24 @@ class CallFactory
             }
         }
 
-        List<Register> registersToFree = new();
+        List<IReturnable> registersToFree = new();
         // Put function arguments in the right registers
         for (int i = 0; i < node.Arguments.Count; i++)
         {
             IReturnable argument = context.ExprFactory.Generate(node.Arguments[i], context) ?? throw new Exception("Argument was not set");
+            registersToFree.Add(argument);
             RegisterEnum argumentSlotEnum = Allocator.ArgumentRegisters.ElementAt(i);
             if (argument is not ReturnRegister reg || reg.RegisterEnum != argumentSlotEnum)
             {
                 Register argumentSlot = context.Allocator.Use(argumentSlotEnum, true);
-                registersToFree.Add(argumentSlot);
+                registersToFree.Add(new ReturnRegister(argumentSlot));
                 _codeGenBase.EmitMov(argument, argumentSlot);
             }
-            argument.Free();
         }
 
         _codeGenBase.EmitFunctionCall(node.Callee, !context.DeclaredFunctions.Contains(node.Callee));
 
-        foreach (Register reg in registersToFree)
+        foreach (IReturnable reg in registersToFree)
         {
             reg.Free();
         }
