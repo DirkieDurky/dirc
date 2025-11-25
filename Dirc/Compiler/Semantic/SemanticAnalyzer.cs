@@ -286,10 +286,10 @@ public class SemanticAnalyzer
                         if (argType != null && argType != parameterType)
                         {
                             // Allow anything for void pointers
-                            if (parameterType is Pointer paramTypePtr && paramTypePtr.BaseType == Void.Instance) return sig.ReturnType;
+                            if (parameterType is Pointer paramTypePtr && paramTypePtr.BaseType == Void.Instance) continue;
 
                             // Since we currently don't have typecasts yet, just allow when both types are primitives
-                            if (parameterType is PrimitiveType && argType is PrimitiveType) return sig.ReturnType;
+                            if (parameterType is PrimitiveType && argType is PrimitiveType) continue;
 
                             throw new SemanticException($"Type mismatch in argument {i + 1} of '{call.Callee}': expected {sig.Parameters[i].Type.Name}, got {argType.Name}", call.CalleeToken, options, context);
                         }
