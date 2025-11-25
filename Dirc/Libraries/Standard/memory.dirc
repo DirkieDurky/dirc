@@ -30,3 +30,7 @@ void* allocate(int* index, int size) {
 void free(void* ptr) {
     *(ptr - 2) = 0;
 }
+
+int getSize(void* ptr) {
+    return *(ptr - 1);
+}

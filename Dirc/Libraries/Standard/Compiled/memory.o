@@ -120,3 +120,19 @@ mov fp _ sp
 pop _ _ fp
 pop _ _ lr
 return _ _ _
+
+label getSize
+push lr _ _
+push fp _ _
+mov sp _ fp
+sub|i2 r0 1 r1
+load r1 _ r2
+mov r2 _ r0
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
