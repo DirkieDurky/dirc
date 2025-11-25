@@ -44,6 +44,9 @@ class ExpressionParser
         if (_context.ParserBase.IsAtEnd())
             throw new SyntaxException("Unexpected end of text", _context.ParserBase.Previous(), _context.ParserBase.Options, _context.ParserBase.Context);
 
+        if (_context.ParserBase.Match(TokenType.Minus))
+            return new UnaryOperationNode(UnaryOperationType.Negate, ParseExpression());
+
         if (_context.ParserBase.Match(TokenType.LeftParen))
         {
             AstNode expr = ParseExpression();

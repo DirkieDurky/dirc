@@ -20,6 +20,7 @@ class CodeGenerator
         ExpressionFactory exprFactory = new(_codeGenBase, LabelGenerator);
         VariableFactory varFactory = new(_codeGenBase);
         BinaryFactory binaryFactory = new(_codeGenBase);
+        UnaryFactory unaryFactory = new(_codeGenBase);
         IdentifierFactory identifierFactory = new(_codeGenBase);
         CallFactory callFactory = new(_codeGenBase);
         ControlFlowFactory conditionFactory = new(_codeGenBase);
@@ -34,6 +35,7 @@ class CodeGenerator
             funcFactory,
             varFactory,
             binaryFactory,
+            unaryFactory,
             identifierFactory,
             callFactory,
             conditionFactory,

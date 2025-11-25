@@ -1,5 +1,4 @@
 using Dirc.Compiling.CodeGen.Allocating;
-using Dirc.Compiling.Parsing;
 
 namespace Dirc.Compiling.CodeGen;
 
@@ -12,6 +11,7 @@ class CodeGenContext : ICloneable
     public ExpressionFactory ExprFactory { get; }
     public VariableFactory VarFactory { get; }
     public BinaryFactory BinaryFactory { get; }
+    public UnaryFactory UnaryFactory { get; }
     public IdentifierFactory IdentifierFactory { get; }
     public CallFactory CallFactory { get; }
     public ControlFlowFactory ControlFlowFactory { get; }
@@ -36,6 +36,7 @@ class CodeGenContext : ICloneable
         FunctionFactory funcFactory,
         VariableFactory varFactory,
         BinaryFactory binaryFactory,
+        UnaryFactory unaryFactory,
         IdentifierFactory identifierFactory,
         CallFactory callFactory,
         ControlFlowFactory conditionFactory,
@@ -58,6 +59,7 @@ class CodeGenContext : ICloneable
         FunctionFactory = funcFactory;
         VarFactory = varFactory;
         BinaryFactory = binaryFactory;
+        UnaryFactory = unaryFactory;
         IdentifierFactory = identifierFactory;
         CallFactory = callFactory;
         ControlFlowFactory = conditionFactory;
@@ -83,6 +85,7 @@ class CodeGenContext : ICloneable
             FunctionFactory,
             VarFactory,
             BinaryFactory,
+            UnaryFactory,
             IdentifierFactory,
             CallFactory,
             ControlFlowFactory,
@@ -110,6 +113,7 @@ class CodeGenContext : ICloneable
             FunctionFactory,
             VarFactory,
             BinaryFactory,
+            UnaryFactory,
             IdentifierFactory,
             CallFactory,
             ControlFlowFactory,

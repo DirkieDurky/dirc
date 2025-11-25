@@ -57,6 +57,8 @@ class ExpressionFactory
                 return context.StringFactory.GenerateStringLiteralReturnBasePtr(stringLiteral, context);
             case ArrLenNode arrLenNode:
                 return new NumberLiteralNode(arrLenNode.ComputedLength);
+            case UnaryOperationNode unaryOperationNode:
+                return context.UnaryFactory.Generate(unaryOperationNode, context);
             default:
                 throw new Exception($"Unhandled node {node}");
         }
