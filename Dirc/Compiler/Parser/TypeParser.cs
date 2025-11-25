@@ -33,7 +33,7 @@ class TypeParser
         }
         Token baseTypeToken = _context.ParserBase.Consume(TokenType.Identifier, "Expected type name");
         type = new NamedTypeNode(baseTypeToken, baseTypeToken.Lexeme);
-        List<int> arraySizes = [];
+        List<int?> arraySizes = [];
 
         while (_context.ParserBase.Match(TokenType.Asterisk) || _context.ParserBase.Match(TokenType.LeftBracket))
         {

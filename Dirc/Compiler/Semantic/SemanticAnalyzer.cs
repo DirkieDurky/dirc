@@ -338,7 +338,7 @@ public class SemanticAnalyzer
                 }
             case ArrayDeclarationNode arrayDecl:
                 {
-                    List<int> foundSizes = [];
+                    List<int?> foundSizes = [];
 
                     // Find array sizes (in all dimensions) based on initializer
                     switch (arrayDecl.Initializer)
@@ -364,6 +364,11 @@ public class SemanticAnalyzer
                                                 throw new SemanticException($"Sizes of arrays in array literal don't match", null, options, context);
                                             }
                                         }
+                                    }
+                                    else if (arrayLiteral.Elements[0] is StringLiteralNode)
+                                    {
+                                        foundSizes.Add(null);
+                                        break;
                                     }
                                     currentArrayLiteral = arrayLiteral.Elements[0];
                                 }
@@ -458,10 +463,10 @@ public class SemanticAnalyzer
                     }
 
                     ArrayLiteralNode currentNode = arrayLiteral;
-                    SimpleType finalType = Pointer.Of(firstType);
+                    SimpleType? finalType = firstType == null ? null : Pointer.Of(firstType);
                     while (currentNode.Elements[0] is ArrayLiteralNode subArrayLiteral)
                     {
-                        finalType = Pointer.Of(firstType);
+                        finalType = firstType == null ? null : Pointer.Of(firstType);
                         currentNode = subArrayLiteral;
                     }
 
@@ -517,7 +522,8 @@ public class SemanticAnalyzer
                         // Since we currently don't have typecasts yet, just allow when both types are primitives
                         if (assignValueType is PrimitiveType && valueType is PrimitiveType) return valueType;
 
-                        throw new SemanticException($"Type mismatch in array assignment to '{arrayIdentifier.Name}': expected {valueType.Name}, got {assignValueType.Name}", arrayIdentifier.IdentifierToken, options, context);
+                        throw new SemanticException(
+                            $"Type mismatch in array assignment to '{arrayIdentifier.Name}': expected {valueType.Name}, got {assignValueType.Name}", arrayIdentifier.IdentifierToken, options, context);
                     }
 
                     return assignArrayType.SimpleType;
@@ -535,8 +541,16 @@ public class SemanticAnalyzer
                 }
             case ArrLenNode arrLenNode:
                 {
-                    int length = _variables[arrLenNode.Array.Name].ArraySizes[arrLenNode.Dimension];
-                    arrLenNode.ComputedLength = length;
+                    var array = _variables[arrLenNode.Array.Name];
+                    if (arrLenNode.Dimension >= array.ArraySizes.Count)
+                    {
+                        throw new SemanticException($"Array {arrLenNode.Array.Name} doesn't have {arrLenNode.Dimension} dimensions", null, options, context);
+                    }
+                    int? length = array.ArraySizes[arrLenNode.Dimension] ?? throw new SemanticException(
+                        $"Array {arrLenNode.Array.Name} has {arrLenNode.Dimension} dimensions but doesn't have a fixed length for "
+                        + $"{arrLenNode.Dimension}th dimension. It's likely an array of strings. Check the length of a string using "
+                        + $"the 'strlen()' function.", null, options, context);
+                    arrLenNode.ComputedLength = (int)length;
                     return Int.Instance;
                 }
             default:

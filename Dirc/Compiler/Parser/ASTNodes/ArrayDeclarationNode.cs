@@ -7,13 +7,14 @@ public class ArrayDeclarationNode : AstNode
 {
     public TypeNode Type { get; }
     public Token IdentifierToken { get; }
-    public List<int> Sizes { get; }
+    public List<int?> Sizes { get; }
     public int TotalSize()
     {
         int product = 1;
-        foreach (int size in Sizes)
+        foreach (int? size in Sizes)
         {
-            product *= size;
+            if (size == null) continue;
+            product *= (int)size;
         }
         return product;
     }
@@ -21,7 +22,7 @@ public class ArrayDeclarationNode : AstNode
     public string TypeName => Type.Name;
     public string Name => IdentifierToken.Lexeme;
 
-    public ArrayDeclarationNode(TypeNode type, Token identifierToken, List<int> sizes, AstNode? initializer = null)
+    public ArrayDeclarationNode(TypeNode type, Token identifierToken, List<int?> sizes, AstNode? initializer = null)
     {
         Type = type;
         IdentifierToken = identifierToken;
