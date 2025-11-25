@@ -59,8 +59,8 @@ public class BuildEnvironment
     // public static int DataWidth => 64; // Width of data in the computer in bits
 
     // public static int RamBytes { get; } = 536870912; // RAM is 512MiB
-    public static int RamBytes => 16384 / DataWidth; // Fits in RAM display ingame
-    // public static int RamBytes { get; } = 65536;
+    // public static int RamBytes => 16384 / DataWidth; // Fits in RAM display ingame
+    public static int RamBytes { get; } = 16384;
     public static int MaxRamAddress => (RamBytes / 8) - 1;
 
     public static int ScreenBufferStart => RamBytes;
