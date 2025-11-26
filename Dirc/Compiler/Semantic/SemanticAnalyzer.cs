@@ -412,10 +412,10 @@ public class SemanticAnalyzer
                     }
                     else
                     {
-                        if (arrayDecl.Sizes.Except(foundSizes).Count() > 0)
+                        if (foundSizes.Count() > arrayDecl.Sizes.Count())
                         {
                             throw new SemanticException(
-                                $"Given array size(s) don't match initalizer. Given: {string.Join("", arrayDecl.Sizes.Select(x => $"[{x}]"))}. Initializer: {string.Join("", foundSizes.Select(x => $"[{x}]"))}",
+                                $"Initializer too big for array. Array size: {string.Join("", arrayDecl.Sizes.Select(x => $"[{x}]"))}. Initializer size: {string.Join("", foundSizes.Select(x => $"[{x}]"))}",
                             arrayDecl.IdentifierToken, options, context);
                         }
                     }
@@ -546,7 +546,7 @@ public class SemanticAnalyzer
                     var array = _variables[arrLenNode.Array.Name];
                     if (arrLenNode.Dimension >= array.ArraySizes.Count)
                     {
-                        throw new SemanticException($"Array {arrLenNode.Array.Name} doesn't have {arrLenNode.Dimension} dimensions", null, options, context);
+                        throw new SemanticException($"Array {arrLenNode.Array.Name} doesn't have {arrLenNode.Dimension + 1} or more dimensions", null, options, context);
                     }
                     int? length = array.ArraySizes[arrLenNode.Dimension] ?? throw new SemanticException(
                         $"Array {arrLenNode.Array.Name} has {arrLenNode.Dimension} dimensions but doesn't have a fixed length for "
