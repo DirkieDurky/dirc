@@ -29,4 +29,15 @@ class StringFactory
         ArrayLiteralNode arrayLiteralNode = new(chars);
         return context.ArrayFactory.GenerateArrayLiteral(arrayLiteralNode, context);
     }
+
+    public ArrayLiteralNode StringLiteralToArrayLiteral(StringLiteralNode stringLiteral, CodeGenContext context)
+    {
+        List<AstNode> chars = new();
+        foreach (char c in stringLiteral.Str.Literal!.ToString()!)
+        {
+            chars.Add(new CharNode(c));
+        }
+        chars.Add(new CharNode('\0'));
+        return new(chars);
+    }
 }

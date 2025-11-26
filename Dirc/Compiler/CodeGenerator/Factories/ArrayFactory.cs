@@ -19,7 +19,7 @@ class ArrayFactory
 
         if (node.Initializer != null)
         {
-            context.VarFactory.AssignVariable(node.Name, node.Initializer, context);
+            context.VarFactory.AssignNewVariable(node.Name, node.Initializer, context);
         }
 
         return null;

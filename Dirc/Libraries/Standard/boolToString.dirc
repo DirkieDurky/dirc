@@ -1,0 +1,15 @@
+char* boolToString(bool b)
+{
+    if (b)
+    {
+        char* result = malloc(5);
+        *result = "true";
+        return result;
+    }
+    else
+    {
+        char* result = malloc(6);
+        *result = "false";
+        return result;
+    }
+}

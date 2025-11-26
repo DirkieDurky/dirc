@@ -19,34 +19,20 @@ class VariableFactory
 
         if (node.Initializer == null) return null;
 
-        return AssignVariable(node.Name, node.Initializer, context);
+        return AssignNewVariable(node.Name, node.Initializer, context);
     }
 
     public IReturnable? GenerateVariableAssignment(VariableAssignmentNode node, CodeGenContext context)
     {
         if (node.Target is IdentifierNode)
         {
-            return AssignVariable(node.Name!, node.Value, context);
+            return AssignNewVariable(node.Name!, node.Value, context);
         }
         else if (node.Target is PointerDereferenceNode target)
         {
             IReturnable address = context.ExprFactory.Generate(target.PointerExpression, context) ?? throw new Exception("Pointer dereference failed to generate");
 
-            if (node.Value is ArrayLiteralNode arrayLiteral)
-            {
-                context.ArrayFactory.GenerateArrayLiteralAtPtr(arrayLiteral, address, context);
-                address.Free();
-                return null;
-            }
-            else
-            {
-                IReturnable value = context.ExprFactory.Generate(node.Value, context) ?? throw new Exception("Initializer expression failed to generate");
-                _codeGenBase.EmitStore(value, address);
-                address.Free();
-                value.Free();
-                return value;
-            }
-
+            return AssignVariable(node.Name!, address, node.Value, false, context);
         }
         else
         {
@@ -54,7 +40,52 @@ class VariableFactory
         }
     }
 
-    public IReturnable? AssignVariable(string name, AstNode assignment, CodeGenContext context)
+    public IReturnable? AssignVariable(string name, IReturnable address, AstNode assignment, bool targetIsArray, CodeGenContext context)
+    {
+        if (assignment is ArrayLiteralNode arrayLiteral)
+        {
+            context.ArrayFactory.GenerateArrayLiteralAtPtr(arrayLiteral, address, context);
+            return address;
+        }
+        else if (assignment is StringLiteralNode stringLiteral)
+        {
+            arrayLiteral = context.StringFactory.StringLiteralToArrayLiteral(stringLiteral, context);
+            context.ArrayFactory.GenerateArrayLiteralAtPtr(arrayLiteral, address, context);
+            address.Free();
+            return null;
+        }
+        else if (assignment is ArrayAccessNode arrayAccess && targetIsArray)
+        {
+            int newOffset = 0;
+
+            ArrayAccessNode currentArrayAccess = arrayAccess;
+            while (currentArrayAccess.Array is ArrayAccessNode)
+            {
+                newOffset -= int.Parse(((NumberLiteralNode)currentArrayAccess.Index).Value);
+                currentArrayAccess = (ArrayAccessNode)currentArrayAccess.Array;
+            }
+            var originalArray = context.VariableTable[((IdentifierNode)currentArrayAccess.Array).Name];
+            if (originalArray is not StackStoredVariable stackArray)
+            {
+                // TODO: Implement a way to do this
+                throw new NotImplementedException("Can't assign an value from an array to another array when array is stored in Register");
+            }
+            newOffset += stackArray.FramePointerOffset;
+            newOffset -= int.Parse(((NumberLiteralNode)currentArrayAccess.Index).Value);
+            context.VariableTable[name] = new StackStoredVariable(name, newOffset);
+            return null;
+        }
+        else
+        {
+            IReturnable resultValue = context.ExprFactory.Generate(assignment, context) ?? throw new Exception("Initializer expression failed to generate");
+            _codeGenBase.EmitStore(resultValue, address);
+            address.Free();
+
+            return resultValue;
+        }
+    }
+
+    public IReturnable? AssignNewVariable(string name, AstNode assignment, CodeGenContext context)
     {
         Variable var = context.VariableTable[name];
 
@@ -71,40 +102,7 @@ class VariableFactory
                 basePtr
             );
 
-            if (assignment is ArrayLiteralNode arrayLiteral)
-            {
-                context.ArrayFactory.GenerateArrayLiteralAtPtr(arrayLiteral, new ReadonlyRegister(basePtr), context);
-                return new ReturnRegister(basePtr);
-            }
-            else if (assignment is ArrayAccessNode arrayAccess && stackVar.IsArray)
-            {
-                int newOffset = 0;
-
-                ArrayAccessNode currentArrayAccess = arrayAccess;
-                while (currentArrayAccess.Array is ArrayAccessNode)
-                {
-                    newOffset -= int.Parse(((NumberLiteralNode)currentArrayAccess.Index).Value);
-                    currentArrayAccess = (ArrayAccessNode)currentArrayAccess.Array;
-                }
-                var originalArray = context.VariableTable[((IdentifierNode)currentArrayAccess.Array).Name];
-                if (originalArray is not StackStoredVariable stackArray)
-                {
-                    // TODO: Implement a way to do this
-                    throw new NotImplementedException("Can't assign an value from an array to another array when array is stored in Register");
-                }
-                newOffset += stackArray.FramePointerOffset;
-                newOffset -= int.Parse(((NumberLiteralNode)currentArrayAccess.Index).Value);
-                context.VariableTable[name] = new StackStoredVariable(name, newOffset);
-                return null;
-            }
-            else
-            {
-                IReturnable resultValue = context.ExprFactory.Generate(assignment, context) ?? throw new Exception("Initializer expression failed to generate");
-                _codeGenBase.EmitStore(resultValue, new ReadonlyRegister(basePtr));
-                basePtr.Free();
-
-                return resultValue;
-            }
+            return AssignVariable(name, new ReturnRegister(basePtr), assignment, stackVar.IsArray, context);
         }
         else if (var is RegisterStoredVariable regVar)
         {
