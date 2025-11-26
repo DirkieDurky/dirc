@@ -34,3 +34,16 @@ void free(void* ptr) {
 int getSize(void* ptr) {
     return *(ptr - 1);
 }
+
+void* realloc(void* ptr, int newSize)
+{
+    free(ptr);
+    void* newPtr = malloc(newSize);
+    if (newPtr != ptr)
+    {
+        for (int i = 0; i < getSize(ptr); i++)
+        {
+            newPtr[i] = ptr[i];
+        }
+    }
+}
