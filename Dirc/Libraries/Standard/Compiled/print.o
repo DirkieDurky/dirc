@@ -35,10 +35,10 @@ mov r0 _ r1
 pop _ _ r0
 label _print_ifElseEnd0
 mov fp _ r1
-load r1 _ r2
-add|i2 r2 1 r1
 mov fp _ r2
-store r1 r2 _
+load r2 _ r3
+add|i2 r3 1 r2
+store r2 r1 _
 jump _print_while0 _ pc
 label _print_whileEnd0
 mov fp _ sp

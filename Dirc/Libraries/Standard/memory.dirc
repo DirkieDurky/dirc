@@ -41,9 +41,11 @@ void* realloc(void* ptr, int newSize)
     void* newPtr = malloc(newSize);
     if (newPtr != ptr)
     {
-        for (int i = 0; i < getSize(ptr); i++)
+        for (int i = 0; i < min(getSize(ptr), newSize); i++)
         {
             newPtr[i] = ptr[i];
         }
     }
+
+    return newPtr;
 }

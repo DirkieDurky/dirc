@@ -28,7 +28,6 @@ partial class Linker
 
         result = result.Replace("[SCREEN_PTR]", BuildEnvironment.ScreenPointerAddress.ToString());
         result = result.Replace("[MAX_RAM_ADDRESS]", BuildEnvironment.MaxRamAddress.ToString());
-        result = result.Replace("[RAM_SIZE]", BuildEnvironment.RamBytes.ToString());
         result = result.Replace("[SCREEN_BUFFER_START]", BuildEnvironment.ScreenBufferStart.ToString());
 
         string resultStr = result.ToString();

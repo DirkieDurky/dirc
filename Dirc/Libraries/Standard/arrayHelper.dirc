@@ -59,18 +59,43 @@ void* merge(void* a, int aSize, void* b, int bSize)
 }
 
 // Only dynamic arrays are allowed to be used in any of these functions since we're modifying the length
-void removeAt(void* haystack, int haystackSize, int index)
+void* removeAt(void* haystack, int haystackSize, int index)
 {
     for (int i = index + 1; i < haystackSize; i++)
     {
         haystack[i - 1] = haystack[i];
     }
 
-    realloc(haystack, haystackSize - 1);
+    return realloc(haystack, haystackSize - 1);
 }
 
-void removeFirst(void* haystack, int haystackSize, void needle)
+void* removeFirst(void* haystack, int haystackSize, void needle)
 {
     int index = findFirst(haystack, haystackSize, needle, 0);
-    removeAt(haystack, haystackSize, index);
+    return removeAt(haystack, haystackSize, index);
+}
+
+void* removeAll(void* haystack, int haystackSize, void needle)
+{
+    int* indices = findAll(haystack, haystackSize, needle);
+
+    for (int i = getSize(indices) - 1; i >= 0; i--) {
+        haystack = removeAt(haystack, getSize(haystack), indices[i]);
+        //printArray(haystack, getSize(haystack));
+    }
+
+    return haystack;
+}
+
+void printArray(int* array, int arrayLength)
+{
+    char* str = "[";
+    for (int i = 0; i < arrayLength; i++) {
+        str = concat(str, intToString(array[i]));
+        if (i < arrayLength - 1) {
+            str = concat(str, ", ");
+        }
+    }
+    str = concat(str, "]\n");
+    println(str);
 }

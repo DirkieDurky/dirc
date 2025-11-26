@@ -13,3 +13,21 @@ int power(int num, int power)
 
     return result;
 }
+
+int min(int a, int b)
+{
+    if (b < a) {
+        return b;
+    } else {
+        return a;
+    }
+}
+
+int max(int a, int b)
+{
+    if (b > a) {
+        return b;
+    } else {
+        return a;
+    }
+}

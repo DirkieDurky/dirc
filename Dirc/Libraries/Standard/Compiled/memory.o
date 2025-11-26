@@ -5,52 +5,52 @@ mov sp _ fp
 sub|i2 sp 6 sp
 mov fp _ r1
 store|i1 2 r1 _
-mov fp _ r1
-load r1 _ r2
-add r0 r2 r1
-sub|i2 fp 1 r2
-store r1 r2 _
+sub|i2 fp 1 r1
+mov fp _ r2
+load r2 _ r3
+add r0 r3 r2
+store r2 r1 _
 sub|i2 fp 2 r1
 store|i1 16 r1 _
 label _memory_while0
-sub|i2 fp 2 r1
-load r1 _ r2
-load r2 _ r1
-ifNotEq|i2 r1 0 _memory_condition0
-mov|i1 1 _ r1
+sub|i2 fp 3 r1
+sub|i2 fp 2 r2
+load r2 _ r3
+load r3 _ r2
+ifNotEq|i2 r2 0 _memory_condition0
+mov|i1 1 _ r2
 jump _memory_conditionEnd0 _ pc
 label _memory_condition0
-mov|i1 0 _ r1
+mov|i1 0 _ r2
 label _memory_conditionEnd0
-sub|i2 fp 3 r2
-store r1 r2 _
-sub|i2 fp 2 r1
-load r1 _ r2
-add|i2 r2 1 r1
-load r1 _ r2
-sub|i2 fp 4 r1
 store r2 r1 _
 sub|i2 fp 4 r1
-load r1 _ r2
-sub|i2 fp 1 r1
-load r1 _ r3
-ifLess r2 r3 _memory_condition1
-mov|i1 1 _ r1
-jump _memory_conditionEnd1 _ pc
-label _memory_condition1
-mov|i1 0 _ r1
-label _memory_conditionEnd1
+sub|i2 fp 2 r2
+load r2 _ r3
+add|i2 r3 1 r2
+load r2 _ r3
+store r3 r1 _
+sub|i2 fp 5 r1
 sub|i2 fp 4 r2
 load r2 _ r3
-ifNotEq|i2 r3 0 _memory_condition2
+sub|i2 fp 1 r2
+load r2 _ r4
+ifLess r3 r4 _memory_condition1
 mov|i1 1 _ r2
+jump _memory_conditionEnd1 _ pc
+label _memory_condition1
+mov|i1 0 _ r2
+label _memory_conditionEnd1
+sub|i2 fp 4 r3
+load r3 _ r4
+ifNotEq|i2 r4 0 _memory_condition2
+mov|i1 1 _ r3
 jump _memory_conditionEnd2 _ pc
 label _memory_condition2
-mov|i1 0 _ r2
+mov|i1 0 _ r3
 label _memory_conditionEnd2
-or r1 r2 r3
-sub|i2 fp 5 r1
-store r3 r1 _
+or r2 r3 r4
+store r4 r1 _
 sub|i2 fp 3 r1
 load r1 _ r2
 sub|i2 fp 5 r1
@@ -75,15 +75,15 @@ return _ _ _
 jump _memory_ifElseEnd0 _ pc
 label _memory_else0
 sub|i2 fp 2 r1
-load r1 _ r2
-sub|i2 fp 4 r1
-load r1 _ r3
-mov fp _ r1
-load r1 _ r4
-add r3 r4 r1
-add r2 r1 r3
-sub|i2 fp 2 r1
-store r3 r1 _
+sub|i2 fp 2 r2
+load r2 _ r3
+sub|i2 fp 4 r2
+load r2 _ r4
+mov fp _ r2
+load r2 _ r5
+add r4 r5 r2
+add r3 r2 r4
+store r4 r1 _
 label _memory_ifElseEnd0
 jump _memory_while0 _ pc
 label _memory_whileEnd0
@@ -151,17 +151,19 @@ call free _ _
 mov r0 _ r2
 pop _ _ r1
 pop _ _ r0
+mov fp _ r2
 push r0 _ _
 push r1 _ _
-sub|i2 fp 3 r2
-load r2 _ r3
-mov r3 _ r0
+push r2 _ _
+sub|i2 fp 3 r3
+load r3 _ r4
+mov r4 _ r0
 call malloc _ _
-mov r0 _ r2
+mov r0 _ r3
+pop _ _ r2
 pop _ _ r1
 pop _ _ r0
-mov fp _ r3
-store r2 r3 _
+store r3 r2 _
 mov fp _ r2
 load r2 _ r3
 ifEq r3 r0 _memory_if0
@@ -173,10 +175,22 @@ load r2 _ r3
 push r0 _ _
 push r1 _ _
 push r3 _ _
+push r0 _ _
+push r1 _ _
+push r3 _ _
 sub|i2 fp 2 r2
 load r2 _ r4
 mov r4 _ r0
 call getSize _ _
+mov r0 _ r2
+pop _ _ r3
+pop _ _ r1
+pop _ _ r0
+mov r2 _ r0
+sub|i2 fp 3 r4
+load r4 _ r5
+mov r5 _ r1
+call @min _ _
 mov r0 _ r2
 pop _ _ r3
 pop _ _ r1
@@ -193,13 +207,20 @@ add r0 r4 r6
 load r6 _ r3
 store r3 r5 _
 sub|i2 fp 1 r2
-load r2 _ r3
-add|i2 r3 1 r2
 sub|i2 fp 1 r3
-store r2 r3 _
+load r3 _ r4
+add|i2 r4 1 r3
+store r3 r2 _
 jump _memory_while1 _ pc
 label _memory_whileEnd1
 label _memory_if0
+mov fp _ r2
+load r2 _ r3
+mov r3 _ r0
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
 mov fp _ sp
 pop _ _ fp
 pop _ _ lr

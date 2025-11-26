@@ -58,12 +58,12 @@ public class BuildEnvironment
     public const string ObjectFileExtension = "o";
 
     public const int StackAlignment = 1; // By how many bytes to align the stack
-    public const int DataWidth = 16;
-    // public static int DataWidth => 64; // Width of data in the computer in bits
+    // public const int DataWidth = 16;
+    public const int DataWidth = 64; // Width of data in the computer in bits
 
-    // public static int RamBytes = 536870912; // RAM is 512MiB
-    // public static int RamBytes = 256; // Fits in RAM display ingame
-    public const int RamBytes = 16384;
+    public const int RamBytes = 536870912; // RAM is 512MiB
+    // public const int RamBytes = 256; // Fits in RAM display ingame
+    // public const int RamBytes = 16384;
     // public static int RamBytes = 16384;
     public const int MaxRamAddress = RamBytes / (DataWidth / 8) - 1;
 

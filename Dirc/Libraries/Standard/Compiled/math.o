@@ -20,15 +20,15 @@ load r2 _ r3
 sub|i2 r1 1 r2
 ifMoreOrEq r3 r2 _math_whileEnd0
 mov fp _ r2
-load r2 _ r3
-mul r3 r0 r2
 mov fp _ r3
-store r2 r3 _
+load r3 _ r4
+mul r4 r0 r3
+store r3 r2 _
 sub|i2 fp 1 r2
-load r2 _ r3
-add|i2 r3 1 r2
 sub|i2 fp 1 r3
-store r2 r3 _
+load r3 _ r4
+add|i2 r4 1 r3
+store r3 r2 _
 jump _math_while0 _ pc
 label _math_whileEnd0
 mov fp _ r2
@@ -38,6 +38,50 @@ mov fp _ sp
 pop _ _ fp
 pop _ _ lr
 return _ _ _
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
+
+label min
+push lr _ _
+push fp _ _
+mov sp _ fp
+ifMoreOrEq r1 r0 _math_else0
+mov r1 _ r0
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
+jump _math_ifElseEnd0 _ pc
+label _math_else0
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
+label _math_ifElseEnd0
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
+
+label max
+push lr _ _
+push fp _ _
+mov sp _ fp
+ifLessOrEq r1 r0 _math_else1
+mov r1 _ r0
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
+jump _math_ifElseEnd1 _ pc
+label _math_else1
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
+label _math_ifElseEnd1
 mov fp _ sp
 pop _ _ fp
 pop _ _ lr
