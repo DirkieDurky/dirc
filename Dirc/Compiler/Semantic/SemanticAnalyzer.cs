@@ -204,8 +204,7 @@ public class SemanticAnalyzer
                             // Allow int assigned to pointer for now
                             if (!(simpleAssignType is Pointer && valueType == Int.Instance))
                             {
-                                // Since we currently don't have typecasts yet, just allow when both types are primitives
-                                if (simpleAssignType is PrimitiveType && valueType is PrimitiveType) return simpleAssignType;
+                                if (TypesAreValid(simpleAssignType, valueType)) return simpleAssignType;
 
                                 throw new SemanticException($"Type mismatch in assignment to '{varAssign.Name}': expected {simpleAssignType.Name}, got {valueType.Name}", varAssign.TargetName, options, context);
                             }
@@ -285,11 +284,7 @@ public class SemanticAnalyzer
                         SimpleType? argType = AnalyzeNode(call.Arguments[i], parameterType, options, context);
                         if (argType != null && argType != parameterType)
                         {
-                            // Allow anything for void pointers
-                            if (parameterType is Pointer paramTypePtr && paramTypePtr.BaseType == Void.Instance) continue;
-
-                            // Since we currently don't have typecasts yet, just allow when both types are primitives
-                            if (parameterType is PrimitiveType && argType is PrimitiveType) continue;
+                            if (TypesAreValid(argType, parameterType)) continue;
 
                             throw new SemanticException($"Type mismatch in argument {i + 1} of '{call.Callee}': expected {sig.Parameters[i].Type.Name}, got {argType.Name}", call.CalleeToken, options, context);
                         }
@@ -619,5 +614,33 @@ public class SemanticAnalyzer
             if (_validTypes.TryGetValue(type, out SimpleType? t)) return t;
         }
         throw new SemanticException($"Unknown type '{type}'", new Token(TokenType.Identifier, type, null, -1), _options, _buildContext);
+    }
+
+    private bool TypesAreValid(SimpleType a, SimpleType b)
+    {
+        while (a is Pointer aPtr && b is Pointer bPtr)
+        {
+            a = aPtr.BaseType;
+            b = bPtr.BaseType;
+        }
+
+        // If any of them is a pointer the other isn't which means the types don't match
+        if (a is Pointer || b is Pointer)
+        {
+            return false;
+        }
+
+        if (a is Void || b is Void)
+        {
+            return true;
+        }
+
+        // Since we currently don't have typecasts yet, just allow when both types are primitives
+        if (a is PrimitiveType && b is PrimitiveType)
+        {
+            return true;
+        }
+
+        return a == b;
     }
 }
