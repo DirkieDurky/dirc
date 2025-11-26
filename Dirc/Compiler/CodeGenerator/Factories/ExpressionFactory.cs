@@ -39,6 +39,8 @@ class ExpressionFactory
                 return context.ControlFlowFactory.GenerateIfStatement(ifStmt, context, _labelGenerator);
             case WhileStatementNode whileStmt:
                 return context.ControlFlowFactory.GenerateWhileStatement(whileStmt, context, _labelGenerator);
+            case ForStatementNode forStmt:
+                return context.ControlFlowFactory.GenerateForStatement(forStmt, context, _labelGenerator);
             case ReturnStatementNode returnStmt:
                 return context.FunctionFactory.GenerateReturnStatement(returnStmt, context);
             case ArrayDeclarationNode arrayDecl:

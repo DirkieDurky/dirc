@@ -82,15 +82,8 @@ internal class ControlFlowParser
         }
 
         List<AstNode> body = ParseBody("for statement");
-        if (increment != null)
-            body.Add(increment);
 
-        List<AstNode> result = [];
-        if (initial != null)
-            result.Add(initial);
-        result.Add(new WhileStatementNode(condition ?? new BooleanLiteralNode(true), body));
-
-        return result;
+        return [new ForStatementNode(initial, condition, increment, body)];
     }
 
     private AstNode ParseCondition()

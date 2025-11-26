@@ -7,7 +7,7 @@ namespace Dirc.Compiling.Semantic;
 
 public class SemanticAnalyzer
 {
-    private readonly Dictionary<string, Type> _variables = new(); // name -> type
+    private readonly Stack<Dictionary<string, Type>> _variableScopes = new(); // Stack of variable scopes
     private readonly Dictionary<string, FunctionSignature> _functions = new(); // name -> signature
     private Options _options;
     private BuildContext _buildContext;
@@ -29,6 +29,58 @@ public class SemanticAnalyzer
 
         _validReturnTypes = _validTypes;
         _validReturnTypes.Add(Void.Instance.Name, Void.Instance);
+
+        // Initialize global scope
+        _variableScopes.Push(new Dictionary<string, Type>());
+    }
+
+    /// <summary>
+    /// Pushes a new scope onto the scope stack.
+    /// </summary>
+    private void PushScope()
+    {
+        _variableScopes.Push(new Dictionary<string, Type>());
+    }
+
+    /// <summary>
+    /// Pops the current scope from the scope stack.
+    /// </summary>
+    private void PopScope()
+    {
+        if (_variableScopes.Count > 1)
+        {
+            _variableScopes.Pop();
+        }
+    }
+
+    /// <summary>
+    /// Tries to get a variable from any scope, searching from the current scope upwards.
+    /// </summary>
+    private bool TryGetVariable(string name, out Type? type)
+    {
+        foreach (var scope in _variableScopes)
+        {
+            if (scope.TryGetValue(name, out type))
+            {
+                return true;
+            }
+        }
+        type = null;
+        return false;
+    }
+
+    /// <summary>
+    /// Declares a variable in the current scope only.
+    /// </summary>
+    private bool TryDeclareVariable(string name, Type type)
+    {
+        var currentScope = _variableScopes.Peek();
+        if (currentScope.ContainsKey(name))
+        {
+            return false;
+        }
+        currentScope[name] = type;
+        return true;
     }
 
     public List<AstNode> Analyze(List<AstNode> nodes, SymbolTable symbolTable)
@@ -162,13 +214,9 @@ public class SemanticAnalyzer
                 {
                     Type varComplexType = ResolveType(varDecl.Type);
                     SimpleType varType = varComplexType.SimpleType;
-                    if (_variables.ContainsKey(varDecl.Name))
+                    if (!TryDeclareVariable(varDecl.Name, varComplexType))
                     {
                         throw new SemanticException($"Variable '{varDecl.Name}' already declared", varDecl.IdentifierToken, options, context);
-                    }
-                    else
-                    {
-                        _variables[varDecl.Name] = varComplexType;
                     }
                     if (varDecl.Initializer != null)
                     {
@@ -191,7 +239,7 @@ public class SemanticAnalyzer
             case VariableAssignmentNode varAssign:
                 {
                     Type? assignType = null;
-                    if (varAssign.Name != null && !_variables.TryGetValue(varAssign.Name, out assignType))
+                    if (varAssign.Name != null && !TryGetVariable(varAssign.Name, out assignType))
                     {
                         throw new SemanticException($"Assignment to undeclared variable '{varAssign.Name}'", varAssign.TargetName, options, context);
                     }
@@ -214,11 +262,11 @@ public class SemanticAnalyzer
                 }
             case IdentifierNode id:
                 {
-                    if (!_variables.TryGetValue(id.Name, out Type? idType))
+                    if (!TryGetVariable(id.Name, out Type? idType))
                     {
                         throw new SemanticException($"Use of undeclared variable '{id.Name}'", id.IdentifierToken, options, context);
                     }
-                    return idType.SimpleType;
+                    return idType!.SimpleType;
                 }
             case BinaryExpressionNode binNode:
                 {
@@ -253,8 +301,15 @@ public class SemanticAnalyzer
                     {
                         throw new SemanticException($"If condition must be bool or int, got {condType.Name}", null, options, context);
                     }
+                    PushScope();
                     foreach (AstNode stmt in ifStmt.Body) AnalyzeNode(stmt, null, options, context);
-                    if (ifStmt.ElseBody != null) foreach (AstNode stmt in ifStmt.ElseBody) AnalyzeNode(stmt, null, options, context);
+                    PopScope();
+                    if (ifStmt.ElseBody != null)
+                    {
+                        PushScope();
+                        foreach (AstNode stmt in ifStmt.ElseBody) AnalyzeNode(stmt, null, options, context);
+                        PopScope();
+                    }
                     return null;
                 }
             case WhileStatementNode whileStmt:
@@ -265,7 +320,47 @@ public class SemanticAnalyzer
                         string typeString = whileCondType == null ? "null" : whileCondType.Name;
                         throw new SemanticException($"While condition must be bool or int, got {typeString}", null, options, context);
                     }
+                    PushScope();
                     foreach (AstNode stmt in whileStmt.Body) AnalyzeNode(stmt, null, options, context);
+                    PopScope();
+                    return null;
+                }
+            case ForStatementNode forStmt:
+                {
+                    // For loops have their own scope for the initialization variable
+                    PushScope();
+
+                    // Analyze initialization
+                    if (forStmt.Initialization != null)
+                    {
+                        AnalyzeNode(forStmt.Initialization, null, options, context);
+                    }
+
+                    // Analyze condition
+                    SimpleType? condType = null;
+                    if (forStmt.Condition != null)
+                    {
+                        condType = AnalyzeNode(forStmt.Condition, Bool.Instance, options, context);
+                        if (condType != Bool.Instance && condType != Int.Instance)
+                        {
+                            string typeString = condType == null ? "null" : condType.Name;
+                            throw new SemanticException($"For condition must be bool or int, got {typeString}", null, options, context);
+                        }
+                    }
+
+                    // Analyze body
+                    foreach (AstNode stmt in forStmt.Body)
+                    {
+                        AnalyzeNode(stmt, null, options, context);
+                    }
+
+                    // Analyze increment
+                    if (forStmt.Increment != null)
+                    {
+                        AnalyzeNode(forStmt.Increment, null, options, context);
+                    }
+
+                    PopScope();
                     return null;
                 }
             case CallExpressionNode call:
@@ -297,17 +392,17 @@ public class SemanticAnalyzer
                     {
                         throw new SemanticException("Functions may not return arrays. Please allocate an array on the heap and return it's pointer instead.", func.IdentifierToken, options, context);
                     }
-                    // New scope for parameters
-                    Dictionary<string, Type> oldVars = new(_variables);
+                    // New scope for function parameters and body
+                    PushScope();
                     foreach (FunctionParameterNode param in func.Parameters)
                     {
                         if (param.Type is PointerTypeNode pointerType)
                         {
-                            _variables[param.Name] = new Type(Pointer.Of(_validTypes[pointerType.BaseType.Name]), param.Type.ArraySizes);
+                            TryDeclareVariable(param.Name, new Type(Pointer.Of(_validTypes[pointerType.BaseType.Name]), param.Type.ArraySizes));
                         }
                         else
                         {
-                            _variables[param.Name] = new Type(_validTypes[param.Type.Name], param.Type.ArraySizes);
+                            TryDeclareVariable(param.Name, new Type(_validTypes[param.Type.Name], param.Type.ArraySizes));
                         }
                     }
                     foreach (AstNode stmt in func.Body)
@@ -315,8 +410,7 @@ public class SemanticAnalyzer
                         SimpleType returnType = TypeFromString(func.ReturnType.Name, true);
                         AnalyzeNode(stmt, returnType, options, context);
                     }
-                    _variables.Clear();
-                    foreach (KeyValuePair<string, Type> kv in oldVars) _variables[kv.Key] = kv.Value;
+                    PopScope();
                     return null;
                 }
             case ReturnStatementNode ret:
@@ -372,7 +466,10 @@ public class SemanticAnalyzer
                                 break;
                             }
                         case IdentifierNode identifierNode:
-                            foundSizes.Add(_variables[identifierNode.Name].ArraySizes[0]);
+                            if (TryGetVariable(identifierNode.Name, out Type? arrayVarType))
+                            {
+                                foundSizes.Add(arrayVarType!.ArraySizes[0]);
+                            }
                             break;
                         case ArrayAccessNode arrayAccessNode:
                             {
@@ -391,7 +488,10 @@ public class SemanticAnalyzer
                                     throw new Exception("Array access array was of invalid type");
                                 }
 
-                                foundSizes.Add(_variables[identifierNode.Name].ArraySizes[depth]);
+                                if (TryGetVariable(identifierNode.Name, out Type? arrayAccessVarType))
+                                {
+                                    foundSizes.Add(arrayAccessVarType!.ArraySizes[depth]);
+                                }
                                 break;
                             }
                     }
@@ -420,7 +520,7 @@ public class SemanticAnalyzer
                     {
                         throw new SemanticException($"Unknown type '{trimmedTypeName}' for array '{arrayDecl.Name}'", arrayDecl.IdentifierToken, options, context);
                     }
-                    if (_variables.ContainsKey(arrayDecl.Name))
+                    if (!TryDeclareVariable(arrayDecl.Name, new Type(_validTypes[trimmedTypeName], arrayDecl.Sizes)))
                     {
                         throw new SemanticException($"Variable '{arrayDecl.Name}' already declared", arrayDecl.IdentifierToken, options, context);
                     }
@@ -430,7 +530,9 @@ public class SemanticAnalyzer
                     {
                         arrayType = Pointer.Of(arrayType);
                     }
-                    _variables[arrayDecl.Name] = new Type(arrayType, arrayDecl.Sizes); // Array variables return a pointer to their first element
+                    // Update the variable with the complete type including pointers
+                    var currentScope = _variableScopes.Peek();
+                    currentScope[arrayDecl.Name] = new Type(arrayType, arrayDecl.Sizes); // Array variables return a pointer to their first element
 
                     if (arrayDecl.Initializer != null)
                     {
@@ -484,7 +586,11 @@ public class SemanticAnalyzer
                         throw new Exception("Array access array was of invalid type");
                     }
 
-                    SimpleType arrayType = _variables[arrayIdentifier.Name].SimpleType;
+                    if (!TryGetVariable(arrayIdentifier.Name, out Type? arrayAccessType))
+                    {
+                        throw new SemanticException($"Use of undeclared array '{arrayIdentifier.Name}'", arrayIdentifier.IdentifierToken, options, context);
+                    }
+                    SimpleType arrayType = arrayAccessType!.SimpleType;
 
                     if (arrayType is not Pointer)
                     {
@@ -498,7 +604,7 @@ public class SemanticAnalyzer
                     if (arrayAssign.Array is ArrayAccessNode) return AnalyzeNode(arrayAssign.Array, null, options, context);
                     IdentifierNode arrayIdentifier = (IdentifierNode)arrayAssign.Array;
 
-                    if (!_variables.TryGetValue(arrayIdentifier.Name, out Type? assignArrayType))
+                    if (!TryGetVariable(arrayIdentifier.Name, out Type? assignArrayType))
                     {
                         throw new SemanticException($"Assignment to undeclared array '{arrayIdentifier.Name}'", arrayIdentifier.IdentifierToken, options, context);
                     }
@@ -510,7 +616,7 @@ public class SemanticAnalyzer
                         throw new SemanticException($"Array index must be an integer, got {assignIndexType.Name}", null, options, context);
                     }
 
-                    SimpleType valueType = ((Pointer)assignArrayType.SimpleType).BaseType;
+                    SimpleType valueType = ((Pointer)assignArrayType!.SimpleType).BaseType;
                     // Check that value matches array type
                     SimpleType assignValueType = AnalyzeNode(arrayAssign.Value, valueType, options, context)!;
 
@@ -538,7 +644,11 @@ public class SemanticAnalyzer
                 }
             case ArrLenNode arrLenNode:
                 {
-                    var array = _variables[arrLenNode.Array.Name];
+                    if (!TryGetVariable(arrLenNode.Array.Name, out Type? arrayType))
+                    {
+                        throw new SemanticException($"Use of undeclared array '{arrLenNode.Array.Name}'", null, options, context);
+                    }
+                    var array = arrayType!;
                     if (arrLenNode.Dimension >= array.ArraySizes.Count)
                     {
                         throw new SemanticException($"Array {arrLenNode.Array.Name} doesn't have {arrLenNode.Dimension + 1} or more dimensions", null, options, context);

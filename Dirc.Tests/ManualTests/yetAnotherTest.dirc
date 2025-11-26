@@ -1,0 +1,21 @@
+char*[] strings = {
+    "Dit",
+    "zijn",
+    "een",
+    "aantal",
+    "strings"
+};
+
+char* result = "";
+for (int i = 0; i < arrlen(strings, 0); i++)
+{
+    result = concat(result, {strings[i][0]});
+}
+println(result);
+
+result = "";
+for (int i = 0; i < arrlen(strings, 0); i++)
+{
+    result = concat(result, {strings[i][1]});
+}
+println(result);

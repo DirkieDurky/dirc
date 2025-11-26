@@ -157,6 +157,77 @@ class ControlFlowFactory
         return null;
     }
 
+    public IReturnable? GenerateForStatement(ForStatementNode node, CodeGenContext context, LabelGenerator labelGenerator)
+    {
+        // Generate initialization
+        if (node.Initialization != null)
+        {
+            IReturnable? initResult = context.ExprFactory.Generate(node.Initialization, context);
+            initResult?.Free();
+        }
+
+        // Generate loop similar to while statement
+        string loopLabel = labelGenerator.Generate(LabelType.While, context);
+        string loopEndLabel = labelGenerator.Generate(LabelType.WhileEnd, context);
+
+        _codeGenBase.EmitLabel(loopLabel);
+
+        // Generate condition
+        if (node.Condition != null)
+        {
+            if (node.Condition is BinaryExpressionNode condition && condition.Operation.IsComparer())
+            {
+                IReturnable left = context.ExprFactory.Generate(condition.Left, context) ?? throw new Exception("Part of for condition was not set");
+                IReturnable right = context.ExprFactory.Generate(condition.Right, context) ?? throw new Exception("Part of for condition was not set");
+                _codeGenBase.EmitIf(condition.Operation.GetComparer().GetOpposite(), left, right, loopEndLabel);
+                left.Free();
+                right.Free();
+            }
+            else
+            {
+                IReturnable conditionResult = context.ExprFactory.Generate(node.Condition, context) ?? throw new Exception("For condition didn't resolve to anything");
+
+                if (conditionResult is ReturnRegister reg)
+                {
+                    _codeGenBase.EmitIf(Comparer.IfEq, reg, new NumberLiteralNode(0), loopEndLabel);
+                }
+                else if (conditionResult is NumberLiteralNode num)
+                {
+                    if (num.Value == "0")
+                    {
+                        _codeGenBase.EmitJump(loopEndLabel);
+                    }
+                }
+                else if (conditionResult is BooleanLiteralNode boolean)
+                {
+                    if (!boolean.Value)
+                    {
+                        _codeGenBase.EmitJump(loopEndLabel);
+                    }
+                }
+                else
+                {
+                    throw new Exception("Invalid condition result type");
+                }
+                conditionResult.Free();
+            }
+        }
+
+        GenerateBody(node.Body, context);
+
+        if (node.Increment != null)
+        {
+            IReturnable? incrResult = context.ExprFactory.Generate(node.Increment, context);
+            incrResult?.Free();
+        }
+
+        _codeGenBase.EmitJump(loopLabel);
+
+        _codeGenBase.EmitLabel(loopEndLabel);
+
+        return null;
+    }
+
     public void GenerateBody(List<AstNode> body, CodeGenContext context)
     {
         CodeGenContext scopeSpecificContext = (CodeGenContext)context.Clone();

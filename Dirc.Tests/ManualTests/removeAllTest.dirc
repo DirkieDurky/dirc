@@ -1,0 +1,12 @@
+int* a = malloc(12);
+*a = {4, 5, 2, 8, 10, 5, 34, 25, 0, 5, 4, 3};
+
+printArray(a, getSize(a));
+
+int* allIndices = findAll(a, getSize(a), 5);
+
+printArray(allIndices, getSize(allIndices));
+
+a = removeAll(a, getSize(a), 5);
+
+printArray(a, getSize(a));
