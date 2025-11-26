@@ -76,7 +76,7 @@ class VariableFactory
                 context.ArrayFactory.GenerateArrayLiteralAtPtr(arrayLiteral, new ReadonlyRegister(basePtr), context);
                 return new ReturnRegister(basePtr);
             }
-            else if (assignment is ArrayAccessNode arrayAccess)
+            else if (assignment is ArrayAccessNode arrayAccess && stackVar.IsArray)
             {
                 int newOffset = 0;
 
@@ -86,7 +86,13 @@ class VariableFactory
                     newOffset -= int.Parse(((NumberLiteralNode)currentArrayAccess.Index).Value);
                     currentArrayAccess = (ArrayAccessNode)currentArrayAccess.Array;
                 }
-                newOffset += ((StackStoredVariable)context.VariableTable[((IdentifierNode)currentArrayAccess.Array).Name]).FramePointerOffset;
+                var originalArray = context.VariableTable[((IdentifierNode)currentArrayAccess.Array).Name];
+                if (originalArray is not StackStoredVariable stackArray)
+                {
+                    // TODO: Implement a way to do this
+                    throw new NotImplementedException("Can't assign an value from an array to another array when array is stored in Register");
+                }
+                newOffset += stackArray.FramePointerOffset;
                 newOffset -= int.Parse(((NumberLiteralNode)currentArrayAccess.Index).Value);
                 context.VariableTable[name] = new StackStoredVariable(name, newOffset);
                 return null;
