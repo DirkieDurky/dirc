@@ -1,4 +1,4 @@
 mov|i1 [MAX_RAM_ADDRESS] _ sp # Initialize stack pointer
-store|i1|i2 [RAM_SIZE] 0 _ # Initialize screen pointer
+store|i1|i2 [SCREEN_BUFFER_START] 0 _ # Initialize screen pointer
 mov sp _ fp # Initialize frame pointer
 jump _start _ pc
