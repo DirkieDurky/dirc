@@ -194,6 +194,10 @@ class CodeGenBase
 
     public void Emit(string assembly)
     {
+        if (assembly == "sub|i2 fp 14 r1")
+        {
+
+        }
         Code.AppendLine(assembly);
     }
 

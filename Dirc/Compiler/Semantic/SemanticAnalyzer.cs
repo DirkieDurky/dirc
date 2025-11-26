@@ -156,7 +156,7 @@ public class SemanticAnalyzer
                 }
             case StringLiteralNode:
                 {
-                    return null;
+                    return Pointer.Of(Char.Instance);
                 }
             case VariableDeclarationNode varDecl:
                 {
@@ -431,7 +431,7 @@ public class SemanticAnalyzer
                     }
 
                     SimpleType arrayType = _validTypes[trimmedTypeName];
-                    for (int i = 0; i < arrayDecl.Type.ArraySizes.Count; i++)
+                    for (int i = 0; i < arrayDecl.TypeName.Count(c => c == '*'); i++)
                     {
                         arrayType = Pointer.Of(arrayType);
                     }

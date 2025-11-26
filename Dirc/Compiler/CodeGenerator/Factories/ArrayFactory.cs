@@ -14,52 +14,12 @@ class ArrayFactory
 
     public IReturnable? GenerateArrayDeclaration(ArrayDeclarationNode node, CodeGenContext context)
     {
-        if (node.Initializer == null)
+        int offset = context.AllocateStackArray((int)node.Sizes[0]!, node.Name);
+        context.AssignNameToArray(offset, node.Name);
+
+        if (node.Initializer != null)
         {
-            context.AllocateStackArray(node.TotalSize(), node.Name);
-            return null;
-        }
-
-        switch (node.Initializer)
-        {
-            case ArrayLiteralNode arrayLiteralNode:
-                {
-                    ArrayLiteral arrayLiteral = GenerateArrayLiteral(arrayLiteralNode, context);
-                    context.AssignNameToArray(arrayLiteral.Offset, node.Name);
-
-                    return new ReturnRegister(arrayLiteral.BasePtr);
-                }
-            case StringLiteralNode stringLiteralNode:
-                {
-                    List<AstNode> chars = new();
-                    foreach (char c in stringLiteralNode.Str.Literal!.ToString()!)
-                    {
-                        chars.Add(new CharNode(c));
-                    }
-                    ArrayLiteralNode arrayLiteralNode = new(chars);
-                    ArrayLiteral arrayLiteral = GenerateArrayLiteral(arrayLiteralNode, context);
-                    context.AssignNameToArray(arrayLiteral.Offset, node.Name);
-
-                    return new ReturnRegister(arrayLiteral.BasePtr);
-                }
-            default:
-                IReturnable value = context.ExprFactory.Generate(node.Initializer, context) ?? throw new Exception("Array assignment value failed to generate");
-
-                int offset = context.AllocateStackVariable(node.Name);
-                Register tmp = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
-
-                _codeGenBase.EmitBinaryOperation(
-                    Operation.Sub,
-                    ReadonlyRegister.FP,
-                    new NumberLiteralNode(NumberLiteralType.Decimal, offset.ToString()),
-                    tmp
-                );
-
-                _codeGenBase.EmitStore(value, new ReadonlyRegister(tmp));
-                value.Free();
-                break;
-                // default:
-                //     throw new CodeGenException("Invalid node given as array initializer. Expected an array- or string literal.", null, context.Options, context.BuildContext);
+            context.VarFactory.AssignVariable(node.Name, node.Initializer, context);
         }
 
         return null;
@@ -102,6 +62,27 @@ class ArrayFactory
         }
 
         return new(offset, basePtr);
+    }
+
+    public void GenerateArrayLiteralAtPtr(ArrayLiteralNode arrayLiteralNode, IOperand basePtr, CodeGenContext context)
+    {
+        for (int i = 0; i < arrayLiteralNode.Elements.Count; i++)
+        {
+            IReturnable elementValue = context.ExprFactory.Generate(arrayLiteralNode.Elements[i], context) ?? throw new Exception("Array element failed to generate");
+
+            Register address = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
+            _codeGenBase.EmitBinaryOperation(
+                Operation.Add,
+                basePtr,
+                new NumberLiteralNode(NumberLiteralType.Decimal, i.ToString()),
+                address
+            );
+
+            _codeGenBase.EmitStore(elementValue, new ReadonlyRegister(address));
+
+            elementValue.Free();
+            address.Free();
+        }
     }
 
     public IReturnable GenerateArrayAccess(ArrayAccessNode node, CodeGenContext context)

@@ -31,13 +31,22 @@ class VariableFactory
         else if (node.Target is PointerDereferenceNode target)
         {
             IReturnable address = context.ExprFactory.Generate(target.PointerExpression, context) ?? throw new Exception("Pointer dereference failed to generate");
-            IReturnable value = context.ExprFactory.Generate(node.Value, context) ?? throw new Exception("Initializer expression failed to generate");
 
-            _codeGenBase.EmitStore(value, address);
-            address.Free();
-            value.Free();
+            if (node.Value is ArrayLiteralNode arrayLiteral)
+            {
+                context.ArrayFactory.GenerateArrayLiteralAtPtr(arrayLiteral, address, context);
+                address.Free();
+                return null;
+            }
+            else
+            {
+                IReturnable value = context.ExprFactory.Generate(node.Value, context) ?? throw new Exception("Initializer expression failed to generate");
+                _codeGenBase.EmitStore(value, address);
+                address.Free();
+                value.Free();
+                return value;
+            }
 
-            return value;
         }
         else
         {
@@ -48,34 +57,60 @@ class VariableFactory
     public IReturnable? AssignVariable(string name, AstNode assignment, CodeGenContext context)
     {
         Variable var = context.VariableTable[name];
-        IReturnable resultValue = context.ExprFactory.Generate(assignment, context) ?? throw new Exception("Initializer expression failed to generate");
 
         if (var is StackStoredVariable stackVar)
         {
             int offset = stackVar.FramePointerOffset;
 
-            Register tmp = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
+            Register basePtr = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
 
             _codeGenBase.EmitBinaryOperation(
                 Operation.Sub,
                 ReadonlyRegister.FP,
                 new NumberLiteralNode(NumberLiteralType.Decimal, offset.ToString()),
-                tmp
+                basePtr
             );
-            _codeGenBase.EmitStore(resultValue, new ReadonlyRegister(tmp));
 
-            tmp.Free();
+            if (assignment is ArrayLiteralNode arrayLiteral)
+            {
+                context.ArrayFactory.GenerateArrayLiteralAtPtr(arrayLiteral, new ReadonlyRegister(basePtr), context);
+                return new ReturnRegister(basePtr);
+            }
+            else if (assignment is ArrayAccessNode arrayAccess)
+            {
+                int newOffset = 0;
+
+                ArrayAccessNode currentArrayAccess = arrayAccess;
+                while (currentArrayAccess.Array is ArrayAccessNode)
+                {
+                    newOffset -= int.Parse(((NumberLiteralNode)currentArrayAccess.Index).Value);
+                    currentArrayAccess = (ArrayAccessNode)currentArrayAccess.Array;
+                }
+                newOffset += ((StackStoredVariable)context.VariableTable[((IdentifierNode)currentArrayAccess.Array).Name]).FramePointerOffset;
+                newOffset -= int.Parse(((NumberLiteralNode)currentArrayAccess.Index).Value);
+                context.VariableTable[name] = new StackStoredVariable(name, newOffset);
+                return null;
+            }
+            else
+            {
+                IReturnable resultValue = context.ExprFactory.Generate(assignment, context) ?? throw new Exception("Initializer expression failed to generate");
+                _codeGenBase.EmitStore(resultValue, new ReadonlyRegister(basePtr));
+                basePtr.Free();
+
+                return resultValue;
+            }
         }
         else if (var is RegisterStoredVariable regVar)
         {
+            IReturnable resultValue = context.ExprFactory.Generate(assignment, context) ?? throw new Exception("Initializer expression failed to generate");
             _codeGenBase.EmitMov(resultValue, regVar.Register);
+            resultValue.Free();
+
+            return resultValue;
         }
         else
         {
             throw new CodeGenException("Variable was of unsupported type", null, context.Options, context.BuildContext);
         }
-
-        resultValue.Free();
-        return resultValue;
     }
 }
