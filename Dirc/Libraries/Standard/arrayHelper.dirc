@@ -79,12 +79,13 @@ void* removeAll(void* haystack, int haystackSize, void needle)
 {
     int* indices = findAll(haystack, haystackSize, needle);
 
+    void* newPtr = haystack;
     for (int i = getSize(indices) - 1; i >= 0; i--) {
-        haystack = removeAt(haystack, getSize(haystack), indices[i]);
-        //printArray(haystack, getSize(haystack));
+        newPtr = removeAt(newPtr, getSize(newPtr), indices[i]);
+        //printArray(newPtr, getSize(newPtr));
     }
 
-    return haystack;
+    return newPtr;
 }
 
 void printArray(int* array, int arrayLength)

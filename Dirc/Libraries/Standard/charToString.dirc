@@ -1,0 +1,8 @@
+char* charToString(char c)
+{
+    char* result = malloc(2);
+    result[0] = c;
+    result[1] = 0;
+
+    return result;
+}

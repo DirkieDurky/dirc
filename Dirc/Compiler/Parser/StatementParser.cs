@@ -55,6 +55,7 @@ class StatementParser
 
     private List<AstNode> ParseReturnStatement()
     {
+        if (_context.ParserBase.Match(TokenType.Semicolon)) return [];
         ReturnStatementNode node = new(_context.ExpressionParser.ParseExpression());
         _context.ParserBase.Consume(TokenType.Semicolon, "Expected ';' after expression");
         return [node];

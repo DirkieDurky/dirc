@@ -47,7 +47,7 @@ char* concat(char* a, char* b)
     {
         newString[aLen + i] = b[i];
     }
-    newString[size] = 0;
+    newString[size - 1] = 0;
 
     return newString;
 }

@@ -44,10 +44,18 @@ class FunctionFactory
 
     public IReturnable? GenerateReturnStatement(ReturnStatementNode node, CodeGenContext context)
     {
+        if (node.ReturnValue == null)
+        {
+            EmitFunctionEpilogue(context);
+            _codeGenBase.EmitReturn(false);
+            return null;
+        }
+
         IReturnable returnValue = context.ExprFactory.Generate(node.ReturnValue, context) ?? throw new Exception("return value didn't return anything");
         Register r0 = context.Allocator.Use(RegisterEnum.r0, true);
         _codeGenBase.EmitMov(returnValue, r0);
         returnValue.Free();
+
         EmitFunctionEpilogue(context);
         _codeGenBase.EmitReturn(false);
 

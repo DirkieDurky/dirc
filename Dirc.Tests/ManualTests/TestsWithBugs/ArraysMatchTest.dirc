@@ -1,8 +1,0 @@
-// This works but looks like it's doing some stuff it isn't supposed to do
-// It doesn't work at all when using the string literal
-
-//char* str = "Dirk";
-char[5] str = {'D', 'i', 'r', 'k'};
-str[4] = 0;
-
-println(boolToString(arraysMatch(str, 4, "Dirk", 4)));

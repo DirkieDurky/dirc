@@ -1,0 +1,4 @@
+char* str = "Dirk";
+
+println(boolToString(arraysMatch(str, 4, "Dirk", 4)));
+println(boolToString(arraysMatch(str, 4, "Dirc", 4)));

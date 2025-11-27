@@ -8,8 +8,9 @@ public abstract class TypeNode : AstNode
     public Token IdentifierToken { get; }
     public string Name { get; }
     public bool IsArray { get; }
-    public List<int?> ArraySizes { get; }
-    public TypeNode(Token identifierToken, string name, bool isArray, List<int?> arraySizes)
+    public bool IsStringArray { get; set; } // If true the type denotes an array (with any amount of dimensions) of strings
+    public List<int> ArraySizes { get; }
+    public TypeNode(Token identifierToken, string name, bool isArray, List<int> arraySizes)
     {
         IdentifierToken = identifierToken;
         Name = name;

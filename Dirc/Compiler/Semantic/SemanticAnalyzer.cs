@@ -415,6 +415,8 @@ public class SemanticAnalyzer
                 }
             case ReturnStatementNode ret:
                 {
+                    if (ret.ReturnValue == null) return null;
+
                     SimpleType? retType = AnalyzeNode(ret.ReturnValue, expectedType, options, context);
                     if (expectedType != null && retType != null && retType != expectedType)
                     {
@@ -429,7 +431,7 @@ public class SemanticAnalyzer
                 }
             case ArrayDeclarationNode arrayDecl:
                 {
-                    List<int?> foundSizes = [];
+                    List<int> foundSizes = [];
 
                     // Find array sizes (in all dimensions) based on initializer
                     switch (arrayDecl.Initializer)
@@ -458,7 +460,6 @@ public class SemanticAnalyzer
                                     }
                                     else if (arrayLiteral.Elements[0] is StringLiteralNode)
                                     {
-                                        foundSizes.Add(null);
                                         break;
                                     }
                                     currentArrayLiteral = arrayLiteral.Elements[0];
@@ -653,10 +654,7 @@ public class SemanticAnalyzer
                     {
                         throw new SemanticException($"Array {arrLenNode.Array.Name} doesn't have {arrLenNode.Dimension + 1} or more dimensions", null, options, context);
                     }
-                    int? length = array.ArraySizes[arrLenNode.Dimension] ?? throw new SemanticException(
-                        $"Array {arrLenNode.Array.Name} has {arrLenNode.Dimension} dimensions but doesn't have a fixed length for "
-                        + $"{arrLenNode.Dimension}th dimension. It's likely an array of strings. Check the length of a string using "
-                        + $"the 'strlen()' function.", null, options, context);
+                    int? length = array.ArraySizes[arrLenNode.Dimension];
                     arrLenNode.ComputedLength = (int)length;
                     return Int.Instance;
                 }

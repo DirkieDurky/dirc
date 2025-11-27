@@ -33,7 +33,8 @@ class TypeParser
         }
         Token baseTypeToken = _context.ParserBase.Consume(TokenType.Identifier, "Expected type name");
         type = new NamedTypeNode(baseTypeToken, baseTypeToken.Lexeme);
-        List<int?> arraySizes = [];
+        List<int> arraySizes = [];
+        bool isStringArray = false;
 
         while (_context.ParserBase.Match(TokenType.Asterisk) || _context.ParserBase.Match(TokenType.LeftBracket))
         {
@@ -60,6 +61,10 @@ class TypeParser
                 }
                 _context.ParserBase.Consume(TokenType.RightBracket, "Expected closing bracket after opening bracket");
             }
+            else
+            {
+                isStringArray = true;
+            }
         }
 
         if (safe
@@ -78,6 +83,7 @@ class TypeParser
         }
 
         type.ArraySizes.AddRange(arraySizes);
+        type.IsStringArray = isStringArray;
 
         return true;
     }
