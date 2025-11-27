@@ -1,0 +1,16 @@
+char** splitString(char* string, char separator)
+{
+    int* allIndices = findAll(string, strlen(string), separator);
+    char** result = malloc(getSize(allIndices) + 1);
+
+    result[0] = subString(string, 0, allIndices[0]);
+
+    for (int i = 1; i < getSize(allIndices); i++)
+    {
+        result[i] = subString(string, allIndices[i - 1] + 1, allIndices[i]);
+    }
+
+    result[getSize(allIndices)] = subString(string, allIndices[getSize(allIndices) - 1] + 1, strlen(string));
+
+    return result;
+}

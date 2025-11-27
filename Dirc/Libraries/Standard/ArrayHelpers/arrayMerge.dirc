@@ -1,0 +1,16 @@
+void* merge(void* a, int aSize, void* b, int bSize)
+{
+    void* newArray = malloc(aSize + bSize);
+
+    for (int i = 0; i < aSize; i++)
+    {
+        newArray[i] = a[i];
+    }
+
+    for (int i = 0; i < bSize; i++)
+    {
+        newArray[aSize + i] = b[i];
+    }
+
+    return newArray;
+}

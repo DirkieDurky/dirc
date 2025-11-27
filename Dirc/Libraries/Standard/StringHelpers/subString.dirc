@@ -1,0 +1,14 @@
+char* subString(char* string, int startIndex, int endIndex)
+{
+    int stringLength = endIndex - startIndex + 1;
+    char* newString = malloc(stringLength + 1);
+    int newStringIndex = 0;
+    for (int i = startIndex; i < endIndex; i++)
+    {
+        newString[newStringIndex] = string[i];
+        newStringIndex++;
+    }
+    newString[stringLength] = 0;
+
+    return newString;
+}

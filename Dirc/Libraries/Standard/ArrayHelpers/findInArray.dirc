@@ -1,0 +1,42 @@
+int findFirst(void* haystack, int haystackSize, void needle, int startIndex)
+{
+    for (int i = startIndex; i < haystackSize; i++)
+    {
+        if (haystack[i] == needle)
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+int countOccurrences(void* haystack, int haystackSize, void needle)
+{
+    int count = 0;
+    
+    for (int i = 0; i < haystackSize; i++)
+    {
+        if (haystack[i] == needle)
+        {
+            count++;
+        }
+    }
+
+    return count;
+}
+
+int* findAll(void* haystack, int haystackSize, void needle)
+{
+    int occurrences = countOccurrences(haystack, haystackSize, needle);
+    int* result = malloc(occurrences);
+
+    int startIndex = 0;
+    for (int i = 0; i < occurrences; i++) {
+        int foundIndex = findFirst(haystack, haystackSize, needle, startIndex);
+        result[i] = foundIndex;
+        startIndex = foundIndex + 1;
+    }
+
+    return result;
+}

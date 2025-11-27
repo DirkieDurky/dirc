@@ -1,0 +1,23 @@
+void printArray(int* array, int arrayLength)
+{
+    char* str = malloc(2);
+    *str = "[";
+    for (int i = 0; i < arrayLength; i++) {
+        char* number = intToString(array[i]);
+        char* strWithNum = concat(str, number);
+        free(str);
+        free(number);
+        str = strWithNum;
+        free(strWithNum);
+
+        if (i < arrayLength - 1) {
+            char* strWithComma = concat(str, ", ");
+            free(str);
+            str = strWithComma;
+            free(strWithComma);
+        }
+    }
+    str = concat(str, "]");
+    println(str);
+    free(str);
+}

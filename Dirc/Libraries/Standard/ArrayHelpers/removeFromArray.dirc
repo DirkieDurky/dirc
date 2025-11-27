@@ -1,0 +1,30 @@
+// Only dynamic arrays are allowed to be used in any of these functions since we're modifying the length
+void* removeAt(void* haystack, int haystackSize, int index)
+{
+    for (int i = index + 1; i < haystackSize; i++)
+    {
+        haystack[i - 1] = haystack[i];
+    }
+
+    return realloc(haystack, haystackSize - 1);
+}
+
+void* removeFirst(void* haystack, int haystackSize, void needle)
+{
+    int index = findFirst(haystack, haystackSize, needle, 0);
+    return removeAt(haystack, haystackSize, index);
+}
+
+void* removeAll(void* haystack, int haystackSize, void needle)
+{
+    int* indices = findAll(haystack, haystackSize, needle);
+
+    void* newPtr = haystack;
+    for (int i = getSize(indices) - 1; i >= 0; i--) {
+        newPtr = removeAt(newPtr, getSize(newPtr), indices[i]);
+        //printArray(newPtr, getSize(newPtr));
+    }
+    free(indices);
+
+    return newPtr;
+}
