@@ -1,0 +1,50 @@
+int findFirstSubstring(char* str, char* substring, int startIndex)
+{
+    int stringLength = strlen(str);
+    int substringLength = strlen(substring);
+    int matches = 0;
+
+    for (int i = startIndex; i < stringLength; i++)
+    {
+        if (str[i] == substring[matches])
+        {
+            matches++;
+            if (matches == substringLength)
+            {
+                return i - matches + 1;
+            }
+        }
+        else
+        {
+            matches = 0;
+        }
+    }
+
+    return -1;
+}
+
+int* findAllNonOverlappingSubstrings(char* str, char* substring)
+{
+    int substringLength = strlen(substring);
+    int* foundIndices = malloc(1);
+    int foundIndicesCount = 0;
+
+    int continueIndex = 0;
+    int foundIndex = findFirstSubstring(str, substring, continueIndex);
+    while (foundIndex != -1)
+    {
+        foundIndicesCount++;
+        int foundIndicesSize = getSize(foundIndices);
+        if (foundIndicesCount >= foundIndicesSize)
+        {
+            foundIndices = realloc(foundIndices, foundIndicesSize + 1);
+        }
+        foundIndices[foundIndicesCount - 1] = foundIndex;
+
+        continueIndex = foundIndex + substringLength;
+        foundIndex = findFirstSubstring(str, substring, continueIndex);
+    }
+
+    foundIndices = realloc(foundIndices, foundIndicesCount);
+    return foundIndices;
+}

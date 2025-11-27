@@ -1,6 +1,6 @@
 char* stringWithMultipleLines = "Dit\nis\neen\nmultiline\nstring";
 
-char** splitString = splitString(stringWithMultipleLines, '\n');
+char** splitString = splitStringByChar(stringWithMultipleLines, '\n');
 for (int i = 0; i < getSize(splitString); i++) {
     println(splitString[i]);
     free(splitString[i]);

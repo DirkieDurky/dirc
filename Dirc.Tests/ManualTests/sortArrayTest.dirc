@@ -1,0 +1,7 @@
+int* array = malloc(6);
+*array = {4, -5, 2, -67, 3, 10};
+printArray(array, getSize(array));
+
+sortArray(array, getSize(array));
+
+printArray(array, getSize(array));
