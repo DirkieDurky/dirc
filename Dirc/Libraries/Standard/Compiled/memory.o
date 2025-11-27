@@ -33,9 +33,7 @@ store r3 r1 _
 sub|i2 fp 5 r1
 sub|i2 fp 4 r2
 load r2 _ r3
-sub|i2 fp 1 r2
-load r2 _ r4
-ifLess r3 r4 _memory_condition1
+ifLess r3 r0 _memory_condition1
 mov|i1 1 _ r2
 jump _memory_conditionEnd1 _ pc
 label _memory_condition1

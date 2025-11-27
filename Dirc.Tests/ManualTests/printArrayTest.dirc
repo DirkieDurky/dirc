@@ -1,0 +1,2 @@
+int[] array = {4, 5, 2, 67, 3};
+printArray(array, arrlen(array, 0));
