@@ -3,14 +3,14 @@ char** splitStringByChar(char* str, char separator)
     int* allIndices = findAll(str, strlen(str), separator);
     char** result = malloc(getSize(allIndices) + 1);
 
-    result[0] = substring(str, 0, allIndices[0] - 1);
+    result[0] = substring(str, 0, allIndices[0]);
 
     for (int i = 1; i < getSize(allIndices); i++)
     {
-        result[i] = substring(str, allIndices[i - 1] + 1, allIndices[i] - 1);
+        result[i] = substring(str, allIndices[i - 1] + 1, allIndices[i]);
     }
 
-    result[getSize(allIndices)] = substring(str, allIndices[getSize(allIndices) - 1] + 2, strlen(str) - 1);
+    result[getSize(allIndices)] = substring(str, allIndices[getSize(allIndices) - 1] + 2, strlen(str));
 
     return result;
 }
@@ -24,12 +24,12 @@ char** splitStringBySubstring(char* str, char* substring)
 
     char** result = malloc(substringCount + 1);
 
-    result[0] = substring(str, 0, allIndices[0] - 1);
+    result[0] = substring(str, 0, allIndices[0]);
     for (int i = 1; i < substringCount; i++)
     {
-        result[i] = substring(str, allIndices[i - 1] + substringLength, allIndices[i] - 1);
+        result[i] = substring(str, allIndices[i - 1] + substringLength, allIndices[i]);
     }
-    result[substringCount] = substring(str, allIndices[substringCount - 1] + substringLength, strlen(str) - 1);
+    result[substringCount] = substring(str, allIndices[substringCount - 1] + substringLength, strlen(str));
 
     return result;
 }

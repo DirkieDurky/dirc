@@ -71,8 +71,7 @@ mov fp _ r3
 load r3 _ r6
 mov r6 _ r7
 load r7 _ r3
-sub|i2 r3 1 r6
-mov r6 _ r2
+mov r3 _ r2
 call @substring _ _
 mov r0 _ r3
 pop _ _ r4
@@ -124,8 +123,7 @@ sub|i2 fp 2 r6
 load r6 _ r8
 add r7 r8 r9
 load r9 _ r6
-sub|i2 r6 1 r7
-mov r7 _ r2
+mov r6 _ r2
 call @substring _ _
 mov r0 _ r3
 pop _ _ r5
@@ -202,8 +200,6 @@ pop _ _ r4
 pop _ _ r3
 pop _ _ r1
 pop _ _ r0
-sub|i2 r2 1 r7
-mov r7 _ r2
 call @substring _ _
 mov r0 _ r2
 pop _ _ r5
@@ -299,8 +295,7 @@ mov fp _ r3
 load r3 _ r6
 mov r6 _ r7
 load r7 _ r3
-sub|i2 r3 1 r6
-mov r6 _ r2
+mov r3 _ r2
 call @substring _ _
 mov r0 _ r3
 pop _ _ r4
@@ -345,8 +340,7 @@ sub|i2 fp 4 r6
 load r6 _ r8
 add r7 r8 r9
 load r9 _ r6
-sub|i2 r6 1 r7
-mov r7 _ r2
+mov r6 _ r2
 call @substring _ _
 mov r0 _ r3
 pop _ _ r5
@@ -401,8 +395,7 @@ pop _ _ r3
 pop _ _ r2
 pop _ _ r1
 pop _ _ r0
-sub|i2 r6 1 r7
-mov r7 _ r2
+mov r6 _ r2
 call @substring _ _
 mov r0 _ r3
 pop _ _ r5

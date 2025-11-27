@@ -30,7 +30,7 @@ store r1 r3 _
 label _substring_while0
 sub|i2 fp 3 r3
 load r3 _ r4
-ifMore r4 r2 _substring_whileEnd0
+ifMoreOrEq r4 r2 _substring_whileEnd0
 sub|i2 fp 1 r3
 load r3 _ r4
 sub|i2 fp 2 r3
