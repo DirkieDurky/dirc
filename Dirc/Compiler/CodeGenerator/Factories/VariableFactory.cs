@@ -38,6 +38,12 @@ class VariableFactory
                 address.Free();
                 return null;
             }
+            else if (node.Value is StringLiteralNode stringLiteral)
+            {
+                context.ArrayFactory.GenerateArrayLiteralAtPtr(context.StringFactory.ToArrayLiteral(stringLiteral), address, context);
+                address.Free();
+                return null;
+            }
             else
             {
                 IReturnable value = context.ExprFactory.Generate(node.Value, context) ?? throw new Exception("Initializer expression failed to generate");
