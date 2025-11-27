@@ -4,7 +4,6 @@ int* a = malloc(12);
 printArray(a, getSize(a));
 
 int* allIndices = findAll(a, getSize(a), 5);
-
 printArray(allIndices, getSize(allIndices));
 
 a = removeAll(a, getSize(a), 5);

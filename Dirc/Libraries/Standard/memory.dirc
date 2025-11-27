@@ -8,7 +8,7 @@ void* malloc(int size) {
     while (true) {
         bool blockIsFree = *i == 0;
         int blockSize = *(i + 1);
-        bool enoughSpace = blockSize >= requiredSpace | blockSize == 0;
+        bool enoughSpace = blockSize >= size | blockSize == 0;
         
         if (blockIsFree & enoughSpace) {
             return allocate(i, size);
