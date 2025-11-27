@@ -726,29 +726,35 @@ public class SemanticAnalyzer
 
     private bool TypesAreValid(SimpleType a, SimpleType b)
     {
-        while (a is Pointer aPtr && b is Pointer bPtr)
+        SimpleType baseA = a;
+        SimpleType baseB = b;
+
+        while (baseA is Pointer aPtr && baseB is Pointer bPtr)
         {
-            a = aPtr.BaseType;
-            b = bPtr.BaseType;
+            baseA = aPtr.BaseType;
+            baseB = bPtr.BaseType;
         }
 
+        if (a is Pointer && baseA is Void && b is Pointer) return true;
+        if (b is Pointer && baseB is Void && a is Pointer) return true;
+
         // If any of them is a pointer the other isn't which means the types don't match
-        if (a is Pointer || b is Pointer)
+        if (baseA is Pointer || baseB is Pointer)
         {
             return false;
         }
 
-        if (a is Void || b is Void)
+        if (baseA is Void || baseB is Void)
         {
             return true;
         }
 
         // Since we currently don't have typecasts yet, just allow when both types are primitives
-        if (a is PrimitiveType && b is PrimitiveType)
+        if (baseA is PrimitiveType && baseB is PrimitiveType)
         {
             return true;
         }
 
-        return a == b;
+        return baseA == baseB;
     }
 }
