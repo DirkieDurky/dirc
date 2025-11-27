@@ -63,7 +63,7 @@ public class BuildEnvironment
 
     // public const int RamBytes = 536870912; // RAM is 512MiB
     // public const int RamBytes = 256; // Fits in RAM display ingame
-    public const int RamBytes = 16384;
+    public const int RamBytes = 65536;
     public const int MaxRamAddress = RamBytes / (DataWidth / 8) - 1;
 
     public const int ScreenBufferStart = MaxRamAddress + 1;
