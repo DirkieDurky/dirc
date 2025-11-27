@@ -1,4 +1,4 @@
-char* intToString(int num)
+char* positiveIntToString(int num)
 {
     if (num == 0)
     {
@@ -20,6 +20,21 @@ char* intToString(int num)
     }
 
     return chars;
+}
+
+char* intToString(int num)
+{
+    if (num < 0)
+    {
+        char* positiveIntResult = positiveIntToString(abs(num));
+        char* result = concat("-", positiveIntResult);
+        free(positiveIntResult);
+        return result;
+    }
+    else
+    {
+        return positiveIntToString(num);
+    }
 }
 
 int getDigitCountInInt(int num)

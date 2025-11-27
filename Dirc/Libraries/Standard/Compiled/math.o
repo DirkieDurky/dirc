@@ -86,3 +86,26 @@ mov fp _ sp
 pop _ _ fp
 pop _ _ lr
 return _ _ _
+
+label abs
+push lr _ _
+push fp _ _
+mov sp _ fp
+ifMoreOrEq|i2 r0 0 _math_else2
+sub|i1 0 r0 r1
+mov r1 _ r0
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
+jump _math_ifElseEnd2 _ pc
+label _math_else2
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
+label _math_ifElseEnd2
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _

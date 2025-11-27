@@ -62,12 +62,7 @@ class CodeGenBase
                 break;
             case Operation.Sub:
                 // Filter out unnecessary statements
-                if (left.AsOperand() == "0")
-                {
-                    EmitMov(right!, result);
-                    break;
-                }
-                else if (right!.AsOperand() == "0")
+                if (right!.AsOperand() == "0")
                 {
                     EmitMov(left!, result);
                     break;

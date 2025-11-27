@@ -1,4 +1,5 @@
 using System.Text.Json;
+using CommandLine;
 using Dirc.Compiling.CodeGen;
 using Dirc.Compiling.Lexing;
 using Dirc.Compiling.Parsing;
@@ -656,6 +657,10 @@ public class SemanticAnalyzer
                     }
                     int? length = array.ArraySizes[arrLenNode.Dimension];
                     arrLenNode.ComputedLength = (int)length;
+                    return Int.Instance;
+                }
+            case UnaryOperationNode unaryOperation:
+                {
                     return Int.Instance;
                 }
             default:

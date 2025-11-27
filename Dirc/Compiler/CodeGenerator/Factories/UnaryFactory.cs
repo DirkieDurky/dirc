@@ -18,13 +18,13 @@ class UnaryFactory
         {
             case UnaryOperationType.Negate:
                 {
-                    switch (node.Operand)
-                    {
-                        case NumberLiteralNode numberLiteral:
-                            return new NumberLiteralNode(numberLiteral.Type, "-" + numberLiteral.Value);
-                        default:
-                            throw new Exception("Invalid negate operand");
-                    }
+                    if (node.Operand is NumberLiteralNode numberLiteral)
+                        return new NumberLiteralNode(numberLiteral.Type, "-" + numberLiteral.Value);
+
+                    IReturnable operand = context.ExprFactory.Generate(node.Operand, context) ?? throw new Exception("Negate operand couldn't generate");
+                    Register reg = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
+                    context.CodeGenBase.EmitBinaryOperation(Operation.Sub, new NumberLiteralNode(0), operand, reg);
+                    return new ReturnRegister(reg);
                 }
             default:
                 throw new Exception("Invalid unary operation type");
