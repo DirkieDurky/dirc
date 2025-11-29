@@ -1,9 +1,9 @@
 label printNewline
-load|i1 [SCREEN_PTR] _ r0
+load|i1 [SCREEN_POINTER_ADDRESS] _ r0
 sub|i2 r0 [SCREEN_BUFFER_START] r0
 mod|i2 r0 80 r1
 sub r0 r1 r0
 add|i2 r0 80 r0
 add|i2 r0 [SCREEN_BUFFER_START] r0
-store|i2 r0 [SCREEN_PTR] _
+store|i2 r0 [SCREEN_POINTER_ADDRESS] _
 return _ _ _

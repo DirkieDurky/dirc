@@ -26,9 +26,10 @@ partial class Linker
         }
         result.Append(assembly);
 
-        result = result.Replace("[SCREEN_PTR]", BuildEnvironment.ScreenPointerAddress.ToString());
-        result = result.Replace("[MAX_RAM_ADDRESS]", BuildEnvironment.MaxRamAddress.ToString());
-        result = result.Replace("[SCREEN_BUFFER_START]", BuildEnvironment.ScreenBufferStart.ToString());
+        foreach (GlobalConstant globalConstant in BuildEnvironment.GlobalConstants)
+        {
+            result = result.Replace('[' + globalConstant.Name + ']', globalConstant.Value.ToString());
+        }
 
         string resultStr = result.ToString();
         resultStr = UnresolvedSymbol().Replace(resultStr, "$1");

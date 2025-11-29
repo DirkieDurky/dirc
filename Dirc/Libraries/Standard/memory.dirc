@@ -1,37 +1,113 @@
-void* malloc(int size) {
-    // Require 2 bytes of space for the header
-    int headerSize = 2;
-    int requiredSpace = size + headerSize;
+void* malloc(int size)
+{
+    int allocatedHeaderSize = 2;
+    int* freeListHeadAddress = FREE_LIST_HEAD_ADDRESS;
 
-    // Find enough free space
-    int *i = 16;
-    while (true) {
-        bool blockIsFree = *i == 0;
-        int blockSize = *(i + 1);
-        bool enoughSpace = blockSize >= size | blockSize == 0;
-        
-        if (blockIsFree & enoughSpace) {
-            return allocate(i, size);
-        } else {
-            i += blockSize + headerSize;
+    if (*freeListHeadAddress == -1)
+    {
+        throwError("Out of memory");
+    }
+
+    int* currentBlock = *freeListHeadAddress;
+    int currentBlockSize = *(currentBlock + 1);
+    bool wasFirstInFreeList = true;
+
+    while (currentBlockSize < size)
+    {
+        int* nextFreeBlock = currentBlock + allocatedHeaderSize;
+        if (*nextFreeBlock == -1)
+        {
+            throwError("Not enough memory");
+        }
+        currentBlock = *nextFreeBlock;
+        currentBlockSize = *(currentBlock + 1);
+        wasFirstInFreeList = false;
+    }
+
+    allocate(currentBlock, size, wasFirstInFreeList);
+
+    int* payloadAddress = currentBlock + 2;
+    return payloadAddress;
+}
+
+void allocate(int* address, int size, bool wasFirstInFreeList)
+{
+    int allocatedHeaderSize = 2;
+    int* freeListHeadAddress = FREE_LIST_HEAD_ADDRESS;
+
+    int originalSize = *(address + 1);
+    int nextFreeBlock = *(address + 2);
+
+    *address = 1; // Set in use
+    *(address + 1) = size; // Set size
+
+    // If the block is big enough, split it so we only use what we need to
+    // Ensure we have 4 extra space. This is the minimum size of a free block:
+    // That would look like {IsInUse, Size, NextFreeBlock, Footer}
+    if (originalSize >= size + 4)
+    {
+        int* newFreeBlock = address + allocatedHeaderSize + size;
+        int newFreeBlockSize = originalSize - size - allocatedHeaderSize;
+        *(newFreeBlock) = 0; // IsInUse
+        *(newFreeBlock + 1) = newFreeBlockSize; // Size
+        *(newFreeBlock + 2) = nextFreeBlock;
+        *(newFreeBlock + 1 + newFreeBlockSize) = newFreeBlockSize;
+
+        if (wasFirstInFreeList)
+        {
+            *freeListHeadAddress = newFreeBlock;
+        }
+    }
+    else
+    {
+        if (wasFirstInFreeList)
+        {
+            *freeListHeadAddress = nextFreeBlock;
         }
     }
 }
 
-void* allocate(int* index, int size) {
-    // We store both whether it's occupied and the size
-    // That way when freeing we can mark the block as free but keep the size
-    // Then we know how much free space there is
-    *index = 1; // Mark as occupied
-    *(index + 1) = size; // Set size
-    return index + 2;
+void free(void* ptr)
+{
+    int allocatedHeaderSize = 2;
+    int mySize = *(ptr - 1);
+
+    int newSize = mySize;
+    int* newHeaderAddress = ptr - 2;
+
+    // Merge with previous block if free
+    if (ptr > HEAP_START)
+    {
+        int previousBlockSize = *(ptr - 3);
+        int* previousBlock = *(ptr - 3 - previousBlockSize - 1);
+        bool previousBlockFree = *previousBlock;
+
+        if (previousBlockFree)
+        {
+            newSize += previousBlockSize + allocatedHeaderSize;
+            newHeaderAddress = previousBlock;
+        }
+    }
+
+    // Merge with next block if free
+    int* nextBlock = mySize + 1;
+    if (nextBlock < HEAP_END & !*nextBlock)
+    {
+        int nextBlockSize = *(nextBlock + 1);
+        newSize += nextBlockSize + allocatedHeaderSize;
+    }
+
+    // Update freeList
+
+    // Free myself
+    *newHeaderAddress = 0;
+    *(newHeaderAddress + 1) = newSize;
+    //*(newHeaderAddress + 2) = 
+    *(newHeaderAddress + 1 + newSize) = newSize;
 }
 
-void free(void* ptr) {
-    *(ptr - 2) = 0;
-}
-
-int getSize(void* ptr) {
+int getSize(void* ptr)
+{
     return *(ptr - 1);
 }
 

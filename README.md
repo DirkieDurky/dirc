@@ -480,10 +480,10 @@ Reads from the `lr` register and jumps to that byte in the program.\
 Writes a value to the stack and decreases the stack pointer by 1.
 - `pop _ _ reg`
 Copies the value at the stack pointer to the register specified by the return address and increases the stack pointer by 1.
-- `store value location _`
-Writes a value to the specified location in memory.
-- `load location _ reg`
-Copies the value at the specified location in memory to the register specified by the return address.
+- `store value address _`
+Writes a value to the specified address in memory.
+- `load address _ reg`
+Copies the value at the specified address in memory to the register specified by the return address.
 - `noop _ _ _`
 Does nothing at all for a tick.
 - `read _ _ reg`
@@ -506,7 +506,10 @@ Registers `r6-r10` are used as "callee-saved" registers.
 
 RAM is divided as follows:\
 The first 16 words are reserved for global variables\
-The first byte of this area holds the current screen pointer; the next position to write to when we're printing. (the cursor if you will).
+The first byte (byte 0) of this area holds the current screen pointer; the next position to write to when we're printing. (the cursor if you will).
+Byte 1 holds the pointer to the head of the free list.
+The free list is stored in all free blocks on the heap,
+so it will simply point to the first free block.
 
 The last 2MiB is for the stack. It starts at the end and grows downward.
 

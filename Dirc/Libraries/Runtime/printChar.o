@@ -1,6 +1,6 @@
 label printChar
-load|i1 [SCREEN_PTR] _ r1
+load|i1 [SCREEN_POINTER_ADDRESS] _ r1
 store r0 r1 _
 add|i2 r1 1 r1
-store|i2 r1 [SCREEN_PTR] _
+store|i2 r1 [SCREEN_POINTER_ADDRESS] _
 return _ _ _
