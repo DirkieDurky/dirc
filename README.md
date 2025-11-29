@@ -497,6 +497,31 @@ fileOffset specifies the start of where to read from in the file. We will read b
 # ABI
 
 Registers `r0-r3` are used to pass arguments to functions.\
-Register `r0` is used for return values out of functions.\
+Register `r0` is used for return values out of functions.
+
+Currently all registers (`r0-r10`) are "caller-saved".\
+In the future, this could behave more like other compilers where:\
 Registers `r0-r5` are used as "caller-saved" registers.\
 Registers `r6-r10` are used as "callee-saved" registers.
+
+RAM is divided as follows:\
+The first 16 words are reserved for global variables\
+The first byte of this area holds the current screen pointer; the next position to write to when we're printing. (the cursor if you will).
+
+The last 2MiB is for the stack. It starts at the end and grows downward.
+
+The rest is for the heap. It starts after the global area and may grow until it hits the stack.
+
+This may all be changed in Dirc/BuildEnvironment.cs
+
+Memory allocation work as follows:\
+The heap is divided up into blocks.\
+Each block contains:
+- A header that gives some information about that block
+- The data that the user can access
+- If it's free: A footer that represents the size of the block. (used for coalescing blocks)
+
+The header contains:
+- A bool indicating whether it is in use or free. (1 == in use, 0 is free)
+- A size that represents how big the block is.
+- If it's free: a pointer to the next free block.

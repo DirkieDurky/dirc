@@ -27,6 +27,13 @@ class CodeGenerator
         ArrayFactory arrayFactory = new(_codeGenBase);
         StringFactory stringFactory = new(_codeGenBase);
         PointerFactory pointerFactory = new(_codeGenBase);
+        Dictionary<string, Variable> variableTable = new();
+
+        foreach (GlobalConstant globalConstant in BuildEnvironment.GlobalConstants)
+        {
+            variableTable.Add(globalConstant.Name, new DirectVariable(globalConstant.Name, globalConstant.Value));
+        }
+
         Context = new CodeGenContext(
             this,
             _codeGenBase,
@@ -42,7 +49,7 @@ class CodeGenerator
             arrayFactory,
             stringFactory,
             pointerFactory,
-            [],
+            variableTable,
             [],
             0,
             0,

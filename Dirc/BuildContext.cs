@@ -1,4 +1,4 @@
-using Dirc.MetaFile;
+using Dirc.Compiling.Semantic;
 
 namespace Dirc;
 

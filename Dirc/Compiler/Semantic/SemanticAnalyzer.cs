@@ -31,8 +31,14 @@ public class SemanticAnalyzer
         _validReturnTypes = _validTypes;
         _validReturnTypes.Add(Void.Instance.Name, Void.Instance);
 
-        // Initialize global scope
-        _variableScopes.Push(new Dictionary<string, Type>());
+        Dictionary<string, Type> globalScope = [];
+
+        foreach (GlobalConstant globalConstant in BuildEnvironment.GlobalConstants)
+        {
+            globalScope.Add(globalConstant.Name, new Type(globalConstant.Type, []));
+        }
+
+        _variableScopes.Push(globalScope);
     }
 
     /// <summary>

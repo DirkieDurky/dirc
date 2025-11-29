@@ -41,6 +41,10 @@ class IdentifierFactory
 
             return new ReturnRegister(result);
         }
+        else if (var is DirectVariable directVar)
+        {
+            return new NumberLiteralNode(NumberLiteralType.Decimal, directVar.Value.ToString());
+        }
         else
         {
             throw new CodeGenException("Variable was of unsupported type", null, context.Options, context.BuildContext);

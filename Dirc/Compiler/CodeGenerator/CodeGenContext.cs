@@ -18,8 +18,8 @@ class CodeGenContext : ICloneable
     public ArrayFactory ArrayFactory { get; }
     public StringFactory StringFactory { get; }
     public PointerFactory PointerFactory { get; }
-    public Dictionary<string, Variable> VariableTable { get; set; } = new();
-    public List<string> DeclaredFunctions { get; set; } = new();
+    public Dictionary<string, Variable> VariableTable { get; set; }
+    public List<string> DeclaredFunctions { get; set; }
     // The offset to put the next variable on the stack
     public int NextVariableOffset { get; set; } = 0;
     // How many words the stack pointer is from the start
