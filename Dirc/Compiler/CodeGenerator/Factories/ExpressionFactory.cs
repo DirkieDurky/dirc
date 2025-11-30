@@ -1,3 +1,4 @@
+using System.Runtime.Serialization;
 using Dirc.Compiling.Parsing;
 
 namespace Dirc.Compiling.CodeGen;
@@ -59,6 +60,9 @@ class ExpressionFactory
                 return context.StringFactory.GenerateStringLiteralReturnBasePtr(stringLiteral, context);
             case ArrLenNode arrLenNode:
                 return new NumberLiteralNode(arrLenNode.ComputedLength);
+            case AsmNode asmNode:
+                context.CodeGenBase.Emit(asmNode.Code);
+                return null;
             case UnaryOperationNode unaryOperationNode:
                 return context.UnaryFactory.Generate(unaryOperationNode, context);
             default:

@@ -38,4 +38,5 @@ public enum TokenType
     While,
     For,
     ArrLen,
+    Asm,
 }

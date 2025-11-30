@@ -43,6 +43,15 @@ class StatementParser
         if (_context.ParserBase.Check(TokenType.Identifier))
             return ParseIdentifierStatement();
 
+        if (_context.ParserBase.Match(TokenType.Asm))
+        {
+            _context.ParserBase.Consume(TokenType.LeftParen, "Expected opening parenthesis in asm call");
+            Token code = _context.ParserBase.Consume(TokenType.String, "Expected string in asm call");
+            _context.ParserBase.Consume(TokenType.RightParen, "Expected closing parenthesis in asm call");
+            _context.ParserBase.Consume(TokenType.Semicolon, "Expected ';' after asm statement");
+            return [new AsmNode((string)code.Literal!)];
+        }
+
         while (_context.ParserBase.Match(TokenType.Semicolon)) { }
 
         if (_context.ParserBase.IsAtEnd())
