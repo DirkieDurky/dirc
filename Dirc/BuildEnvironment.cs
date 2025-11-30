@@ -28,6 +28,7 @@ public class BuildEnvironment
     { "noop", 0b00010111 },
     { "read", 0b00011000 },
     { "file", 0b00011001 },
+    { "scroll", 0b00011010 },
     { "halt", 0b00011111 },
     { "not", 0b00000100 },
     { "or", 0b00000011 },
@@ -104,6 +105,7 @@ public class BuildEnvironment
     // Locations of global variables in global section
     public const int ScreenPointerAddress = 0;
     public const int FreeListHeadAddress = 1;
+    public const int ScrollOffsetAddress = 2;
 
     // Define global constants to be exposed to the source language
     public static List<GlobalConstant> GlobalConstants =
@@ -125,6 +127,7 @@ public class BuildEnvironment
 
         new GlobalConstant("SCREEN_POINTER_ADDRESS", Int.Instance, ScreenPointerAddress),
         new GlobalConstant("FREE_LIST_HEAD_ADDRESS", Int.Instance, FreeListHeadAddress),
+        new GlobalConstant("SCROLL_OFFSET_ADDRESS", Int.Instance, ScrollOffsetAddress),
     ];
 }
 

@@ -1,0 +1,76 @@
+label allowScrolling
+push lr _ _
+push fp _ _
+mov sp _ fp
+sub|i2 sp 1 sp
+label _scrolling_while0
+mov fp _ r0
+push r0 _ _
+call @readKey _ _
+mov r0 _ r1
+pop _ _ r0
+store r1 r0 _
+mov fp _ r0
+load r0 _ r1
+ifNotEq|i2 r1 13 _scrolling_else0
+call scrollUp _ _
+jump _scrolling_ifElseEnd0 _ pc
+label _scrolling_else0
+mov fp _ r0
+load r0 _ r1
+ifNotEq|i2 r1 14 _scrolling_if0
+call scrollDown _ _
+label _scrolling_if0
+label _scrolling_ifElseEnd0
+jump _scrolling_while0 _ pc
+label _scrolling_whileEnd0
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
+
+label scrollUp
+push lr _ _
+push fp _ _
+mov sp _ fp
+sub|i2 sp 2 sp
+mov fp _ r0
+store|i1 2 r0 _
+sub|i2 fp 1 r0
+mov fp _ r1
+load r1 _ r2
+load r2 _ r1
+store r1 r0 _
+sub|i2 fp 1 r0
+load r0 _ r1
+ifLess|i2 r1 80 _scrolling_if1
+sub|i2 fp 1 r0
+load r0 _ r1
+sub|i2 r1 80 r0
+call @setScroll _ _
+label _scrolling_if1
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
+
+label scrollDown
+push lr _ _
+push fp _ _
+mov sp _ fp
+sub|i2 sp 2 sp
+mov fp _ r0
+store|i1 2 r0 _
+sub|i2 fp 1 r0
+mov fp _ r1
+load r1 _ r2
+load r2 _ r1
+store r1 r0 _
+sub|i2 fp 1 r0
+load r0 _ r1
+add|i2 r1 80 r0
+call @setScroll _ _
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _

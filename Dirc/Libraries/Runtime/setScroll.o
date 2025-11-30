@@ -1,0 +1,4 @@
+label setScroll
+store|i2 r0 [SCROLL_OFFSET_ADDRESS] _
+scroll r0 _ _
+return _ _ _

@@ -1,0 +1,32 @@
+void allowScrolling()
+{
+    while (true)
+    {
+        char key = readKey();
+        if (key == 13)
+        {
+            scrollUp();
+        }
+        else if (key == 14)
+        {
+            scrollDown();
+        }
+    }
+}
+
+void scrollUp()
+{
+    int* scrollOffsetPtr = SCROLL_OFFSET_ADDRESS;
+    int scrollOffset = *scrollOffsetPtr;
+    if (scrollOffset >= 80)
+    {
+        setScroll(scrollOffset - 80);
+    }
+}
+
+void scrollDown()
+{
+    int* scrollOffsetPtr = SCROLL_OFFSET_ADDRESS;
+    int scrollOffset = *scrollOffsetPtr;
+    setScroll(scrollOffset + 80);
+}

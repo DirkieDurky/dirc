@@ -54,6 +54,11 @@ static class RuntimeLibrary
             Semantic.Void.Instance,
             []
         ), "halt2.o")},
+        { "setScroll", new RuntimeFunction("setScroll",
+        new FunctionSignature(
+            Semantic.Void.Instance,
+            [new FunctionParameter(Int.Instance, "offset")]
+        ), "setScroll.o")},
     };
 
     public static bool HasFunction(string name)

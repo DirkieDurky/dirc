@@ -510,6 +510,7 @@ The first byte (byte 0) of this area holds the current screen pointer; the next 
 Byte 1 holds the pointer to the head of the free list.
 The free list is stored in all free blocks on the heap,
 so it will simply point to the first free block.
+Byte 2 holds the screen buffer offset. The number that indicates the offset of the console component. Is used for scrolling the text on the console.
 
 The last 2MiB is for the stack. It starts at the end and grows downward.
 
@@ -528,3 +529,4 @@ The header contains:
 - A bool indicating whether it is in use or free. (1 == in use, 0 is free)
 - A size that represents how big the block is.
 - If it's free: a pointer to the next free block.
+- If it's free: a pointer to the previous free block.
