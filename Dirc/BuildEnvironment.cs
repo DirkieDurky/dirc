@@ -64,8 +64,7 @@ public class BuildEnvironment
     // Width of data in the computer in bits (how many bit the computer is)
     // This should match the data width used ingame.
     // When changing this, usually changing the data width in the ram component and
-    // replacing the `Less (signed)` component in the condition component
-    // by it's counterpart for N bits is sufficient.
+    // replacing the condition component by it's counterpart for the new data width is sufficient.
     public const int DataWidth = 16;
     // public const int DataWidth = 64;
     public const int WordSize = DataWidth / 8; // Size of a word in bytes.

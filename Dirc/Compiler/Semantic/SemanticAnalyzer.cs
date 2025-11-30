@@ -230,13 +230,7 @@ public class SemanticAnalyzer
                         SimpleType? initType = AnalyzeNode(varDecl.Initializer, varType, options, context);
                         if (initType != null && initType != varType)
                         {
-                            // Allow int assigned to pointer for now
-                            if (varType is Pointer && initType == Int.Instance) return null;
-                            // Allow anything for void pointers
-                            if (initType is Pointer initTypePtr && initTypePtr.BaseType == Void.Instance) return null;
-
-                            // Since we currently don't have typecasts yet, just allow when both types are primitives
-                            if (initType is PrimitiveType && varType is PrimitiveType) return null;
+                            if (TypesAreValid(varType, initType)) return null;
 
                             throw new SemanticException($"Type mismatch in initialization of '{varDecl.Name}': expected {varType.Name}, got {initType.Name}", varDecl.IdentifierToken, options, context);
                         }
@@ -295,9 +289,9 @@ public class SemanticAnalyzer
                         returnTypeOverride = rightPtr;
                     }
 
-                    if (!(leftType is PrimitiveType or Void && rightType is PrimitiveType or Void || leftType == rightType))
+                    if (!TypesAreValid(leftType, rightType))
                     {
-                        throw new SemanticException($"Condition operands must be a primitive type, got {leftType.Name} and {rightType.Name}", null, options, context);
+                        throw new SemanticException($"Condition operands must be equal, got {leftType.Name} and {rightType.Name}", null, options, context);
                     }
                     return returnTypeOverride ?? Helpers.ReturnTypes[binNode.Operation];
                 }
@@ -749,21 +743,35 @@ public class SemanticAnalyzer
         if (a is Pointer && baseA is Void && b is Pointer) return true;
         if (b is Pointer && baseB is Void && a is Pointer) return true;
 
-        // If any of them is a pointer the other isn't which means the types don't match
-        if (baseA is Pointer || baseB is Pointer)
-        {
-            return false;
-        }
-
         if (baseA is Void || baseB is Void)
         {
             return true;
         }
 
         // Since we currently don't have typecasts yet, just allow when both types are primitives
-        if (baseA is PrimitiveType && baseB is PrimitiveType)
+        if (baseA is PrimitiveType or Pointer && baseB is PrimitiveType or Pointer)
         {
             return true;
+        }
+
+        // If any of them is a pointer the other isn't which means the types don't match
+        if (baseA is Pointer || baseB is Pointer)
+        {
+            // Except, because we don't have typecasts yet, allow it if the baseType is equal
+            if (baseA is Pointer aPtr)
+            {
+                baseA = aPtr.BaseType;
+
+                return baseA == baseB;
+            }
+            if (baseB is Pointer bPtr)
+            {
+                baseB = bPtr.BaseType;
+
+                return baseA == baseB;
+            }
+
+            return false;
         }
 
         return baseA == baseB;

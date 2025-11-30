@@ -5,6 +5,7 @@ store|i1|i2 [HEAP_START] [FREE_LIST_HEAD_ADDRESS] _ # Initialize free list head
 store|i1|i2 0 [HEAP_START] _ # Mark block as free. Doesn't do anything because everything should already be 0, but still good to be sure
 store|i1|i2 [HEAP_SIZE]-2 [HEAP_START] + 1 _ # Block size
 store|i1|i2 -1 [HEAP_START]+2 _ # Pointer to the next free block. There is none so it is -1
+store|i1|i2 -1 [HEAP_START]+3 _ # Pointer to the previous free block. There is none so it is -1
 store|i1|i2 [HEAP_SIZE]-2 [HEAP_END] _ # Footer of the free block
 mov sp _ fp # Initialize frame pointer
 jump _start _ pc
