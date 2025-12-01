@@ -467,6 +467,9 @@ public class SemanticAnalyzer
                                 }
                                 break;
                             }
+                        case StringLiteralNode stringLiteralNode:
+                            foundSizes.Add(((string)stringLiteralNode.Str.Literal!).Length);
+                            break;
                         case IdentifierNode identifierNode:
                             if (TryGetVariable(identifierNode.Name, out Type? arrayVarType))
                             {
