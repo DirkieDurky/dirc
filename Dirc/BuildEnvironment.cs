@@ -66,15 +66,15 @@ public class BuildEnvironment
     // When changing this, usually changing the data width in the ram component and
     // replacing the condition component by it's counterpart for the new data width is sufficient.
     // public const int DataWidth = 16;
-    public const int DataWidth = 16;
+    public const int DataWidth = 64;
     public const int WordSize = DataWidth / 8; // Size of a word in bytes.
     // This is important because you tell the game where to store or load something by specifying the word you want to modify.
     // This means we can't modify one byte directly. We can only change 1 entire word.
 
     // Size of the ram in bytes. This may not be higher than the size of ram in game
-    // public const int RamBytes = 536870912; // 512MiB
+    public const int RamBytes = 536870912; // 512MiB
     // public const int RamBytes = 256; // Fits in RAM display ingame
-    public const int RamBytes = 65536;
+    // public const int RamBytes = 65536;
     public const int RamWords = RamBytes / WordSize;
     public const int MaxRamAddress = RamWords - 1;
 

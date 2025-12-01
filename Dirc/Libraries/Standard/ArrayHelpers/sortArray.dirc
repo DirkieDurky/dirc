@@ -11,5 +11,6 @@ void sortArray(int* array, int size)
                 array[j + 1] = tmp;
             }
         }
+        println(intToString(i));
     }
 }

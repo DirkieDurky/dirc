@@ -1,0 +1,12 @@
+int* ptr = malloc(1);
+*ptr = 42;
+int* ptr2 = malloc(1);
+*ptr2 = 43;
+int* ptr3 = malloc(1);
+*ptr3 = 46;
+
+free(ptr);
+free(ptr3);
+free(ptr2);
+
+//allowScrolling();
