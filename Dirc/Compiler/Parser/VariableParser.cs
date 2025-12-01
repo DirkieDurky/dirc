@@ -81,6 +81,10 @@ internal class VariableParser
             { TokenType.Minus, Operation.Sub },
             { TokenType.Asterisk, Operation.Mul },
             { TokenType.Slash, Operation.Div },
+            { TokenType.Percent, Operation.Mod },
+
+            { TokenType.BitshiftLeft, Operation.BitshiftLeft },
+            { TokenType.BitshiftRight, Operation.BitshiftRight },
             { TokenType.Pipe, Operation.Or },
             { TokenType.Ampersand, Operation.And },
             { TokenType.Caret, Operation.Xor },
