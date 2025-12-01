@@ -1,16 +1,41 @@
+void swap(int* array, int i, int j)
+{
+    int tmp = array[i];
+    array[i] = array[j];
+    array[j] = tmp;
+}
+
+int partition(int* array, int low, int high)
+{
+    int pivot = array[high];
+    int i = low - 1;
+    for (int j = low; j <= high - 1; j++)
+    {
+        if (array[j] <= pivot)
+        {
+            i++;
+            swap(array, i, j);
+        }
+    }
+    swap(array, i + 1, high);
+    return i + 1;
+}
+
+void quicksortRec(int* array, int low, int high)
+{
+    if (low < high)
+    {
+        int p = partition(array, low, high);
+        quicksortRec(array, low, p - 1);
+        quicksortRec(array, p + 1, high);
+    }
+}
+
 void sortArray(int* array, int size)
 {
-    for (int i = size - 1; i >= 1; i--)
+    if (size <= 1)
     {
-        for (int j = 0; j < i; j++)
-        {
-            if (array[j] > array[j + 1])
-            {
-                int tmp = array[j];
-                array[j] = array[j + 1];
-                array[j + 1] = tmp;
-            }
-        }
-        println(intToString(i));
+        return;
     }
+    quicksortRec(array, 0, size - 1);
 }
