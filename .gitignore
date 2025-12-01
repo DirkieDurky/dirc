@@ -8,3 +8,4 @@ test.dirc
 test.o
 a.out
 test/*
+input/programs/AoC/**/input.txt

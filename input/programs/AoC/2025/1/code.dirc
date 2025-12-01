@@ -1,0 +1,107 @@
+void part1()
+{
+    char* input = readFile(0);
+    char** lines = splitStringByChar(input, '\n');
+    int lineCount = getSize(lines) - 1;
+    println("Input read");
+
+    int dial = 50;
+    int count = 0;
+
+    for (int i = 0; i < lineCount; i++)
+    {
+        char* line = lines[i];
+        char direction = line[0];
+        int distance = stringToInt(substring(line, 1, strlen(line)));
+
+        if (direction == 'L')
+        {
+            dial -= distance;
+            while (dial < 0)
+            {
+                dial += 100;
+            }
+        }
+        else if (direction == 'R')
+        {
+            dial += distance;
+            dial = dial % 100;
+        }
+
+        /*
+        printChar(direction);
+        println("");
+        println(intToString(distance));
+        println(intToString(dial));
+        println("");
+        */
+
+        if (dial == 0)
+        {
+            count++;
+        }
+    }
+
+    println(intToString(count));
+}
+
+void part2()
+{
+    char* input = readFile(0);
+    char** lines = splitStringByChar(input, '\n');
+    int lineCount = getSize(lines) - 1;
+    println("Input read");
+
+    int dial = 50;
+    int count = 0;
+
+    for (int i = 0; i < lineCount; i++)
+    {
+        char* line = lines[i];
+        char direction = line[0];
+        int distance = stringToInt(substring(line, 1, strlen(line)));
+
+        if (direction == 'L')
+        {
+            if (dial == 0)
+            {
+                count--;
+            }
+
+            dial -= distance;
+            while (dial < 0)
+            {
+                dial += 100;
+                count++;
+            }
+
+            if (dial == 0)
+            {
+                count++;
+            }
+        }
+        else if (direction == 'R')
+        {
+            dial += distance;
+            while (dial >= 100)
+            {
+                dial -= 100;
+                count++;
+            }
+        }
+
+        /*
+        printChar(direction);
+        println("");
+        println(intToString(distance));
+        println(intToString(dial));
+        println(intToString(count));
+        println("");
+        */
+    }
+
+    println(intToString(count));
+}
+
+part2();
+allowScrolling();
