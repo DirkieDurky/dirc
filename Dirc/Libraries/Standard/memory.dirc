@@ -20,12 +20,16 @@ void* malloc(int size)
 
     while (currentBlockSize < size)
     {
-        int* nextFreeBlock = currentBlock + allocatedHeaderSize;
-        if (*nextFreeBlock == -1)
+        int* nextFreeBlock = *(currentBlock + 2);
+        if (nextFreeBlock == -1)
         {
             throwError("Not enough memory");
         }
-        currentBlock = *nextFreeBlock;
+        if (currentBlock == nextFreeBlock)
+        {
+            throwError("Infinite loop detected!");
+        }
+        currentBlock = nextFreeBlock;
         currentBlockSize = *(currentBlock + 1);
         wasFirstInFreeList = false;
     }
@@ -50,6 +54,8 @@ void allocate(int* address, int size, bool wasFirstInFreeList)
     *address = 1; // Set in use
     *(address + 1) = size; // Set size
 
+    removeFromFreeList(address);
+
     // If the block is big enough, split it so we only use what we need to
     // Ensure we have 5 extra space. This is the minimum size of a free block:
     // That would look like {IsInUse, Size, NextFreeBlock, PreviousFreeBlock, Footer}
@@ -59,30 +65,9 @@ void allocate(int* address, int size, bool wasFirstInFreeList)
         int newFreeBlockSize = originalSize - size - allocatedHeaderSize;
         *(newFreeBlock) = 0; // IsInUse
         *(newFreeBlock + 1) = newFreeBlockSize; // Size
-        *(newFreeBlock + 2) = nextFreeBlock;
-        *(newFreeBlock + 3) = previousFreeBlock;
         *(newFreeBlock + 1 + newFreeBlockSize) = newFreeBlockSize;
 
-        if (wasFirstInFreeList)
-        {
-            newNextFreeBlock = newFreeBlock;
-        }
-    }
-    
-    // Update nextFreeBlock of previous block
-    if (previousFreeBlock != -1)
-    {
-        *(previousFreeBlock + 3) = newNextFreeBlock;
-    }
-    else
-    {
-        *freeListHeadAddress = newNextFreeBlock;
-    }
-
-    // Update previousFreeBlock of next block
-    if (nextFreeBlock != -1)
-    {
-        *(nextFreeBlock + 2) = previousFreeBlock;
+        addToFreeList(newFreeBlock);
     }
 }
 
@@ -97,6 +82,7 @@ void free(void* ptr)
     int newSize = mySize;
     int* newHeaderAddress = myHeader;
 
+    /*
     // Check merge with previous block
     if (myHeader > HEAP_START)
     {
@@ -109,8 +95,7 @@ void free(void* ptr)
             newSize += previousBlockSize + allocatedHeaderSize;
             newHeaderAddress = previousBlock;
 
-            // We don't have to update anything to delete previousBlock from freeList
-            // because the address of the new block is the same as the previous block
+            removeFromFreeList(previousBlock);
         }
     }
 
@@ -121,31 +106,62 @@ void free(void* ptr)
     {
         int nextBlockSize = *(nextBlock + 1);
         newSize += nextBlockSize + allocatedHeaderSize;
-        int* nextBlocksNextBlock = *(nextBlock + 2);
-        int* nextBlocksPreviousBlock = *(nextBlock + 3);
 
-        // Remove nextBlock from freeList (Update all values that used to point to nextBlock to point to the new merged block):
-        // Update nextBlock's previousBlock's nextBlock
-        if (nextBlocksPreviousBlock != -1)
-        {
-            *(nextBlocksPreviousBlock + 2) = newHeaderAddress;
-        }
-        else
-        {
-            *freeListHeadAddress = nextBlocksNextBlock;
-        }
-        // Update nextBlock's nextBlock's previousBlock
-        *(nextBlocksNextBlock + 3) = newHeaderAddress;
+        removeFromFreeList(nextBlock);
     }
+    */
 
     // Free myself
     *newHeaderAddress = 0;
     *(newHeaderAddress + 1) = newSize;
-    *(newHeaderAddress + 2) = *freeListHeadAddress;
-    *(newHeaderAddress + 3) = -1;
-    *(newHeaderAddress + 3 + newSize) = newSize;
+    *(newHeaderAddress + 1 + newSize) = newSize;
 
-    *freeListHeadAddress = newHeaderAddress;
+    addToFreeList(newHeaderAddress);
+}
+
+void removeFromFreeList(int* block)
+{
+    int* freeListHeadAddress = FREE_LIST_HEAD_ADDRESS;
+
+    int* nextBlock = *(block + 2);
+    int* previousBlock = *(block + 3);
+
+    // Our previous points to us. This one should now point to our next because we no longer exist
+    if (previousBlock != -1)
+    {
+        *(previousBlock + 2) = nextBlock;
+    }
+    else
+    {
+        *freeListHeadAddress = nextBlock;
+    }
+    
+    // Our next points to us. This one should now point to our previous because we no longer exist.
+    if (nextBlock != -1)
+    {
+        *(nextBlock + 3) = previousBlock;
+    }
+}
+
+void addToFreeList(int* block)
+{
+    int* freeListHeadAddress = FREE_LIST_HEAD_ADDRESS;
+
+    // Set previous first element to point to us as previous
+    int* oldFirstBlock = *freeListHeadAddress;
+    if (oldFirstBlock != -1)
+    {
+        *(oldFirstBlock + 3) = block;
+    }
+
+    // Make us the new first element
+    *freeListHeadAddress = block;
+
+    // Set our next to the now second block
+    *(block + 2) = oldFirstBlock;
+
+    // We don't have a previous because we're the first
+    *(block + 3) = -1;
 }
 
 int getSize(void* ptr)
