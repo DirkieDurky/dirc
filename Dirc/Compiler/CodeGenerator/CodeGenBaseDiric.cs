@@ -4,9 +4,10 @@ using Dirc.Compiling.Parsing;
 
 namespace Dirc.Compiling.CodeGen;
 
-class CodeGenBase
+class CodeGenBaseDiric : ICodeGenBase
 {
-    public readonly StringBuilder Code = new();
+    private StringBuilder _code = new();
+    public StringBuilder Code => _code;
 
     public void EmitLabel(string name)
     {
@@ -189,11 +190,7 @@ class CodeGenBase
 
     public void Emit(string assembly)
     {
-        if (assembly == "sub|i2 fp 14 r1")
-        {
-
-        }
-        Code.AppendLine(assembly);
+        _code.AppendLine(assembly);
     }
 
     private bool IsAssemblyReady(IOperand item)

@@ -5,10 +5,10 @@ namespace Dirc.Compiling.CodeGen;
 
 class FunctionFactory
 {
-    private readonly CodeGenBase _codeGenBase;
+    private readonly ICodeGenBase _codeGenBase;
     private readonly Options _options;
 
-    public FunctionFactory(CodeGenBase codeGenBase, Options options)
+    public FunctionFactory(ICodeGenBase codeGenBase, Options options)
     {
         _codeGenBase = codeGenBase;
         _options = options;
@@ -76,7 +76,7 @@ class FunctionFactory
         _codeGenBase.EmitBinaryOperation(
             Operation.Sub,
             ReadonlyRegister.SP,
-            new NumberLiteralNode(BuildEnvironment.StackAlignment * context.StackframeSize),
+            new NumberLiteralNode(context.BuildEnvironment.StackAlignment * context.StackframeSize),
             context.Allocator.Use(RegisterEnum.sp)
         );
     }

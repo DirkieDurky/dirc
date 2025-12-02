@@ -1,11 +1,32 @@
-using System.Reflection.Metadata;
+using Dirc.Compiling.CodeGen;
 using Dirc.Compiling.Semantic;
 
 namespace Dirc;
 
 public class BuildEnvironment
 {
-    public static Dictionary<string, int> AssemblyKeywords { get; } = new() {
+    private Options Options;
+    public readonly int StackAlignment;
+    public readonly IRuntimeLibrary RuntimeLibrary;
+    public readonly ICodeGenBase CodeGenBase;
+    public BuildEnvironment(Options options)
+    {
+        Options = options;
+        if (Options.TargetArchitecture == TargetArchitecture.X86)
+        {
+            RuntimeLibrary = new RuntimeLibraryX86();
+            CodeGenBase = new CodeGenBaseX86();
+            StackAlignment = 8;
+        }
+        else
+        {
+            RuntimeLibrary = new RuntimeLibraryDiric();
+            CodeGenBase = new CodeGenBaseDiric();
+            StackAlignment = 1;
+        }
+    }
+
+    public static Dictionary<string, int> DiricAssemblyKeywords { get; } = new() {
     { "_", 0b00000000 },
     { "add", 0b00000000 },
     { "and", 0b00000010 },
@@ -58,8 +79,6 @@ public class BuildEnvironment
     };
 
     public const string ObjectFileExtension = "o";
-
-    public const int StackAlignment = 1; // By how many bytes to align the stack
 
     // Width of data in the computer in bits (how many bit the computer is)
     // This should match the data width used ingame.

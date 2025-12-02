@@ -5,9 +5,9 @@ namespace Dirc.Compiling.CodeGen;
 
 class BinaryFactory
 {
-    private readonly CodeGenBase _codeGenBase;
+    private readonly ICodeGenBase _codeGenBase;
 
-    public BinaryFactory(CodeGenBase codeGenBase)
+    public BinaryFactory(ICodeGenBase codeGenBase)
     {
         _codeGenBase = codeGenBase;
     }

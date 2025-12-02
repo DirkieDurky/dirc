@@ -6,9 +6,9 @@ namespace Dirc.Compiling.CodeGen;
 
 class StringFactory
 {
-    private readonly CodeGenBase _codeGenBase;
+    private readonly ICodeGenBase _codeGenBase;
 
-    public StringFactory(CodeGenBase codeGenBase)
+    public StringFactory(ICodeGenBase codeGenBase)
     {
         _codeGenBase = codeGenBase;
     }

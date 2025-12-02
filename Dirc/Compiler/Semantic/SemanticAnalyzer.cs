@@ -12,16 +12,18 @@ public class SemanticAnalyzer
     private readonly Dictionary<string, FunctionSignature> _functions = new(); // name -> signature
     private Options _options;
     private BuildContext _buildContext;
+    private BuildEnvironment _buildEnvironment;
 
     private static readonly HashSet<SimpleType> ValidTypes = new() { Int.Instance, Bool.Instance, Char.Instance };
 
     private readonly Dictionary<string, SimpleType> _validTypes = new();
     private readonly Dictionary<string, SimpleType> _validReturnTypes = new();
 
-    public SemanticAnalyzer(Options options, BuildContext buildContext)
+    public SemanticAnalyzer(Options options, BuildContext buildContext, BuildEnvironment buildEnvironment)
     {
         _buildContext = buildContext;
         _options = options;
+        _buildEnvironment = buildEnvironment;
 
         foreach (SimpleType type in ValidTypes)
         {
@@ -95,7 +97,7 @@ public class SemanticAnalyzer
         // First pass: collect function signatures
 
         // Runtime library
-        foreach ((string name, FunctionSignature signature) in RuntimeLibrary.GetAllFunctionSignatures())
+        foreach ((string name, FunctionSignature signature) in _buildEnvironment.RuntimeLibrary.GetAllFunctionSignatures())
         {
             _functions.Add(name, signature);
         }
@@ -117,7 +119,7 @@ public class SemanticAnalyzer
         foreach (ImportStatementNode importNode in nodes.Where(n => n is ImportStatementNode))
         {
             string libraryName = importNode.LibraryName;
-            if (libraryName == "runtime") continue;
+            if (libraryName == _buildEnvironment.RuntimeLibrary.GetName()) continue;
 
             string libMetaPath = Path.Combine(AppContext.BaseDirectory, "lib", libraryName, libraryName + ".meta");
             string libMetaText = File.ReadAllText(libMetaPath);
@@ -159,7 +161,7 @@ public class SemanticAnalyzer
                 }
             }
 
-            if (BuildEnvironment.AssemblyKeywords.ContainsKey(function.Name))
+            if (_options.TargetArchitecture == TargetArchitecture.Diric && BuildEnvironment.DiricAssemblyKeywords.ContainsKey(function.Name))
             {
                 throw new CodeGenException($"Can't declare function with name '{function.Name}'. Reserved keyword",
                     null, _options, _buildContext

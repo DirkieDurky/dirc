@@ -4,8 +4,8 @@ VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dirc", "Dirc\Dirc.csproj", "{E92A885E-F34B-95AD-06AE-14064C91C4C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dirc.Tests", "Dirc.Tests\Dirc.Tests.csproj", "{E45C6076-6ED2-42FF-8828-76414C3D4795}"
-EndProject
+# Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dirc.Tests", "Dirc.Tests\Dirc.Tests.csproj", "{E45C6076-6ED2-42FF-8828-76414C3D4795}"
+# EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

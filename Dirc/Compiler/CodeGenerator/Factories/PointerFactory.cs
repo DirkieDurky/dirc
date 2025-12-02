@@ -5,9 +5,9 @@ namespace Dirc.Compiling.CodeGen;
 
 class PointerFactory
 {
-    private readonly CodeGenBase _codeGenBase;
+    private readonly ICodeGenBase _codeGenBase;
 
-    public PointerFactory(CodeGenBase codeGenBase)
+    public PointerFactory(ICodeGenBase codeGenBase)
     {
         _codeGenBase = codeGenBase;
     }

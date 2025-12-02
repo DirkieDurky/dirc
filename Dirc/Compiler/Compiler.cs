@@ -7,14 +7,14 @@ namespace Dirc.Compiling;
 
 public class Compiler
 {
-    public FrontEndResult RunFrontEnd(string source, Options options, BuildContext buildContext)
+    public FrontEndResult RunFrontEnd(string source, Options options, BuildContext buildContext, BuildEnvironment buildEnvironment)
     {
         if (options.CheckDebugOption(DebugOption.General))
         {
             Console.WriteLine($"Running front-end for {buildContext.CurrentFilePath}...");
             Console.WriteLine("Running lexer...");
         }
-        List<Token> tokens = new Lexer(options, buildContext).Tokenize(source);
+        List<Token> tokens = new Lexer(options, buildContext, buildEnvironment).Tokenize(source);
         if (options.CheckDebugOption(DebugOption.Lexer))
         {
             foreach (Token token in tokens)
@@ -30,7 +30,7 @@ public class Compiler
         {
             Console.WriteLine("Running parser...");
         }
-        FrontEndResult frontEndResult = new Parser(options, buildContext).Parse(tokens);
+        FrontEndResult frontEndResult = new Parser(options, buildContext, buildEnvironment).Parse(tokens);
         if (options.CheckDebugOption(DebugOption.Parser))
         {
             foreach (AstNode node in frontEndResult.AstNodes)
@@ -43,19 +43,19 @@ public class Compiler
         return frontEndResult;
     }
 
-    public CompilerResult RunBackEnd(List<AstNode> astNodes, SymbolTable symbolTable, Options options, BuildContext buildContext)
+    public CompilerResult RunBackEnd(List<AstNode> astNodes, SymbolTable symbolTable, Options options, BuildContext buildContext, BuildEnvironment buildEnvironment)
     {
         if (options.CheckDebugOption(DebugOption.General))
         {
             Console.WriteLine($"Running back-end for {buildContext.CurrentFilePath}...");
             Console.WriteLine("Running semantic analyzer...");
         }
-        astNodes = new SemanticAnalyzer(options, buildContext).Analyze(astNodes, symbolTable);
+        astNodes = new SemanticAnalyzer(options, buildContext, buildEnvironment).Analyze(astNodes, symbolTable);
         if (options.CheckDebugOption(DebugOption.General))
         {
             Console.WriteLine("Running code generator...");
         }
 
-        return new CodeGenerator(options, buildContext).Generate(astNodes);
+        return new CodeGenerator(options, buildContext, buildEnvironment).Generate(astNodes);
     }
 }

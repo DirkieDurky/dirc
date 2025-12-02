@@ -5,10 +5,10 @@ namespace Dirc.Compiling.CodeGen;
 
 class ExpressionFactory
 {
-    private readonly CodeGenBase _codeGenBase;
+    private readonly ICodeGenBase _codeGenBase;
     private readonly LabelGenerator _labelGenerator;
 
-    public ExpressionFactory(CodeGenBase codeGenBase, LabelGenerator labelGenerator)
+    public ExpressionFactory(ICodeGenBase codeGenBase, LabelGenerator labelGenerator)
     {
         _codeGenBase = codeGenBase;
         _labelGenerator = labelGenerator;

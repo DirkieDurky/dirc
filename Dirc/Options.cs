@@ -57,6 +57,9 @@ public class Options
     [Option("ignore-semantic-errors", Required = false, HelpText = "Ignore semantic errors")]
     public bool IgnoreSemanticErrors { get; set; } = false;
 
+    [Option("arch", Required = false, Default = TargetArchitecture.Diric, HelpText = "The architecture to compile for. Valid options: Diric, X86")]
+    public TargetArchitecture TargetArchitecture { get; set; } = TargetArchitecture.Diric;
+
     public bool CheckDebugOption(DebugOption debugOption)
     {
         return _debugOptions.Contains(DebugOption.All) || _debugOptions.Contains(debugOption);
@@ -83,4 +86,11 @@ public enum DebugOption
     StackTrace,
     None,
     All,
+}
+
+[Flags]
+public enum TargetArchitecture
+{
+    Diric,
+    X86,
 }

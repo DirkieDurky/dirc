@@ -1,15 +1,11 @@
 using System.Text;
-using Dirc.Compiling.Lexing;
-using Dirc.Compiling.Parsing;
 using Dirc.Compiling.Semantic;
 
 namespace Dirc.Compiling.CodeGen;
 
-static class RuntimeLibrary
+class RuntimeLibraryDiric : IRuntimeLibrary
 {
-    private static Token T(string lexeme) => new Token(TokenType.Identifier, lexeme, null, -1);
-
-    private static readonly Dictionary<string, RuntimeFunction> _functions = new()
+    private readonly Dictionary<string, RuntimeFunction> _functions = new()
     {
         { "outInt", new RuntimeFunction("outInt", new FunctionSignature(
             Semantic.Void.Instance, [new FunctionParameter(Int.Instance, "value")]
@@ -61,18 +57,18 @@ static class RuntimeLibrary
         ), "setScroll.o")},
     };
 
-    public static bool HasFunction(string name)
+    public bool HasFunction(string name)
     {
         return _functions.ContainsKey(name);
     }
 
-    public static RuntimeFunction GetFunctionSignature(string name)
+    public RuntimeFunction GetFunctionSignature(string name)
     {
         RuntimeFunction function = _functions[name];
         return function;
     }
 
-    public static Dictionary<string, FunctionSignature> GetAllFunctionSignatures()
+    public Dictionary<string, FunctionSignature> GetAllFunctionSignatures()
     {
         Dictionary<string, FunctionSignature> result = [];
 
@@ -84,7 +80,7 @@ static class RuntimeLibrary
         return result;
     }
 
-    public static string GetFunction(string name)
+    public string GetFunction(string name)
     {
         StringBuilder result = new();
 
@@ -92,7 +88,7 @@ static class RuntimeLibrary
 
         result.Append($"label {function.Name}");
 
-        StreamReader sr = new StreamReader(Path.Combine(AppContext.BaseDirectory, "lib", "runtime", function.FilePath));
+        StreamReader sr = new StreamReader(Path.Combine(GetPath(), function.FilePath));
         string? line = sr.ReadLine();
         while (line != null)
         {
@@ -105,4 +101,7 @@ static class RuntimeLibrary
 
         return result.ToString();
     }
+
+    public string GetPath() => Path.Combine(AppContext.BaseDirectory, "lib", "runtime-diric");
+    public string GetName() => "runtime-diric";
 }

@@ -5,9 +5,9 @@ namespace Dirc.Compiling.CodeGen;
 
 class IdentifierFactory
 {
-    private readonly CodeGenBase _codeGenBase;
+    private readonly ICodeGenBase _codeGenBase;
 
-    public IdentifierFactory(CodeGenBase codeGenBase)
+    public IdentifierFactory(ICodeGenBase codeGenBase)
     {
         _codeGenBase = codeGenBase;
     }
@@ -31,7 +31,7 @@ class IdentifierFactory
             _codeGenBase.EmitBinaryOperation(
                 Operation.Sub,
                 ReadonlyRegister.FP,
-                new NumberLiteralNode(stackVar.FramePointerOffset * BuildEnvironment.StackAlignment),
+                new NumberLiteralNode(stackVar.FramePointerOffset * context.BuildEnvironment.StackAlignment),
                 tmp
             );
 

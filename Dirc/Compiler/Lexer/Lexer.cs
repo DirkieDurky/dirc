@@ -26,11 +26,13 @@ class Lexer
 
     private BuildContext _buildContext;
     private Options _options;
+    private BuildEnvironment _buildEnvironment;
 
-    public Lexer(Options options, BuildContext buildContext)
+    public Lexer(Options options, BuildContext buildContext, BuildEnvironment buildEnvironment)
     {
         _buildContext = buildContext;
         _options = options;
+        _buildEnvironment = buildEnvironment;
     }
 
     public List<Token> Tokenize(string source)

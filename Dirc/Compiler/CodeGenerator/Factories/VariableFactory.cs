@@ -6,9 +6,9 @@ namespace Dirc.Compiling.CodeGen;
 
 class VariableFactory
 {
-    private readonly CodeGenBase _codeGenBase;
+    private readonly ICodeGenBase _codeGenBase;
 
-    public VariableFactory(CodeGenBase codeGenBase)
+    public VariableFactory(ICodeGenBase codeGenBase)
     {
         _codeGenBase = codeGenBase;
     }

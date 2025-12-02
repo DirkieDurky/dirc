@@ -5,9 +5,9 @@ namespace Dirc.Compiling.CodeGen;
 
 class ControlFlowFactory
 {
-    private readonly CodeGenBase _codeGenBase;
+    private readonly ICodeGenBase _codeGenBase;
 
-    public ControlFlowFactory(CodeGenBase codeGenBase)
+    public ControlFlowFactory(ICodeGenBase codeGenBase)
     {
         _codeGenBase = codeGenBase;
     }

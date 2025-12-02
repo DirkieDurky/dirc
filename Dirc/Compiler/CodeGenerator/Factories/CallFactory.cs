@@ -7,9 +7,9 @@ namespace Dirc.Compiling.CodeGen;
 
 class CallFactory
 {
-    private readonly CodeGenBase _codeGenBase;
+    private readonly ICodeGenBase _codeGenBase;
 
-    public CallFactory(CodeGenBase codeGenBase)
+    public CallFactory(ICodeGenBase codeGenBase)
     {
         _codeGenBase = codeGenBase;
     }

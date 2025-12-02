@@ -5,16 +5,16 @@ namespace Dirc.Compiling.CodeGen;
 
 class ArrayFactory
 {
-    private readonly CodeGenBase _codeGenBase;
+    private readonly ICodeGenBase _codeGenBase;
 
-    public ArrayFactory(CodeGenBase codeGenBase)
+    public ArrayFactory(ICodeGenBase codeGenBase)
     {
         _codeGenBase = codeGenBase;
     }
 
     public IReturnable? GenerateArrayDeclaration(ArrayDeclarationNode node, CodeGenContext context)
     {
-        int offset = context.AllocateStackArray((int)node.Sizes[0]!, node.Name);
+        int offset = context.AllocateStackArray(node.Sizes[0]!, node.Name);
         context.AssignNameToArray(offset, node.Name);
 
         if (node.Initializer != null)

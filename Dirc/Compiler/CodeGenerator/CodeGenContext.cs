@@ -5,7 +5,7 @@ namespace Dirc.Compiling.CodeGen;
 class CodeGenContext : ICloneable
 {
     public CodeGenerator CodeGen { get; }
-    public CodeGenBase CodeGenBase { get; }
+    public ICodeGenBase CodeGenBase { get; }
     public Allocator Allocator { get; }
     public FunctionFactory FunctionFactory { get; }
     public ExpressionFactory ExprFactory { get; }
@@ -28,10 +28,11 @@ class CodeGenContext : ICloneable
     public int StackframeSize { get; set; } = 0;
     public Options Options;
     public BuildContext BuildContext;
+    public BuildEnvironment BuildEnvironment;
 
     public CodeGenContext(
         CodeGenerator codeGen,
-        CodeGenBase codeGenBase,
+        ICodeGenBase codeGenBase,
         Allocator allocator,
         ExpressionFactory exprFactory,
         FunctionFactory funcFactory,
@@ -50,7 +51,9 @@ class CodeGenContext : ICloneable
         int stackPointerOffset,
         int stackframeSize,
         Options options,
-        BuildContext buildContext
+        BuildContext buildContext,
+        BuildEnvironment buildEnvironment,
+        Stack<(string ContinueLabel, string BreakLabel)> loopLabelStack
     )
     {
         CodeGen = codeGen;
@@ -74,6 +77,8 @@ class CodeGenContext : ICloneable
         StackframeSize = stackframeSize;
         Options = options;
         BuildContext = buildContext;
+        BuildEnvironment = buildEnvironment;
+        LoopLabelStack = loopLabelStack;
     }
 
     public object GetSubcontext()
@@ -99,11 +104,11 @@ class CodeGenContext : ICloneable
             0,
             StackframeSize,
             Options,
-            BuildContext
+            BuildContext,
+            BuildEnvironment,
+            LoopLabelStack
         )
-        {
-            LoopLabelStack = new(LoopLabelStack)
-        };
+        ;
         return newContext;
     }
 
@@ -130,7 +135,9 @@ class CodeGenContext : ICloneable
             StackPointerOffset,
             StackframeSize,
             Options,
-            BuildContext
+            BuildContext,
+            BuildEnvironment,
+            LoopLabelStack
         )
         {
             LoopLabelStack = new(LoopLabelStack)

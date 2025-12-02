@@ -8,11 +8,13 @@ class CodeGenerator
     public CodeGenContext Context { get; init; }
     public LabelGenerator LabelGenerator { get; init; } = new();
 
-    private readonly CodeGenBase _codeGenBase;
+    private readonly ICodeGenBase _codeGenBase;
+    private readonly BuildEnvironment _buildEnvironment;
 
-    public CodeGenerator(Options options, BuildContext buildContext)
+    public CodeGenerator(Options options, BuildContext buildContext, BuildEnvironment buildEnvironment)
     {
-        _codeGenBase = new CodeGenBase();
+        _buildEnvironment = buildEnvironment;
+        _codeGenBase = buildEnvironment.CodeGenBase;
 
         Allocator allocator = new(options);
 
@@ -55,7 +57,9 @@ class CodeGenerator
             0,
             0,
             options,
-            buildContext
+            buildContext,
+            buildEnvironment,
+            new()
         );
     }
 
@@ -115,7 +119,7 @@ class CodeGenerator
             _codeGenBase.EmitHalt();
         }
 
-        _codeGenBase.Code.Length--; // Remove double newline at the end
+        if (_codeGenBase.Code.Length > 0) _codeGenBase.Code.Length--; // Remove double newline at the end
         return new(_codeGenBase.Code.ToString(), imports.ToArray());
     }
 }

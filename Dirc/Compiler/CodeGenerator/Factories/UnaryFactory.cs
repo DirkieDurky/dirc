@@ -5,9 +5,9 @@ namespace Dirc.Compiling.CodeGen;
 
 class UnaryFactory
 {
-    private readonly CodeGenBase _codeGenBase;
+    private readonly ICodeGenBase _codeGenBase;
 
-    public UnaryFactory(CodeGenBase codeGenBase)
+    public UnaryFactory(ICodeGenBase codeGenBase)
     {
         _codeGenBase = codeGenBase;
     }

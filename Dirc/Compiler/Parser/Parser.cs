@@ -6,11 +6,13 @@ class Parser
 {
     private readonly ParserBase _parserBase;
     private readonly ParserContext _context;
+    private readonly BuildEnvironment _buildEnvironment;
 
-    public Parser(Options options, BuildContext buildContext)
+    public Parser(Options options, BuildContext buildContext, BuildEnvironment buildEnvironment)
     {
         _parserBase = new(options, buildContext);
         _context = new(_parserBase);
+        _buildEnvironment = buildEnvironment;
     }
 
     public FrontEndResult Parse(List<Token> tokens)

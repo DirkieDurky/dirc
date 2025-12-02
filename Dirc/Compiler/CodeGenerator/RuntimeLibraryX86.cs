@@ -1,0 +1,107 @@
+using System.Text;
+using Dirc.Compiling.Semantic;
+
+namespace Dirc.Compiling.CodeGen;
+
+class RuntimeLibraryX86 : IRuntimeLibrary
+{
+    private readonly Dictionary<string, RuntimeFunction> _functions = new()
+    {
+        { "outInt", new RuntimeFunction("outInt", new FunctionSignature(
+            Semantic.Void.Instance, [new FunctionParameter(Int.Instance, "value")]
+        ), "outInt.o" )},
+        { "outBool", new RuntimeFunction("outBool",
+        new FunctionSignature(
+            Semantic.Void.Instance,
+            [new FunctionParameter(Bool.Instance, "value")]
+        ), "outBool.o" )},
+        { "outChar", new RuntimeFunction("outChar",
+        new FunctionSignature(
+            Semantic.Void.Instance,
+            [new FunctionParameter(Semantic.Char.Instance, "value")]
+        ), "outChar.o" )},
+        { "printChar", new RuntimeFunction("printChar",
+        new FunctionSignature(
+            Semantic.Void.Instance,
+            [new FunctionParameter(Semantic.Char.Instance, "value")]
+        ), "printChar.o")},
+        { "in", new RuntimeFunction("in",
+        new FunctionSignature(
+            Int.Instance,
+            []
+        ), "in.o")},
+        { "printNewline", new RuntimeFunction("printNewline",
+        new FunctionSignature(
+            Semantic.Void.Instance,
+            []
+        ), "printNewline.o")},
+        { "readKey", new RuntimeFunction("readKey",
+        new FunctionSignature(
+            Int.Instance,
+            []
+        ), "readKey.o")},
+        { "readFileBytes", new RuntimeFunction("readFileBytes",
+        new FunctionSignature(
+            Int.Instance,
+            [new FunctionParameter(Int.Instance, "fileNum"), new FunctionParameter(Int.Instance, "fileOffset")]
+        ), "readFileBytes.o")},
+        { "halt2", new RuntimeFunction("halt2",
+        new FunctionSignature(
+            Semantic.Void.Instance,
+            []
+        ), "halt2.o")},
+        { "setScroll", new RuntimeFunction("setScroll",
+        new FunctionSignature(
+            Semantic.Void.Instance,
+            [new FunctionParameter(Int.Instance, "offset")]
+        ), "setScroll.o")},
+    };
+
+    public bool HasFunction(string name)
+    {
+        return _functions.ContainsKey(name);
+    }
+
+    public RuntimeFunction GetFunctionSignature(string name)
+    {
+        RuntimeFunction function = _functions[name];
+        return function;
+    }
+
+    public Dictionary<string, FunctionSignature> GetAllFunctionSignatures()
+    {
+        Dictionary<string, FunctionSignature> result = [];
+
+        foreach ((string name, RuntimeFunction function) in _functions)
+        {
+            result.Add(name, function.Signature);
+        }
+
+        return result;
+    }
+
+    public string GetFunction(string name)
+    {
+        StringBuilder result = new();
+
+        RuntimeFunction function = _functions[name];
+
+        result.Append($"label {function.Name}");
+
+        StreamReader sr = new StreamReader(Path.Combine(GetPath(), function.FilePath));
+        string? line = sr.ReadLine();
+        while (line != null)
+        {
+            result.Append(line);
+            line = sr.ReadLine();
+        }
+        sr.Close();
+
+        result.Append("return _ _ _");
+
+        return result.ToString();
+    }
+
+    public string GetPath() => Path.Combine(AppContext.BaseDirectory, "lib", GetName());
+    public string GetName() => "runtime-x86";
+}

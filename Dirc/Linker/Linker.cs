@@ -7,12 +7,12 @@ namespace Dirc.Linking;
 
 partial class Linker
 {
-    public string Link(string assembly, List<string> otherCompilationUnitCode, string[] searchLibs)
+    public string Link(string assembly, List<string> otherCompilationUnitCode, string[] searchLibs, BuildEnvironment buildEnvironment)
     {
-        HashSet<string> toImport = GetFilesToImport(assembly, searchLibs.ToList(), []);
+        HashSet<string> toImport = GetFilesToImport(assembly, searchLibs.ToList(), [], buildEnvironment);
 
         StringBuilder result = new();
-        result.Append(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "lib", "runtime", "init.o")));
+        result.Append(File.ReadAllText(Path.Combine(buildEnvironment.RuntimeLibrary.GetPath(), "init.o")));
         result.AppendLine();
         foreach (string importPath in toImport)
         {
@@ -37,7 +37,7 @@ partial class Linker
         return resultStr;
     }
 
-    public HashSet<string> GetFilesToImport(string assembly, List<string> searchLibs, HashSet<string> libsToImport)
+    public HashSet<string> GetFilesToImport(string assembly, List<string> searchLibs, HashSet<string> libsToImport, BuildEnvironment buildEnvironment)
     {
         if (!searchLibs.Contains("stdlib")) searchLibs.Insert(0, "stdlib");
 
@@ -46,10 +46,10 @@ partial class Linker
         foreach (string symbol in unresolvedSymbols)
         {
             // Look in the runtime library
-            if (RuntimeLibrary.HasFunction(symbol))
+            if (buildEnvironment.RuntimeLibrary.HasFunction(symbol))
             {
-                libsToImport = GetFilesToImport(RuntimeLibrary.GetFunction(symbol), searchLibs, libsToImport);
-                libsToImport.Add($"runtime/{symbol}.o");
+                libsToImport = GetFilesToImport(buildEnvironment.RuntimeLibrary.GetFunction(symbol), searchLibs, libsToImport, buildEnvironment);
+                libsToImport.Add($"{buildEnvironment.RuntimeLibrary.GetName()}/{symbol}.o");
             }
             else
             {
@@ -70,7 +70,7 @@ partial class Linker
                         if (!libsToImport.Contains(filePath))
                         {
                             libsToImport.Add(filePath);
-                            libsToImport = GetFilesToImport(fileText, searchLibs, libsToImport);
+                            libsToImport = GetFilesToImport(fileText, searchLibs, libsToImport, buildEnvironment);
                         }
                     }
                 }
