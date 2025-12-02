@@ -1,0 +1,72 @@
+void part1()
+{
+    // According to my calculations, this will take about 7 hours to run ingame...
+    // The same method runs in 80ms in C# on my real pc.
+
+    char* input = readFile(0);
+    char** ranges = splitStringByChar(input, ',');
+
+    println("Ranges made");
+
+    int count = 0;
+    int printCount = 0;
+
+    print(intToString(getSize(ranges)));
+    println(" total ranges");
+    for (int i = 0; i < getSize(ranges); i++)
+    {
+        print("Doing range ");
+        println(intToString(i));
+        char* split = splitStringByChar(ranges[i], '-');
+        int start = stringToInt(split[0]);
+        int end = stringToInt(split[1]);
+
+        for (int j = start; j <= end; j++)
+        {
+            /*
+            println(intToString(j));
+            printCount++;
+            if (printCount > 50) {
+                return;
+            }
+            */
+            
+            if (isInvalid(j))
+            {
+                count += j;
+                /*
+                print(intToString(j));
+                print(" is invalid. ");
+                print(intToString(count));
+                println(" is the new count");
+                */
+            }
+        }
+    }
+
+    print(intToString(count));
+}
+
+bool isInvalid(int num)
+{
+    char* numStr = intToString(num);
+    int numLength = strlen(numStr);
+    int halfNumLen = numLength / 2;
+    if (numLength % 2 == 1)
+    {
+        return false;
+    }
+
+    char* str1 = substring(numStr, 0, halfNumLen);
+    char* str2 = substring(numStr, halfNumLen, numLength);
+
+    return arraysMatch(str1, strlen(str1), str2, strlen(str2));
+}
+
+void part2()
+{
+
+}
+
+part1();
+//allowScrolling();
