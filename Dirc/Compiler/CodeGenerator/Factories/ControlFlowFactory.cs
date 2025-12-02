@@ -110,6 +110,8 @@ class ControlFlowFactory
         string loopLabel = labelGenerator.Generate(LabelType.While, context);
         string loopEndLabel = labelGenerator.Generate(LabelType.WhileEnd, context);
 
+        context.LoopLabelStack.Push((loopLabel, loopEndLabel));
+
         _codeGenBase.EmitLabel(loopLabel);
 
         if (node.Condition is BinaryExpressionNode condition && condition.Operation.IsComparer())
@@ -154,6 +156,8 @@ class ControlFlowFactory
 
         _codeGenBase.EmitLabel(loopEndLabel);
 
+        context.LoopLabelStack.Pop();
+
         return null;
     }
 
@@ -169,6 +173,10 @@ class ControlFlowFactory
         // Generate loop similar to while statement
         string loopLabel = labelGenerator.Generate(LabelType.While, context);
         string loopEndLabel = labelGenerator.Generate(LabelType.WhileEnd, context);
+        string incrementLabel = labelGenerator.Generate(LabelType.While, context);
+
+        // For loops, continue jumps to the increment section
+        context.LoopLabelStack.Push((incrementLabel, loopEndLabel));
 
         _codeGenBase.EmitLabel(loopLabel);
 
@@ -215,6 +223,8 @@ class ControlFlowFactory
 
         GenerateBody(node.Body, context);
 
+        _codeGenBase.EmitLabel(incrementLabel);
+
         if (node.Increment != null)
         {
             IReturnable? incrResult = context.ExprFactory.Generate(node.Increment, context);
@@ -224,6 +234,8 @@ class ControlFlowFactory
         _codeGenBase.EmitJump(loopLabel);
 
         _codeGenBase.EmitLabel(loopEndLabel);
+
+        context.LoopLabelStack.Pop();
 
         return null;
     }
@@ -236,5 +248,29 @@ class ControlFlowFactory
             IReturnable? result = context.ExprFactory.Generate(stmt, scopeSpecificContext);
             result?.Free();
         }
+    }
+
+    public IReturnable? GenerateBreakStatement(BreakNode node, CodeGenContext context)
+    {
+        if (context.LoopLabelStack.Count == 0)
+        {
+            throw new Exception("break statement outside of loop");
+        }
+
+        (_, string breakLabel) = context.LoopLabelStack.Peek();
+        _codeGenBase.EmitJump(breakLabel);
+        return null;
+    }
+
+    public IReturnable? GenerateContinueStatement(ContinueNode node, CodeGenContext context)
+    {
+        if (context.LoopLabelStack.Count == 0)
+        {
+            throw new Exception("continue statement outside of loop");
+        }
+
+        (string continueLabel, _) = context.LoopLabelStack.Peek();
+        _codeGenBase.EmitJump(continueLabel);
+        return null;
     }
 }

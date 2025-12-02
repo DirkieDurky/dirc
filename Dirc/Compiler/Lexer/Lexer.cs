@@ -18,6 +18,8 @@ class Lexer
         { "false", TokenType.False },
         { "while", TokenType.While },
         { "for", TokenType.For },
+        { "break", TokenType.Break },
+        { "continue", TokenType.Continue },
         { "arrlen", TokenType.ArrLen },
         { "asm", TokenType.Asm },
     };

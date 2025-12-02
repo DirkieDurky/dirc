@@ -37,6 +37,8 @@ public enum TokenType
     Return,
     While,
     For,
+    Break,
+    Continue,
     ArrLen,
     Asm,
 }

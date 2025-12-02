@@ -65,6 +65,10 @@ class ExpressionFactory
                 return null;
             case UnaryOperationNode unaryOperationNode:
                 return context.UnaryFactory.Generate(unaryOperationNode, context);
+            case BreakNode breakNode:
+                return context.ControlFlowFactory.GenerateBreakStatement(breakNode, context);
+            case ContinueNode continueNode:
+                return context.ControlFlowFactory.GenerateContinueStatement(continueNode, context);
             default:
                 throw new Exception($"Unhandled node {node}");
         }

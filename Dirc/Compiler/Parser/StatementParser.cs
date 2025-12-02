@@ -19,6 +19,12 @@ class StatementParser
         if (_context.ParserBase.Match(TokenType.Return))
             return ParseReturnStatement();
 
+        if (_context.ParserBase.Match(TokenType.Break))
+            return ParseBreakStatement();
+
+        if (_context.ParserBase.Match(TokenType.Continue))
+            return ParseContinueStatement();
+
         if (_context.ParserBase.Match(TokenType.Import))
             return ParseImportStatement();
 
@@ -68,6 +74,18 @@ class StatementParser
         ReturnStatementNode node = new(_context.ExpressionParser.ParseExpression());
         _context.ParserBase.Consume(TokenType.Semicolon, "Expected ';' after expression");
         return [node];
+    }
+
+    private List<AstNode> ParseBreakStatement()
+    {
+        _context.ParserBase.Consume(TokenType.Semicolon, "Expected ';' after break statement");
+        return [new BreakNode()];
+    }
+
+    private List<AstNode> ParseContinueStatement()
+    {
+        _context.ParserBase.Consume(TokenType.Semicolon, "Expected ';' after continue statement");
+        return [new ContinueNode()];
     }
 
     private List<AstNode> ParseImportStatement()

@@ -20,6 +20,7 @@ class CodeGenContext : ICloneable
     public PointerFactory PointerFactory { get; }
     public Dictionary<string, Variable> VariableTable { get; set; }
     public List<string> DeclaredFunctions { get; set; }
+    public Stack<(string ContinueLabel, string BreakLabel)> LoopLabelStack { get; set; } = new();
     // The offset to put the next variable on the stack
     public int NextVariableOffset { get; set; } = 0;
     // How many words the stack pointer is from the start
@@ -99,7 +100,10 @@ class CodeGenContext : ICloneable
             StackframeSize,
             Options,
             BuildContext
-        );
+        )
+        {
+            LoopLabelStack = new(LoopLabelStack)
+        };
         return newContext;
     }
 
@@ -127,7 +131,10 @@ class CodeGenContext : ICloneable
             StackframeSize,
             Options,
             BuildContext
-        );
+        )
+        {
+            LoopLabelStack = new(LoopLabelStack)
+        };
         return newContext;
     }
 
