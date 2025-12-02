@@ -1,72 +1,134 @@
 void part1()
 {
-    // According to my calculations, this will take about 7 hours to run ingame...
-    // The same method runs in 80ms in C# on my real pc.
+    char *input = readFile(0);
+    char **ranges = splitStringByChar(input, ',');
 
-    char* input = readFile(0);
-    char** ranges = splitStringByChar(input, ',');
+    int sum = 0;
 
-    println("Ranges made");
-
-    int count = 0;
-    int printCount = 0;
-
-    print(intToString(getSize(ranges)));
-    println(" total ranges");
     for (int i = 0; i < getSize(ranges); i++)
     {
-        print("Doing range ");
-        println(intToString(i));
-        char* split = splitStringByChar(ranges[i], '-');
+        char **split = splitStringByChar(ranges[i], '-');
         int start = stringToInt(split[0]);
         int end = stringToInt(split[1]);
 
-        for (int j = start; j <= end; j++)
+        int startLength = getDigitCountInInt(start);
+        int endLength = getDigitCountInInt(end);
+
+        if (startLength % 2 == 1 & endLength % 2 == 1)
         {
-            /*
-            println(intToString(j));
-            printCount++;
-            if (printCount > 50) {
-                return;
-            }
-            */
-            
-            if (isInvalid(j))
+            continue;
+        }
+        if (startLength % 2 == 1)
+        {
+            start = power(10, startLength);
+            startLength++;
+        }
+        else if (endLength % 2 == 1)
+        {
+            end = power(10, endLength - 1) - 1;
+            endLength--;
+        }
+
+        int leftHalfOfStart = start / power(10, startLength / 2);
+        int leftHalfOfEnd = end / power(10, endLength / 2);
+
+        int length = startLength;
+        int halfLength = length / 2;
+
+        for (int j = leftHalfOfStart; j <= leftHalfOfEnd; j++)
+        {
+            int candidate = j * power(10, halfLength) + j;
+            if (candidate >= start & candidate <= end)
             {
-                count += j;
-                /*
-                print(intToString(j));
-                print(" is invalid. ");
-                print(intToString(count));
-                println(" is the new count");
-                */
+                sum += candidate;
             }
         }
     }
 
-    print(intToString(count));
-}
-
-bool isInvalid(int num)
-{
-    char* numStr = intToString(num);
-    int numLength = strlen(numStr);
-    int halfNumLen = numLength / 2;
-    if (numLength % 2 == 1)
-    {
-        return false;
-    }
-
-    char* str1 = substring(numStr, 0, halfNumLen);
-    char* str2 = substring(numStr, halfNumLen, numLength);
-
-    return arraysMatch(str1, strlen(str1), str2, strlen(str2));
+    println(intToString(sum));
 }
 
 void part2()
 {
+    char *input = readFile(0);
+    char **ranges = splitStringByChar(input, ',');
 
+    int sum = 0;
+
+    for (int i = 0; i < getSize(ranges); i++)
+    {
+        char **split = splitStringByChar(ranges[i], '-');
+        int start = stringToInt(split[0]);
+        int end = stringToInt(split[1]);
+
+        int startLength = getDigitCountInInt(start);
+        int endLength = getDigitCountInInt(end);
+
+        if (startLength == endLength)
+        {
+            int length = startLength;
+
+            sum += getSumOfInvalidIDsInRange(start, end, length);
+        }
+        else
+        {
+            // Make both numbers have the startLength
+            int newStart = power(10, startLength);
+            startLength++;
+            sum += getSumOfInvalidIDsInRange(newStart, end, startLength);
+
+            // Make both numbers have the endLength
+            int newEnd = power(10, endLength - 1) - 1;
+            endLength--;
+            sum += getSumOfInvalidIDsInRange(start, newEnd, endLength);
+        }
+    }
+
+    println(intToString(sum));
 }
 
-part1();
-//allowScrolling();
+int getSumOfInvalidIDsInRange(int start, int end, int length)
+{
+    int sum = 0;
+    int[200] invalidIDs;
+    int invalidIDsIndex = 0;
+
+    for (int partLength = 1; partLength <= length / 2; partLength++)
+    {
+        if (length % partLength != 0)
+        {
+            continue;
+        }
+
+        int startPart = start / power(10, length - partLength);
+        int endPart = end / power(10, length - partLength);
+        int partCount = length / partLength;
+        int partMask = power(10, partLength - 1);
+
+        int mask = 0;
+        for (int i = 0; i < partCount - 1; i++)
+        {
+            mask += partMask * power(10, partLength * i + 1);
+        }
+        mask += 1;
+
+        for (int part = startPart; part <= endPart; part++)
+        {
+            int candidate = part * mask;
+            if (candidate >= start & candidate <= end)
+            {
+                if (findFirst(invalidIDs, arrlen(invalidIDs, 0), candidate, 0) == -1)
+                {
+                    sum += candidate;
+                    invalidIDs[invalidIDsIndex] = candidate;
+                    invalidIDsIndex++;
+                }
+            }
+        }
+    }
+
+    return sum;
+}
+
+part2();
+allowScrolling();
