@@ -181,7 +181,7 @@ pop _ _ r0
 sub|i2 r2 1 r7
 add r6 r7 r8
 load r8 _ r2
-add|i2 r2 2 r6
+add|i2 r2 1 r6
 mov r6 _ r1
 push r0 _ _
 push r1 _ _

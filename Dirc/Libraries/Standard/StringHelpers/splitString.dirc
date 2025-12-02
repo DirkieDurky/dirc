@@ -10,7 +10,7 @@ char** splitStringByChar(char* str, char separator)
         result[i] = substring(str, allIndices[i - 1] + 1, allIndices[i]);
     }
 
-    result[getSize(allIndices)] = substring(str, allIndices[getSize(allIndices) - 1] + 2, strlen(str));
+    result[getSize(allIndices)] = substring(str, allIndices[getSize(allIndices) - 1] + 1, strlen(str));
 
     return result;
 }
