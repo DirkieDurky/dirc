@@ -102,6 +102,19 @@ public class SemanticAnalyzer
             _functions.Add(name, signature);
         }
 
+        // StandardCore library
+        string stdCoreLibMetaPath = Path.Combine(AppContext.BaseDirectory, "lib", _buildEnvironment.StandardCoreLibraryName, _buildEnvironment.StandardCoreLibraryName + ".meta");
+        MetaFile.Root stdCoreMetaFile = JsonSerializer.Deserialize<MetaFile.Root>(File.ReadAllText(stdCoreLibMetaPath)) ?? throw new Exception("Standard Library could not be read");
+        foreach (MetaFile.Function stdCoreFunc in stdCoreMetaFile.Functions)
+        {
+            List<FunctionParameter> funcParams = new();
+            foreach (MetaFile.Param param in stdCoreFunc.Parameters)
+            {
+                funcParams.Add(new FunctionParameter(TypeFromString(param.Type, false), param.Name));
+            }
+            _functions.Add(stdCoreFunc.Name, new FunctionSignature(TypeFromString(stdCoreFunc.ReturnType, true), funcParams));
+        }
+
         // Standard library
         string stdLibMetaPath = Path.Combine(AppContext.BaseDirectory, "lib", "stdlib", "stdlib.meta");
         MetaFile.Root stdMetaFile = JsonSerializer.Deserialize<MetaFile.Root>(File.ReadAllText(stdLibMetaPath)) ?? throw new Exception("Standard Library could not be read");
@@ -151,7 +164,7 @@ public class SemanticAnalyzer
             if (_functions.ContainsKey(function.Name))
             {
                 // Ignore the error and overwrite original function if we're compiling stdlib itself
-                if (_options.IgnoreStdlib && stdMetaFile.Functions.Any(f => f.Name == function.Name))
+                if (_options.IgnoreStdlib && stdCoreMetaFile.Functions.Any(f => f.Name == function.Name))
                 {
                     _functions.Remove(function.Name);
                 }

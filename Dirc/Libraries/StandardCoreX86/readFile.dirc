@@ -1,0 +1,14 @@
+char* readFile(int fileNum) {
+    int fileLength = readFileBytes(fileNum, -1);
+    char* resultString = malloc(fileLength + 1);
+    resultString[fileLength] = 0;
+
+    for (int i = 0; i < fileLength; i += 8) {
+        int fileBytes = readFileBytes(fileNum, i);
+        for (int j = 0; j < 8; j++) {
+            resultString[i + j] = (fileBytes >> (8 * j)) % 256;
+        }
+    }
+
+    return resultString;
+}

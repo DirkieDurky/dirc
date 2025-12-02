@@ -20,6 +20,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Libraries/StandardCoreDiric/Compiled/**/*" CopyToOutputDirectory="Always">
+      <Link>lib/stdlibcore-diric/%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Libraries/StandardCoreX86/Compiled/**/*" CopyToOutputDirectory="Always">
+      <Link>lib/stdlibcore-x86/%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="Libraries/Standard/Compiled/**/*" CopyToOutputDirectory="Always">
       <Link>lib/stdlib/%(RecursiveDir)%(Filename)%(Extension)</Link>
     </None>

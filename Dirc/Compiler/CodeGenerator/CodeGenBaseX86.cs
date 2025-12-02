@@ -9,6 +9,11 @@ class CodeGenBaseX86 : ICodeGenBase
     private StringBuilder _code = new();
     public StringBuilder Code => _code;
 
+    public void EmitStartLabel()
+    {
+        Emit($"label _start");
+    }
+
     public void EmitLabel(string name)
     {
         Emit($"label {name}");

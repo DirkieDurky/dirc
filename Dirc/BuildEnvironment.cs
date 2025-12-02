@@ -9,6 +9,7 @@ public class BuildEnvironment
     public readonly int StackAlignment;
     public readonly IRuntimeLibrary RuntimeLibrary;
     public readonly ICodeGenBase CodeGenBase;
+    public readonly string StandardCoreLibraryName;
     public BuildEnvironment(Options options)
     {
         Options = options;
@@ -17,12 +18,14 @@ public class BuildEnvironment
             RuntimeLibrary = new RuntimeLibraryX86();
             CodeGenBase = new CodeGenBaseX86();
             StackAlignment = 8;
+            StandardCoreLibraryName = "stdlibcore-x86";
         }
         else
         {
             RuntimeLibrary = new RuntimeLibraryDiric();
             CodeGenBase = new CodeGenBaseDiric();
             StackAlignment = 1;
+            StandardCoreLibraryName = "stdlibcore-diric";
         }
     }
 

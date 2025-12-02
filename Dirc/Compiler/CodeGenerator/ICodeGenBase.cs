@@ -6,6 +6,7 @@ namespace Dirc.Compiling.CodeGen;
 public interface ICodeGenBase
 {
     public StringBuilder Code { get; }
+    void EmitStartLabel();
     void EmitLabel(string name);
     void EmitComment(string comment);
     void EmitMov(IOperand item, Register result);

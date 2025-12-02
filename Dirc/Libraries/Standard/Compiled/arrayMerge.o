@@ -39,6 +39,7 @@ load r5 _ r6
 add r0 r6 r8
 load r8 _ r5
 store r5 r7 _
+label _arrayMerge_while1
 sub|i2 fp 1 r4
 sub|i2 fp 1 r5
 load r5 _ r6
@@ -48,7 +49,7 @@ jump _arrayMerge_while0 _ pc
 label _arrayMerge_whileEnd0
 sub|i2 fp 2 r4
 store|i1 0 r4 _
-label _arrayMerge_while1
+label _arrayMerge_while2
 sub|i2 fp 2 r4
 load r4 _ r5
 ifMoreOrEq r5 r3 _arrayMerge_whileEnd1
@@ -63,12 +64,13 @@ load r4 _ r5
 add r2 r5 r8
 load r8 _ r4
 store r4 r7 _
+label _arrayMerge_while3
 sub|i2 fp 2 r4
 sub|i2 fp 2 r5
 load r5 _ r6
 add|i2 r6 1 r5
 store r5 r4 _
-jump _arrayMerge_while1 _ pc
+jump _arrayMerge_while2 _ pc
 label _arrayMerge_whileEnd1
 mov fp _ r4
 load r4 _ r5

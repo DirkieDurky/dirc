@@ -1,0 +1,17 @@
+char* input()
+{
+    char* line = malloc(80);
+    int lineIndex = 0;
+    char c = readKey();
+    while (c != 5)
+    {
+        printChar(c);
+        line[lineIndex] = c;
+        lineIndex++;
+        c = readKey();
+    }
+    line[lineIndex] = 0;
+    printNewline();
+
+    return line;
+}
