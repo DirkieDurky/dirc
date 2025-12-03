@@ -1,0 +1,92 @@
+void part1()
+{
+    // Took about 4M cycles
+
+    char *input = readFile(0);
+    char **lines = splitStringByChar(input, '\n');
+    int lineCount = getSize(lines) - 1;
+
+    println("Read input");
+
+    int sum = 0;
+
+    for (int i = 0; i < lineCount; i++)
+    {
+        char* line = lines[i];
+        int lineLength = strlen(line);
+
+        int highest = 0;
+        int highestIndex = 0;
+        for (int j = 0; j < lineLength - 1; j++)
+        {
+            int num = charToInt(line[j]);
+            if (num > highest)
+            {
+                highest = num;
+                highestIndex = j;
+            }
+        }
+
+        int otherHighest = 0;
+        for (int j = highestIndex + 1; j < lineLength; j++)
+        {
+            int num = charToInt(line[j]);
+            if (num > otherHighest)
+            {
+                otherHighest = num;
+            }
+        }
+
+        sum += highest * 10 + otherHighest;
+        //println(intToString(highest * 10 + otherHighest));
+    }
+
+    println(intToString(sum));
+}
+
+void part2()
+{
+    // Took 5.5M cycles. Relatively reasoable
+
+    char *input = readFile(0);
+    char **lines = splitStringByChar(input, '\n');
+    int lineCount = getSize(lines) - 1;
+
+    println("Read input");
+
+    int sum = 0;
+
+    for (int i = 0; i < lineCount; i++)
+    {
+        char* line = lines[i];
+        int lineLength = strlen(line);
+
+        int subsum = 0;
+        int nextIndex = 0;
+
+        for (int j = 11; j >= 0; j--)
+        {
+            int highest = 0;
+            int highestIndex = 0;
+            for (int k = nextIndex; k < lineLength - j; k++)
+            {
+                int num = charToInt(line[k]);
+                if (num > highest)
+                {
+                    highest = num;
+                    highestIndex = k;
+                }
+            }
+
+            subsum += highest * power(10, j);
+            nextIndex = highestIndex + 1;
+        }
+
+        sum += subsum;
+    }
+
+    println(intToString(sum));
+}
+
+part1();
+allowScrolling();
