@@ -128,6 +128,7 @@ load r3 _ r4
 add r0 r4 r6
 load r6 _ r3
 store r3 r5 _
+label _memory_while1
 sub|i2 fp 1 r2
 sub|i2 fp 1 r3
 load r3 _ r4

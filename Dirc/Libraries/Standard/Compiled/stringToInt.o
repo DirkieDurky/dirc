@@ -83,6 +83,7 @@ load r2 _ r3
 add|i2 r3 1 r2
 store r2 r1 _
 label _stringToInt_if0
+label _stringToInt_while1
 sub|i2 fp 4 r1
 sub|i2 fp 4 r2
 load r2 _ r3

@@ -19,6 +19,7 @@ load r3 _ r6
 add r0 r6 r7
 load r7 _ r3
 store r3 r5 _
+label _removeFromArray_while1
 mov fp _ r3
 mov fp _ r4
 load r4 _ r5
@@ -149,7 +150,7 @@ pop _ _ r1
 pop _ _ r0
 sub|i2 r4 1 r5
 store r5 r3 _
-label _removeFromArray_while1
+label _removeFromArray_while2
 sub|i2 fp 2 r3
 load r3 _ r4
 ifLess|i2 r4 0 _removeFromArray_whileEnd1
@@ -191,12 +192,13 @@ pop _ _ r2
 pop _ _ r1
 pop _ _ r0
 store r4 r3 _
+label _removeFromArray_while3
 sub|i2 fp 2 r3
 sub|i2 fp 2 r4
 load r4 _ r5
 sub|i2 r5 1 r4
 store r4 r3 _
-jump _removeFromArray_while1 _ pc
+jump _removeFromArray_while2 _ pc
 label _removeFromArray_whileEnd1
 push r0 _ _
 push r1 _ _

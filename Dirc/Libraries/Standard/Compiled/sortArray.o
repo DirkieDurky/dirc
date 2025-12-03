@@ -69,6 +69,7 @@ pop _ _ r2
 pop _ _ r1
 pop _ _ r0
 label _sortArray_if0
+label _sortArray_while1
 sub|i2 fp 2 r3
 sub|i2 fp 2 r4
 load r4 _ r5

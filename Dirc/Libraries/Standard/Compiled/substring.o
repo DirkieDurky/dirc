@@ -46,6 +46,7 @@ sub|i2 fp 2 r4
 load r4 _ r5
 add|i2 r5 1 r4
 store r4 r3 _
+label _substring_while1
 sub|i2 fp 3 r3
 sub|i2 fp 3 r4
 load r4 _ r5

@@ -138,6 +138,7 @@ mov r0 _ r2
 pop _ _ r1
 pop _ _ r0
 label _printArray_if0
+label _printArray_while1
 sub|i2 fp 1 r2
 sub|i2 fp 1 r3
 load r3 _ r4

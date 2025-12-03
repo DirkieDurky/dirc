@@ -24,6 +24,7 @@ mov fp _ r3
 load r3 _ r4
 mul r4 r0 r3
 store r3 r2 _
+label _math_while1
 sub|i2 fp 1 r2
 sub|i2 fp 1 r3
 load r3 _ r4

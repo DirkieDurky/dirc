@@ -79,6 +79,7 @@ label _findSubstrings_else0
 sub|i2 fp 2 r3
 store|i1 0 r3 _
 label _findSubstrings_ifElseEnd0
+label _findSubstrings_while1
 sub|i2 fp 3 r3
 sub|i2 fp 3 r4
 load r4 _ r5
@@ -148,7 +149,7 @@ pop _ _ r2
 pop _ _ r1
 pop _ _ r0
 store r3 r2 _
-label _findSubstrings_while1
+label _findSubstrings_while2
 sub|i2 fp 4 r2
 load r2 _ r3
 ifEq|i2 r3 -1 _findSubstrings_whileEnd1
@@ -228,7 +229,7 @@ pop _ _ r2
 pop _ _ r1
 pop _ _ r0
 store r3 r2 _
-jump _findSubstrings_while1 _ pc
+jump _findSubstrings_while2 _ pc
 label _findSubstrings_whileEnd1
 sub|i2 fp 1 r2
 push r0 _ _

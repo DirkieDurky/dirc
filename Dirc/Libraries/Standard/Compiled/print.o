@@ -34,6 +34,7 @@ call @printChar _ _
 mov r0 _ r1
 pop _ _ r0
 label _print_ifElseEnd0
+label _print_while1
 mov fp _ r1
 mov fp _ r2
 load r2 _ r3

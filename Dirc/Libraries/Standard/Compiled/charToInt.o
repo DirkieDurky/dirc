@@ -1,0 +1,14 @@
+label charToInt
+push lr _ _
+push fp _ _
+mov sp _ fp
+sub|i2 r0 48 r1
+mov r1 _ r0
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
+mov fp _ sp
+pop _ _ fp
+pop _ _ lr
+return _ _ _
