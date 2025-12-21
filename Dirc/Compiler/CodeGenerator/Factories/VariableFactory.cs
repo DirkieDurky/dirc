@@ -1,6 +1,6 @@
-using System.Reflection.Metadata.Ecma335;
 using Dirc.Compiling.CodeGen.Allocating;
 using Dirc.Compiling.Parsing;
+using Dirc.HAL;
 
 namespace Dirc.Compiling.CodeGen;
 
@@ -72,7 +72,7 @@ class VariableFactory
 
             _codeGenBase.EmitBinaryOperation(
                 Operation.Sub,
-                ReadonlyRegister.FP,
+                new ReadonlyRegister(context.FP),
                 new NumberLiteralNode(NumberLiteralType.Decimal, offset.ToString()),
                 basePtr
             );

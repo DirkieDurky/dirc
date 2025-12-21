@@ -1,5 +1,6 @@
 using Dirc.Compiling.CodeGen.Allocating;
 using Dirc.Compiling.Parsing;
+using Dirc.HAL;
 
 namespace Dirc.Compiling.CodeGen;
 
@@ -19,7 +20,7 @@ class PointerFactory
             Register tmp = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
             _codeGenBase.EmitBinaryOperation(
                 Operation.Sub,
-                ReadonlyRegister.FP,
+                new ReadonlyRegister(context.FP),
                 new NumberLiteralNode(NumberLiteralType.Decimal, stackVar.FramePointerOffset.ToString()),
                 tmp
             );

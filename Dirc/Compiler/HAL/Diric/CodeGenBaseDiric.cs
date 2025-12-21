@@ -1,10 +1,12 @@
 using System.Text;
+using Dirc.Compiling;
+using Dirc.Compiling.CodeGen;
 using Dirc.Compiling.CodeGen.Allocating;
 using Dirc.Compiling.Parsing;
 
-namespace Dirc.Compiling.CodeGen;
+namespace Dirc.HAL;
 
-class CodeGenBaseDiric : ICodeGenBase
+public class CodeGenBaseDiric : ICodeGenBase
 {
     private StringBuilder _code = new();
     public StringBuilder Code => _code;
@@ -29,8 +31,8 @@ class CodeGenBaseDiric : ICodeGenBase
         string op = "mov" + (IsAssemblyReady(item) ? "|i1" : "");
         string line = $"{op} {item.AsOperand()} _ {result}";
         // Prevent redundant mov (e.g., mov r0 _ r0)
-        if (item is ReturnRegister reg && reg.RegisterEnum == result.RegisterEnum) return;
-        if (item is ReadonlyRegister reg2 && reg2.Register == result.RegisterEnum) return;
+        if (item is ReturnRegister reg && reg.Register.RegisterBase == result.RegisterBase) return;
+        if (item is ReadonlyRegister reg2 && reg2.RegisterBase == result.RegisterBase) return;
         Emit(line);
     }
 

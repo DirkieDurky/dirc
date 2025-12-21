@@ -1,4 +1,5 @@
 using CommandLine;
+using Dirc.HAL;
 
 namespace Dirc;
 
@@ -57,8 +58,23 @@ public class Options
     [Option("ignore-semantic-errors", Required = false, HelpText = "Ignore semantic errors")]
     public bool IgnoreSemanticErrors { get; set; } = false;
 
-    [Option("arch", Required = false, Default = TargetArchitecture.Diric, HelpText = "The architecture to compile for. Valid options: Diric, X86")]
-    public TargetArchitecture TargetArchitecture { get; set; } = TargetArchitecture.Diric;
+    [Option("arch", Required = false, Default = Dirc.TargetArchitectureEnum.Diric, HelpText = "The architecture to compile for. Valid options: Diric, X86")]
+    public TargetArchitectureEnum? TargetArchitectureEnum
+    {
+        set
+        {
+            switch (value)
+            {
+                case Dirc.TargetArchitectureEnum.Diric:
+                    TargetArchitecture = new Diric();
+                    break;
+                case Dirc.TargetArchitectureEnum.X86:
+                    TargetArchitecture = new X86();
+                    break;
+            }
+        }
+    }
+    public ITargetArchitecture TargetArchitecture { get; set; } = new Diric();
 
     public bool CheckDebugOption(DebugOption debugOption)
     {
@@ -89,7 +105,7 @@ public enum DebugOption
 }
 
 [Flags]
-public enum TargetArchitecture
+public enum TargetArchitectureEnum
 {
     Diric,
     X86,

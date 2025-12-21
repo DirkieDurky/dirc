@@ -1,3 +1,4 @@
+using System.Formats.Asn1;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -7,12 +8,12 @@ namespace Dirc.Linking;
 
 partial class Linker
 {
-    public string Link(string assembly, List<string> otherCompilationUnitCode, string[] searchLibs, BuildEnvironment buildEnvironment)
+    public string Link(string assembly, List<string> otherCompilationUnitCode, string[] searchLibs, Options options)
     {
-        HashSet<string> toImport = GetFilesToImport(assembly, searchLibs.ToList(), [], buildEnvironment);
+        HashSet<string> toImport = GetFilesToImport(assembly, searchLibs.ToList(), [], options);
 
         StringBuilder result = new();
-        result.Append(File.ReadAllText(Path.Combine(buildEnvironment.RuntimeLibrary.GetPath(), "init.o")));
+        result.Append(File.ReadAllText(Path.Combine(options.TargetArchitecture.RuntimeLibrary.GetPath(), "init.o")));
         result.AppendLine();
         foreach (string importPath in toImport)
         {
@@ -37,20 +38,21 @@ partial class Linker
         return resultStr;
     }
 
-    public HashSet<string> GetFilesToImport(string assembly, List<string> searchLibs, HashSet<string> libsToImport, BuildEnvironment buildEnvironment)
+    public HashSet<string> GetFilesToImport(string assembly, List<string> searchLibs, HashSet<string> libsToImport, Options options)
     {
         if (!searchLibs.Contains("stdlib")) searchLibs.Insert(0, "stdlib");
-        if (!searchLibs.Contains(buildEnvironment.StandardCoreLibraryName)) searchLibs.Insert(0, buildEnvironment.StandardCoreLibraryName);
+        string stdcoreLibraryName = options.TargetArchitecture.StandardCoreLibraryName;
+        if (!searchLibs.Contains(stdcoreLibraryName)) searchLibs.Insert(0, stdcoreLibraryName);
 
         List<string> unresolvedSymbols = UnresolvedSymbol().Matches(assembly).Select(x => x.Groups[1].ToString()).ToList();
 
         foreach (string symbol in unresolvedSymbols)
         {
             // Look in the runtime library
-            if (buildEnvironment.RuntimeLibrary.HasFunction(symbol))
+            if (options.TargetArchitecture.RuntimeLibrary.HasFunction(symbol))
             {
-                libsToImport = GetFilesToImport(buildEnvironment.RuntimeLibrary.GetFunction(symbol), searchLibs, libsToImport, buildEnvironment);
-                libsToImport.Add($"{buildEnvironment.RuntimeLibrary.GetName()}/{symbol}.o");
+                libsToImport = GetFilesToImport(options.TargetArchitecture.RuntimeLibrary.GetFunction(symbol), searchLibs, libsToImport, options);
+                libsToImport.Add($"{options.TargetArchitecture.RuntimeLibrary.GetName()}/{symbol}.o");
             }
             else
             {
@@ -71,7 +73,7 @@ partial class Linker
                         if (!libsToImport.Contains(filePath))
                         {
                             libsToImport.Add(filePath);
-                            libsToImport = GetFilesToImport(fileText, searchLibs, libsToImport, buildEnvironment);
+                            libsToImport = GetFilesToImport(fileText, searchLibs, libsToImport, options);
                         }
                     }
                 }

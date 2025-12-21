@@ -1,34 +1,34 @@
 using System.Diagnostics;
+using Dirc.HAL;
 
 namespace Dirc.Compiling.CodeGen.Allocating;
 
 public class Allocator : ICloneable
 {
-    public static IReadOnlyCollection<RegisterEnum> ArgumentRegisters = [RegisterEnum.r0, RegisterEnum.r1, RegisterEnum.r2, RegisterEnum.r3];
-    // public static IReadOnlyCollection<RegisterEnum> CallerSavedRegisters = [RegisterEnum.r0, RegisterEnum.r1, RegisterEnum.r2, RegisterEnum.r3, RegisterEnum.r4, RegisterEnum.r5];
-    // public static IReadOnlyCollection<RegisterEnum> CalleeSavedRegisters = [RegisterEnum.r6, RegisterEnum.r7, RegisterEnum.r8, RegisterEnum.r9, RegisterEnum.r10];
-    public static IReadOnlyCollection<RegisterEnum> CallerSavedRegisters = [RegisterEnum.r0, RegisterEnum.r1, RegisterEnum.r2, RegisterEnum.r3, RegisterEnum.r4, RegisterEnum.r5, RegisterEnum.r6, RegisterEnum.r7, RegisterEnum.r8, RegisterEnum.r9, RegisterEnum.r10];
-    public static IReadOnlyCollection<RegisterEnum> CalleeSavedRegisters = [];
-
     public Options Options;
+    public BuildContext BuildContext;
 
     public IReadOnlyCollection<Register> TrackedCallerSavedRegisters { get; private set; }
     public IReadOnlyCollection<Register> TrackedCalleeSavedRegisters { get; private set; }
 
-    public Allocator(Options options)
+    public Allocator(Options options, BuildContext buildContext)
     {
-        Options = options;
+        RegisterBase[] callerSavedRegisters = options.TargetArchitecture.CallerSavedRegisters;
+        RegisterBase[] calleeSavedRegisters = options.TargetArchitecture.CalleeSavedRegisters;
 
-        Register[] callerSaved = new Register[CallerSavedRegisters.Count];
-        for (int i = 0; i < CallerSavedRegisters.Count; i++)
+        Options = options;
+        BuildContext = buildContext;
+
+        Register[] callerSaved = new Register[callerSavedRegisters.Length];
+        for (int i = 0; i < callerSavedRegisters.Length; i++)
         {
-            callerSaved[i] = new Register(this, CallerSavedRegisters.ElementAt(i));
+            callerSaved[i] = new Register(this, callerSavedRegisters.ElementAt(i));
         }
         TrackedCallerSavedRegisters = callerSaved;
-        Register[] calleeSaved = new Register[CalleeSavedRegisters.Count];
-        for (int i = 0; i < CalleeSavedRegisters.Count; i++)
+        Register[] calleeSaved = new Register[calleeSavedRegisters.Length];
+        for (int i = 0; i < calleeSavedRegisters.Length; i++)
         {
-            calleeSaved[i] = new Register(this, CalleeSavedRegisters.ElementAt(i));
+            calleeSaved[i] = new Register(this, calleeSavedRegisters.ElementAt(i));
         }
         TrackedCalleeSavedRegisters = calleeSaved;
     }
@@ -38,13 +38,12 @@ public class Allocator : ICloneable
         Register? foundRegister;
         if (type == RegisterType.CallerSaved)
         {
-            foundRegister = TrackedCallerSavedRegisters.First(r => !r.InUse);
+            foundRegister = TrackedCallerSavedRegisters.FirstOrDefault(r => !r.InUse) ?? throw new CodeGenException("No more registers to allocate.", null, Options, BuildContext);
         }
         else
         {
-            foundRegister = TrackedCalleeSavedRegisters.First(r => !r.InUse);
+            foundRegister = TrackedCalleeSavedRegisters.FirstOrDefault(r => !r.InUse) ?? throw new CodeGenException("No more registers to allocate.", null, Options, BuildContext);
         }
-        if (foundRegister == null) throw new Exception("No free register to allocate.");
 
         Register register = foundRegister;
         register.InUse = true;
@@ -58,7 +57,7 @@ public class Allocator : ICloneable
         return register;
     }
 
-    public Register Use(RegisterEnum r, bool overwrite = false, bool forFunctionArgument = false)
+    public Register Use(RegisterBase r, bool overwrite = false, bool forFunctionArgument = false)
     {
         Register foundRegister = GetRegisterFromEnum(r);
 
@@ -78,17 +77,17 @@ public class Allocator : ICloneable
         return foundRegister;
     }
 
-    public Register GetRegisterFromEnum(RegisterEnum r)
+    public Register GetRegisterFromEnum(RegisterBase r)
     {
-        if (r == RegisterEnum.fp || r == RegisterEnum.sp || r == RegisterEnum.lr) return new Register(this, r);
+        if (r.AlwaysAvailable) return new Register(this, r);
 
-        if (CallerSavedRegisters.Contains(r))
+        if (Options.TargetArchitecture.CallerSavedRegisters.Contains(r))
         {
-            return TrackedCallerSavedRegisters.First(x => x.RegisterEnum == r);
+            return TrackedCallerSavedRegisters.First(x => x.RegisterBase == r);
         }
-        else if (CalleeSavedRegisters.Contains(r))
+        else if (Options.TargetArchitecture.CalleeSavedRegisters.Contains(r))
         {
-            return TrackedCalleeSavedRegisters.First(x => x.RegisterEnum == r);
+            return TrackedCalleeSavedRegisters.First(x => x.RegisterBase == r);
         }
         else
         {
@@ -116,7 +115,7 @@ public class Allocator : ICloneable
 
     public object Clone()
     {
-        Allocator newAllocator = new Allocator(Options);
+        Allocator newAllocator = new Allocator(Options, BuildContext);
 
         newAllocator.TrackedCallerSavedRegisters = CloneRegisterCollection(newAllocator, TrackedCallerSavedRegisters);
         newAllocator.TrackedCalleeSavedRegisters = CloneRegisterCollection(newAllocator, TrackedCalleeSavedRegisters);
@@ -129,7 +128,7 @@ public class Allocator : ICloneable
         List<Register> result = [];
         foreach (Register oldRegister in collection)
         {
-            Register newRegister = new Register(newAllocator, oldRegister.RegisterEnum, oldRegister.RefersToFunctionArgument);
+            Register newRegister = new Register(newAllocator, oldRegister.RegisterBase, oldRegister.RefersToFunctionArgument);
             newRegister.InUse = oldRegister.InUse;
             result.Add(newRegister);
         }

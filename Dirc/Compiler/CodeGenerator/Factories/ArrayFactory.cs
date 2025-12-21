@@ -1,5 +1,6 @@
 using Dirc.Compiling.CodeGen.Allocating;
 using Dirc.Compiling.Parsing;
+using Dirc.HAL;
 
 namespace Dirc.Compiling.CodeGen;
 
@@ -37,7 +38,7 @@ class ArrayFactory
         Register basePtr = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
         _codeGenBase.EmitBinaryOperation(
             Operation.Sub,
-            ReadonlyRegister.FP,
+            new ReadonlyRegister(context.FP),
             new NumberLiteralNode(NumberLiteralType.Decimal, offset.ToString()),
             basePtr
         );

@@ -1,4 +1,5 @@
 using Dirc.Compiling.CodeGen.Allocating;
+using Dirc.HAL;
 
 namespace Dirc.Compiling.CodeGen;
 
@@ -86,7 +87,7 @@ class CodeGenContext : ICloneable
         CodeGenContext newContext = new(
             CodeGen,
             CodeGenBase,
-            new(Options),
+            new(Options, BuildContext),
             ExprFactory,
             FunctionFactory,
             VarFactory,
@@ -170,7 +171,7 @@ class CodeGenContext : ICloneable
 
     public int AllocateStackArray(int size, string? name)
     {
-        int offset = NextVariableOffset + size - BuildEnvironment.StackAlignment;
+        int offset = NextVariableOffset + size - Options.TargetArchitecture.StackAlignment;
         NextVariableOffset += size;
         if (name != null)
         {
@@ -184,4 +185,10 @@ class CodeGenContext : ICloneable
     {
         VariableTable[name] = new StackStoredVariable(name, offset, true);
     }
+
+    public RegisterBase SP => Options.TargetArchitecture.StackPointerRegister;
+    public RegisterBase FP => Options.TargetArchitecture.FramePointerRegister;
+    public RegisterBase LR => Options.TargetArchitecture.LinkRegister;
+    public RegisterBase ReturnRegister => Options.TargetArchitecture.ReturnRegister;
+    public IEnumerable<RegisterBase> ArgumentRegisters => Options.TargetArchitecture.ArgumentRegisters;
 }

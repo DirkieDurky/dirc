@@ -1,5 +1,6 @@
 using Dirc.Compiling.CodeGen.Allocating;
 using Dirc.Compiling.Parsing;
+using Dirc.HAL;
 
 namespace Dirc.Compiling.CodeGen;
 
@@ -14,9 +15,9 @@ class CodeGenerator
     public CodeGenerator(Options options, BuildContext buildContext, BuildEnvironment buildEnvironment)
     {
         _buildEnvironment = buildEnvironment;
-        _codeGenBase = buildEnvironment.CodeGenBase;
+        _codeGenBase = options.TargetArchitecture.CodeGenBase;
 
-        Allocator allocator = new(options);
+        Allocator allocator = new(options, buildContext);
 
         FunctionFactory funcFactory = new(_codeGenBase, options);
         ExpressionFactory exprFactory = new(_codeGenBase, LabelGenerator);

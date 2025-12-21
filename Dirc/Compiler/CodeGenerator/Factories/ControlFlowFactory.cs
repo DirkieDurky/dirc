@@ -1,5 +1,6 @@
 using Dirc.Compiling.CodeGen.Allocating;
 using Dirc.Compiling.Parsing;
+using Dirc.HAL;
 
 namespace Dirc.Compiling.CodeGen;
 

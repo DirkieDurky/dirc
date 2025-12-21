@@ -1,3 +1,5 @@
+using Dirc.HAL;
+
 namespace Dirc.Compiling.CodeGen.Allocating;
 
 class ReturnRegister : IReturnable
@@ -6,7 +8,7 @@ class ReturnRegister : IReturnable
     {
         get
         {
-            if (!_register.InUse) throw new Exception($"Register {_register.RegisterEnum} was used while free");
+            if (!_register.InUse) throw new Exception($"Register {_register.RegisterBase} was used while free");
             return _register;
         }
         private set => _register = value;
@@ -19,7 +21,7 @@ class ReturnRegister : IReturnable
         _register = register;
     }
 
-    public RegisterEnum RegisterEnum => _register.RegisterEnum;
+    public RegisterBase RegisterBase => _register.RegisterBase;
 
     public string AsOperand() => Register.ToString();
 

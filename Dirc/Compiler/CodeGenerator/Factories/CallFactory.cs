@@ -1,7 +1,6 @@
-using System.Collections.Specialized;
-using System.Linq;
 using Dirc.Compiling.CodeGen.Allocating;
 using Dirc.Compiling.Parsing;
+using Dirc.HAL;
 
 namespace Dirc.Compiling.CodeGen;
 
@@ -41,8 +40,8 @@ class CallFactory
         {
             IReturnable argument = context.ExprFactory.Generate(node.Arguments[i], context) ?? throw new Exception("Argument was not set");
             registersToFree.Add(argument);
-            RegisterEnum argumentSlotEnum = Allocator.ArgumentRegisters.ElementAt(i);
-            if (argument is not ReturnRegister reg || reg.RegisterEnum != argumentSlotEnum)
+            RegisterBase argumentSlotEnum = context.ArgumentRegisters.ElementAt(i);
+            if (argument is not ReturnRegister reg || reg.RegisterBase != argumentSlotEnum)
             {
                 Register argumentSlot = context.Allocator.Use(argumentSlotEnum, true);
                 registersToFree.Add(new ReturnRegister(argumentSlot));
@@ -60,12 +59,12 @@ class CallFactory
         // Allocate space for the toSave values
         foreach (Register reg in toSave.Select(x => x.reg))
         {
-            context.Allocator.Use(reg.RegisterEnum, true, reg.RefersToFunctionArgument);
+            context.Allocator.Use(reg.RegisterBase, true, reg.RefersToFunctionArgument);
         }
 
         // Move the return value to a register that won't be overwritten by popping all the values
         Register returnValue = context.Allocator.Allocate(Allocator.RegisterType.CallerSaved);
-        _codeGenBase.EmitMov(ReadonlyRegister.R0, returnValue);
+        _codeGenBase.EmitMov(new ReadonlyRegister(context.ReturnRegister), returnValue);
 
         // Restore saved values (and put them in the same registers they were in before)
         toSave.Reverse();

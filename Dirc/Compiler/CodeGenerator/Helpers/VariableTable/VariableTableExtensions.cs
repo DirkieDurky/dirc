@@ -11,7 +11,7 @@ public static class VariableTableExtensions
         foreach (var kvp in table)
         {
             if (kvp.Value is RegisterStoredVariable rsv &&
-                rsv.Register.RegisterEnum == reg.RegisterEnum)
+                rsv.Register == reg)
             {
                 return rsv;
             }

@@ -1,5 +1,6 @@
 using Dirc.Compiling.CodeGen.Allocating;
 using Dirc.Compiling.Parsing;
+using Dirc.HAL;
 
 namespace Dirc.Compiling.CodeGen;
 
@@ -19,17 +20,17 @@ class FunctionFactory
         CodeGenContext scopeSpecificContext = (CodeGenContext)context.GetSubcontext();
 
         _codeGenBase.EmitLabel(node.Name);
-        _codeGenBase.EmitPush(ReadonlyRegister.LR);
-        _codeGenBase.EmitPush(ReadonlyRegister.FP);
-        _codeGenBase.EmitMov(ReadonlyRegister.SP, context.Allocator.Use(RegisterEnum.fp));
+        _codeGenBase.EmitPush(new ReadonlyRegister(context.LR));
+        _codeGenBase.EmitPush(new ReadonlyRegister(context.FP));
+        _codeGenBase.EmitMov(new ReadonlyRegister(context.SP), context.Allocator.Use(context.FP));
         scopeSpecificContext.StackframeSize = CalculateStackframeSize(node.Body);
         AllocateStackframe(scopeSpecificContext);
 
-        if (node.Parameters.Count > Allocator.ArgumentRegisters.Count) throw new Exception($"More than {Allocator.ArgumentRegisters.Count} function parameters given.");
+        if (node.Parameters.Count > context.ArgumentRegisters.Count()) throw new Exception($"More than {context.ArgumentRegisters.Count()} function parameters given.");
         for (int i = 0; i < node.Parameters.Count; i++)
         {
             FunctionParameterNode parameter = node.Parameters[i];
-            scopeSpecificContext.VariableTable[node.Parameters.Select(p => p.Name).ToList()[i]] = new RegisterStoredVariable(parameter.Name, scopeSpecificContext.Allocator.Use(Allocator.ArgumentRegisters.ElementAt(i), false, true));
+            scopeSpecificContext.VariableTable[node.Parameters.Select(p => p.Name).ToList()[i]] = new RegisterStoredVariable(parameter.Name, scopeSpecificContext.Allocator.Use(context.ArgumentRegisters.ElementAt(i), false, true));
         }
 
         foreach (AstNode stmt in node.Body)
@@ -52,32 +53,32 @@ class FunctionFactory
         }
 
         IReturnable returnValue = context.ExprFactory.Generate(node.ReturnValue, context) ?? throw new Exception("return value didn't return anything");
-        Register r0 = context.Allocator.Use(RegisterEnum.r0, true);
-        _codeGenBase.EmitMov(returnValue, r0);
+        Register returnReg = context.Allocator.Use(context.ReturnRegister, true);
+        _codeGenBase.EmitMov(returnValue, returnReg);
         returnValue.Free();
 
         EmitFunctionEpilogue(context);
         _codeGenBase.EmitReturn(false);
 
-        return new ReturnRegister(r0);
+        return new ReturnRegister(returnReg);
     }
 
     private void EmitFunctionEpilogue(CodeGenContext context)
     {
         // Free local variables
-        _codeGenBase.EmitMov(ReadonlyRegister.FP, context.Allocator.Use(RegisterEnum.sp));
+        _codeGenBase.EmitMov(new ReadonlyRegister(context.FP), context.Allocator.Use(context.SP));
         // Restore fp and lr
-        _codeGenBase.EmitPop(context.Allocator.Use(RegisterEnum.fp));
-        _codeGenBase.EmitPop(context.Allocator.Use(RegisterEnum.lr));
+        _codeGenBase.EmitPop(context.Allocator.Use(context.FP));
+        _codeGenBase.EmitPop(context.Allocator.Use(context.LR));
     }
 
     public void AllocateStackframe(CodeGenContext context)
     {
         _codeGenBase.EmitBinaryOperation(
             Operation.Sub,
-            ReadonlyRegister.SP,
-            new NumberLiteralNode(context.BuildEnvironment.StackAlignment * context.StackframeSize),
-            context.Allocator.Use(RegisterEnum.sp)
+            new ReadonlyRegister(context.SP),
+            new NumberLiteralNode(context.Options.TargetArchitecture.StackAlignment * context.StackframeSize),
+            context.Allocator.Use(context.SP)
         );
     }
 

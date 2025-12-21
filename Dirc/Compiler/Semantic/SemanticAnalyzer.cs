@@ -97,13 +97,13 @@ public class SemanticAnalyzer
         // First pass: collect function signatures
 
         // Runtime library
-        foreach ((string name, FunctionSignature signature) in _buildEnvironment.RuntimeLibrary.GetAllFunctionSignatures())
+        foreach ((string name, FunctionSignature signature) in _options.TargetArchitecture.RuntimeLibrary.GetAllFunctionSignatures())
         {
             _functions.Add(name, signature);
         }
 
         // StandardCore library
-        string stdCoreLibMetaPath = Path.Combine(AppContext.BaseDirectory, "lib", _buildEnvironment.StandardCoreLibraryName, _buildEnvironment.StandardCoreLibraryName + ".meta");
+        string stdCoreLibMetaPath = Path.Combine(AppContext.BaseDirectory, "lib", _options.TargetArchitecture.StandardCoreLibraryName, _options.TargetArchitecture.StandardCoreLibraryName + ".meta");
         MetaFile.Root stdCoreMetaFile = JsonSerializer.Deserialize<MetaFile.Root>(File.ReadAllText(stdCoreLibMetaPath)) ?? throw new Exception("Standard Library could not be read");
         foreach (MetaFile.Function stdCoreFunc in stdCoreMetaFile.Functions)
         {
@@ -132,7 +132,7 @@ public class SemanticAnalyzer
         foreach (ImportStatementNode importNode in nodes.Where(n => n is ImportStatementNode))
         {
             string libraryName = importNode.LibraryName;
-            if (libraryName == _buildEnvironment.RuntimeLibrary.GetName()) continue;
+            if (libraryName == _options.TargetArchitecture.RuntimeLibrary.GetName()) continue;
 
             string libMetaPath = Path.Combine(AppContext.BaseDirectory, "lib", libraryName, libraryName + ".meta");
             string libMetaText = File.ReadAllText(libMetaPath);
@@ -163,8 +163,8 @@ public class SemanticAnalyzer
 
             if (_functions.ContainsKey(function.Name))
             {
-                // Ignore the error and overwrite original function if we're compiling stdlib itself
-                if (_options.IgnoreStdlib && stdCoreMetaFile.Functions.Any(f => f.Name == function.Name))
+                // Ignore the error and overwrite original function if ignoreStdLib option is enabled
+                if (_options.IgnoreStdlib && stdMetaFile.Functions.Any(f => f.Name == function.Name) || stdCoreMetaFile.Functions.Any(f => f.Name == function.Name))
                 {
                     _functions.Remove(function.Name);
                 }
@@ -174,7 +174,7 @@ public class SemanticAnalyzer
                 }
             }
 
-            if (_options.TargetArchitecture == TargetArchitecture.Diric && BuildEnvironment.DiricAssemblyKeywords.ContainsKey(function.Name))
+            if (_options.TargetArchitecture.Keywords.ContainsKey(function.Name))
             {
                 throw new CodeGenException($"Can't declare function with name '{function.Name}'. Reserved keyword",
                     null, _options, _buildContext

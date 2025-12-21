@@ -1,5 +1,5 @@
-using System.Runtime.Serialization;
 using Dirc.Compiling.Parsing;
+using Dirc.HAL;
 
 namespace Dirc.Compiling.CodeGen;
 

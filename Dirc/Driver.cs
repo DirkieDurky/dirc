@@ -10,7 +10,7 @@ public class Driver
 {
     public void Run(Options options)
     {
-        BuildEnvironment buildEnvironment = new(options);
+        BuildEnvironment buildEnvironment = new();
         List<string> files = [];
 
         foreach (string file in options.InputFiles)
@@ -124,7 +124,7 @@ public class Driver
             List<string> otherCompilationUnitCode = otherCompilationUnitResults.Select(x => x.Code).ToList();
             string[] imports = backEndResults.SelectMany(x => x.Value.Imports).ToArray();
 
-            string linkerResult = new Linker().Link(rootFileResult.Code, otherCompilationUnitCode, imports, buildEnvironment);
+            string linkerResult = new Linker().Link(rootFileResult.Code, otherCompilationUnitCode, imports, options);
 
             new FileInfo(options.OutPath).Directory!.Create();
             File.WriteAllText(options.OutPath, linkerResult);
