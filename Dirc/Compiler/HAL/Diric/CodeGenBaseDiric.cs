@@ -13,7 +13,7 @@ public class CodeGenBaseDiric : ICodeGenBase
 
     public void EmitStartLabel()
     {
-        Emit($"label _start");
+        EmitLabel($"_start");
     }
 
     public void EmitLabel(string name)
@@ -188,6 +188,11 @@ public class CodeGenBaseDiric : ICodeGenBase
     public void EmitHalt()
     {
         Emit("halt _ _ _");
+    }
+
+    public void EmitExit()
+    {
+        EmitHalt();
     }
 
     public void EmitEmptyLine()

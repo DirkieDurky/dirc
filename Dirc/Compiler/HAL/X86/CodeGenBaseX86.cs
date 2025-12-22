@@ -13,12 +13,12 @@ public class CodeGenBaseX86 : ICodeGenBase
 
     public void EmitStartLabel()
     {
-        Emit($"label _start");
+        EmitLabel($"_start");
     }
 
     public void EmitLabel(string name)
     {
-        Emit($"label {name}");
+        Emit($"{name}:");
     }
 
     public void EmitComment(string comment)
@@ -28,8 +28,8 @@ public class CodeGenBaseX86 : ICodeGenBase
 
     public void EmitMov(IOperand item, Register result)
     {
-        string op = "mov" + (IsAssemblyReady(item) ? "|i1" : "");
-        string line = $"{op} {item.AsOperand()} _ {result}";
+        string op = "movq";
+        string line = $"{op} {AddOperandPrefix(item)}, %{result}";
         // Prevent redundant mov (e.g., mov r0 _ r0)
         if (item is ReturnRegister reg && reg.Register.RegisterBase == result.RegisterBase) return;
         if (item is ReadonlyRegister reg2 && reg2.RegisterBase == result.RegisterBase) return;
@@ -38,7 +38,7 @@ public class CodeGenBaseX86 : ICodeGenBase
 
     public void EmitJump(string label)
     {
-        Emit($"jump {label} _ pc");
+        Emit($"jmp {label}");
     }
 
     public void EmitBinaryOperation(Operation op, IOperand left, IOperand? right, Register result)
@@ -47,10 +47,6 @@ public class CodeGenBaseX86 : ICodeGenBase
         {
             throw new Exception($"Right operand can not be null for operation {op}");
         }
-
-        string opSuffix = "";
-        if (IsAssemblyReady(left)) opSuffix += "|i1";
-        if (right != null && IsAssemblyReady(right)) opSuffix += "|i2";
 
         switch (op)
         {
@@ -66,7 +62,7 @@ public class CodeGenBaseX86 : ICodeGenBase
                     EmitMov(left!, result);
                     break;
                 }
-                Emit($"add{opSuffix} {left.AsOperand()} {right!.AsOperand()} {result}");
+                Emit($"lea [{AddOperandPrefix(left)} + {AddOperandPrefix(right)}] %{result}");
                 break;
             case Operation.Sub:
                 // Filter out unnecessary statements
@@ -75,34 +71,53 @@ public class CodeGenBaseX86 : ICodeGenBase
                     EmitMov(left!, result);
                     break;
                 }
-                Emit($"sub{opSuffix} {left.AsOperand()} {right!.AsOperand()} {result}");
+                Emit($"lea [{AddOperandPrefix(left)} - {AddOperandPrefix(right)}] %{result}");
                 break;
             case Operation.And:
-                Emit($"and{opSuffix} {left.AsOperand()} {right!.AsOperand()} {result}");
+                EmitMov(left, result);
+                Emit($"andq {right}, %{result}");
                 break;
             case Operation.Or:
-                Emit($"or{opSuffix} {left.AsOperand()} {right!.AsOperand()} {result}");
+                EmitMov(left, result);
+                Emit($"orq {right}, %{result}");
                 break;
             case Operation.Not:
-                Emit($"not{opSuffix} {left.AsOperand()} _ {result}");
+                EmitMov(left, result);
+                Emit($"notq %{result}");
                 break;
             case Operation.Xor:
-                Emit($"xor{opSuffix} {left.AsOperand()} {right!.AsOperand()} {result}");
+                EmitMov(left, result);
+                Emit($"xorq {right}, %{result}");
                 break;
             case Operation.Mul:
-                Emit($"mul{opSuffix} {left.AsOperand()} {right!.AsOperand()} {result}");
+                EmitMov(left, result);
+                Emit($"imulq {AddOperandPrefix(right!)} %{result}");
                 break;
             case Operation.Div:
-                Emit($"div{opSuffix} {left.AsOperand()} {right!.AsOperand()} {result}");
+                Emit("push %rax");
+                Emit("push %rdx");
+                Emit($"{AddOperandPrefix(left)}, %rax");
+                Emit($"idivq {AddOperandPrefix(right!)}");
+                Emit($"movq %rax %{result}");
+                Emit("pop %rdx");
+                Emit("pop %rax");
                 break;
             case Operation.Mod:
-                Emit($"mod{opSuffix} {left.AsOperand()} {right!.AsOperand()} {result}");
+                Emit("push %rax");
+                Emit("push %rdx");
+                Emit($"{AddOperandPrefix(left)}, %rax");
+                Emit($"idivq {AddOperandPrefix(right!)}");
+                Emit($"movq %rdx %{result}");
+                Emit("pop %rdx");
+                Emit("pop %rax");
                 break;
             case Operation.BitshiftLeft:
-                Emit($"shl{opSuffix} {left.AsOperand()} {right!.AsOperand()} {result}");
+                EmitMov(left, result);
+                Emit($"shlq {right!.AsOperand()} {result}");
                 break;
             case Operation.BitshiftRight:
-                Emit($"shr{opSuffix} {left.AsOperand()} {right!.AsOperand()} {result}");
+                EmitMov(left, result);
+                Emit($"shrq {right!.AsOperand()} {result}");
                 break;
         }
     }
@@ -138,12 +153,12 @@ public class CodeGenBaseX86 : ICodeGenBase
 
     public void EmitFunctionCall(string label, bool unresolved)
     {
-        Emit($"call {(unresolved ? "@" : "")}{label} _ _");
+        Emit($"call {(unresolved ? "@" : "")}{label}");
     }
 
     public void EmitReturn(bool final = true)
     {
-        Emit($"return _ _ _");
+        Emit($"ret");
         if (final)
         {
             EmitEmptyLine();
@@ -152,42 +167,40 @@ public class CodeGenBaseX86 : ICodeGenBase
 
     public void EmitPush(IOperand value)
     {
-        string opSuffix = "";
-        if (IsAssemblyReady(value)) opSuffix += "|i1";
-
-        Emit($"push{opSuffix} {value.AsOperand()} _ _");
+        Emit($"push {AddOperandPrefix(value)}");
     }
 
     public void EmitPop(Register result)
     {
-        Emit($"pop _ _ {result}");
+        Emit($"pop %{result}");
     }
 
     public void EmitStore(IOperand value, IOperand address)
     {
-        string opSuffix = "";
-        if (IsAssemblyReady(value)) opSuffix += "|i1";
-        if (IsAssemblyReady(address)) opSuffix += "|i2";
-
-        Emit($"store{opSuffix} {value.AsOperand()} {address.AsOperand()} _");
+        string addressStr = IsAssemblyReady(address) ? $"{address.AsOperand()}(%rip)" : $"(%{address.AsOperand()})";
+        Emit($"movq {AddOperandPrefix(value)}, {addressStr}");
     }
 
     public void EmitLoad(IOperand location, Register result)
     {
-        string opSuffix = "";
-        if (IsAssemblyReady(location)) opSuffix += "|i1";
-
-        Emit($"load{opSuffix} {location.AsOperand()} _ {result}");
+        Emit($"movq {AddOperandPrefix(location)}(%rip), %{result}");
     }
 
     public void EmitNoop()
     {
-        Emit($"noop _ _ _");
+        Emit($"nop");
     }
 
     public void EmitHalt()
     {
-        Emit("halt _ _ _");
+        throw new Exception("Halt not allowed on X86");
+    }
+
+    public void EmitExit()
+    {
+        Emit("mov $60, %rax");
+        Emit("xor %rdi, %rdi");
+        Emit("syscall");
     }
 
     public void EmitEmptyLine()
@@ -205,5 +218,10 @@ public class CodeGenBaseX86 : ICodeGenBase
         return item is NumberLiteralNode
             || item is BooleanLiteralNode
             || item is SimpleBinaryExpressionNode;
+    }
+
+    private string AddOperandPrefix(IOperand item)
+    {
+        return IsAssemblyReady(item) ? $"${item.AsOperand()}" : $"%{item.AsOperand()}";
     }
 }

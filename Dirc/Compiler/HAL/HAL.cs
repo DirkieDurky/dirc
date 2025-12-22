@@ -41,6 +41,7 @@ public interface ICodeGenBase
     void EmitLoad(IOperand location, Register result);
     void EmitNoop();
     void EmitHalt();
+    void EmitExit();
     void EmitEmptyLine();
     void Emit(string assembly);
 }

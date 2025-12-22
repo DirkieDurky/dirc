@@ -117,7 +117,7 @@ class CodeGenerator
 
         if (topLevelCode != null)
         {
-            _codeGenBase.EmitHalt();
+            _codeGenBase.EmitExit();
         }
 
         if (_codeGenBase.Code.Length > 0) _codeGenBase.Code.Length--; // Remove double newline at the end

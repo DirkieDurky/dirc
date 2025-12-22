@@ -7,59 +7,6 @@ public class RuntimeLibraryX86 : IRuntimeLibrary
 {
     private readonly Dictionary<string, FunctionSignature> _functions = new()
     {
-        { "outInt", new FunctionSignature(
-            Compiling.Semantic.Void.Instance,
-            [
-                new FunctionParameter(Int.Instance, "value"),
-            ]
-        )},
-        { "outBool", new FunctionSignature(
-            Compiling.Semantic.Void.Instance,
-            [
-                new FunctionParameter(Bool.Instance, "value")
-            ]
-        )},
-        { "outChar", new FunctionSignature(
-            Compiling.Semantic.Void.Instance,
-            [
-                new FunctionParameter(Compiling.Semantic.Char.Instance, "value")
-            ]
-        )},
-        { "printChar", new FunctionSignature(
-            Compiling.Semantic.Void.Instance,
-            [
-                new FunctionParameter(Compiling.Semantic.Char.Instance, "value")
-            ]
-        )},
-        { "in", new FunctionSignature(
-            Int.Instance,
-            []
-        )},
-        { "printNewline", new FunctionSignature(
-            Compiling.Semantic.Void.Instance,
-            []
-        )},
-        { "readKey", new FunctionSignature(
-            Int.Instance,
-            []
-        )},
-        { "readFileBytes", new FunctionSignature(
-            Int.Instance,
-            [
-                new FunctionParameter(Int.Instance, "fileNum"),
-                new FunctionParameter(Int.Instance, "fileOffset")
-            ]
-        )},
-        { "halt2", new FunctionSignature(
-            Compiling.Semantic.Void.Instance,
-            []
-        )},
-        { "setScroll", new FunctionSignature(
-            Compiling.Semantic.Void.Instance,
-            [
-                new FunctionParameter(Int.Instance, "offset")
-            ]
-        )},
     };
 
     public bool HasFunction(string name)
@@ -89,7 +36,7 @@ public class RuntimeLibraryX86 : IRuntimeLibrary
     {
         StringBuilder result = new();
 
-        result.Append($"label _{name}");
+        result.Append($"{name}:");
 
         StreamReader sr = new StreamReader(Path.Combine(GetPath(), name + ".o"));
         string? line = sr.ReadLine();
@@ -100,11 +47,11 @@ public class RuntimeLibraryX86 : IRuntimeLibrary
         }
         sr.Close();
 
-        result.Append("return _ _ _");
+        result.Append("ret");
 
         return result.ToString();
     }
 
     public string GetPath() => Path.Combine(AppContext.BaseDirectory, "lib", GetName());
-    public string GetName() => "runtime-diric";
+    public string GetName() => "runtime-x86";
 }

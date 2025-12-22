@@ -3,49 +3,58 @@ namespace Dirc.HAL;
 public class X86 : ITargetArchitecture
 {
     public RegisterBase[] AvailableRegisters => [
-            new RegisterBase(0, "r0", false),
-            new RegisterBase(1, "r1", false),
-            new RegisterBase(2, "r2", false),
-            new RegisterBase(3, "r3", false),
-            new RegisterBase(4, "r4", false),
-            new RegisterBase(5, "r5", false),
-            new RegisterBase(6, "r6", false),
-            new RegisterBase(7, "r7", false),
+            new RegisterBase(0, "rax", false),
+            new RegisterBase(1, "rbx", false),
+            new RegisterBase(2, "rcx", false),
+            new RegisterBase(3, "rdx", false),
+            new RegisterBase(4, "rsi", false),
+            new RegisterBase(5, "rdi", false),
+            new RegisterBase(6, "rbp", false),
+            new RegisterBase(7, "rsp", false),
             new RegisterBase(8, "r8", false),
             new RegisterBase(9, "r9", false),
             new RegisterBase(10, "r10", false),
-            new RegisterBase(11, "sp", true),
-            new RegisterBase(12, "fp", true),
-            new RegisterBase(13, "lr", true),
+            new RegisterBase(11, "r11", true),
+            new RegisterBase(12, "r12", true),
+            new RegisterBase(13, "r13", true),
+            new RegisterBase(14, "r14", true),
+            new RegisterBase(15, "r15", true),
         ];
 
-    public RegisterBase StackPointerRegister => new RegisterBase(11, "sp", true);
+    public RegisterBase StackPointerRegister => new RegisterBase(7, "rsp", true);
 
-    public RegisterBase FramePointerRegister => new RegisterBase(12, "fp", true);
+    public RegisterBase FramePointerRegister => new RegisterBase(6, "rbp", true);
 
-    public RegisterBase LinkRegister => new RegisterBase(13, "lr", true);
+    public RegisterBase LinkRegister => throw new Exception("Tried to use link register in X86");
 
     public RegisterBase[] ArgumentRegisters => [
-        new RegisterBase(0, "r0", false),
-        new RegisterBase(1, "r1", false),
-        new RegisterBase(2, "r2", false),
-        new RegisterBase(3, "r3", false),
+        new RegisterBase(5, "rdi", false),
+        new RegisterBase(4, "rsi", false),
+        new RegisterBase(3, "rdx", false),
+        new RegisterBase(2, "rcx", false),
+        new RegisterBase(8, "r8", false),
+        new RegisterBase(9, "r9", false),
     ];
 
-    public RegisterBase ReturnRegister => new RegisterBase(0, "r0", false);
+    public RegisterBase ReturnRegister => new RegisterBase(0, "rax", false);
 
     public RegisterBase[] CallerSavedRegisters => [
-            new RegisterBase(0, "r0", false),
-            new RegisterBase(1, "r1", false),
-            new RegisterBase(2, "r2", false),
-            new RegisterBase(3, "r3", false),
-            new RegisterBase(4, "r4", false),
-            new RegisterBase(5, "r5", false),
-            new RegisterBase(6, "r6", false),
-            new RegisterBase(7, "r7", false),
+            new RegisterBase(0, "rax", false),
+            new RegisterBase(1, "rbx", false),
+            new RegisterBase(2, "rcx", false),
+            new RegisterBase(3, "rdx", false),
+            new RegisterBase(4, "rsi", false),
+            new RegisterBase(5, "rdi", false),
+            new RegisterBase(6, "rbp", false),
+            new RegisterBase(7, "rsp", false),
             new RegisterBase(8, "r8", false),
             new RegisterBase(9, "r9", false),
             new RegisterBase(10, "r10", false),
+            new RegisterBase(11, "r11", true),
+            new RegisterBase(12, "r12", true),
+            new RegisterBase(13, "r13", true),
+            new RegisterBase(14, "r14", true),
+            new RegisterBase(15, "r15", true),
         ];
 
     public RegisterBase[] CalleeSavedRegisters => [];
