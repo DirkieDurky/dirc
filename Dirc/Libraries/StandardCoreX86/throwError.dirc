@@ -1,5 +1,0 @@
-void throwError(char* message)
-{
-    print(message);
-    halt2();
-}

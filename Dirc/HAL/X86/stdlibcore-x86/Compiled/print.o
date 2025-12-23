@@ -1,0 +1,14 @@
+print:
+push %rbp
+movq %rsp, %rbp
+push %rdi
+movq $1, %rdi
+movq %rbp, %rax
+movq %rax, %rbx
+movq %rbx, %rsi
+movq $20, %rdx
+call @write
+pop %rdi
+movq %rbp, %rsp
+pop %rbp
+ret

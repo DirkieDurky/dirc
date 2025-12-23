@@ -1,0 +1,284 @@
+positiveIntToString:
+push %rbp
+movq %rsp, %rbp
+subq $4, %rsp
+cmpq $0, %rdi
+jge _intToString_if0
+movq %rbp, %rax
+push %rax
+push %rdi
+movq $2, %rdi
+call @malloc
+movq %rax, %rbx
+pop %rdi
+pop %rax
+movq %rbx, %rax
+movq %rbp, %rax
+movq %rax, %rbx
+movq %rbx, %rcx
+movq $48, %rcx
+movq %rbp, %rax
+movq %rax, %rbx
+leaq 1(%rbx), %rcx
+movq $0, %rcx
+movq %rbp, %rax
+movq %rax, %rbx
+movq %rbx, %rax
+movq %rbp, %rsp
+pop %rbp
+ret
+_intToString_if0:
+movq %rbp, %rax
+push %rax
+push %rdi
+movq %rbp, %rbx
+subq $5, %rbx
+movq %rbx, %rcx
+movq %rcx, %rdi
+call getDigitCountInInt
+movq %rax, %rbx
+pop %rdi
+pop %rax
+movq %rbx, %rax
+movq %rbp, %rax
+subq $1, %rax
+push %rax
+push %rdi
+movq %rbp, %rbx
+movq %rbx, %rcx
+leaq 1(%rcx), %rbx
+movq %rbx, %rdi
+call @malloc
+movq %rax, %rbx
+pop %rdi
+pop %rax
+movq %rbx, %rax
+movq %rbp, %rax
+subq $2, %rax
+movq %rbp, %rbx
+movq %rbx, %rcx
+movq %rcx, %rbx
+subq $1, %rbx
+movq %rbx, %rax
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rbx
+movq %rbp, %rax
+movq %rax, %rcx
+leaq (%rbx, %rcx), %rdx
+movq $0, %rdx
+_intToString_while0:
+cmpq $0, %rdi
+jl _intToString_whileEnd0
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rbx
+movq %rbp, %rax
+subq $2, %rax
+movq %rax, %rcx
+leaq (%rbx, %rcx), %rdx
+push %rax
+push %rdx
+%rdi, %rax
+idivq $10
+movq %rdx, %rbx
+pop %rdx
+pop %rax
+leaq 48(%rbx), %rcx
+movq %rcx, %rdx
+push %rax
+push %rdx
+%rdi, %rax
+idivq $10
+movq %rax, %rax
+pop %rdx
+pop %rax
+movq %rax, %rdi
+movq %rbp, %rax
+subq $2, %rax
+movq %rbp, %rbx
+subq $2, %rbx
+movq %rbx, %rcx
+movq %rcx, %rbx
+subq $1, %rbx
+movq %rbx, %rax
+jmp _intToString_while0
+_intToString_whileEnd0:
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rbx
+movq %rbx, %rax
+movq %rbp, %rsp
+pop %rbp
+ret
+movq %rbp, %rsp
+pop %rbp
+ret
+
+intToString:
+push %rbp
+movq %rsp, %rbp
+subq $4, %rsp
+cmpq $0, %rdi
+jg _intToString_else0
+movq %rbp, %rax
+push %rax
+push %rdi
+push %rax
+push %rdi
+movq %rbp, %rbx
+subq $5, %rbx
+movq %rbx, %rcx
+movq %rcx, %rdi
+call @abs
+movq %rax, %rbx
+pop %rdi
+pop %rax
+movq %rbx, %rdi
+call positiveIntToString
+movq %rax, %rbx
+pop %rdi
+pop %rax
+movq %rbx, %rax
+movq %rbp, %rax
+subq $1, %rax
+push %rax
+push %rdi
+movq %rbp, %rbx
+subq $3, %rbx
+movq %rbx, %rcx
+movq $45, %rcx
+leaq 1(%rbx), %rcx
+movq $0, %rcx
+movq %rbx, %rdi
+movq %rbp, %rcx
+movq %rcx, %rdx
+movq %rdx, %rsi
+call @concat
+movq %rax, %rbx
+pop %rdi
+pop %rax
+movq %rbx, %rax
+push %rdi
+movq %rbp, %rax
+movq %rax, %rbx
+movq %rbx, %rdi
+call @free
+pop %rdi
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rbx
+movq %rbx, %rax
+movq %rbp, %rsp
+pop %rbp
+ret
+jmp _intToString_ifElseEnd0
+_intToString_else0:
+push %rdi
+movq %rbp, %rax
+subq $4, %rax
+movq %rax, %rbx
+movq %rbx, %rdi
+call positiveIntToString
+pop %rdi
+movq %rbp, %rsp
+pop %rbp
+ret
+_intToString_ifElseEnd0:
+movq %rbp, %rsp
+pop %rbp
+ret
+
+getDigitCountInInt:
+push %rbp
+movq %rsp, %rbp
+subq $1, %rsp
+movq %rbp, %rax
+movq $1, %rax
+cmpq $64, $64
+jne _intToString_if1
+cmpq $10000000000000000, %rdi
+jne _intToString_if2
+movq %rbp, %rax
+movq %rbp, %rbx
+movq %rbx, %rcx
+leaq 16(%rcx), %rbx
+movq %rbx, %rax
+push %rax
+push %rdx
+%rdi, %rax
+idivq $10000000000000000
+movq %rax, %rax
+pop %rdx
+pop %rax
+movq %rax, %rdi
+_intToString_if2:
+_intToString_if1:
+cmpq $32, $64
+jne _intToString_if3
+cmpq $100000000, %rdi
+jne _intToString_if4
+movq %rbp, %rax
+movq %rbp, %rbx
+movq %rbx, %rcx
+leaq 8(%rcx), %rbx
+movq %rbx, %rax
+push %rax
+push %rdx
+%rdi, %rax
+idivq $100000000
+movq %rax, %rax
+pop %rdx
+pop %rax
+movq %rax, %rdi
+_intToString_if4:
+_intToString_if3:
+cmpq $10000, %rdi
+jne _intToString_if5
+movq %rbp, %rax
+movq %rbp, %rbx
+movq %rbx, %rcx
+leaq 4(%rcx), %rbx
+movq %rbx, %rax
+push %rax
+push %rdx
+%rdi, %rax
+idivq $10000
+movq %rax, %rax
+pop %rdx
+pop %rax
+movq %rax, %rdi
+_intToString_if5:
+cmpq $100, %rdi
+jne _intToString_if6
+movq %rbp, %rax
+movq %rbp, %rbx
+movq %rbx, %rcx
+leaq 2(%rcx), %rbx
+movq %rbx, %rax
+push %rax
+push %rdx
+%rdi, %rax
+idivq $100
+movq %rax, %rax
+pop %rdx
+pop %rax
+movq %rax, %rdi
+_intToString_if6:
+cmpq $10, %rdi
+jne _intToString_if7
+movq %rbp, %rax
+movq %rbp, %rbx
+movq %rbx, %rcx
+leaq 1(%rcx), %rbx
+movq %rbx, %rax
+_intToString_if7:
+movq %rbp, %rax
+movq %rax, %rbx
+movq %rbx, %rax
+movq %rbp, %rsp
+pop %rbp
+ret
+movq %rbp, %rsp
+pop %rbp
+ret

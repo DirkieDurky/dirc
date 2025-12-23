@@ -1,0 +1,219 @@
+swap:
+push %rbp
+movq %rsp, %rbp
+subq $1, %rsp
+movq %rbp, %rax
+leaq (%rdi, %rsi), %rcx
+movq %rcx, %rbx
+movq %rbx, %rax
+leaq (%rdi, %rsi), %rbx
+leaq (%rdi, %rdx), %rbp
+movq %rbp, %rcx
+movq %rcx, %rbx
+leaq (%rdi, %rdx), %rbx
+movq %rbp, %rcx
+movq %rcx, %rbp
+movq %rbp, %rbx
+movq %rbp, %rsp
+pop %rbp
+ret
+
+partition:
+push %rbp
+movq %rsp, %rbp
+subq $3, %rsp
+movq %rbp, %rax
+leaq (%rdi, %rdx), %rcx
+movq %rcx, %rbx
+movq %rbx, %rax
+movq %rbp, %rax
+subq $1, %rax
+movq %rsi, %rbx
+subq $1, %rbx
+movq %rbx, %rax
+movq %rbp, %rax
+subq $2, %rax
+movq %rsi, %rax
+_sortArray_while0:
+movq %rbp, %rax
+subq $2, %rax
+movq %rax, %rbx
+movq %rdx, %rax
+subq $1, %rax
+cmpq %rax, %rbx
+jle _sortArray_whileEnd0
+movq %rbp, %rax
+subq $2, %rax
+movq %rax, %rbx
+leaq (%rdi, %rbx), %rcx
+movq %rcx, %rax
+movq %rbp, %rbx
+movq %rbx, %rcx
+cmpq %rcx, %rax
+jle _sortArray_if0
+movq %rbp, %rax
+subq $1, %rax
+movq %rbp, %rbx
+subq $1, %rbx
+movq %rbx, %rcx
+leaq 1(%rcx), %rbx
+movq %rbx, %rax
+push %rdx
+push %rsi
+push %rdi
+movq %rbp, %rax
+subq $5, %rax
+movq %rax, %rbx
+movq %rbx, %rdi
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rcx
+movq %rcx, %rsi
+movq %rbp, %rax
+subq $2, %rax
+movq %rax, %rbp
+movq %rbp, %rdx
+call swap
+pop %rdi
+pop %rsi
+pop %rdx
+_sortArray_if0:
+_sortArray_while1:
+movq %rbp, %rax
+subq $2, %rax
+movq %rbp, %rbx
+subq $2, %rbx
+movq %rbx, %rcx
+leaq 1(%rcx), %rbx
+movq %rbx, %rax
+jmp _sortArray_while0
+_sortArray_whileEnd0:
+push %rdx
+push %rsi
+push %rdi
+movq %rbp, %rax
+subq $5, %rax
+movq %rax, %rbx
+movq %rbx, %rdi
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rcx
+leaq 1(%rcx), %rax
+movq %rax, %rsi
+movq %rbp, %rcx
+subq $3, %rcx
+movq %rcx, %rbp
+movq %rbp, %rdx
+call swap
+pop %rdi
+pop %rsi
+pop %rdx
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rbx
+leaq 1(%rbx), %rax
+movq %rbp, %rsp
+pop %rbp
+ret
+movq %rbp, %rsp
+pop %rbp
+ret
+
+quicksortRec:
+push %rbp
+movq %rsp, %rbp
+subq $1, %rsp
+cmpq %rdx, %rsi
+jg _sortArray_if1
+movq %rbp, %rax
+push %rax
+push %rdx
+push %rsi
+push %rdi
+movq %rbp, %rbx
+subq $4, %rbx
+movq %rbx, %rcx
+movq %rcx, %rdi
+movq %rbp, %rbx
+subq $3, %rbx
+movq %rbx, %rbp
+movq %rbp, %rsi
+movq %rbp, %rbx
+subq $2, %rbx
+movq %rbx, %rsp
+movq %rsp, %rdx
+call partition
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rdx
+pop %rax
+movq %rbx, %rax
+push %rdx
+push %rsi
+push %rdi
+movq %rbp, %rax
+subq $3, %rax
+movq %rax, %rbx
+movq %rbx, %rdi
+movq %rbp, %rax
+subq $2, %rax
+movq %rax, %rcx
+movq %rcx, %rsi
+movq %rbp, %rax
+movq %rax, %rbp
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rdx
+call quicksortRec
+pop %rdi
+pop %rsi
+pop %rdx
+push %rdx
+push %rsi
+push %rdi
+movq %rbp, %rax
+subq $3, %rax
+movq %rax, %rbx
+movq %rbx, %rdi
+movq %rbp, %rax
+movq %rax, %rcx
+leaq 1(%rcx), %rax
+movq %rax, %rsi
+movq %rbp, %rcx
+subq $1, %rcx
+movq %rcx, %rbp
+movq %rbp, %rdx
+call quicksortRec
+pop %rdi
+pop %rsi
+pop %rdx
+_sortArray_if1:
+movq %rbp, %rsp
+pop %rbp
+ret
+
+sortArray:
+push %rbp
+movq %rsp, %rbp
+cmpq $1, %rsi
+jle _sortArray_if2
+_sortArray_if2:
+push %rsi
+push %rdi
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rbx
+movq %rbx, %rdi
+movq $0, %rsi
+movq %rbp, %rax
+movq %rax, %rcx
+movq %rcx, %rax
+subq $1, %rax
+movq %rax, %rdx
+call quicksortRec
+pop %rdi
+pop %rsi
+movq %rbp, %rsp
+pop %rbp
+ret

@@ -1,0 +1,48 @@
+arraysMatch:
+push %rbp
+movq %rsp, %rbp
+subq $1, %rsp
+cmpq %rcx, %rsi
+je _arraysMatch_if0
+movq $0, %rax
+movq %rbp, %rsp
+pop %rbp
+ret
+_arraysMatch_if0:
+movq %rbp, %rax
+movq $0, %rax
+_arraysMatch_while0:
+movq %rbp, %rax
+movq %rax, %rbx
+cmpq %rsi, %rbx
+jg _arraysMatch_whileEnd0
+movq %rbp, %rax
+movq %rax, %rbx
+leaq (%rdi, %rbx), %rbp
+movq %rbp, %rax
+movq %rbp, %rbx
+movq %rbx, %rbp
+leaq (%rdx, %rbp), %rsp
+movq %rsp, %rbx
+cmpq %rbx, %rax
+je _arraysMatch_if1
+movq $0, %rax
+movq %rbp, %rsp
+pop %rbp
+ret
+_arraysMatch_if1:
+_arraysMatch_while1:
+movq %rbp, %rax
+movq %rbp, %rbx
+movq %rbx, %rbp
+leaq 1(%rbp), %rbx
+movq %rbx, %rax
+jmp _arraysMatch_while0
+_arraysMatch_whileEnd0:
+movq $1, %rax
+movq %rbp, %rsp
+pop %rbp
+ret
+movq %rbp, %rsp
+pop %rbp
+ret

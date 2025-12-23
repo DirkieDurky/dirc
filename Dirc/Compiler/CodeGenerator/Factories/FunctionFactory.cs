@@ -20,7 +20,7 @@ class FunctionFactory
         CodeGenContext scopeSpecificContext = (CodeGenContext)context.GetSubcontext();
 
         _codeGenBase.EmitLabel(node.Name);
-        _codeGenBase.EmitPush(new ReadonlyRegister(context.LR));
+        if (context.LR is not null) _codeGenBase.EmitPush(new ReadonlyRegister(context.LR));
         _codeGenBase.EmitPush(new ReadonlyRegister(context.FP));
         _codeGenBase.EmitMov(new ReadonlyRegister(context.SP), context.Allocator.Use(context.FP));
         scopeSpecificContext.StackframeSize = CalculateStackframeSize(node.Body);
@@ -69,7 +69,7 @@ class FunctionFactory
         _codeGenBase.EmitMov(new ReadonlyRegister(context.FP), context.Allocator.Use(context.SP));
         // Restore fp and lr
         _codeGenBase.EmitPop(context.Allocator.Use(context.FP));
-        _codeGenBase.EmitPop(context.Allocator.Use(context.LR));
+        if (context.LR is not null) _codeGenBase.EmitPop(context.Allocator.Use(context.LR));
     }
 
     public void AllocateStackframe(CodeGenContext context)

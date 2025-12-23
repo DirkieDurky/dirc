@@ -188,7 +188,7 @@ class CodeGenContext : ICloneable
 
     public RegisterBase SP => Options.TargetArchitecture.StackPointerRegister;
     public RegisterBase FP => Options.TargetArchitecture.FramePointerRegister;
-    public RegisterBase LR => Options.TargetArchitecture.LinkRegister;
+    public RegisterBase? LR => Options.TargetArchitecture.LinkRegister;
     public RegisterBase ReturnRegister => Options.TargetArchitecture.ReturnRegister;
     public IEnumerable<RegisterBase> ArgumentRegisters => Options.TargetArchitecture.ArgumentRegisters;
 }

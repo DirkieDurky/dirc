@@ -1,0 +1,68 @@
+boolToString:
+push %rbp
+movq %rsp, %rbp
+subq $13, %rsp
+cmpq $0, %rdi
+je _boolToString_else0
+movq %rbp, %rax
+push %rax
+push %rdi
+movq $5, %rdi
+call @malloc
+movq %rax, %rbx
+pop %rdi
+pop %rax
+movq %rbx, %rax
+movq %rbp, %rax
+movq %rax, %rbx
+movq %rbx, %rax
+movq $116, %rax
+leaq 1(%rbx), %rax
+movq $114, %rax
+leaq 2(%rbx), %rax
+movq $117, %rax
+leaq 3(%rbx), %rax
+movq $101, %rax
+leaq 4(%rbx), %rax
+movq $0, %rax
+movq %rbp, %rax
+movq %rax, %rbx
+movq %rbx, %rax
+movq %rbp, %rsp
+pop %rbp
+ret
+jmp _boolToString_ifElseEnd0
+_boolToString_else0:
+movq %rbp, %rax
+push %rax
+push %rdi
+movq $6, %rdi
+call @malloc
+movq %rax, %rbx
+pop %rdi
+pop %rax
+movq %rbx, %rax
+movq %rbp, %rax
+movq %rax, %rbx
+movq %rbx, %rax
+movq $102, %rax
+leaq 1(%rbx), %rax
+movq $97, %rax
+leaq 2(%rbx), %rax
+movq $108, %rax
+leaq 3(%rbx), %rax
+movq $115, %rax
+leaq 4(%rbx), %rax
+movq $101, %rax
+leaq 5(%rbx), %rax
+movq $0, %rax
+movq %rbp, %rax
+movq %rax, %rbx
+movq %rbx, %rax
+movq %rbp, %rsp
+pop %rbp
+ret
+_boolToString_ifElseEnd0:
+movq %rbp, %rsp
+pop %rbp
+ret

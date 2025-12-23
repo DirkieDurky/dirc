@@ -1,0 +1,12 @@
+println:
+push %rbp
+movq %rsp, %rbp
+push %rdi
+movq %rbp, %rax
+movq %rax, %rbx
+movq %rbx, %rdi
+call @print
+pop %rdi
+movq %rbp, %rsp
+pop %rbp
+ret

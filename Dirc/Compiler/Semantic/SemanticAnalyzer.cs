@@ -103,7 +103,7 @@ public class SemanticAnalyzer
         }
 
         // StandardCore library
-        string stdCoreLibMetaPath = Path.Combine(AppContext.BaseDirectory, "lib", _options.TargetArchitecture.StandardCoreLibraryName, _options.TargetArchitecture.StandardCoreLibraryName + ".meta");
+        string stdCoreLibMetaPath = Path.Combine(AppContext.BaseDirectory, "lib", _options.TargetArchitecture.StdlibcoreName, _options.TargetArchitecture.StdlibcoreName + ".meta");
         MetaFile.Root stdCoreMetaFile = JsonSerializer.Deserialize<MetaFile.Root>(File.ReadAllText(stdCoreLibMetaPath)) ?? throw new Exception("Standard Library could not be read");
         foreach (MetaFile.Function stdCoreFunc in stdCoreMetaFile.Functions)
         {
@@ -116,7 +116,7 @@ public class SemanticAnalyzer
         }
 
         // Standard library
-        string stdLibMetaPath = Path.Combine(AppContext.BaseDirectory, "lib", "stdlib", "stdlib.meta");
+        string stdLibMetaPath = Path.Combine(AppContext.BaseDirectory, "lib", _options.TargetArchitecture.StdlibName, _options.TargetArchitecture.StdlibName + ".meta");
         MetaFile.Root stdMetaFile = JsonSerializer.Deserialize<MetaFile.Root>(File.ReadAllText(stdLibMetaPath)) ?? throw new Exception("Standard Library could not be read");
         foreach (MetaFile.Function stdFunc in stdMetaFile.Functions)
         {

@@ -1,0 +1,234 @@
+removeAt:
+push %rbp
+movq %rsp, %rbp
+subq $1, %rsp
+movq %rbp, %rax
+leaq 1(%rdx), %rbx
+movq %rbx, %rax
+_removeFromArray_while0:
+movq %rbp, %rax
+movq %rax, %rbx
+cmpq %rsi, %rbx
+jg _removeFromArray_whileEnd0
+movq %rbp, %rax
+movq %rax, %rbx
+movq %rbx, %rax
+subq $1, %rax
+leaq (%rdi, %rax), %rcx
+movq %rbp, %rax
+movq %rax, %rbp
+leaq (%rdi, %rbp), %rsp
+movq %rsp, %rax
+movq %rax, %rcx
+_removeFromArray_while1:
+movq %rbp, %rax
+movq %rbp, %rbx
+movq %rbx, %rcx
+leaq 1(%rcx), %rbx
+movq %rbx, %rax
+jmp _removeFromArray_while0
+_removeFromArray_whileEnd0:
+push %rdx
+push %rsi
+push %rdi
+movq %rbp, %rax
+subq $3, %rax
+movq %rax, %rbx
+movq %rbx, %rdi
+movq %rbp, %rax
+subq $2, %rax
+movq %rax, %rcx
+movq %rcx, %rax
+subq $1, %rax
+movq %rax, %rsi
+call @realloc
+pop %rdi
+pop %rsi
+pop %rdx
+movq %rbp, %rsp
+pop %rbp
+ret
+movq %rbp, %rsp
+pop %rbp
+ret
+
+removeFirst:
+push %rbp
+movq %rsp, %rbp
+subq $1, %rsp
+movq %rbp, %rax
+push %rax
+push %rdx
+push %rsi
+push %rdi
+movq %rbp, %rbx
+subq $4, %rbx
+movq %rbx, %rcx
+movq %rcx, %rdi
+movq %rbp, %rbx
+subq $3, %rbx
+movq %rbx, %rbp
+movq %rbp, %rsi
+movq %rbp, %rbx
+subq $2, %rbx
+movq %rbx, %rsp
+movq %rsp, %rdx
+movq $0, %rcx
+call @findFirst
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rdx
+pop %rax
+movq %rbx, %rax
+push %rdx
+push %rsi
+push %rdi
+movq %rbp, %rax
+subq $3, %rax
+movq %rax, %rbx
+movq %rbx, %rdi
+movq %rbp, %rax
+subq $2, %rax
+movq %rax, %rcx
+movq %rcx, %rsi
+movq %rbp, %rax
+movq %rax, %rbp
+movq %rbp, %rdx
+call removeAt
+pop %rdi
+pop %rsi
+pop %rdx
+movq %rbp, %rsp
+pop %rbp
+ret
+movq %rbp, %rsp
+pop %rbp
+ret
+
+removeAll:
+push %rbp
+movq %rsp, %rbp
+subq $3, %rsp
+movq %rbp, %rax
+push %rax
+push %rdx
+push %rsi
+push %rdi
+movq %rbp, %rbx
+subq $6, %rbx
+movq %rbx, %rcx
+movq %rcx, %rdi
+movq %rbp, %rbx
+subq $5, %rbx
+movq %rbx, %rbp
+movq %rbp, %rsi
+movq %rbp, %rbx
+subq $4, %rbx
+movq %rbx, %rsp
+movq %rsp, %rdx
+call @findAll
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rdx
+pop %rax
+movq %rbx, %rax
+movq %rbp, %rax
+subq $1, %rax
+movq %rdi, %rax
+movq %rbp, %rax
+subq $2, %rax
+push %rax
+push %rdx
+push %rsi
+push %rdi
+movq %rbp, %rbx
+movq %rbx, %rcx
+movq %rcx, %rdi
+call @getSize
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rdx
+pop %rax
+movq %rbx, %rcx
+subq $1, %rcx
+movq %rcx, %rax
+_removeFromArray_while2:
+movq %rbp, %rax
+subq $2, %rax
+movq %rax, %rbx
+cmpq $0, %rbx
+jne _removeFromArray_whileEnd1
+movq %rbp, %rax
+subq $1, %rax
+push %rax
+push %rdx
+push %rsi
+push %rdi
+movq %rbp, %rbx
+subq $1, %rbx
+movq %rbx, %rcx
+movq %rcx, %rdi
+push %rax
+push %rcx
+push %rdx
+push %rsi
+push %rdi
+movq %rbp, %rbx
+subq $1, %rbx
+movq %rbx, %rbp
+movq %rbp, %rdi
+call @getSize
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rdx
+pop %rcx
+pop %rax
+movq %rbx, %rsi
+movq %rbp, %rsp
+subq $2, %rbp
+movq %rbp, %r8
+leaq (%rsp, %r8), %r9
+movq %r9, %rbp
+movq %rbp, %rdx
+call removeAt
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rdx
+pop %rax
+movq %rbx, %rax
+_removeFromArray_while3:
+movq %rbp, %rax
+subq $2, %rax
+movq %rbp, %rbx
+subq $2, %rbx
+movq %rbx, %rcx
+movq %rcx, %rbx
+subq $1, %rbx
+movq %rbx, %rax
+jmp _removeFromArray_while2
+_removeFromArray_whileEnd1:
+push %rdx
+push %rsi
+push %rdi
+movq %rbp, %rax
+movq %rax, %rbx
+movq %rbx, %rdi
+call @free
+pop %rdi
+pop %rsi
+pop %rdx
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rbx
+movq %rbx, %rax
+movq %rbp, %rsp
+pop %rbp
+ret
+movq %rbp, %rsp
+pop %rbp
+ret

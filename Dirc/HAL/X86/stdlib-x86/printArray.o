@@ -1,0 +1,201 @@
+printArray:
+push %rbp
+movq %rsp, %rbp
+subq $12, %rsp
+movq %rbp, %rax
+push %rax
+push %rsi
+push %rdi
+movq $2, %rdi
+call @malloc
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rax
+movq %rbx, %rax
+movq %rbp, %rax
+movq %rax, %rbx
+movq %rbx, %rax
+movq $91, %rax
+leaq 1(%rbx), %rax
+movq $0, %rax
+movq %rbp, %rax
+subq $1, %rax
+movq $0, %rax
+_printArray_while0:
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rbx
+cmpq %rsi, %rbx
+jg _printArray_whileEnd0
+movq %rbp, %rax
+subq $2, %rax
+push %rax
+push %rsi
+push %rdi
+movq %rbp, %rbx
+subq $14, %rbx
+movq %rbx, %rcx
+movq %rbp, %rbx
+subq $1, %rbx
+movq %rbx, %rdx
+leaq (%rcx, %rdx), %rbp
+movq %rbp, %rbx
+movq %rbx, %rdi
+call @intToString
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rax
+movq %rbx, %rax
+movq %rbp, %rax
+subq $3, %rax
+push %rax
+push %rsi
+push %rdi
+movq %rbp, %rbx
+movq %rbx, %rcx
+movq %rcx, %rdi
+movq %rbp, %rbx
+subq $2, %rbx
+movq %rbx, %rdx
+movq %rdx, %rsi
+call @concat
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rax
+movq %rbx, %rax
+push %rsi
+push %rdi
+movq %rbp, %rax
+movq %rax, %rbx
+movq %rbx, %rdi
+call @free
+pop %rdi
+pop %rsi
+push %rsi
+push %rdi
+movq %rbp, %rax
+subq $2, %rax
+movq %rax, %rbx
+movq %rbx, %rdi
+call @free
+pop %rdi
+pop %rsi
+movq %rbp, %rax
+movq %rbp, %rbx
+subq $3, %rbx
+movq %rbx, %rcx
+movq %rcx, %rax
+push %rsi
+push %rdi
+movq %rbp, %rax
+subq $3, %rax
+movq %rax, %rbx
+movq %rbx, %rdi
+call @free
+pop %rdi
+pop %rsi
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rbx
+movq %rsi, %rax
+subq $1, %rax
+cmpq %rax, %rbx
+jg _printArray_if0
+movq %rbp, %rax
+subq $4, %rax
+push %rax
+push %rsi
+push %rdi
+movq %rbp, %rbx
+movq %rbx, %rcx
+movq %rcx, %rdi
+movq %rbp, %rbx
+subq $7, %rbx
+movq %rbx, %rdx
+movq $44, %rdx
+leaq 1(%rbx), %rdx
+movq $32, %rdx
+leaq 2(%rbx), %rdx
+movq $0, %rdx
+movq %rbx, %rsi
+call @concat
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rax
+movq %rbx, %rax
+push %rsi
+push %rdi
+movq %rbp, %rax
+movq %rax, %rbx
+movq %rbx, %rdi
+call @free
+pop %rdi
+pop %rsi
+movq %rbp, %rax
+movq %rbp, %rbx
+subq $4, %rbx
+movq %rbx, %rcx
+movq %rcx, %rax
+push %rsi
+push %rdi
+movq %rbp, %rax
+subq $4, %rax
+movq %rax, %rbx
+movq %rbx, %rdi
+call @free
+pop %rdi
+pop %rsi
+_printArray_if0:
+_printArray_while1:
+movq %rbp, %rax
+subq $1, %rax
+movq %rbp, %rbx
+subq $1, %rbx
+movq %rbx, %rcx
+leaq 1(%rcx), %rbx
+movq %rbx, %rax
+jmp _printArray_while0
+_printArray_whileEnd0:
+movq %rbp, %rax
+push %rax
+push %rsi
+push %rdi
+movq %rbp, %rbx
+movq %rbx, %rcx
+movq %rcx, %rdi
+movq %rbp, %rbx
+subq $3, %rbx
+movq %rbx, %rdx
+movq $93, %rdx
+leaq 1(%rbx), %rdx
+movq $0, %rdx
+movq %rbx, %rsi
+call @concat
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rax
+movq %rbx, %rax
+push %rsi
+push %rdi
+movq %rbp, %rax
+movq %rax, %rbx
+movq %rbx, %rdi
+call @println
+pop %rdi
+pop %rsi
+push %rsi
+push %rdi
+movq %rbp, %rax
+movq %rax, %rbx
+movq %rbx, %rdi
+call @free
+pop %rdi
+pop %rsi
+movq %rbp, %rsp
+pop %rbp
+ret

@@ -40,9 +40,10 @@ partial class Linker
 
     public HashSet<string> GetFilesToImport(string assembly, List<string> searchLibs, HashSet<string> libsToImport, Options options)
     {
-        if (!searchLibs.Contains("stdlib")) searchLibs.Insert(0, "stdlib");
-        string stdcoreLibraryName = options.TargetArchitecture.StandardCoreLibraryName;
-        if (!searchLibs.Contains(stdcoreLibraryName)) searchLibs.Insert(0, stdcoreLibraryName);
+        string stdlibName = options.TargetArchitecture.StdlibName;
+        if (!searchLibs.Contains(stdlibName)) searchLibs.Insert(0, stdlibName);
+        string stdlibcoreName = options.TargetArchitecture.StdlibcoreName;
+        if (!searchLibs.Contains(stdlibcoreName)) searchLibs.Insert(0, stdlibcoreName);
 
         List<string> unresolvedSymbols = UnresolvedSymbol().Matches(assembly).Select(x => x.Groups[1].ToString()).ToList();
 

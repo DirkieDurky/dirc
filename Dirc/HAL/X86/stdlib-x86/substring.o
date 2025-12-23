@@ -1,0 +1,85 @@
+substring:
+push %rbp
+movq %rsp, %rbp
+subq $4, %rsp
+movq %rbp, %rax
+movq %rdx, %rbx
+subq %rsi, %rbx
+leaq 1(%rbx), %rcx
+movq %rcx, %rax
+movq %rbp, %rax
+subq $1, %rax
+push %rax
+push %rdx
+push %rsi
+push %rdi
+movq %rbp, %rbx
+movq %rbx, %rcx
+leaq 1(%rcx), %rbx
+movq %rbx, %rdi
+call @malloc
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rdx
+pop %rax
+movq %rbx, %rax
+movq %rbp, %rax
+subq $2, %rax
+movq $0, %rax
+movq %rbp, %rax
+subq $3, %rax
+movq %rsi, %rax
+_substring_while0:
+movq %rbp, %rax
+subq $3, %rax
+movq %rax, %rbx
+cmpq %rdx, %rbx
+jg _substring_whileEnd0
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rbx
+movq %rbp, %rax
+subq $2, %rax
+movq %rax, %rcx
+leaq (%rbx, %rcx), %rbp
+movq %rbp, %rbx
+subq $3, %rbx
+movq %rbx, %rcx
+leaq (%rdi, %rcx), %rsp
+movq %rsp, %rbx
+movq %rbx, %rbp
+movq %rbp, %rax
+subq $2, %rax
+movq %rbp, %rbx
+subq $2, %rbx
+movq %rbx, %rcx
+leaq 1(%rcx), %rbx
+movq %rbx, %rax
+_substring_while1:
+movq %rbp, %rax
+subq $3, %rax
+movq %rbp, %rbx
+subq $3, %rbx
+movq %rbx, %rcx
+leaq 1(%rcx), %rbx
+movq %rbx, %rax
+jmp _substring_while0
+_substring_whileEnd0:
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rbx
+movq %rbp, %rax
+movq %rax, %rcx
+leaq (%rbx, %rcx), %rbp
+movq $0, %rbp
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rbx
+movq %rbx, %rax
+movq %rbp, %rsp
+pop %rbp
+ret
+movq %rbp, %rsp
+pop %rbp
+ret

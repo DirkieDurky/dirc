@@ -1,0 +1,126 @@
+stringToInt:
+push %rbp
+movq %rsp, %rbp
+subq $6, %rsp
+movq %rbp, %rax
+movq $0, %rax
+movq %rbp, %rax
+subq $1, %rax
+push %rax
+push %rdi
+movq %rbp, %rbx
+subq $7, %rbx
+movq %rbx, %rcx
+movq %rcx, %rdi
+call @strlen
+movq %rax, %rbx
+pop %rdi
+pop %rax
+movq %rbx, %rax
+movq %rbp, %rax
+subq $3, %rax
+movq $0, %rax
+movq %rbp, %rax
+subq $4, %rax
+movq %rbp, %rbx
+subq $1, %rbx
+movq %rbx, %rcx
+movq %rcx, %rax
+_stringToInt_while0:
+movq %rbp, %rax
+subq $4, %rax
+movq %rax, %rbx
+cmpq $0, %rbx
+jne _stringToInt_whileEnd0
+movq %rbp, %rax
+subq $2, %rax
+movq %rbp, %rbx
+subq $4, %rbx
+movq %rbx, %rcx
+leaq (%rdi, %rcx), %rdx
+movq %rdx, %rbx
+movq %rbx, %rax
+movq %rbp, %rax
+subq $2, %rax
+movq %rax, %rbx
+cmpq $48, %rbx
+jne _stringToInt_condition0
+movq $1, %rax
+jmp _stringToInt_conditionEnd0
+_stringToInt_condition0:
+movq $0, %rax
+_stringToInt_conditionEnd0:
+movq %rbp, %rbx
+subq $2, %rbx
+movq %rbx, %rcx
+cmpq $57, %rcx
+jle _stringToInt_condition1
+movq $1, %rbx
+jmp _stringToInt_conditionEnd1
+_stringToInt_condition1:
+movq $0, %rbx
+_stringToInt_conditionEnd1:
+movq %rax, %rcx
+andq %rbx, %rcx
+cmpq $0, %rcx
+je _stringToInt_if0
+movq %rbp, %rax
+subq $5, %rax
+movq %rbp, %rbx
+subq $2, %rbx
+movq %rbx, %rcx
+movq %rcx, %rbx
+subq $48, %rbx
+movq %rbx, %rax
+movq %rbp, %rax
+movq %rbp, %rbx
+movq %rbx, %rcx
+movq %rbp, %rbx
+subq $5, %rbx
+movq %rbx, %rdx
+push %rax
+push %rcx
+push %rdx
+push %rdi
+movq $10, %rdi
+movq %rbp, %rbx
+subq $3, %rbx
+movq %rbx, %rsi
+call @power
+movq %rax, %rbx
+pop %rdi
+pop %rdx
+pop %rcx
+pop %rax
+movq %rdx, %rsi
+imulq %rbx, %rsi
+leaq (%rcx, %rsi), %rbx
+movq %rbx, %rax
+movq %rbp, %rax
+subq $3, %rax
+movq %rbp, %rbx
+subq $3, %rbx
+movq %rbx, %rcx
+leaq 1(%rcx), %rbx
+movq %rbx, %rax
+_stringToInt_if0:
+_stringToInt_while1:
+movq %rbp, %rax
+subq $4, %rax
+movq %rbp, %rbx
+subq $4, %rbx
+movq %rbx, %rcx
+movq %rcx, %rbx
+subq $1, %rbx
+movq %rbx, %rax
+jmp _stringToInt_while0
+_stringToInt_whileEnd0:
+movq %rbp, %rax
+movq %rax, %rbx
+movq %rbx, %rax
+movq %rbp, %rsp
+pop %rbp
+ret
+movq %rbp, %rsp
+pop %rbp
+ret

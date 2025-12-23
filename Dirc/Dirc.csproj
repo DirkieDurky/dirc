@@ -8,32 +8,38 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="Libraries/RuntimeDiric/**/*" CopyToOutputDirectory="Always">
+    <None Include="HAL/Diric/runtime-diric/**/*" CopyToOutputDirectory="Always">
       <Link>lib/runtime-diric/%(RecursiveDir)%(Filename)%(Extension)</Link>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Libraries/RuntimeX86/**/*" CopyToOutputDirectory="Always">
+    <None Include="HAL/X86/runtime-x86/**/*" CopyToOutputDirectory="Always">
       <Link>lib/runtime-x86/%(RecursiveDir)%(Filename)%(Extension)</Link>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Libraries/StandardCoreDiric/Compiled/**/*" CopyToOutputDirectory="Always">
+    <None Include="HAL/Diric/stdlibcore-diric/Compiled/**/*" CopyToOutputDirectory="Always">
       <Link>lib/stdlibcore-diric/%(RecursiveDir)%(Filename)%(Extension)</Link>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Libraries/StandardCoreX86/Compiled/**/*" CopyToOutputDirectory="Always">
+    <None Include="HAL/X86/stdlibcore-x86/Compiled/**/*" CopyToOutputDirectory="Always">
       <Link>lib/stdlibcore-x86/%(RecursiveDir)%(Filename)%(Extension)</Link>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Libraries/Standard/Compiled/**/*" CopyToOutputDirectory="Always">
-      <Link>lib/stdlib/%(RecursiveDir)%(Filename)%(Extension)</Link>
+    <None Include="HAL/Diric/stdlib-diric/**/*" CopyToOutputDirectory="Always">
+      <Link>lib/stdlib-diric/%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="HAL/X86/stdlib-x86/**/*" CopyToOutputDirectory="Always">
+      <Link>lib/stdlib-x86/%(RecursiveDir)%(Filename)%(Extension)</Link>
     </None>
   </ItemGroup>
 

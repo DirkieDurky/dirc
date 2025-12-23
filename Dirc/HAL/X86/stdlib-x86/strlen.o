@@ -1,0 +1,29 @@
+strlen:
+push %rbp
+movq %rsp, %rbp
+subq $1, %rsp
+movq %rbp, %rax
+movq $0, %rax
+_strlen_while0:
+movq %rbp, %rax
+movq %rax, %rbx
+leaq (%rdi, %rbx), %rcx
+movq %rcx, %rax
+cmpq $0, %rax
+je _strlen_whileEnd0
+movq %rbp, %rax
+movq %rbp, %rbx
+movq %rbx, %rcx
+leaq 1(%rcx), %rbx
+movq %rbx, %rax
+jmp _strlen_while0
+_strlen_whileEnd0:
+movq %rbp, %rax
+movq %rax, %rbx
+movq %rbx, %rax
+movq %rbp, %rsp
+pop %rbp
+ret
+movq %rbp, %rsp
+pop %rbp
+ret

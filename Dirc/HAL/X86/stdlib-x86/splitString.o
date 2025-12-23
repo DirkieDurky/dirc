@@ -1,0 +1,455 @@
+splitStringByChar:
+push %rbp
+movq %rsp, %rbp
+subq $3, %rsp
+movq %rbp, %rax
+push %rax
+push %rsi
+push %rdi
+movq %rbp, %rbx
+subq $5, %rbx
+movq %rbx, %rcx
+movq %rcx, %rdi
+push %rax
+push %rcx
+push %rsi
+push %rdi
+movq %rbp, %rbx
+subq $5, %rbx
+movq %rbx, %rdx
+movq %rdx, %rdi
+call @strlen
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rcx
+pop %rax
+movq %rbx, %rsi
+movq %rbp, %rdx
+subq $4, %rdx
+movq %rdx, %rbp
+movq %rbp, %rdx
+call @findAll
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rax
+movq %rbx, %rax
+movq %rbp, %rax
+subq $1, %rax
+push %rax
+push %rsi
+push %rdi
+push %rax
+push %rsi
+push %rdi
+movq %rbp, %rbx
+movq %rbx, %rcx
+movq %rcx, %rdi
+call @getSize
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rax
+leaq 1(%rbx), %rcx
+movq %rcx, %rdi
+call @malloc
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rax
+movq %rbx, %rax
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rbx
+movq %rbx, %rcx
+push %rax
+push %rcx
+push %rsi
+push %rdi
+movq %rbp, %rbx
+subq $6, %rbx
+movq %rbx, %rdx
+movq %rdx, %rdi
+movq $0, %rsi
+movq %rbp, %rbx
+movq %rbx, %rbp
+movq %rbp, %rsp
+movq %rsp, %rbx
+movq %rbx, %rdx
+call @substring
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rcx
+pop %rax
+movq %rbx, %rcx
+movq %rbp, %rax
+subq $2, %rax
+movq $1, %rax
+_splitString_while0:
+movq %rbp, %rax
+subq $2, %rax
+movq %rax, %rbx
+push %rbx
+push %rsi
+push %rdi
+movq %rbp, %rax
+movq %rax, %rcx
+movq %rcx, %rdi
+call @getSize
+pop %rdi
+pop %rsi
+pop %rbx
+cmpq %rax, %rbx
+jg _splitString_whileEnd0
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rbx
+movq %rbp, %rax
+subq $2, %rax
+movq %rax, %rcx
+leaq (%rbx, %rcx), %rdx
+push %rax
+push %rdx
+push %rsi
+push %rdi
+movq %rbp, %rbx
+subq $6, %rbx
+movq %rbx, %rcx
+movq %rcx, %rdi
+movq %rbp, %rbx
+movq %rbx, %rbp
+movq %rbp, %rbx
+subq $2, %rbx
+movq %rbx, %rsp
+movq %rsp, %rbx
+subq $1, %rbx
+leaq (%rbp, %rbx), %r8
+movq %r8, %rsp
+leaq 1(%rsp), %rbx
+movq %rbx, %rsi
+movq %rbp, %rsp
+subq $2, %rbp
+movq %rbp, %r8
+leaq (%rsp, %r8), %r9
+movq %r9, %rbp
+movq %rbp, %rdx
+call @substring
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rdx
+pop %rax
+movq %rbx, %rdx
+_splitString_while1:
+movq %rbp, %rax
+subq $2, %rax
+movq %rbp, %rbx
+subq $2, %rbx
+movq %rbx, %rcx
+leaq 1(%rcx), %rbx
+movq %rbx, %rax
+jmp _splitString_while0
+_splitString_whileEnd0:
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rbx
+push %rbx
+push %rsi
+push %rdi
+movq %rbp, %rax
+movq %rax, %rcx
+movq %rcx, %rdi
+call @getSize
+pop %rdi
+pop %rsi
+pop %rbx
+leaq (%rbx, %rax), %rdx
+push %rcx
+push %rdx
+push %rsi
+push %rdi
+movq %rbp, %rax
+subq $6, %rax
+movq %rax, %rbx
+movq %rbx, %rdi
+movq %rbp, %rax
+movq %rax, %rbp
+push %rbx
+push %rcx
+push %rdx
+push %rsi
+push %rdi
+push %rbp
+movq %rbp, %rax
+movq %rax, %rsp
+movq %rsp, %rdi
+call @getSize
+pop %rbp
+pop %rdi
+pop %rsi
+pop %rdx
+pop %rcx
+pop %rbx
+movq %rax, %rsp
+subq $1, %rsp
+leaq (%rbp, %rsp), %r8
+movq %r8, %rax
+leaq 1(%rax), %rbp
+movq %rbp, %rsi
+push %rbx
+push %rcx
+push %rdx
+push %rsi
+push %rdi
+push %rbp
+movq %rbp, %rax
+subq $6, %rax
+movq %rax, %rsp
+movq %rsp, %rdi
+call @strlen
+pop %rbp
+pop %rdi
+pop %rsi
+pop %rdx
+pop %rcx
+pop %rbx
+movq %rax, %rdx
+call @substring
+pop %rdi
+pop %rsi
+pop %rdx
+pop %rcx
+movq %rax, %rdx
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rbx
+movq %rbx, %rax
+movq %rbp, %rsp
+pop %rbp
+ret
+movq %rbp, %rsp
+pop %rbp
+ret
+
+splitStringBySubstring:
+push %rbp
+movq %rsp, %rbp
+subq $5, %rsp
+movq %rbp, %rax
+push %rax
+push %rsi
+push %rdi
+movq %rbp, %rbx
+subq $7, %rbx
+movq %rbx, %rcx
+movq %rcx, %rdi
+movq %rbp, %rbx
+subq $6, %rbx
+movq %rbx, %rdx
+movq %rdx, %rsi
+call @findAllNonOverlappingSubstrings
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rax
+movq %rbx, %rax
+movq %rbp, %rax
+subq $1, %rax
+push %rax
+push %rsi
+push %rdi
+movq %rbp, %rbx
+movq %rbx, %rcx
+movq %rcx, %rdi
+call @getSize
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rax
+movq %rbx, %rax
+movq %rbp, %rax
+subq $2, %rax
+push %rax
+push %rsi
+push %rdi
+movq %rbp, %rbx
+subq $6, %rbx
+movq %rbx, %rcx
+movq %rcx, %rdi
+call @strlen
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rax
+movq %rbx, %rax
+movq %rbp, %rax
+subq $3, %rax
+push %rax
+push %rsi
+push %rdi
+movq %rbp, %rbx
+subq $1, %rbx
+movq %rbx, %rcx
+leaq 1(%rcx), %rbx
+movq %rbx, %rdi
+call @malloc
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rax
+movq %rbx, %rax
+movq %rbp, %rax
+subq $3, %rax
+movq %rax, %rbx
+movq %rbx, %rcx
+push %rax
+push %rcx
+push %rsi
+push %rdi
+movq %rbp, %rbx
+subq $8, %rbx
+movq %rbx, %rdx
+movq %rdx, %rdi
+movq $0, %rsi
+movq %rbp, %rbx
+movq %rbx, %rbp
+movq %rbp, %rsp
+movq %rsp, %rbx
+movq %rbx, %rdx
+call @substring
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rcx
+pop %rax
+movq %rbx, %rcx
+movq %rbp, %rax
+subq $4, %rax
+movq $1, %rax
+_splitString_while2:
+movq %rbp, %rax
+subq $4, %rax
+movq %rax, %rbx
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rcx
+cmpq %rcx, %rbx
+jg _splitString_whileEnd1
+movq %rbp, %rax
+subq $3, %rax
+movq %rax, %rbx
+movq %rbp, %rax
+subq $4, %rax
+movq %rax, %rcx
+leaq (%rbx, %rcx), %rdx
+push %rax
+push %rdx
+push %rsi
+push %rdi
+movq %rbp, %rbx
+subq $8, %rbx
+movq %rbx, %rcx
+movq %rcx, %rdi
+movq %rbp, %rbx
+movq %rbx, %rbp
+movq %rbp, %rbx
+subq $4, %rbx
+movq %rbx, %rsp
+movq %rsp, %rbx
+subq $1, %rbx
+leaq (%rbp, %rbx), %r8
+movq %r8, %rsp
+movq %rbp, %rbx
+subq $2, %rbx
+movq %rbx, %rbp
+leaq (%rsp, %rbp), %rbx
+movq %rbx, %rsi
+movq %rbp, %rsp
+subq $4, %rbp
+movq %rbp, %r8
+leaq (%rsp, %r8), %r9
+movq %r9, %rbp
+movq %rbp, %rdx
+call @substring
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rdx
+pop %rax
+movq %rbx, %rdx
+_splitString_while3:
+movq %rbp, %rax
+subq $4, %rax
+movq %rbp, %rbx
+subq $4, %rbx
+movq %rbx, %rcx
+leaq 1(%rcx), %rbx
+movq %rbx, %rax
+jmp _splitString_while2
+_splitString_whileEnd1:
+movq %rbp, %rax
+subq $3, %rax
+movq %rax, %rbx
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rcx
+leaq (%rbx, %rcx), %rdx
+push %rax
+push %rdx
+push %rsi
+push %rdi
+movq %rbp, %rbx
+subq $8, %rbx
+movq %rbx, %rcx
+movq %rcx, %rdi
+movq %rbp, %rbx
+movq %rbx, %rbp
+movq %rbp, %rbx
+subq $1, %rbx
+movq %rbx, %rsp
+movq %rsp, %rbx
+subq $1, %rbx
+leaq (%rbp, %rbx), %r8
+movq %r8, %rsp
+movq %rbp, %rbx
+subq $2, %rbx
+movq %rbx, %rbp
+leaq (%rsp, %rbp), %rbx
+movq %rbx, %rsi
+push %rax
+push %rbx
+push %rcx
+push %rdx
+push %rsi
+push %rdi
+subq $8, %rbp
+movq %rbp, %rsp
+movq %rsp, %rdi
+call @strlen
+movq %rax, %rbp
+pop %rdi
+pop %rsi
+pop %rdx
+pop %rcx
+pop %rbx
+pop %rax
+movq %rbp, %rdx
+call @substring
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rdx
+pop %rax
+movq %rbx, %rdx
+movq %rbp, %rax
+subq $3, %rax
+movq %rax, %rbx
+movq %rbx, %rax
+movq %rbp, %rsp
+pop %rbp
+ret
+movq %rbp, %rsp
+pop %rbp
+ret

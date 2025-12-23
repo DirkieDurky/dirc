@@ -1,0 +1,153 @@
+malloc:
+push %rbp
+movq %rsp, %rbp
+subq $2, %rsp
+movq %rbp, %rax
+movq $1, %rax
+movq %rbp, %rax
+subq $1, %rax
+movq %rbp, %rbx
+movq %rbx, %rcx
+movq %rcx, %rbx
+movq %rbx, %rax
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rbx
+movq %rbx, %rax
+subq $1, %rax
+movq %rdi, %rax
+movq %rbp, %rax
+movq %rax, %rbx
+movq %rbp, %rax
+movq %rax, %rcx
+movq %rcx, %rax
+leaq 1(%rdi), %rcx
+leaq (%rax, %rcx), %rdx
+movq %rdx, %rbx
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rbx
+movq %rbx, %rax
+movq %rbp, %rsp
+pop %rbp
+ret
+movq %rbp, %rsp
+pop %rbp
+ret
+
+free:
+push %rbp
+movq %rsp, %rbp
+movq %rbp, %rsp
+pop %rbp
+ret
+
+getSize:
+push %rbp
+movq %rsp, %rbp
+movq %rdi, %rax
+subq $1, %rax
+movq %rax, %rbx
+movq %rbx, %rax
+movq %rbp, %rsp
+pop %rbp
+ret
+movq %rbp, %rsp
+pop %rbp
+ret
+
+realloc:
+push %rbp
+movq %rsp, %rbp
+subq $2, %rsp
+push %rsi
+push %rdi
+movq %rbp, %rax
+subq $3, %rax
+movq %rax, %rbx
+movq %rbx, %rdi
+call free
+pop %rdi
+pop %rsi
+movq %rbp, %rax
+push %rax
+push %rsi
+push %rdi
+movq %rbp, %rbx
+subq $3, %rbx
+movq %rbx, %rcx
+movq %rcx, %rdi
+call malloc
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rax
+movq %rbx, %rax
+movq %rbp, %rax
+movq %rax, %rbx
+cmpq %rdi, %rbx
+je _memory_if0
+movq %rbp, %rax
+subq $1, %rax
+movq $0, %rax
+_memory_while0:
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rbx
+push %rbx
+push %rsi
+push %rdi
+push %rbx
+push %rsi
+push %rdi
+movq %rbp, %rax
+subq $4, %rax
+movq %rax, %rcx
+movq %rcx, %rdi
+call getSize
+pop %rdi
+pop %rsi
+pop %rbx
+movq %rax, %rdi
+movq %rbp, %rcx
+subq $3, %rcx
+movq %rcx, %rdx
+movq %rdx, %rsi
+call @min
+pop %rdi
+pop %rsi
+pop %rbx
+cmpq %rax, %rbx
+jg _memory_whileEnd0
+movq %rbp, %rax
+movq %rax, %rbx
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rcx
+leaq (%rbx, %rcx), %rdx
+movq %rbp, %rbx
+subq $1, %rbx
+movq %rbx, %rcx
+leaq (%rdi, %rcx), %rbp
+movq %rbp, %rbx
+movq %rbx, %rdx
+_memory_while1:
+movq %rbp, %rax
+subq $1, %rax
+movq %rbp, %rbx
+subq $1, %rbx
+movq %rbx, %rcx
+leaq 1(%rcx), %rbx
+movq %rbx, %rax
+jmp _memory_while0
+_memory_whileEnd0:
+_memory_if0:
+movq %rbp, %rax
+movq %rax, %rbx
+movq %rbx, %rax
+movq %rbp, %rsp
+pop %rbp
+ret
+movq %rbp, %rsp
+pop %rbp
+ret

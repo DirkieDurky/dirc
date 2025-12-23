@@ -1,0 +1,72 @@
+allowScrolling:
+push %rbp
+movq %rsp, %rbp
+lea [%rsp - $1] %rsp
+_scrolling_while0:
+movq %rbp, %rax
+push %rax
+call @readKey
+movq %rax, %rbx
+pop %rax
+movq %rbx, (%rax)
+movq %rbp, %rax
+movq %rax(%rip), %rbx
+ifNotEq|i2 rbx 13 _scrolling_else0
+call scrollUp
+jmp _scrolling_ifElseEnd0
+_scrolling_else0:
+movq %rbp, %rax
+movq %rax(%rip), %rbx
+ifNotEq|i2 rbx 14 _scrolling_if0
+call scrollDown
+_scrolling_if0:
+_scrolling_ifElseEnd0:
+jmp _scrolling_while0
+_scrolling_whileEnd0:
+movq %rbp, %rsp
+pop %rbp
+ret
+
+scrollUp:
+push %rbp
+movq %rsp, %rbp
+lea [%rsp - $2] %rsp
+movq %rbp, %rax
+movq $2, (%rax)
+lea [%rbp - $1] %rax
+movq %rbp, %rbx
+movq %rbx(%rip), %rcx
+movq %rcx(%rip), %rbx
+movq %rbx, (%rax)
+lea [%rbp - $1] %rax
+movq %rax(%rip), %rbx
+ifLess|i2 rbx 80 _scrolling_if1
+lea [%rbp - $1] %rax
+movq %rax(%rip), %rbx
+lea [%rbx - $80] %rax
+movq %rax, %rdi
+call @setScroll
+_scrolling_if1:
+movq %rbp, %rsp
+pop %rbp
+ret
+
+scrollDown:
+push %rbp
+movq %rsp, %rbp
+lea [%rsp - $2] %rsp
+movq %rbp, %rax
+movq $2, (%rax)
+lea [%rbp - $1] %rax
+movq %rbp, %rbx
+movq %rbx(%rip), %rcx
+movq %rcx(%rip), %rbx
+movq %rbx, (%rax)
+lea [%rbp - $1] %rax
+movq %rax(%rip), %rbx
+lea [%rbx + $80] %rax
+movq %rax, %rdi
+call @setScroll
+movq %rbp, %rsp
+pop %rbp
+ret

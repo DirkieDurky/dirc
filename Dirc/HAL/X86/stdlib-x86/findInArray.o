@@ -1,0 +1,213 @@
+findFirst:
+push %rbp
+movq %rsp, %rbp
+subq $1, %rsp
+movq %rbp, %rax
+movq %rcx, %rax
+_findInArray_while0:
+movq %rbp, %rax
+movq %rax, %rbx
+cmpq %rsi, %rbx
+jg _findInArray_whileEnd0
+movq %rbp, %rax
+movq %rax, %rbx
+leaq (%rdi, %rbx), %rbp
+movq %rbp, %rax
+cmpq %rdx, %rax
+jge _findInArray_if0
+movq %rbp, %rax
+movq %rax, %rbx
+movq %rbx, %rax
+movq %rbp, %rsp
+pop %rbp
+ret
+_findInArray_if0:
+_findInArray_while1:
+movq %rbp, %rax
+movq %rbp, %rbx
+movq %rbx, %rbp
+leaq 1(%rbp), %rbx
+movq %rbx, %rax
+jmp _findInArray_while0
+_findInArray_whileEnd0:
+movq $-1, %rax
+movq %rbp, %rsp
+pop %rbp
+ret
+movq %rbp, %rsp
+pop %rbp
+ret
+
+countOccurrences:
+push %rbp
+movq %rsp, %rbp
+subq $2, %rsp
+movq %rbp, %rax
+movq $0, %rax
+movq %rbp, %rax
+subq $1, %rax
+movq $0, %rax
+_findInArray_while2:
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rbx
+cmpq %rsi, %rbx
+jg _findInArray_whileEnd1
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rbx
+leaq (%rdi, %rbx), %rcx
+movq %rcx, %rax
+cmpq %rdx, %rax
+jge _findInArray_if1
+movq %rbp, %rax
+movq %rbp, %rbx
+movq %rbx, %rcx
+leaq 1(%rcx), %rbx
+movq %rbx, %rax
+_findInArray_if1:
+_findInArray_while3:
+movq %rbp, %rax
+subq $1, %rax
+movq %rbp, %rbx
+subq $1, %rbx
+movq %rbx, %rcx
+leaq 1(%rcx), %rbx
+movq %rbx, %rax
+jmp _findInArray_while2
+_findInArray_whileEnd1:
+movq %rbp, %rax
+movq %rax, %rbx
+movq %rbx, %rax
+movq %rbp, %rsp
+pop %rbp
+ret
+movq %rbp, %rsp
+pop %rbp
+ret
+
+findAll:
+push %rbp
+movq %rsp, %rbp
+subq $5, %rsp
+movq %rbp, %rax
+push %rax
+push %rdx
+push %rsi
+push %rdi
+movq %rbp, %rbx
+subq $8, %rbx
+movq %rbx, %rcx
+movq %rcx, %rdi
+movq %rbp, %rbx
+subq $7, %rbx
+movq %rbx, %rbp
+movq %rbp, %rsi
+movq %rbp, %rbx
+subq $6, %rbx
+movq %rbx, %rsp
+movq %rsp, %rdx
+call countOccurrences
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rdx
+pop %rax
+movq %rbx, %rax
+movq %rbp, %rax
+subq $1, %rax
+push %rax
+push %rdx
+push %rsi
+push %rdi
+movq %rbp, %rbx
+movq %rbx, %rcx
+movq %rcx, %rdi
+call @malloc
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rdx
+pop %rax
+movq %rbx, %rax
+movq %rbp, %rax
+subq $2, %rax
+movq $0, %rax
+movq %rbp, %rax
+subq $3, %rax
+movq $0, %rax
+_findInArray_while4:
+movq %rbp, %rax
+subq $3, %rax
+movq %rax, %rbx
+movq %rbp, %rax
+movq %rax, %rcx
+cmpq %rcx, %rbx
+jg _findInArray_whileEnd2
+movq %rbp, %rax
+subq $4, %rax
+push %rax
+push %rdx
+push %rsi
+push %rdi
+movq %rbp, %rbx
+subq $8, %rbx
+movq %rbx, %rcx
+movq %rcx, %rdi
+movq %rbp, %rbx
+subq $7, %rbx
+movq %rbx, %rbp
+movq %rbp, %rsi
+movq %rbp, %rbx
+subq $6, %rbx
+movq %rbx, %rsp
+movq %rsp, %rdx
+movq %rbp, %rbx
+subq $2, %rbx
+movq %rbx, %r8
+movq %r8, %rcx
+call findFirst
+movq %rax, %rbx
+pop %rdi
+pop %rsi
+pop %rdx
+pop %rax
+movq %rbx, %rax
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rbx
+movq %rbp, %rax
+subq $3, %rax
+movq %rax, %rcx
+leaq (%rbx, %rcx), %rbp
+movq %rbp, %rbx
+subq $4, %rbx
+movq %rbx, %rcx
+movq %rcx, %rbp
+movq %rbp, %rax
+subq $2, %rax
+movq %rbp, %rbx
+subq $4, %rbx
+movq %rbx, %rcx
+leaq 1(%rcx), %rbx
+movq %rbx, %rax
+_findInArray_while5:
+movq %rbp, %rax
+subq $3, %rax
+movq %rbp, %rbx
+subq $3, %rbx
+movq %rbx, %rcx
+leaq 1(%rcx), %rbx
+movq %rbx, %rax
+jmp _findInArray_while4
+_findInArray_whileEnd2:
+movq %rbp, %rax
+subq $1, %rax
+movq %rax, %rbx
+movq %rbx, %rax
+movq %rbp, %rsp
+pop %rbp
+ret
+movq %rbp, %rsp
+pop %rbp
+ret
