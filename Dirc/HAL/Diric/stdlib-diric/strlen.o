@@ -2,7 +2,7 @@ label strlen
 push lr _ _
 push fp _ _
 mov sp _ fp
-sub|i2 sp 1 sp
+sub|i2 sp 2 sp
 sub|i2 fp 1 r1
 store|i1 0 r1 _
 label _strlen_while0

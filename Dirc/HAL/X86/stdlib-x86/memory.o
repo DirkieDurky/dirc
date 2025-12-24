@@ -1,7 +1,7 @@
 malloc:
 pushq %rbp
 movq %rsp, %rbp
-subq $16, %rsp
+subq $128, %rsp
 movq %rbp, %rax
 subq $64, %rax
 movq $1, (%rax)
@@ -42,6 +42,7 @@ ret
 free:
 pushq %rbp
 movq %rsp, %rbp
+subq $128, %rsp
 movq %rbp, %rsp
 popq %rbp
 ret
@@ -49,6 +50,7 @@ ret
 getSize:
 pushq %rbp
 movq %rsp, %rbp
+subq $128, %rsp
 movq %rdi, %rax
 subq $1, %rax
 movq (%rax), %rbx
@@ -63,11 +65,11 @@ ret
 realloc:
 pushq %rbp
 movq %rsp, %rbp
-subq $16, %rsp
+subq $128, %rsp
 pushq %rsi
 pushq %rdi
 movq %rbp, %rax
-subq $32, %rax
+subq $144, %rax
 movq (%rax), %rbx
 movq %rbx, %rdi
 call free
@@ -79,7 +81,7 @@ pushq %rax
 pushq %rsi
 pushq %rdi
 movq %rbp, %rbx
-subq $32, %rbx
+subq $144, %rbx
 movq (%rbx), %rcx
 movq %rcx, %rdi
 call malloc
@@ -91,7 +93,7 @@ movq %rbx, (%rax)
 movq %rbp, %rax
 subq $64, %rax
 movq (%rax), %rbx
-cmpq %rdi, %rbx
+cmpq %rbx, %rdi
 je _memory_if0
 movq %rbp, %rax
 subq $128, %rax
@@ -107,7 +109,7 @@ pushq %rbx
 pushq %rsi
 pushq %rdi
 movq %rbp, %rax
-subq $40, %rax
+subq $152, %rax
 movq (%rax), %rcx
 movq %rcx, %rdi
 call getSize
@@ -116,14 +118,14 @@ popq %rsi
 popq %rbx
 movq %rax, %rdi
 movq %rbp, %rcx
-subq $32, %rcx
+subq $144, %rcx
 movq (%rcx), %rdx
 movq %rdx, %rsi
 call @min
 popq %rdi
 popq %rsi
 popq %rbx
-cmpq %rax, %rbx
+cmpq %rbx, %rax
 jg _memory_whileEnd0
 movq %rbp, %rax
 subq $64, %rax

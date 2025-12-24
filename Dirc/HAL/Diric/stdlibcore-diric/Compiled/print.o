@@ -2,7 +2,7 @@ label print
 push lr _ _
 push fp _ _
 mov sp _ fp
-sub|i2 sp 1 sp
+sub|i2 sp 2 sp
 sub|i2 fp 1 r1
 store|i1 0 r1 _
 label _print_while0
@@ -23,7 +23,7 @@ pop _ _ r0
 jump _print_ifElseEnd0 _ pc
 label _print_else0
 push r0 _ _
-sub|i2 fp 2 r1
+sub|i2 fp 3 r1
 load r1 _ r2
 sub|i2 fp 1 r1
 load r1 _ r3

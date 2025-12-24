@@ -1,7 +1,7 @@
 findFirst:
 pushq %rbp
 movq %rsp, %rbp
-subq $8, %rsp
+subq $128, %rsp
 movq %rbp, %rax
 subq $64, %rax
 movq %rcx, (%rax)
@@ -9,14 +9,14 @@ _findInArray_while0:
 movq %rbp, %rax
 subq $64, %rax
 movq (%rax), %rbx
-cmpq %rsi, %rbx
+cmpq %rbx, %rsi
 jg _findInArray_whileEnd0
 movq %rbp, %rax
 subq $64, %rax
 movq (%rax), %rbx
 leaq (%rdi, %rbx), %rbp
 movq (%rbp), %rax
-cmpq %rdx, %rax
+cmpq %rax, %rdx
 jge _findInArray_if0
 movq %rbp, %rax
 subq $64, %rax
@@ -47,7 +47,7 @@ ret
 countOccurrences:
 pushq %rbp
 movq %rsp, %rbp
-subq $16, %rsp
+subq $128, %rsp
 movq %rbp, %rax
 subq $64, %rax
 movq $0, (%rax)
@@ -58,14 +58,14 @@ _findInArray_while2:
 movq %rbp, %rax
 subq $128, %rax
 movq (%rax), %rbx
-cmpq %rsi, %rbx
+cmpq %rbx, %rsi
 jg _findInArray_whileEnd1
 movq %rbp, %rax
 subq $128, %rax
 movq (%rax), %rbx
 leaq (%rdi, %rbx), %rcx
 movq (%rcx), %rax
-cmpq %rdx, %rax
+cmpq %rax, %rdx
 jge _findInArray_if1
 movq %rbp, %rax
 subq $64, %rax
@@ -99,7 +99,7 @@ ret
 findAll:
 pushq %rbp
 movq %rsp, %rbp
-subq $40, %rsp
+subq $128, %rsp
 movq %rbp, %rax
 subq $64, %rax
 pushq %rax
@@ -107,15 +107,15 @@ pushq %rdx
 pushq %rsi
 pushq %rdi
 movq %rbp, %rbx
-subq $72, %rbx
+subq $160, %rbx
 movq (%rbx), %rcx
 movq %rcx, %rdi
 movq %rbp, %rbx
-subq $64, %rbx
+subq $152, %rbx
 movq (%rbx), %rbp
 movq %rbp, %rsi
 movq %rbp, %rbx
-subq $56, %rbx
+subq $144, %rbx
 movq (%rbx), %rsp
 movq %rsp, %rdx
 call countOccurrences
@@ -155,7 +155,7 @@ movq (%rax), %rbx
 movq %rbp, %rax
 subq $64, %rax
 movq (%rax), %rcx
-cmpq %rcx, %rbx
+cmpq %rbx, %rcx
 jg _findInArray_whileEnd2
 movq %rbp, %rax
 subq $320, %rax
@@ -164,15 +164,15 @@ pushq %rdx
 pushq %rsi
 pushq %rdi
 movq %rbp, %rbx
-subq $72, %rbx
+subq $160, %rbx
 movq (%rbx), %rcx
 movq %rcx, %rdi
 movq %rbp, %rbx
-subq $64, %rbx
+subq $152, %rbx
 movq (%rbx), %rbp
 movq %rbp, %rsi
 movq %rbp, %rbx
-subq $56, %rbx
+subq $144, %rbx
 movq (%rbx), %rsp
 movq %rsp, %rdx
 movq %rbp, %rbx

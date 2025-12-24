@@ -2,7 +2,7 @@ label input
 push lr _ _
 push fp _ _
 mov sp _ fp
-sub|i2 sp 3 sp
+sub|i2 sp 4 sp
 sub|i2 fp 1 r0
 push r0 _ _
 mov|i1 80 _ r0

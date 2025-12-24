@@ -2,7 +2,7 @@ label substring
 push lr _ _
 push fp _ _
 mov sp _ fp
-sub|i2 sp 4 sp
+sub|i2 sp 5 sp
 sub|i2 fp 1 r3
 sub r2 r1 r4
 add|i2 r4 1 r5

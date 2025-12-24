@@ -2,7 +2,7 @@ label arraysMatch
 push lr _ _
 push fp _ _
 mov sp _ fp
-sub|i2 sp 1 sp
+sub|i2 sp 2 sp
 ifEq r1 r3 _arraysMatch_if0
 mov|i1 0 _ r0
 mov fp _ sp

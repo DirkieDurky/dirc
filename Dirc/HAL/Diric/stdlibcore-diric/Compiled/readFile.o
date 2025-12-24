@@ -2,11 +2,11 @@ label readFile
 push lr _ _
 push fp _ _
 mov sp _ fp
-sub|i2 sp 5 sp
+sub|i2 sp 6 sp
 sub|i2 fp 1 r1
 push r0 _ _
 push r1 _ _
-sub|i2 fp 6 r2
+sub|i2 fp 7 r2
 load r2 _ r3
 mov r3 _ r0
 mov|i1 -1 _ r1
@@ -44,7 +44,7 @@ ifMoreOrEq r2 r3 _readFile_whileEnd0
 sub|i2 fp 4 r1
 push r0 _ _
 push r1 _ _
-sub|i2 fp 6 r2
+sub|i2 fp 7 r2
 load r2 _ r3
 mov r3 _ r0
 sub|i2 fp 3 r2

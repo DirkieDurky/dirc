@@ -1,7 +1,7 @@
 positiveIntToString:
 pushq %rbp
 movq %rsp, %rbp
-subq $32, %rsp
+subq $128, %rsp
 cmpq $0, %rdi
 jge _intToString_if0
 movq %rbp, %rax
@@ -37,7 +37,7 @@ subq $64, %rax
 pushq %rax
 pushq %rdi
 movq %rbp, %rbx
-subq $48, %rbx
+subq $144, %rbx
 movq (%rbx), %rcx
 movq %rcx, %rdi
 call getDigitCountInInt
@@ -87,8 +87,9 @@ movq (%rax), %rcx
 leaq (%rbx, %rcx), %rdx
 push %rax
 push %rdx
-%rdi, %rax
-idivq $10
+movq %rdi, %rax
+movq $10, %rdx
+idivq %rdx
 movq %rdx, %rbx
 pop %rdx
 pop %rax
@@ -96,8 +97,9 @@ leaq 48(%rbx), %rcx
 movq %rcx, (%rdx)
 push %rax
 push %rdx
-%rdi, %rax
-idivq $10
+movq %rdi, %rax
+movq $10, %rdx
+idivq %rdx
 movq %rax, %rax
 pop %rdx
 pop %rax
@@ -126,7 +128,7 @@ ret
 intToString:
 pushq %rbp
 movq %rsp, %rbp
-subq $32, %rsp
+subq $128, %rsp
 cmpq $0, %rdi
 jg _intToString_else0
 movq %rbp, %rax
@@ -136,7 +138,7 @@ pushq %rdi
 pushq %rax
 pushq %rdi
 movq %rbp, %rbx
-subq $48, %rbx
+subq $144, %rbx
 movq (%rbx), %rcx
 movq %rcx, %rdi
 call @abs
@@ -187,7 +189,7 @@ jmp _intToString_ifElseEnd0
 _intToString_else0:
 pushq %rdi
 movq %rbp, %rax
-subq $40, %rax
+subq $136, %rax
 movq (%rax), %rbx
 movq %rbx, %rdi
 call positiveIntToString
@@ -203,13 +205,12 @@ ret
 getDigitCountInInt:
 pushq %rbp
 movq %rsp, %rbp
-subq $8, %rsp
+subq $128, %rsp
 movq %rbp, %rax
 subq $64, %rax
 movq $1, (%rax)
-cmpq $64, $64
-jne _intToString_if1
-cmpq $10000000000000000, %rdi
+movabs $10000000000000000, %rax
+cmpq %rax, %rdi
 jne _intToString_if2
 movq %rbp, %rax
 subq $64, %rax
@@ -220,16 +221,15 @@ leaq 16(%rcx), %rbx
 movq %rbx, (%rax)
 push %rax
 push %rdx
-%rdi, %rax
-idivq $10000000000000000
+movq %rdi, %rax
+movq $10000000000000000, %rdx
+idivq %rdx
 movq %rax, %rax
 pop %rdx
 pop %rax
 movq %rax, %rdi
 _intToString_if2:
 _intToString_if1:
-cmpq $32, $64
-jne _intToString_if3
 cmpq $100000000, %rdi
 jne _intToString_if4
 movq %rbp, %rax
@@ -241,8 +241,9 @@ leaq 8(%rcx), %rbx
 movq %rbx, (%rax)
 push %rax
 push %rdx
-%rdi, %rax
-idivq $100000000
+movq %rdi, %rax
+movq $100000000, %rdx
+idivq %rdx
 movq %rax, %rax
 pop %rdx
 pop %rax
@@ -260,8 +261,9 @@ leaq 4(%rcx), %rbx
 movq %rbx, (%rax)
 push %rax
 push %rdx
-%rdi, %rax
-idivq $10000
+movq %rdi, %rax
+movq $10000, %rdx
+idivq %rdx
 movq %rax, %rax
 pop %rdx
 pop %rax
@@ -278,8 +280,9 @@ leaq 2(%rcx), %rbx
 movq %rbx, (%rax)
 push %rax
 push %rdx
-%rdi, %rax
-idivq $100
+movq %rdi, %rax
+movq $100, %rdx
+idivq %rdx
 movq %rax, %rax
 pop %rdx
 pop %rax

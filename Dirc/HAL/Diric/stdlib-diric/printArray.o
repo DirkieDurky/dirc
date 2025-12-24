@@ -2,7 +2,7 @@ label printArray
 push lr _ _
 push fp _ _
 mov sp _ fp
-sub|i2 sp 12 sp
+sub|i2 sp 13 sp
 sub|i2 fp 1 r2
 push r0 _ _
 push r1 _ _
@@ -30,7 +30,7 @@ sub|i2 fp 3 r2
 push r0 _ _
 push r1 _ _
 push r2 _ _
-sub|i2 fp 13 r3
+sub|i2 fp 14 r3
 load r3 _ r4
 sub|i2 fp 2 r3
 load r3 _ r5

@@ -35,7 +35,7 @@ public interface ICodeGenBase
     void EmitMov(IOperand item, Register result);
     void EmitJump(string label);
     void EmitBinaryOperation(Operation op, IOperand left, IOperand? right, Register result);
-    void EmitIf(Comparer cond, IOperand left, IOperand right, string result);
+    void EmitIf(Comparer cond, IOperand left, IOperand right, string result, Allocator allocator);
     void EmitFunctionCall(string label, bool unresolved);
     void EmitReturn(bool final = true);
     void EmitPush(IOperand value);

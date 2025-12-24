@@ -1,7 +1,7 @@
 merge:
 pushq %rbp
 movq %rsp, %rbp
-subq $24, %rsp
+subq $128, %rsp
 movq %rbp, %rax
 subq $64, %rax
 pushq %rax
@@ -10,10 +10,10 @@ pushq %rdx
 pushq %rsi
 pushq %rdi
 movq %rbp, %rbx
-subq $56, %rbx
+subq $160, %rbx
 movq (%rbx), %rbp
 movq %rbp, %rbx
-subq $40, %rbx
+subq $144, %rbx
 movq (%rbx), %rsp
 leaq (%rbp, %rsp), %rbx
 movq %rbx, %rdi
@@ -32,7 +32,7 @@ _arrayMerge_while0:
 movq %rbp, %rax
 subq $128, %rax
 movq (%rax), %rbx
-cmpq %rsi, %rbx
+cmpq %rbx, %rsi
 jg _arrayMerge_whileEnd0
 movq %rbp, %rax
 subq $64, %rax
@@ -64,7 +64,7 @@ _arrayMerge_while2:
 movq %rbp, %rax
 subq $192, %rax
 movq (%rax), %rbx
-cmpq %rcx, %rbx
+cmpq %rbx, %rcx
 jg _arrayMerge_whileEnd1
 movq %rbp, %rax
 subq $64, %rax

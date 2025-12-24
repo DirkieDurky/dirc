@@ -2,7 +2,7 @@ label boolToString
 push lr _ _
 push fp _ _
 mov sp _ fp
-sub|i2 sp 13 sp
+sub|i2 sp 14 sp
 ifEq|i2 r0 0 _boolToString_else0
 sub|i2 fp 1 r1
 push r0 _ _

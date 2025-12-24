@@ -2,7 +2,7 @@ label allowScrolling
 push lr _ _
 push fp _ _
 mov sp _ fp
-sub|i2 sp 1 sp
+sub|i2 sp 2 sp
 label _scrolling_while0
 sub|i2 fp 1 r0
 push r0 _ _
@@ -33,7 +33,7 @@ label scrollUp
 push lr _ _
 push fp _ _
 mov sp _ fp
-sub|i2 sp 2 sp
+sub|i2 sp 3 sp
 sub|i2 fp 1 r0
 store|i1 2 r0 _
 sub|i2 fp 2 r0
@@ -58,7 +58,7 @@ label scrollDown
 push lr _ _
 push fp _ _
 mov sp _ fp
-sub|i2 sp 2 sp
+sub|i2 sp 3 sp
 sub|i2 fp 1 r0
 store|i1 2 r0 _
 sub|i2 fp 2 r0

@@ -1,4 +1,5 @@
-void println(char str[])
+void println(char* str)
 {
     print(str);
+    print("\n");
 }

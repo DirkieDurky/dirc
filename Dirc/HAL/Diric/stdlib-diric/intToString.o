@@ -2,7 +2,7 @@ label positiveIntToString
 push lr _ _
 push fp _ _
 mov sp _ fp
-sub|i2 sp 4 sp
+sub|i2 sp 5 sp
 ifNotEq|i2 r0 0 _intToString_if0
 sub|i2 fp 1 r1
 push r0 _ _
@@ -32,7 +32,7 @@ label _intToString_if0
 sub|i2 fp 1 r1
 push r0 _ _
 push r1 _ _
-sub|i2 fp 5 r2
+sub|i2 fp 6 r2
 load r2 _ r3
 mov r3 _ r0
 call getDigitCountInInt _ _
@@ -98,14 +98,14 @@ label intToString
 push lr _ _
 push fp _ _
 mov sp _ fp
-sub|i2 sp 4 sp
+sub|i2 sp 5 sp
 ifMoreOrEq|i2 r0 0 _intToString_else0
 sub|i2 fp 1 r1
 push r0 _ _
 push r1 _ _
 push r0 _ _
 push r1 _ _
-sub|i2 fp 5 r2
+sub|i2 fp 6 r2
 load r2 _ r3
 mov r3 _ r0
 call @abs _ _
@@ -152,7 +152,7 @@ return _ _ _
 jump _intToString_ifElseEnd0 _ pc
 label _intToString_else0
 push r0 _ _
-sub|i2 fp 5 r1
+sub|i2 fp 6 r1
 load r1 _ r2
 mov r2 _ r0
 call positiveIntToString _ _
@@ -173,7 +173,7 @@ label getDigitCountInInt
 push lr _ _
 push fp _ _
 mov sp _ fp
-sub|i2 sp 1 sp
+sub|i2 sp 2 sp
 sub|i2 fp 1 r1
 store|i1 1 r1 _
 ifLess|i1|i2 64 64 _intToString_if1

@@ -1,7 +1,7 @@
 power:
 pushq %rbp
 movq %rsp, %rbp
-subq $16, %rsp
+subq $128, %rsp
 cmpq $0, %rsi
 jge _math_if0
 movq $1, %rax
@@ -21,7 +21,7 @@ subq $128, %rax
 movq (%rax), %rbx
 movq %rsi, %rax
 subq $1, %rax
-cmpq %rax, %rbx
+cmpq %rbx, %rax
 jg _math_whileEnd0
 movq %rbp, %rax
 subq $64, %rax
@@ -55,7 +55,8 @@ ret
 min:
 pushq %rbp
 movq %rsp, %rbp
-cmpq %rdi, %rsi
+subq $128, %rsp
+cmpq %rsi, %rdi
 jg _math_else0
 movq %rsi, %rax
 movq %rbp, %rsp
@@ -75,7 +76,8 @@ ret
 max:
 pushq %rbp
 movq %rsp, %rbp
-cmpq %rdi, %rsi
+subq $128, %rsp
+cmpq %rsi, %rdi
 jl _math_else1
 movq %rsi, %rax
 movq %rbp, %rsp
@@ -95,6 +97,7 @@ ret
 abs:
 pushq %rbp
 movq %rsp, %rbp
+subq $128, %rsp
 cmpq $0, %rdi
 jg _math_else2
 movq $0, %rax

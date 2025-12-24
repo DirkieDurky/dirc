@@ -1,7 +1,7 @@
 findFirstSubstring:
 pushq %rbp
 movq %rsp, %rbp
-subq $32, %rsp
+subq $128, %rsp
 movq %rbp, %rax
 subq $64, %rax
 pushq %rax
@@ -9,7 +9,7 @@ pushq %rdx
 pushq %rsi
 pushq %rdi
 movq %rbp, %rbx
-subq $64, %rbx
+subq $160, %rbx
 movq (%rbx), %rcx
 movq %rcx, %rdi
 call @strlen
@@ -26,7 +26,7 @@ pushq %rdx
 pushq %rsi
 pushq %rdi
 movq %rbp, %rbx
-subq $56, %rbx
+subq $152, %rbx
 movq (%rbx), %rcx
 movq %rcx, %rdi
 call @strlen
@@ -49,7 +49,7 @@ movq (%rax), %rbx
 movq %rbp, %rax
 subq $64, %rax
 movq (%rax), %rcx
-cmpq %rcx, %rbx
+cmpq %rbx, %rcx
 jg _findSubstrings_whileEnd0
 movq %rbp, %rax
 subq $256, %rax
@@ -61,7 +61,7 @@ subq $192, %rbx
 movq (%rbx), %rcx
 leaq (%rsi, %rcx), %rbp
 movq (%rbp), %rbx
-cmpq %rbx, %rax
+cmpq %rax, %rbx
 jge _findSubstrings_else0
 movq %rbp, %rax
 subq $192, %rax
@@ -76,7 +76,7 @@ movq (%rax), %rbx
 movq %rbp, %rax
 subq $128, %rax
 movq (%rax), %rcx
-cmpq %rcx, %rbx
+cmpq %rbx, %rcx
 jge _findSubstrings_if0
 movq %rbp, %rax
 subq $256, %rax
@@ -119,14 +119,14 @@ ret
 findAllNonOverlappingSubstrings:
 pushq %rbp
 movq %rsp, %rbp
-subq $48, %rsp
+subq $128, %rsp
 movq %rbp, %rax
 subq $64, %rax
 pushq %rax
 pushq %rsi
 pushq %rdi
 movq %rbp, %rbx
-subq $64, %rbx
+subq $144, %rbx
 movq (%rbx), %rcx
 movq %rcx, %rdi
 call @strlen
@@ -159,11 +159,11 @@ pushq %rax
 pushq %rsi
 pushq %rdi
 movq %rbp, %rbx
-subq $72, %rbx
+subq $152, %rbx
 movq (%rbx), %rcx
 movq %rcx, %rdi
 movq %rbp, %rbx
-subq $64, %rbx
+subq $144, %rbx
 movq (%rbx), %rdx
 movq %rdx, %rsi
 movq %rbp, %rbx
@@ -210,7 +210,7 @@ movq (%rax), %rbx
 movq %rbp, %rax
 subq $384, %rax
 movq (%rax), %rcx
-cmpq %rcx, %rbx
+cmpq %rbx, %rcx
 jne _findSubstrings_if1
 movq %rbp, %rax
 subq $128, %rax
@@ -262,11 +262,11 @@ pushq %rax
 pushq %rsi
 pushq %rdi
 movq %rbp, %rbx
-subq $72, %rbx
+subq $152, %rbx
 movq (%rbx), %rcx
 movq %rcx, %rdi
 movq %rbp, %rbx
-subq $64, %rbx
+subq $144, %rbx
 movq (%rbx), %rdx
 movq %rdx, %rsi
 movq %rbp, %rbx

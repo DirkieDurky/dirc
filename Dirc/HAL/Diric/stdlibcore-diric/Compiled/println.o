@@ -2,8 +2,9 @@ label println
 push lr _ _
 push fp _ _
 mov sp _ fp
+sub|i2 sp 1 sp
 push r0 _ _
-sub|i2 fp 1 r1
+sub|i2 fp 2 r1
 load r1 _ r2
 mov r2 _ r0
 call @print _ _

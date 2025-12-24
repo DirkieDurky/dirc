@@ -3,13 +3,15 @@ using Dirc.Compiling;
 using Dirc.Compiling.CodeGen;
 using Dirc.Compiling.CodeGen.Allocating;
 using Dirc.Compiling.Parsing;
+using Comparer = Dirc.Compiling.Comparer;
 
 namespace Dirc.HAL;
 
 public class CodeGenBaseX86 : ICodeGenBase
 {
-    private StringBuilder _code = new();
     public StringBuilder Code => _code;
+
+    private StringBuilder _code = new();
 
     public void EmitLabel(string name)
     {
@@ -107,8 +109,16 @@ public class CodeGenBaseX86 : ICodeGenBase
             case Operation.Div:
                 Emit("push %rax");
                 Emit("push %rdx");
-                Emit($"{AddOperandPrefix(left)}, %rax");
-                Emit($"idivq {AddOperandPrefix(right!)}");
+                Emit($"movq {AddOperandPrefix(left)}, %rax");
+                if (IsAssemblyReady(right!))
+                {
+                    Emit($"movq ${right!.AsOperand()}, %rdx");
+                    Emit($"idivq %rdx");
+                }
+                else
+                {
+                    Emit($"idivq %{right!.AsOperand()}");
+                }
                 Emit($"movq %rax, %{result}");
                 Emit("pop %rdx");
                 Emit("pop %rax");
@@ -116,8 +126,16 @@ public class CodeGenBaseX86 : ICodeGenBase
             case Operation.Mod:
                 Emit("push %rax");
                 Emit("push %rdx");
-                Emit($"{AddOperandPrefix(left)}, %rax");
-                Emit($"idivq {AddOperandPrefix(right!)}");
+                Emit($"movq {AddOperandPrefix(left)}, %rax");
+                if (IsAssemblyReady(right!))
+                {
+                    Emit($"movq ${right!.AsOperand()}, %rdx");
+                    Emit($"idivq %rdx");
+                }
+                else
+                {
+                    Emit($"idivq %{right!.AsOperand()}");
+                }
                 Emit($"movq %rdx, %{result}");
                 Emit("pop %rdx");
                 Emit("pop %rax");
@@ -133,9 +151,66 @@ public class CodeGenBaseX86 : ICodeGenBase
         }
     }
 
-    public void EmitIf(Comparer cond, IOperand left, IOperand right, string result)
+    public void EmitIf(Comparer cond, IOperand left, IOperand right, string result, Allocator allocator)
     {
-        Emit($"cmpq {AddOperandPrefix(right)}, {AddOperandPrefix(left)}");
+        if (IsAssemblyReady(left) && IsAssemblyReady(right))
+        {
+            int leftValue = int.Parse(left.AsOperand());
+            int rightValue = int.Parse(right.AsOperand());
+
+            bool evaluation = cond switch
+            {
+                Comparer.IfEq => leftValue == rightValue,
+                Comparer.IfLess => leftValue < rightValue,
+                Comparer.IfNotEq => leftValue != rightValue,
+                Comparer.IfLessOrEq => leftValue <= rightValue,
+                Comparer.IfMore => leftValue > rightValue,
+                Comparer.IfMoreOrEq => leftValue >= rightValue,
+                _ => throw new Exception("Invalid condition"),
+            };
+
+            if (evaluation)
+            {
+                Emit($"jmp {result}");
+            }
+            return;
+        }
+
+        if (IsAssemblyReady(left) || IsAssemblyReady(right))
+        {
+            long immediateValue;
+            string registerValue;
+            if (IsAssemblyReady(left))
+            {
+                immediateValue = long.Parse(left.AsOperand());
+                registerValue = right.AsOperand();
+            }
+            else
+            {
+                immediateValue = long.Parse(right.AsOperand());
+                registerValue = left.AsOperand();
+            }
+
+            string immediateValueStr;
+            Register? tmp = null;
+            if (immediateValue > int.MaxValue)
+            {
+                tmp = allocator.Allocate(Allocator.RegisterType.CallerSaved);
+                Emit($"movabs ${immediateValue}, %{tmp}");
+                immediateValueStr = $"%{tmp}";
+            }
+            else
+            {
+                immediateValueStr = $"${immediateValue}";
+            }
+            Emit($"cmpq {immediateValueStr}, %{registerValue}");
+            tmp?.Free();
+        }
+        else
+        {
+            Emit($"cmpq %{left.AsOperand()}, %{right.AsOperand()}");
+        }
+
         switch (cond)
         {
             case Comparer.IfEq:

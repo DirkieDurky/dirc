@@ -1,7 +1,7 @@
 boolToString:
 pushq %rbp
 movq %rsp, %rbp
-subq $104, %rsp
+subq $128, %rsp
 cmpq $0, %rdi
 je _boolToString_else0
 movq %rbp, %rax

@@ -1,7 +1,7 @@
 printArray:
 pushq %rbp
 movq %rsp, %rbp
-subq $96, %rsp
+subq $128, %rsp
 movq %rbp, %rax
 subq $64, %rax
 pushq %rax
@@ -28,7 +28,7 @@ _printArray_while0:
 movq %rbp, %rax
 subq $128, %rax
 movq (%rax), %rbx
-cmpq %rsi, %rbx
+cmpq %rbx, %rsi
 jg _printArray_whileEnd0
 movq %rbp, %rax
 subq $192, %rax
@@ -36,7 +36,7 @@ pushq %rax
 pushq %rsi
 pushq %rdi
 movq %rbp, %rbx
-subq $120, %rbx
+subq $152, %rbx
 movq (%rbx), %rcx
 movq %rbp, %rbx
 subq $128, %rbx
@@ -107,7 +107,7 @@ subq $128, %rax
 movq (%rax), %rbx
 movq %rsi, %rax
 subq $1, %rax
-cmpq %rax, %rbx
+cmpq %rbx, %rax
 jg _printArray_if0
 movq %rbp, %rax
 subq $320, %rax

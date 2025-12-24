@@ -102,7 +102,7 @@ public class CodeGenBaseDiric : ICodeGenBase
         }
     }
 
-    public void EmitIf(Comparer cond, IOperand left, IOperand right, string result)
+    public void EmitIf(Comparer cond, IOperand left, IOperand right, string result, Allocator allocator)
     {
         string opSuffix = "";
         if (IsAssemblyReady(left)) opSuffix += "|i1";

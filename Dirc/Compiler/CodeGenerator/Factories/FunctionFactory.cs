@@ -104,6 +104,9 @@ class FunctionFactory
             variableDeclarationCount += strLiteralNode.Str.Literal!.ToString()!.Length + 1;
         }
 
+        // make stackframe align with stackAlignment
+        int remainder = variableDeclarationCount % _options.TargetArchitecture.StackAlignment;
+        variableDeclarationCount += _options.TargetArchitecture.StackAlignment - remainder;
         return variableDeclarationCount;
     }
 }

@@ -1,7 +1,7 @@
 removeAt:
 pushq %rbp
 movq %rsp, %rbp
-subq $8, %rsp
+subq $128, %rsp
 movq %rbp, %rax
 subq $64, %rax
 leaq 1(%rdx), %rbx
@@ -10,7 +10,7 @@ _removeFromArray_while0:
 movq %rbp, %rax
 subq $64, %rax
 movq (%rax), %rbx
-cmpq %rsi, %rbx
+cmpq %rbx, %rsi
 jg _removeFromArray_whileEnd0
 movq %rbp, %rax
 subq $64, %rax
@@ -38,11 +38,11 @@ pushq %rdx
 pushq %rsi
 pushq %rdi
 movq %rbp, %rax
-subq $32, %rax
+subq $152, %rax
 movq (%rax), %rbx
 movq %rbx, %rdi
 movq %rbp, %rax
-subq $24, %rax
+subq $144, %rax
 movq (%rax), %rcx
 movq %rcx, %rax
 subq $1, %rax
@@ -61,7 +61,7 @@ ret
 removeFirst:
 pushq %rbp
 movq %rsp, %rbp
-subq $8, %rsp
+subq $128, %rsp
 movq %rbp, %rax
 subq $64, %rax
 pushq %rax
@@ -69,15 +69,15 @@ pushq %rdx
 pushq %rsi
 pushq %rdi
 movq %rbp, %rbx
-subq $40, %rbx
+subq $160, %rbx
 movq (%rbx), %rcx
 movq %rcx, %rdi
 movq %rbp, %rbx
-subq $32, %rbx
+subq $152, %rbx
 movq (%rbx), %rbp
 movq %rbp, %rsi
 movq %rbp, %rbx
-subq $24, %rbx
+subq $144, %rbx
 movq (%rbx), %rsp
 movq %rsp, %rdx
 movq $0, %rcx
@@ -92,11 +92,11 @@ pushq %rdx
 pushq %rsi
 pushq %rdi
 movq %rbp, %rax
-subq $32, %rax
+subq $152, %rax
 movq (%rax), %rbx
 movq %rbx, %rdi
 movq %rbp, %rax
-subq $24, %rax
+subq $144, %rax
 movq (%rax), %rcx
 movq %rcx, %rsi
 movq %rbp, %rax
@@ -117,7 +117,7 @@ ret
 removeAll:
 pushq %rbp
 movq %rsp, %rbp
-subq $24, %rsp
+subq $128, %rsp
 movq %rbp, %rax
 subq $64, %rax
 pushq %rax
@@ -125,15 +125,15 @@ pushq %rdx
 pushq %rsi
 pushq %rdi
 movq %rbp, %rbx
-subq $56, %rbx
+subq $160, %rbx
 movq (%rbx), %rcx
 movq %rcx, %rdi
 movq %rbp, %rbx
-subq $48, %rbx
+subq $152, %rbx
 movq (%rbx), %rbp
 movq %rbp, %rsi
 movq %rbp, %rbx
-subq $40, %rbx
+subq $144, %rbx
 movq (%rbx), %rsp
 movq %rsp, %rdx
 call @findAll

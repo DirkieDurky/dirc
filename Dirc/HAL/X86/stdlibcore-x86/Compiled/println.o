@@ -1,11 +1,22 @@
 println:
 pushq %rbp
 movq %rsp, %rbp
+subq $128, %rsp
 pushq %rdi
 movq %rbp, %rax
-subq $8, %rax
+subq $136, %rax
 movq (%rax), %rbx
 movq %rbx, %rdi
+call @print
+popq %rdi
+pushq %rdi
+movq %rbp, %rax
+subq $128, %rax
+movq %rax, %rbx
+movq $10, (%rbx)
+leaq 1(%rax), %rbx
+movq $0, (%rbx)
+movq %rax, %rdi
 call @print
 popq %rdi
 movq %rbp, %rsp

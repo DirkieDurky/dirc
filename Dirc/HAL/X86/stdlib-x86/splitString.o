@@ -1,14 +1,14 @@
 splitStringByChar:
 pushq %rbp
 movq %rsp, %rbp
-subq $24, %rsp
+subq $128, %rsp
 movq %rbp, %rax
 subq $64, %rax
 pushq %rax
 pushq %rsi
 pushq %rdi
 movq %rbp, %rbx
-subq $48, %rbx
+subq $152, %rbx
 movq (%rbx), %rcx
 movq %rcx, %rdi
 pushq %rax
@@ -16,7 +16,7 @@ pushq %rcx
 pushq %rsi
 pushq %rdi
 movq %rbp, %rbx
-subq $48, %rbx
+subq $152, %rbx
 movq (%rbx), %rdx
 movq %rdx, %rdi
 call @strlen
@@ -27,7 +27,7 @@ popq %rcx
 popq %rax
 movq %rbx, %rsi
 movq %rbp, %rdx
-subq $40, %rdx
+subq $144, %rdx
 movq (%rdx), %rbp
 movq %rbp, %rdx
 call @findAll
@@ -70,7 +70,7 @@ pushq %rcx
 pushq %rsi
 pushq %rdi
 movq %rbp, %rbx
-subq $56, %rbx
+subq $160, %rbx
 movq (%rbx), %rdx
 movq %rdx, %rdi
 movq $0, %rsi
@@ -105,7 +105,7 @@ call @getSize
 popq %rdi
 popq %rsi
 popq %rbx
-cmpq %rax, %rbx
+cmpq %rbx, %rax
 jg _splitString_whileEnd0
 movq %rbp, %rax
 subq $128, %rax
@@ -119,7 +119,7 @@ pushq %rdx
 pushq %rsi
 pushq %rdi
 movq %rbp, %rbx
-subq $56, %rbx
+subq $160, %rbx
 movq (%rbx), %rcx
 movq %rcx, %rdi
 movq %rbp, %rbx
@@ -178,7 +178,7 @@ pushq %rdx
 pushq %rsi
 pushq %rdi
 movq %rbp, %rax
-subq $56, %rax
+subq $160, %rax
 movq (%rax), %rbx
 movq %rbx, %rdi
 movq %rbp, %rax
@@ -214,7 +214,7 @@ pushq %rsi
 pushq %rdi
 pushq %rbp
 movq %rbp, %rax
-subq $56, %rax
+subq $160, %rax
 movq (%rax), %rsp
 movq %rsp, %rdi
 call @strlen
@@ -245,18 +245,18 @@ ret
 splitStringBySubstring:
 pushq %rbp
 movq %rsp, %rbp
-subq $40, %rsp
+subq $128, %rsp
 movq %rbp, %rax
 subq $64, %rax
 pushq %rax
 pushq %rsi
 pushq %rdi
 movq %rbp, %rbx
-subq $64, %rbx
+subq $152, %rbx
 movq (%rbx), %rcx
 movq %rcx, %rdi
 movq %rbp, %rbx
-subq $56, %rbx
+subq $144, %rbx
 movq (%rbx), %rdx
 movq %rdx, %rsi
 call @findAllNonOverlappingSubstrings
@@ -286,7 +286,7 @@ pushq %rax
 pushq %rsi
 pushq %rdi
 movq %rbp, %rbx
-subq $56, %rbx
+subq $144, %rbx
 movq (%rbx), %rcx
 movq %rcx, %rdi
 call @strlen
@@ -320,7 +320,7 @@ pushq %rcx
 pushq %rsi
 pushq %rdi
 movq %rbp, %rbx
-subq $72, %rbx
+subq $160, %rbx
 movq (%rbx), %rdx
 movq %rdx, %rdi
 movq $0, %rsi
@@ -347,7 +347,7 @@ movq (%rax), %rbx
 movq %rbp, %rax
 subq $128, %rax
 movq (%rax), %rcx
-cmpq %rcx, %rbx
+cmpq %rbx, %rcx
 jg _splitString_whileEnd1
 movq %rbp, %rax
 subq $256, %rax
@@ -361,7 +361,7 @@ pushq %rdx
 pushq %rsi
 pushq %rdi
 movq %rbp, %rbx
-subq $72, %rbx
+subq $160, %rbx
 movq (%rbx), %rcx
 movq %rcx, %rdi
 movq %rbp, %rbx
@@ -415,7 +415,7 @@ pushq %rdx
 pushq %rsi
 pushq %rdi
 movq %rbp, %rbx
-subq $72, %rbx
+subq $160, %rbx
 movq (%rbx), %rcx
 movq %rcx, %rdi
 movq %rbp, %rbx
@@ -439,7 +439,7 @@ pushq %rcx
 pushq %rdx
 pushq %rsi
 pushq %rdi
-subq $72, %rbp
+subq $160, %rbp
 movq (%rbp), %rsp
 movq %rsp, %rdi
 call @strlen

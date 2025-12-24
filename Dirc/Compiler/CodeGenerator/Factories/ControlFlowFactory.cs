@@ -20,7 +20,7 @@ class ControlFlowFactory
 
         IReturnable left = context.ExprFactory.Generate(node.Left, context) ?? throw new Exception("Part of if statement was not set");
         IReturnable right = context.ExprFactory.Generate(node.Right, context) ?? throw new Exception("Part of if statement was not set");
-        _codeGenBase.EmitIf(node.Operation.GetComparer().GetOpposite(), left, right, label);
+        _codeGenBase.EmitIf(node.Operation.GetComparer().GetOpposite(), left, right, label, context.Allocator);
         left.Free();
         right.Free();
 
@@ -56,7 +56,7 @@ class ControlFlowFactory
         {
             IReturnable left = context.ExprFactory.Generate(condition.Left, context) ?? throw new Exception("Part of if statement was not set");
             IReturnable right = context.ExprFactory.Generate(condition.Right, context) ?? throw new Exception("Part of if statement was not set");
-            _codeGenBase.EmitIf(condition.Operation.GetComparer().GetOpposite(), left, right, label);
+            _codeGenBase.EmitIf(condition.Operation.GetComparer().GetOpposite(), left, right, label, context.Allocator);
             left.Free();
             right.Free();
         }
@@ -66,7 +66,7 @@ class ControlFlowFactory
 
             if (conditionResult is ReturnRegister reg)
             {
-                _codeGenBase.EmitIf(Comparer.IfEq, reg, new NumberLiteralNode(0), label);
+                _codeGenBase.EmitIf(Comparer.IfEq, reg, new NumberLiteralNode(0), label, context.Allocator);
             }
             else if (conditionResult is NumberLiteralNode num)
             {
@@ -119,7 +119,7 @@ class ControlFlowFactory
         {
             IReturnable left = context.ExprFactory.Generate(condition.Left, context) ?? throw new Exception("Part of while statement was not set");
             IReturnable right = context.ExprFactory.Generate(condition.Right, context) ?? throw new Exception("Part of while statement was not set");
-            _codeGenBase.EmitIf(condition.Operation.GetComparer().GetOpposite(), left, right, loopEndLabel);
+            _codeGenBase.EmitIf(condition.Operation.GetComparer().GetOpposite(), left, right, loopEndLabel, context.Allocator);
             left.Free();
             right.Free();
         }
@@ -129,7 +129,7 @@ class ControlFlowFactory
 
             if (conditionResult is ReturnRegister reg)
             {
-                _codeGenBase.EmitIf(Comparer.IfEq, reg, new NumberLiteralNode(0), loopEndLabel);
+                _codeGenBase.EmitIf(Comparer.IfEq, reg, new NumberLiteralNode(0), loopEndLabel, context.Allocator);
             }
             else if (conditionResult is NumberLiteralNode num)
             {
@@ -188,7 +188,7 @@ class ControlFlowFactory
             {
                 IReturnable left = context.ExprFactory.Generate(condition.Left, context) ?? throw new Exception("Part of for condition was not set");
                 IReturnable right = context.ExprFactory.Generate(condition.Right, context) ?? throw new Exception("Part of for condition was not set");
-                _codeGenBase.EmitIf(condition.Operation.GetComparer().GetOpposite(), left, right, loopEndLabel);
+                _codeGenBase.EmitIf(condition.Operation.GetComparer().GetOpposite(), left, right, loopEndLabel, context.Allocator);
                 left.Free();
                 right.Free();
             }
@@ -198,7 +198,7 @@ class ControlFlowFactory
 
                 if (conditionResult is ReturnRegister reg)
                 {
-                    _codeGenBase.EmitIf(Comparer.IfEq, reg, new NumberLiteralNode(0), loopEndLabel);
+                    _codeGenBase.EmitIf(Comparer.IfEq, reg, new NumberLiteralNode(0), loopEndLabel, context.Allocator);
                 }
                 else if (conditionResult is NumberLiteralNode num)
                 {

@@ -2,13 +2,13 @@ label stringToInt
 push lr _ _
 push fp _ _
 mov sp _ fp
-sub|i2 sp 6 sp
+sub|i2 sp 7 sp
 sub|i2 fp 1 r1
 store|i1 0 r1 _
 sub|i2 fp 2 r1
 push r0 _ _
 push r1 _ _
-sub|i2 fp 7 r2
+sub|i2 fp 8 r2
 load r2 _ r3
 mov r3 _ r0
 call @strlen _ _
