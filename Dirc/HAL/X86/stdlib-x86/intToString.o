@@ -5,7 +5,7 @@ subq $32, %rsp
 cmpq $0, %rdi
 jge _intToString_if0
 movq %rbp, %rax
-subq $8, %rax
+subq $64, %rax
 pushq %rax
 pushq %rdi
 movq $2, %rdi
@@ -33,7 +33,7 @@ popq %rbp
 ret
 _intToString_if0:
 movq %rbp, %rax
-subq $8, %rax
+subq $64, %rax
 pushq %rax
 pushq %rdi
 movq %rbp, %rbx
@@ -46,7 +46,7 @@ popq %rdi
 popq %rax
 movq %rbx, (%rax)
 movq %rbp, %rax
-subq $16, %rax
+subq $128, %rax
 pushq %rax
 pushq %rdi
 movq %rbp, %rbx
@@ -60,7 +60,7 @@ popq %rdi
 popq %rax
 movq %rbx, (%rax)
 movq %rbp, %rax
-subq $24, %rax
+subq $192, %rax
 movq %rbp, %rbx
 subq $64, %rbx
 movq (%rbx), %rcx
@@ -103,7 +103,7 @@ pop %rdx
 pop %rax
 movq %rax, %rdi
 movq %rbp, %rax
-subq $24, %rax
+subq $192, %rax
 movq %rbp, %rbx
 subq $192, %rbx
 movq (%rbx), %rcx
@@ -130,7 +130,7 @@ subq $32, %rsp
 cmpq $0, %rdi
 jg _intToString_else0
 movq %rbp, %rax
-subq $8, %rax
+subq $64, %rax
 pushq %rax
 pushq %rdi
 pushq %rax
@@ -150,11 +150,11 @@ popq %rdi
 popq %rax
 movq %rbx, (%rax)
 movq %rbp, %rax
-subq $16, %rax
+subq $128, %rax
 pushq %rax
 pushq %rdi
 movq %rbp, %rbx
-subq $32, %rbx
+subq $256, %rbx
 movq %rbx, %rcx
 movq $45, (%rcx)
 leaq 1(%rbx), %rcx
@@ -205,14 +205,14 @@ pushq %rbp
 movq %rsp, %rbp
 subq $8, %rsp
 movq %rbp, %rax
-subq $8, %rax
+subq $64, %rax
 movq $1, (%rax)
 cmpq $64, $64
 jne _intToString_if1
 cmpq $10000000000000000, %rdi
 jne _intToString_if2
 movq %rbp, %rax
-subq $8, %rax
+subq $64, %rax
 movq %rbp, %rbx
 subq $64, %rbx
 movq (%rbx), %rcx
@@ -233,7 +233,7 @@ jne _intToString_if3
 cmpq $100000000, %rdi
 jne _intToString_if4
 movq %rbp, %rax
-subq $8, %rax
+subq $64, %rax
 movq %rbp, %rbx
 subq $64, %rbx
 movq (%rbx), %rcx
@@ -252,7 +252,7 @@ _intToString_if3:
 cmpq $10000, %rdi
 jne _intToString_if5
 movq %rbp, %rax
-subq $8, %rax
+subq $64, %rax
 movq %rbp, %rbx
 subq $64, %rbx
 movq (%rbx), %rcx
@@ -270,7 +270,7 @@ _intToString_if5:
 cmpq $100, %rdi
 jne _intToString_if6
 movq %rbp, %rax
-subq $8, %rax
+subq $64, %rax
 movq %rbp, %rbx
 subq $64, %rbx
 movq (%rbx), %rcx
@@ -288,7 +288,7 @@ _intToString_if6:
 cmpq $10, %rdi
 jne _intToString_if7
 movq %rbp, %rax
-subq $8, %rax
+subq $64, %rax
 movq %rbp, %rbx
 subq $64, %rbx
 movq (%rbx), %rcx

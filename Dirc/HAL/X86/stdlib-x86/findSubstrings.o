@@ -3,7 +3,7 @@ pushq %rbp
 movq %rsp, %rbp
 subq $32, %rsp
 movq %rbp, %rax
-subq $8, %rax
+subq $64, %rax
 pushq %rax
 pushq %rdx
 pushq %rsi
@@ -20,7 +20,7 @@ popq %rdx
 popq %rax
 movq %rbx, (%rax)
 movq %rbp, %rax
-subq $16, %rax
+subq $128, %rax
 pushq %rax
 pushq %rdx
 pushq %rsi
@@ -37,10 +37,10 @@ popq %rdx
 popq %rax
 movq %rbx, (%rax)
 movq %rbp, %rax
-subq $24, %rax
+subq $192, %rax
 movq $0, (%rax)
 movq %rbp, %rax
-subq $32, %rax
+subq $256, %rax
 movq %rdx, (%rax)
 _findSubstrings_while0:
 movq %rbp, %rax
@@ -64,7 +64,7 @@ movq (%rbp), %rbx
 cmpq %rbx, %rax
 jge _findSubstrings_else0
 movq %rbp, %rax
-subq $24, %rax
+subq $192, %rax
 movq %rbp, %rbx
 subq $192, %rbx
 movq (%rbx), %rcx
@@ -95,12 +95,12 @@ _findSubstrings_if0:
 jmp _findSubstrings_ifElseEnd0
 _findSubstrings_else0:
 movq %rbp, %rax
-subq $24, %rax
+subq $192, %rax
 movq $0, (%rax)
 _findSubstrings_ifElseEnd0:
 _findSubstrings_while1:
 movq %rbp, %rax
-subq $32, %rax
+subq $256, %rax
 movq %rbp, %rbx
 subq $256, %rbx
 movq (%rbx), %rcx
@@ -121,7 +121,7 @@ pushq %rbp
 movq %rsp, %rbp
 subq $48, %rsp
 movq %rbp, %rax
-subq $8, %rax
+subq $64, %rax
 pushq %rax
 pushq %rsi
 pushq %rdi
@@ -136,7 +136,7 @@ popq %rsi
 popq %rax
 movq %rbx, (%rax)
 movq %rbp, %rax
-subq $16, %rax
+subq $128, %rax
 pushq %rax
 pushq %rsi
 pushq %rdi
@@ -148,13 +148,13 @@ popq %rsi
 popq %rax
 movq %rbx, (%rax)
 movq %rbp, %rax
-subq $24, %rax
+subq $192, %rax
 movq $0, (%rax)
 movq %rbp, %rax
-subq $32, %rax
+subq $256, %rax
 movq $0, (%rax)
 movq %rbp, %rax
-subq $40, %rax
+subq $320, %rax
 pushq %rax
 pushq %rsi
 pushq %rdi
@@ -183,14 +183,14 @@ movq (%rax), %rbx
 cmpq $-1, %rbx
 je _findSubstrings_whileEnd1
 movq %rbp, %rax
-subq $24, %rax
+subq $192, %rax
 movq %rbp, %rbx
 subq $192, %rbx
 movq (%rbx), %rcx
 leaq 1(%rcx), %rbx
 movq %rbx, (%rax)
 movq %rbp, %rax
-subq $48, %rax
+subq $384, %rax
 pushq %rax
 pushq %rsi
 pushq %rdi
@@ -213,7 +213,7 @@ movq (%rax), %rcx
 cmpq %rcx, %rbx
 jne _findSubstrings_if1
 movq %rbp, %rax
-subq $16, %rax
+subq $128, %rax
 pushq %rax
 pushq %rsi
 pushq %rdi
@@ -247,7 +247,7 @@ subq $320, %rax
 movq (%rax), %rbx
 movq %rbx, (%rdx)
 movq %rbp, %rax
-subq $32, %rax
+subq $256, %rax
 movq %rbp, %rbx
 subq $320, %rbx
 movq (%rbx), %rcx
@@ -257,7 +257,7 @@ movq (%rbx), %rdx
 leaq (%rcx, %rdx), %rbx
 movq %rbx, (%rax)
 movq %rbp, %rax
-subq $40, %rax
+subq $320, %rax
 pushq %rax
 pushq %rsi
 pushq %rdi
@@ -282,7 +282,7 @@ movq %rbx, (%rax)
 jmp _findSubstrings_while2
 _findSubstrings_whileEnd1:
 movq %rbp, %rax
-subq $16, %rax
+subq $128, %rax
 pushq %rax
 pushq %rsi
 pushq %rdi

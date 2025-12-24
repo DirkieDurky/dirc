@@ -21,7 +21,7 @@ class PointerFactory
             _codeGenBase.EmitBinaryOperation(
                 Operation.Sub,
                 new ReadonlyRegister(context.FP),
-                new NumberLiteralNode(NumberLiteralType.Decimal, stackVar.FramePointerOffset.ToString()),
+                new NumberLiteralNode(NumberLiteralType.Decimal, (stackVar.FramePointerOffset * context.Options.TargetArchitecture.StackSlotSize).ToString()),
                 tmp
             );
             return new ReturnRegister(tmp);

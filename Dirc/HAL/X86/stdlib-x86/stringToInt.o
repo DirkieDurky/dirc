@@ -3,10 +3,10 @@ pushq %rbp
 movq %rsp, %rbp
 subq $48, %rsp
 movq %rbp, %rax
-subq $8, %rax
+subq $64, %rax
 movq $0, (%rax)
 movq %rbp, %rax
-subq $16, %rax
+subq $128, %rax
 pushq %rax
 pushq %rdi
 movq %rbp, %rbx
@@ -19,10 +19,10 @@ popq %rdi
 popq %rax
 movq %rbx, (%rax)
 movq %rbp, %rax
-subq $32, %rax
+subq $256, %rax
 movq $0, (%rax)
 movq %rbp, %rax
-subq $40, %rax
+subq $320, %rax
 movq %rbp, %rbx
 subq $128, %rbx
 movq (%rbx), %rcx
@@ -34,7 +34,7 @@ movq (%rax), %rbx
 cmpq $0, %rbx
 jne _stringToInt_whileEnd0
 movq %rbp, %rax
-subq $24, %rax
+subq $192, %rax
 movq %rbp, %rbx
 subq $320, %rbx
 movq (%rbx), %rcx
@@ -66,7 +66,7 @@ andq %rbx, %rcx
 cmpq $0, %rcx
 je _stringToInt_if0
 movq %rbp, %rax
-subq $48, %rax
+subq $384, %rax
 movq %rbp, %rbx
 subq $192, %rbx
 movq (%rbx), %rcx
@@ -74,7 +74,7 @@ movq %rcx, %rbx
 subq $48, %rbx
 movq %rbx, (%rax)
 movq %rbp, %rax
-subq $8, %rax
+subq $64, %rax
 movq %rbp, %rbx
 subq $64, %rbx
 movq (%rbx), %rcx
@@ -100,7 +100,7 @@ imulq %rbx, %rsi
 leaq (%rcx, %rsi), %rbx
 movq %rbx, (%rax)
 movq %rbp, %rax
-subq $32, %rax
+subq $256, %rax
 movq %rbp, %rbx
 subq $256, %rbx
 movq (%rbx), %rcx
@@ -109,7 +109,7 @@ movq %rbx, (%rax)
 _stringToInt_if0:
 _stringToInt_while1:
 movq %rbp, %rax
-subq $40, %rax
+subq $320, %rax
 movq %rbp, %rbx
 subq $320, %rbx
 movq (%rbx), %rcx

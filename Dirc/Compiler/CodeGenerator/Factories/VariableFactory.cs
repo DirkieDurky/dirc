@@ -73,7 +73,7 @@ class VariableFactory
             _codeGenBase.EmitBinaryOperation(
                 Operation.Sub,
                 new ReadonlyRegister(context.FP),
-                new NumberLiteralNode(NumberLiteralType.Decimal, offset.ToString()),
+                new NumberLiteralNode(NumberLiteralType.Decimal, (offset * context.Options.TargetArchitecture.StackSlotSize).ToString()),
                 basePtr
             );
 

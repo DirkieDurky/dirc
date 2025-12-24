@@ -3,7 +3,7 @@ pushq %rbp
 movq %rsp, %rbp
 subq $8, %rsp
 movq %rbp, %rax
-subq $8, %rax
+subq $64, %rax
 leaq (%rdi, %rsi), %rcx
 movq (%rcx), %rbx
 movq %rbx, (%rax)
@@ -25,17 +25,17 @@ pushq %rbp
 movq %rsp, %rbp
 subq $24, %rsp
 movq %rbp, %rax
-subq $8, %rax
+subq $64, %rax
 leaq (%rdi, %rdx), %rcx
 movq (%rcx), %rbx
 movq %rbx, (%rax)
 movq %rbp, %rax
-subq $16, %rax
+subq $128, %rax
 movq %rsi, %rbx
 subq $1, %rbx
 movq %rbx, (%rax)
 movq %rbp, %rax
-subq $24, %rax
+subq $192, %rax
 movq %rsi, (%rax)
 _sortArray_while0:
 movq %rbp, %rax
@@ -56,7 +56,7 @@ movq (%rbx), %rcx
 cmpq %rcx, %rax
 jle _sortArray_if0
 movq %rbp, %rax
-subq $16, %rax
+subq $128, %rax
 movq %rbp, %rbx
 subq $128, %rbx
 movq (%rbx), %rcx
@@ -84,7 +84,7 @@ popq %rdx
 _sortArray_if0:
 _sortArray_while1:
 movq %rbp, %rax
-subq $24, %rax
+subq $192, %rax
 movq %rbp, %rbx
 subq $192, %rbx
 movq (%rbx), %rcx
@@ -130,7 +130,7 @@ subq $8, %rsp
 cmpq %rdx, %rsi
 jg _sortArray_if1
 movq %rbp, %rax
-subq $8, %rax
+subq $64, %rax
 pushq %rax
 pushq %rdx
 pushq %rsi

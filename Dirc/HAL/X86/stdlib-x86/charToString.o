@@ -3,7 +3,7 @@ pushq %rbp
 movq %rsp, %rbp
 subq $8, %rsp
 movq %rbp, %rax
-subq $8, %rax
+subq $64, %rax
 pushq %rax
 pushq %rdi
 movq $2, %rdi

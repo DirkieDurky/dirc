@@ -3,7 +3,7 @@ pushq %rbp
 movq %rsp, %rbp
 subq $48, %rsp
 movq %rbp, %rax
-subq $8, %rax
+subq $64, %rax
 pushq %rax
 pushq %rsi
 pushq %rdi
@@ -18,7 +18,7 @@ popq %rsi
 popq %rax
 movq %rbx, (%rax)
 movq %rbp, %rax
-subq $16, %rax
+subq $128, %rax
 pushq %rax
 pushq %rsi
 pushq %rdi
@@ -33,7 +33,7 @@ popq %rsi
 popq %rax
 movq %rbx, (%rax)
 movq %rbp, %rax
-subq $24, %rax
+subq $192, %rax
 movq %rbp, %rbx
 subq $64, %rbx
 movq (%rbx), %rcx
@@ -44,7 +44,7 @@ leaq (%rcx, %rdx), %rbx
 leaq 1(%rbx), %rcx
 movq %rcx, (%rax)
 movq %rbp, %rax
-subq $32, %rax
+subq $256, %rax
 pushq %rax
 pushq %rsi
 pushq %rdi
@@ -59,7 +59,7 @@ popq %rsi
 popq %rax
 movq %rbx, (%rax)
 movq %rbp, %rax
-subq $40, %rax
+subq $320, %rax
 movq $0, (%rax)
 _concat_while0:
 movq %rbp, %rax
@@ -85,7 +85,7 @@ movq (%rbp), %rbx
 movq %rbx, (%rdx)
 _concat_while1:
 movq %rbp, %rax
-subq $40, %rax
+subq $320, %rax
 movq %rbp, %rbx
 subq $320, %rbx
 movq (%rbx), %rcx
@@ -94,7 +94,7 @@ movq %rbx, (%rax)
 jmp _concat_while0
 _concat_whileEnd0:
 movq %rbp, %rax
-subq $48, %rax
+subq $384, %rax
 movq $0, (%rax)
 _concat_while2:
 movq %rbp, %rax
@@ -124,7 +124,7 @@ movq (%rbp), %rax
 movq %rax, (%rdx)
 _concat_while3:
 movq %rbp, %rax
-subq $48, %rax
+subq $384, %rax
 movq %rbp, %rbx
 subq $384, %rbx
 movq (%rbx), %rcx

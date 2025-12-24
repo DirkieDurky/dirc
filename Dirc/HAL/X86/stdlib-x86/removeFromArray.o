@@ -3,7 +3,7 @@ pushq %rbp
 movq %rsp, %rbp
 subq $8, %rsp
 movq %rbp, %rax
-subq $8, %rax
+subq $64, %rax
 leaq 1(%rdx), %rbx
 movq %rbx, (%rax)
 _removeFromArray_while0:
@@ -26,7 +26,7 @@ movq (%rsp), %rax
 movq %rax, (%rcx)
 _removeFromArray_while1:
 movq %rbp, %rax
-subq $8, %rax
+subq $64, %rax
 movq %rbp, %rbx
 subq $64, %rbx
 movq (%rbx), %rcx
@@ -63,7 +63,7 @@ pushq %rbp
 movq %rsp, %rbp
 subq $8, %rsp
 movq %rbp, %rax
-subq $8, %rax
+subq $64, %rax
 pushq %rax
 pushq %rdx
 pushq %rsi
@@ -119,7 +119,7 @@ pushq %rbp
 movq %rsp, %rbp
 subq $24, %rsp
 movq %rbp, %rax
-subq $8, %rax
+subq $64, %rax
 pushq %rax
 pushq %rdx
 pushq %rsi
@@ -144,10 +144,10 @@ popq %rdx
 popq %rax
 movq %rbx, (%rax)
 movq %rbp, %rax
-subq $16, %rax
+subq $128, %rax
 movq %rdi, (%rax)
 movq %rbp, %rax
-subq $24, %rax
+subq $192, %rax
 pushq %rax
 pushq %rdx
 pushq %rsi
@@ -172,7 +172,7 @@ movq (%rax), %rbx
 cmpq $0, %rbx
 jne _removeFromArray_whileEnd1
 movq %rbp, %rax
-subq $16, %rax
+subq $128, %rax
 pushq %rax
 pushq %rdx
 pushq %rsi
@@ -214,7 +214,7 @@ popq %rax
 movq %rbx, (%rax)
 _removeFromArray_while3:
 movq %rbp, %rax
-subq $24, %rax
+subq $192, %rax
 movq %rbp, %rbx
 subq $192, %rbx
 movq (%rbx), %rcx
