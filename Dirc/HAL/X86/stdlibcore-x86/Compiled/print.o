@@ -7,7 +7,18 @@ movq %rbp, %rax
 subq $8, %rax
 movq (%rax), %rbx
 movq %rbx, %rsi
-movq $20, %rdx
+pushq %rbx
+pushq %rsi
+pushq %rdi
+movq %rbp, %rax
+subq $8, %rax
+movq (%rax), %rcx
+movq %rcx, %rdi
+call @strlen
+popq %rdi
+popq %rsi
+popq %rbx
+movq %rax, %rdx
 call @write
 popq %rdi
 movq %rbp, %rsp

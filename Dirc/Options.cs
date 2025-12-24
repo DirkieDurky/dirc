@@ -5,6 +5,8 @@ namespace Dirc;
 
 public class Options
 {
+    [Option('v', "verbose", Required = false, HelpText = "Log results")]
+    public bool Verbose { get; set; } = false;
     [Option('c', "no-link", Required = false, HelpText = "Don't run linker after compiling.")]
     public bool CompileOnly { get; set; } = false;
 

@@ -63,7 +63,7 @@ public class Driver
         {
             BuildContext buildContext = new(file, compilationUnit, Helper.FilesMatch(file, rootFile));
             backEndResults.Add(file, new Compiler().RunBackEnd(result.AstNodes, finalSymbolTable, options, buildContext, buildEnvironment));
-            Console.WriteLine($"Successfully compiled '{Helper.GetRelativePath(file)}'");
+            if (options.Verbose) Console.WriteLine($"Successfully compiled '{Helper.GetRelativePath(file)}'");
         }
 
         if (options.OutPath == null)
@@ -87,7 +87,7 @@ public class Driver
             Directory.CreateDirectory(options.OutPath);
         }
 
-        Console.WriteLine("Successfully compiled all files. Writing...");
+        if (options.Verbose) Console.WriteLine("Successfully compiled all files. Writing...");
         if (options.CompileOnly)
         {
             if (options.ExportingAsLibrary)
@@ -95,7 +95,7 @@ public class Driver
                 string fileName = $"{options.LibName}.meta";
                 string resultPath = Path.Combine(options.OutPath, fileName);
                 File.WriteAllText(resultPath, JsonSerializer.Serialize(finalSymbolTable));
-                Console.WriteLine($"Wrote meta file at '{Helper.GetRelativePath(resultPath)}'");
+                if (options.Verbose) Console.WriteLine($"Wrote meta file at '{Helper.GetRelativePath(resultPath)}'");
             }
 
             foreach ((string file, CompilerResult result) in backEndResults)
@@ -109,7 +109,7 @@ public class Driver
 
                 Directory.CreateDirectory(Path.GetDirectoryName(resultPath)!);
                 File.WriteAllText(resultPath, result.Code);
-                Console.WriteLine($"Wrote results of source file '{Helper.GetRelativePath(file)}' at '{Helper.GetRelativePath(resultPath)}'");
+                if (options.Verbose) Console.WriteLine($"Wrote results of source file '{Helper.GetRelativePath(file)}' at '{Helper.GetRelativePath(resultPath)}'");
             }
 
             if (options.LibName != null)
