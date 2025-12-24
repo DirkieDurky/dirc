@@ -1,12 +1,13 @@
 println:
-push %rbp
+pushq %rbp
 movq %rsp, %rbp
-push %rdi
+pushq %rdi
 movq %rbp, %rax
-movq %rax, %rbx
+subq $8, %rax
+movq (%rax), %rbx
 movq %rbx, %rdi
 call @print
-pop %rdi
+popq %rdi
 movq %rbp, %rsp
-pop %rbp
+popq %rbp
 ret

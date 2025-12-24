@@ -2,6 +2,9 @@ namespace Dirc.HAL;
 
 public class Diric : ITargetArchitecture
 {
+    public string Headers => "jump _start _ pc\n";
+    public string StartLabel => "label _start";
+
     public RegisterBase[] AvailableRegisters => [
             new RegisterBase(0, "r0", false),
             new RegisterBase(1, "r1", false),
@@ -51,6 +54,7 @@ public class Diric : ITargetArchitecture
     public RegisterBase[] CalleeSavedRegisters => [];
 
     public int StackAlignment => 1;
+    public int StackSlotSize => 1;
 
     public string StdlibName => "stdlib-diric";
     public string StdlibcoreName => "stdlibcore-diric";

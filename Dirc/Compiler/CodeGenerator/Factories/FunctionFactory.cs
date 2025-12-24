@@ -77,7 +77,7 @@ class FunctionFactory
         _codeGenBase.EmitBinaryOperation(
             Operation.Sub,
             new ReadonlyRegister(context.SP),
-            new NumberLiteralNode(context.Options.TargetArchitecture.StackAlignment * context.StackframeSize),
+            new NumberLiteralNode(context.Options.TargetArchitecture.StackSlotSize * context.StackframeSize),
             context.Allocator.Use(context.SP)
         );
     }

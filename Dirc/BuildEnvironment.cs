@@ -10,6 +10,7 @@ public class BuildEnvironment
     // This should match the data width used ingame.
     // When changing this, usually changing the data width in the ram component and
     // replacing the condition component by it's counterpart for the new data width is sufficient.
+    // Also note that when changing this, ScreenBufferStart will change so the screen buffer start in game should be changed accordingly
     // public const int DataWidth = 16;
     public const int DataWidth = 64;
     public const int WordSize = DataWidth / 8; // Size of a word in bytes.
@@ -17,13 +18,15 @@ public class BuildEnvironment
     // This means we can't modify one byte directly. We can only change 1 entire word.
 
     // Size of the ram in bytes. This may not be higher than the size of ram in game
+    // Note that when changing this, ScreenBufferStart will change so the screen buffer start in game should be changed accordingly
     public const int RamBytes = 536870912; // 512MiB
     // public const int RamBytes = 256; // Fits in RAM display ingame
     // public const int RamBytes = 65536;
     public const int RamWords = RamBytes / WordSize;
-    public const int MaxRamAddress = RamWords - 1;
+    public const int MaxRamAddress = RamWords;
 
-    public const int ScreenBufferStart = MaxRamAddress + 1;
+    // This should always match the screen buffer start in the game
+    public const int ScreenBufferStart = MaxRamAddress;
 
     // Defining how to divide up RAM:
     // Sizes of each section in bytes

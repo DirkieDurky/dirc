@@ -148,16 +148,16 @@ class CodeGenContext : ICloneable
 
     public int AllocateStackVariable(string name)
     {
+        NextVariableOffset += Options.TargetArchitecture.StackSlotSize;
         int offset = NextVariableOffset;
-        NextVariableOffset++;
         VariableTable[name] = new StackStoredVariable(name, offset);
         return offset;
     }
 
     public int Push(IOperand operand, CodeGenContext context)
     {
-        int offset = context.StackframeSize - StackPointerOffset;
         StackPointerOffset--;
+        int offset = context.StackframeSize - StackPointerOffset;
 
         CodeGenBase.EmitPush(operand);
         return offset;
@@ -165,14 +165,14 @@ class CodeGenContext : ICloneable
 
     public void Pop(Register reg)
     {
-        StackPointerOffset++;
         CodeGenBase.EmitPop(reg);
+        StackPointerOffset++;
     }
 
     public int AllocateStackArray(int size, string? name)
     {
-        int offset = NextVariableOffset + size - Options.TargetArchitecture.StackAlignment;
-        NextVariableOffset += size;
+        NextVariableOffset += size * Options.TargetArchitecture.StackSlotSize;
+        int offset = NextVariableOffset;
         if (name != null)
         {
             VariableTable[name] = new StackStoredVariable(name, offset, true);

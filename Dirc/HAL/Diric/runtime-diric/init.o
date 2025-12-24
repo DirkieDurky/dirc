@@ -2,4 +2,3 @@ mov|i1 [STACK_START] _ sp # Initialize stack pointer
 store|i1|i2 [SCREEN_BUFFER_START] [SCREEN_POINTER_ADDRESS] _ # Initialize screen pointer
 store|i1|i2 [HEAP_START] [FREE_LIST_HEAD_ADDRESS] _ # Initialize free list head
 mov sp _ fp # Initialize frame pointer
-jump _start _ pc

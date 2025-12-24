@@ -16,18 +16,20 @@ public interface ITargetArchitecture
     RegisterBase ReturnRegister { get; } // Register used for the return value of functions
     RegisterBase[] CallerSavedRegisters { get; }
     RegisterBase[] CalleeSavedRegisters { get; }
-    int StackAlignment { get; }
+    int StackAlignment { get; } // The amount of bytes the stack pointer has to be aligned by before each function call
+    int StackSlotSize { get; } // The amount of bytes the stack pointer moves with every push / pop
     string StdlibName { get; }
     string StdlibcoreName { get; }
     IRuntimeLibrary RuntimeLibrary { get; }
     ICodeGenBase CodeGenBase { get; }
     Dictionary<string, int> Keywords { get; }
+    string Headers { get; } // The text the linker should put at the start of the file
+    string StartLabel { get; }
 }
 
 public interface ICodeGenBase
 {
     public StringBuilder Code { get; }
-    void EmitStartLabel();
     void EmitLabel(string name);
     void EmitComment(string comment);
     void EmitMov(IOperand item, Register result);

@@ -13,8 +13,7 @@ partial class Linker
         HashSet<string> toImport = GetFilesToImport(assembly, searchLibs.ToList(), [], options);
 
         StringBuilder result = new();
-        result.Append(File.ReadAllText(Path.Combine(options.TargetArchitecture.RuntimeLibrary.GetPath(), "init.o")));
-        result.AppendLine();
+        result.AppendLine(options.TargetArchitecture.Headers);
         foreach (string importPath in toImport)
         {
             result.Append(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "lib", importPath)));
@@ -25,6 +24,11 @@ partial class Linker
             result.Append(code);
             result.AppendLine();
         }
+        string initCode = File.ReadAllText(Path.Combine(options.TargetArchitecture.RuntimeLibrary.GetPath(), "init.o"));
+        // assembly.Replace(options.TargetArchitecture.StartLabel, options.TargetArchitecture.StartLabel + initCode);
+        int startLabelIndex = assembly.IndexOf(options.TargetArchitecture.StartLabel);
+        if (startLabelIndex == -1) throw new Exception("No start label found in code");
+        assembly = assembly.Insert(startLabelIndex + options.TargetArchitecture.StartLabel.Length + 1, initCode);
         result.Append(assembly);
 
         foreach (GlobalConstant globalConstant in BuildEnvironment.GlobalConstants)

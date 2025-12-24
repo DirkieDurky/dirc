@@ -2,6 +2,9 @@ namespace Dirc.HAL;
 
 public class X86 : ITargetArchitecture
 {
+    public string Headers => ".global _start\n\n.text";
+    public string StartLabel => "_start:";
+
     public RegisterBase[] AvailableRegisters => [
             new RegisterBase(0, "rax", false),
             new RegisterBase(1, "rbx", false),
@@ -59,7 +62,8 @@ public class X86 : ITargetArchitecture
 
     public RegisterBase[] CalleeSavedRegisters => [];
 
-    public int StackAlignment => 1;
+    public int StackAlignment => 16;
+    public int StackSlotSize => 8; // Assuming I always use 64-bit registers
 
     public string StdlibName => "stdlib-x86";
     public string StdlibcoreName => "stdlibcore-x86";

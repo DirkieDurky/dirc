@@ -10,17 +10,17 @@ pop _ _ fp
 pop _ _ lr
 return _ _ _
 label _arraysMatch_if0
-mov fp _ r4
+sub|i2 fp 1 r4
 store|i1 0 r4 _
 label _arraysMatch_while0
-mov fp _ r4
+sub|i2 fp 1 r4
 load r4 _ r5
 ifMoreOrEq r5 r1 _arraysMatch_whileEnd0
-mov fp _ r4
+sub|i2 fp 1 r4
 load r4 _ r5
 add r0 r5 r6
 load r6 _ r4
-mov fp _ r5
+sub|i2 fp 1 r5
 load r5 _ r6
 add r2 r6 r7
 load r7 _ r5
@@ -32,8 +32,8 @@ pop _ _ lr
 return _ _ _
 label _arraysMatch_if1
 label _arraysMatch_while1
-mov fp _ r4
-mov fp _ r5
+sub|i2 fp 1 r4
+sub|i2 fp 1 r5
 load r5 _ r6
 add|i2 r6 1 r5
 store r5 r4 _

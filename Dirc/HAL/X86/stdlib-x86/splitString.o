@@ -1,455 +1,470 @@
 splitStringByChar:
-push %rbp
+pushq %rbp
 movq %rsp, %rbp
-subq $3, %rsp
+subq $24, %rsp
 movq %rbp, %rax
-push %rax
-push %rsi
-push %rdi
+subq $8, %rax
+pushq %rax
+pushq %rsi
+pushq %rdi
 movq %rbp, %rbx
-subq $5, %rbx
-movq %rbx, %rcx
+subq $48, %rbx
+movq (%rbx), %rcx
 movq %rcx, %rdi
-push %rax
-push %rcx
-push %rsi
-push %rdi
+pushq %rax
+pushq %rcx
+pushq %rsi
+pushq %rdi
 movq %rbp, %rbx
-subq $5, %rbx
-movq %rbx, %rdx
+subq $48, %rbx
+movq (%rbx), %rdx
 movq %rdx, %rdi
 call @strlen
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rcx
-pop %rax
+popq %rdi
+popq %rsi
+popq %rcx
+popq %rax
 movq %rbx, %rsi
 movq %rbp, %rdx
-subq $4, %rdx
-movq %rdx, %rbp
+subq $40, %rdx
+movq (%rdx), %rbp
 movq %rbp, %rdx
 call @findAll
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rax
-movq %rbx, %rax
+popq %rdi
+popq %rsi
+popq %rax
+movq %rbx, (%rax)
 movq %rbp, %rax
-subq $1, %rax
-push %rax
-push %rsi
-push %rdi
-push %rax
-push %rsi
-push %rdi
+subq $16, %rax
+pushq %rax
+pushq %rsi
+pushq %rdi
+pushq %rax
+pushq %rsi
+pushq %rdi
 movq %rbp, %rbx
-movq %rbx, %rcx
+subq $64, %rbx
+movq (%rbx), %rcx
 movq %rcx, %rdi
 call @getSize
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rax
+popq %rdi
+popq %rsi
+popq %rax
 leaq 1(%rbx), %rcx
 movq %rcx, %rdi
 call @malloc
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rax
-movq %rbx, %rax
+popq %rdi
+popq %rsi
+popq %rax
+movq %rbx, (%rax)
 movq %rbp, %rax
-subq $1, %rax
-movq %rax, %rbx
+subq $128, %rax
+movq (%rax), %rbx
 movq %rbx, %rcx
-push %rax
-push %rcx
-push %rsi
-push %rdi
+pushq %rax
+pushq %rcx
+pushq %rsi
+pushq %rdi
 movq %rbp, %rbx
-subq $6, %rbx
-movq %rbx, %rdx
+subq $56, %rbx
+movq (%rbx), %rdx
 movq %rdx, %rdi
 movq $0, %rsi
 movq %rbp, %rbx
-movq %rbx, %rbp
+subq $64, %rbx
+movq (%rbx), %rbp
 movq %rbp, %rsp
-movq %rsp, %rbx
+movq (%rsp), %rbx
 movq %rbx, %rdx
 call @substring
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rcx
-pop %rax
-movq %rbx, %rcx
+popq %rdi
+popq %rsi
+popq %rcx
+popq %rax
+movq %rbx, (%rcx)
 movq %rbp, %rax
-subq $2, %rax
-movq $1, %rax
+subq $24, %rax
+movq $1, (%rax)
 _splitString_while0:
 movq %rbp, %rax
-subq $2, %rax
-movq %rax, %rbx
-push %rbx
-push %rsi
-push %rdi
+subq $192, %rax
+movq (%rax), %rbx
+pushq %rbx
+pushq %rsi
+pushq %rdi
 movq %rbp, %rax
-movq %rax, %rcx
+subq $64, %rax
+movq (%rax), %rcx
 movq %rcx, %rdi
 call @getSize
-pop %rdi
-pop %rsi
-pop %rbx
+popq %rdi
+popq %rsi
+popq %rbx
 cmpq %rax, %rbx
 jg _splitString_whileEnd0
 movq %rbp, %rax
-subq $1, %rax
-movq %rax, %rbx
+subq $128, %rax
+movq (%rax), %rbx
 movq %rbp, %rax
-subq $2, %rax
-movq %rax, %rcx
+subq $192, %rax
+movq (%rax), %rcx
 leaq (%rbx, %rcx), %rdx
-push %rax
-push %rdx
-push %rsi
-push %rdi
+pushq %rax
+pushq %rdx
+pushq %rsi
+pushq %rdi
 movq %rbp, %rbx
-subq $6, %rbx
-movq %rbx, %rcx
+subq $56, %rbx
+movq (%rbx), %rcx
 movq %rcx, %rdi
 movq %rbp, %rbx
-movq %rbx, %rbp
+subq $64, %rbx
+movq (%rbx), %rbp
 movq %rbp, %rbx
-subq $2, %rbx
-movq %rbx, %rsp
+subq $192, %rbx
+movq (%rbx), %rsp
 movq %rsp, %rbx
 subq $1, %rbx
 leaq (%rbp, %rbx), %r8
-movq %r8, %rsp
+movq (%r8), %rsp
 leaq 1(%rsp), %rbx
 movq %rbx, %rsi
-movq %rbp, %rsp
-subq $2, %rbp
-movq %rbp, %r8
+subq $64, %rbp
+movq (%rbp), %rsp
+subq $192, %rbp
+movq (%rbp), %r8
 leaq (%rsp, %r8), %r9
-movq %r9, %rbp
+movq (%r9), %rbp
 movq %rbp, %rdx
 call @substring
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rdx
-pop %rax
-movq %rbx, %rdx
+popq %rdi
+popq %rsi
+popq %rdx
+popq %rax
+movq %rbx, (%rdx)
 _splitString_while1:
 movq %rbp, %rax
-subq $2, %rax
+subq $24, %rax
 movq %rbp, %rbx
-subq $2, %rbx
-movq %rbx, %rcx
+subq $192, %rbx
+movq (%rbx), %rcx
 leaq 1(%rcx), %rbx
-movq %rbx, %rax
+movq %rbx, (%rax)
 jmp _splitString_while0
 _splitString_whileEnd0:
 movq %rbp, %rax
-subq $1, %rax
-movq %rax, %rbx
-push %rbx
-push %rsi
-push %rdi
+subq $128, %rax
+movq (%rax), %rbx
+pushq %rbx
+pushq %rsi
+pushq %rdi
 movq %rbp, %rax
-movq %rax, %rcx
+subq $64, %rax
+movq (%rax), %rcx
 movq %rcx, %rdi
 call @getSize
-pop %rdi
-pop %rsi
-pop %rbx
+popq %rdi
+popq %rsi
+popq %rbx
 leaq (%rbx, %rax), %rdx
-push %rcx
-push %rdx
-push %rsi
-push %rdi
+pushq %rcx
+pushq %rdx
+pushq %rsi
+pushq %rdi
 movq %rbp, %rax
-subq $6, %rax
-movq %rax, %rbx
+subq $56, %rax
+movq (%rax), %rbx
 movq %rbx, %rdi
 movq %rbp, %rax
-movq %rax, %rbp
-push %rbx
-push %rcx
-push %rdx
-push %rsi
-push %rdi
-push %rbp
+subq $64, %rax
+movq (%rax), %rbp
+pushq %rbx
+pushq %rcx
+pushq %rdx
+pushq %rsi
+pushq %rdi
+pushq %rbp
 movq %rbp, %rax
-movq %rax, %rsp
+subq $64, %rax
+movq (%rax), %rsp
 movq %rsp, %rdi
 call @getSize
-pop %rbp
-pop %rdi
-pop %rsi
-pop %rdx
-pop %rcx
-pop %rbx
+popq %rbp
+popq %rdi
+popq %rsi
+popq %rdx
+popq %rcx
+popq %rbx
 movq %rax, %rsp
 subq $1, %rsp
 leaq (%rbp, %rsp), %r8
-movq %r8, %rax
+movq (%r8), %rax
 leaq 1(%rax), %rbp
 movq %rbp, %rsi
-push %rbx
-push %rcx
-push %rdx
-push %rsi
-push %rdi
-push %rbp
+pushq %rbx
+pushq %rcx
+pushq %rdx
+pushq %rsi
+pushq %rdi
+pushq %rbp
 movq %rbp, %rax
-subq $6, %rax
-movq %rax, %rsp
+subq $56, %rax
+movq (%rax), %rsp
 movq %rsp, %rdi
 call @strlen
-pop %rbp
-pop %rdi
-pop %rsi
-pop %rdx
-pop %rcx
-pop %rbx
+popq %rbp
+popq %rdi
+popq %rsi
+popq %rdx
+popq %rcx
+popq %rbx
 movq %rax, %rdx
 call @substring
-pop %rdi
-pop %rsi
-pop %rdx
-pop %rcx
-movq %rax, %rdx
+popq %rdi
+popq %rsi
+popq %rdx
+popq %rcx
+movq %rax, (%rdx)
 movq %rbp, %rax
-subq $1, %rax
-movq %rax, %rbx
+subq $128, %rax
+movq (%rax), %rbx
 movq %rbx, %rax
 movq %rbp, %rsp
-pop %rbp
+popq %rbp
 ret
 movq %rbp, %rsp
-pop %rbp
+popq %rbp
 ret
 
 splitStringBySubstring:
-push %rbp
+pushq %rbp
 movq %rsp, %rbp
-subq $5, %rsp
+subq $40, %rsp
 movq %rbp, %rax
-push %rax
-push %rsi
-push %rdi
+subq $8, %rax
+pushq %rax
+pushq %rsi
+pushq %rdi
 movq %rbp, %rbx
-subq $7, %rbx
-movq %rbx, %rcx
+subq $64, %rbx
+movq (%rbx), %rcx
 movq %rcx, %rdi
 movq %rbp, %rbx
-subq $6, %rbx
-movq %rbx, %rdx
+subq $56, %rbx
+movq (%rbx), %rdx
 movq %rdx, %rsi
 call @findAllNonOverlappingSubstrings
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rax
-movq %rbx, %rax
+popq %rdi
+popq %rsi
+popq %rax
+movq %rbx, (%rax)
 movq %rbp, %rax
-subq $1, %rax
-push %rax
-push %rsi
-push %rdi
+subq $16, %rax
+pushq %rax
+pushq %rsi
+pushq %rdi
 movq %rbp, %rbx
-movq %rbx, %rcx
+subq $64, %rbx
+movq (%rbx), %rcx
 movq %rcx, %rdi
 call @getSize
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rax
-movq %rbx, %rax
+popq %rdi
+popq %rsi
+popq %rax
+movq %rbx, (%rax)
 movq %rbp, %rax
-subq $2, %rax
-push %rax
-push %rsi
-push %rdi
+subq $24, %rax
+pushq %rax
+pushq %rsi
+pushq %rdi
 movq %rbp, %rbx
-subq $6, %rbx
-movq %rbx, %rcx
+subq $56, %rbx
+movq (%rbx), %rcx
 movq %rcx, %rdi
 call @strlen
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rax
-movq %rbx, %rax
+popq %rdi
+popq %rsi
+popq %rax
+movq %rbx, (%rax)
 movq %rbp, %rax
-subq $3, %rax
-push %rax
-push %rsi
-push %rdi
+subq $32, %rax
+pushq %rax
+pushq %rsi
+pushq %rdi
 movq %rbp, %rbx
-subq $1, %rbx
-movq %rbx, %rcx
+subq $128, %rbx
+movq (%rbx), %rcx
 leaq 1(%rcx), %rbx
 movq %rbx, %rdi
 call @malloc
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rax
-movq %rbx, %rax
+popq %rdi
+popq %rsi
+popq %rax
+movq %rbx, (%rax)
 movq %rbp, %rax
-subq $3, %rax
-movq %rax, %rbx
+subq $256, %rax
+movq (%rax), %rbx
 movq %rbx, %rcx
-push %rax
-push %rcx
-push %rsi
-push %rdi
+pushq %rax
+pushq %rcx
+pushq %rsi
+pushq %rdi
 movq %rbp, %rbx
-subq $8, %rbx
-movq %rbx, %rdx
+subq $72, %rbx
+movq (%rbx), %rdx
 movq %rdx, %rdi
 movq $0, %rsi
 movq %rbp, %rbx
-movq %rbx, %rbp
+subq $64, %rbx
+movq (%rbx), %rbp
 movq %rbp, %rsp
-movq %rsp, %rbx
+movq (%rsp), %rbx
 movq %rbx, %rdx
 call @substring
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rcx
-pop %rax
-movq %rbx, %rcx
+popq %rdi
+popq %rsi
+popq %rcx
+popq %rax
+movq %rbx, (%rcx)
 movq %rbp, %rax
-subq $4, %rax
-movq $1, %rax
+subq $40, %rax
+movq $1, (%rax)
 _splitString_while2:
 movq %rbp, %rax
-subq $4, %rax
-movq %rax, %rbx
+subq $320, %rax
+movq (%rax), %rbx
 movq %rbp, %rax
-subq $1, %rax
-movq %rax, %rcx
+subq $128, %rax
+movq (%rax), %rcx
 cmpq %rcx, %rbx
 jg _splitString_whileEnd1
 movq %rbp, %rax
-subq $3, %rax
-movq %rax, %rbx
+subq $256, %rax
+movq (%rax), %rbx
 movq %rbp, %rax
-subq $4, %rax
-movq %rax, %rcx
+subq $320, %rax
+movq (%rax), %rcx
 leaq (%rbx, %rcx), %rdx
-push %rax
-push %rdx
-push %rsi
-push %rdi
+pushq %rax
+pushq %rdx
+pushq %rsi
+pushq %rdi
 movq %rbp, %rbx
-subq $8, %rbx
-movq %rbx, %rcx
+subq $72, %rbx
+movq (%rbx), %rcx
 movq %rcx, %rdi
 movq %rbp, %rbx
-movq %rbx, %rbp
+subq $64, %rbx
+movq (%rbx), %rbp
 movq %rbp, %rbx
-subq $4, %rbx
-movq %rbx, %rsp
+subq $320, %rbx
+movq (%rbx), %rsp
 movq %rsp, %rbx
 subq $1, %rbx
 leaq (%rbp, %rbx), %r8
-movq %r8, %rsp
+movq (%r8), %rsp
 movq %rbp, %rbx
-subq $2, %rbx
-movq %rbx, %rbp
+subq $192, %rbx
+movq (%rbx), %rbp
 leaq (%rsp, %rbp), %rbx
 movq %rbx, %rsi
-movq %rbp, %rsp
-subq $4, %rbp
-movq %rbp, %r8
+subq $64, %rbp
+movq (%rbp), %rsp
+subq $320, %rbp
+movq (%rbp), %r8
 leaq (%rsp, %r8), %r9
-movq %r9, %rbp
+movq (%r9), %rbp
 movq %rbp, %rdx
 call @substring
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rdx
-pop %rax
-movq %rbx, %rdx
+popq %rdi
+popq %rsi
+popq %rdx
+popq %rax
+movq %rbx, (%rdx)
 _splitString_while3:
 movq %rbp, %rax
-subq $4, %rax
+subq $40, %rax
 movq %rbp, %rbx
-subq $4, %rbx
-movq %rbx, %rcx
+subq $320, %rbx
+movq (%rbx), %rcx
 leaq 1(%rcx), %rbx
-movq %rbx, %rax
+movq %rbx, (%rax)
 jmp _splitString_while2
 _splitString_whileEnd1:
 movq %rbp, %rax
-subq $3, %rax
-movq %rax, %rbx
+subq $256, %rax
+movq (%rax), %rbx
 movq %rbp, %rax
-subq $1, %rax
-movq %rax, %rcx
+subq $128, %rax
+movq (%rax), %rcx
 leaq (%rbx, %rcx), %rdx
-push %rax
-push %rdx
-push %rsi
-push %rdi
+pushq %rax
+pushq %rdx
+pushq %rsi
+pushq %rdi
 movq %rbp, %rbx
-subq $8, %rbx
-movq %rbx, %rcx
+subq $72, %rbx
+movq (%rbx), %rcx
 movq %rcx, %rdi
 movq %rbp, %rbx
-movq %rbx, %rbp
+subq $64, %rbx
+movq (%rbx), %rbp
 movq %rbp, %rbx
-subq $1, %rbx
-movq %rbx, %rsp
+subq $128, %rbx
+movq (%rbx), %rsp
 movq %rsp, %rbx
 subq $1, %rbx
 leaq (%rbp, %rbx), %r8
-movq %r8, %rsp
+movq (%r8), %rsp
 movq %rbp, %rbx
-subq $2, %rbx
-movq %rbx, %rbp
+subq $192, %rbx
+movq (%rbx), %rbp
 leaq (%rsp, %rbp), %rbx
 movq %rbx, %rsi
-push %rax
-push %rbx
-push %rcx
-push %rdx
-push %rsi
-push %rdi
-subq $8, %rbp
-movq %rbp, %rsp
+pushq %rax
+pushq %rbx
+pushq %rcx
+pushq %rdx
+pushq %rsi
+pushq %rdi
+subq $72, %rbp
+movq (%rbp), %rsp
 movq %rsp, %rdi
 call @strlen
 movq %rax, %rbp
-pop %rdi
-pop %rsi
-pop %rdx
-pop %rcx
-pop %rbx
-pop %rax
+popq %rdi
+popq %rsi
+popq %rdx
+popq %rcx
+popq %rbx
+popq %rax
 movq %rbp, %rdx
 call @substring
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rdx
-pop %rax
-movq %rbx, %rdx
+popq %rdi
+popq %rsi
+popq %rdx
+popq %rax
+movq %rbx, (%rdx)
 movq %rbp, %rax
-subq $3, %rax
-movq %rax, %rbx
+subq $256, %rax
+movq (%rax), %rbx
 movq %rbx, %rax
 movq %rbp, %rsp
-pop %rbp
+popq %rbp
 ret
 movq %rbp, %rsp
-pop %rbp
+popq %rbp
 ret

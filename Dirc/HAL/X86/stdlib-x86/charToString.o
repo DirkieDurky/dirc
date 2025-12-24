@@ -1,30 +1,34 @@
 charToString:
-push %rbp
+pushq %rbp
 movq %rsp, %rbp
-subq $1, %rsp
+subq $8, %rsp
 movq %rbp, %rax
-push %rax
-push %rdi
+subq $8, %rax
+pushq %rax
+pushq %rdi
 movq $2, %rdi
 call @malloc
 movq %rax, %rbx
-pop %rdi
-pop %rax
-movq %rbx, %rax
+popq %rdi
+popq %rax
+movq %rbx, (%rax)
 movq %rbp, %rax
-movq %rax, %rbx
+subq $64, %rax
+movq (%rax), %rbx
 movq %rbx, %rcx
-movq %rdi, %rcx
+movq %rdi, (%rcx)
 movq %rbp, %rax
-movq %rax, %rbx
+subq $64, %rax
+movq (%rax), %rbx
 leaq 1(%rbx), %rcx
-movq $0, %rcx
+movq $0, (%rcx)
 movq %rbp, %rax
-movq %rax, %rbx
+subq $64, %rax
+movq (%rax), %rbx
 movq %rbx, %rax
 movq %rbp, %rsp
-pop %rbp
+popq %rbp
 ret
 movq %rbp, %rsp
-pop %rbp
+popq %rbp
 ret

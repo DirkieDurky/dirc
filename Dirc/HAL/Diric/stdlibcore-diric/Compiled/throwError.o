@@ -3,7 +3,7 @@ push lr _ _
 push fp _ _
 mov sp _ fp
 push r0 _ _
-mov fp _ r1
+sub|i2 fp 1 r1
 load r1 _ r2
 mov r2 _ r0
 call @print _ _

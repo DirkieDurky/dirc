@@ -1,219 +1,227 @@
 swap:
-push %rbp
+pushq %rbp
 movq %rsp, %rbp
-subq $1, %rsp
+subq $8, %rsp
 movq %rbp, %rax
+subq $8, %rax
 leaq (%rdi, %rsi), %rcx
-movq %rcx, %rbx
-movq %rbx, %rax
+movq (%rcx), %rbx
+movq %rbx, (%rax)
 leaq (%rdi, %rsi), %rbx
 leaq (%rdi, %rdx), %rbp
-movq %rbp, %rcx
-movq %rcx, %rbx
+movq (%rbp), %rcx
+movq %rcx, (%rbx)
 leaq (%rdi, %rdx), %rbx
 movq %rbp, %rcx
-movq %rcx, %rbp
-movq %rbp, %rbx
+subq $64, %rcx
+movq (%rcx), %rbp
+movq %rbp, (%rbx)
 movq %rbp, %rsp
-pop %rbp
+popq %rbp
 ret
 
 partition:
-push %rbp
+pushq %rbp
 movq %rsp, %rbp
-subq $3, %rsp
+subq $24, %rsp
 movq %rbp, %rax
+subq $8, %rax
 leaq (%rdi, %rdx), %rcx
-movq %rcx, %rbx
-movq %rbx, %rax
+movq (%rcx), %rbx
+movq %rbx, (%rax)
 movq %rbp, %rax
-subq $1, %rax
+subq $16, %rax
 movq %rsi, %rbx
 subq $1, %rbx
-movq %rbx, %rax
+movq %rbx, (%rax)
 movq %rbp, %rax
-subq $2, %rax
-movq %rsi, %rax
+subq $24, %rax
+movq %rsi, (%rax)
 _sortArray_while0:
 movq %rbp, %rax
-subq $2, %rax
-movq %rax, %rbx
+subq $192, %rax
+movq (%rax), %rbx
 movq %rdx, %rax
 subq $1, %rax
 cmpq %rax, %rbx
 jle _sortArray_whileEnd0
 movq %rbp, %rax
-subq $2, %rax
-movq %rax, %rbx
+subq $192, %rax
+movq (%rax), %rbx
 leaq (%rdi, %rbx), %rcx
-movq %rcx, %rax
+movq (%rcx), %rax
 movq %rbp, %rbx
-movq %rbx, %rcx
+subq $64, %rbx
+movq (%rbx), %rcx
 cmpq %rcx, %rax
 jle _sortArray_if0
 movq %rbp, %rax
-subq $1, %rax
+subq $16, %rax
 movq %rbp, %rbx
-subq $1, %rbx
-movq %rbx, %rcx
+subq $128, %rbx
+movq (%rbx), %rcx
 leaq 1(%rcx), %rbx
-movq %rbx, %rax
-push %rdx
-push %rsi
-push %rdi
+movq %rbx, (%rax)
+pushq %rdx
+pushq %rsi
+pushq %rdi
 movq %rbp, %rax
-subq $5, %rax
-movq %rax, %rbx
+subq $48, %rax
+movq (%rax), %rbx
 movq %rbx, %rdi
 movq %rbp, %rax
-subq $1, %rax
-movq %rax, %rcx
+subq $128, %rax
+movq (%rax), %rcx
 movq %rcx, %rsi
 movq %rbp, %rax
-subq $2, %rax
-movq %rax, %rbp
+subq $192, %rax
+movq (%rax), %rbp
 movq %rbp, %rdx
 call swap
-pop %rdi
-pop %rsi
-pop %rdx
+popq %rdi
+popq %rsi
+popq %rdx
 _sortArray_if0:
 _sortArray_while1:
 movq %rbp, %rax
-subq $2, %rax
+subq $24, %rax
 movq %rbp, %rbx
-subq $2, %rbx
-movq %rbx, %rcx
+subq $192, %rbx
+movq (%rbx), %rcx
 leaq 1(%rcx), %rbx
-movq %rbx, %rax
+movq %rbx, (%rax)
 jmp _sortArray_while0
 _sortArray_whileEnd0:
-push %rdx
-push %rsi
-push %rdi
+pushq %rdx
+pushq %rsi
+pushq %rdi
 movq %rbp, %rax
-subq $5, %rax
-movq %rax, %rbx
+subq $48, %rax
+movq (%rax), %rbx
 movq %rbx, %rdi
 movq %rbp, %rax
-subq $1, %rax
-movq %rax, %rcx
+subq $128, %rax
+movq (%rax), %rcx
 leaq 1(%rcx), %rax
 movq %rax, %rsi
 movq %rbp, %rcx
-subq $3, %rcx
-movq %rcx, %rbp
+subq $32, %rcx
+movq (%rcx), %rbp
 movq %rbp, %rdx
 call swap
-pop %rdi
-pop %rsi
-pop %rdx
+popq %rdi
+popq %rsi
+popq %rdx
 movq %rbp, %rax
-subq $1, %rax
-movq %rax, %rbx
+subq $128, %rax
+movq (%rax), %rbx
 leaq 1(%rbx), %rax
 movq %rbp, %rsp
-pop %rbp
+popq %rbp
 ret
 movq %rbp, %rsp
-pop %rbp
+popq %rbp
 ret
 
 quicksortRec:
-push %rbp
+pushq %rbp
 movq %rsp, %rbp
-subq $1, %rsp
+subq $8, %rsp
 cmpq %rdx, %rsi
 jg _sortArray_if1
 movq %rbp, %rax
-push %rax
-push %rdx
-push %rsi
-push %rdi
+subq $8, %rax
+pushq %rax
+pushq %rdx
+pushq %rsi
+pushq %rdi
 movq %rbp, %rbx
-subq $4, %rbx
-movq %rbx, %rcx
+subq $40, %rbx
+movq (%rbx), %rcx
 movq %rcx, %rdi
 movq %rbp, %rbx
-subq $3, %rbx
-movq %rbx, %rbp
+subq $32, %rbx
+movq (%rbx), %rbp
 movq %rbp, %rsi
 movq %rbp, %rbx
-subq $2, %rbx
-movq %rbx, %rsp
+subq $24, %rbx
+movq (%rbx), %rsp
 movq %rsp, %rdx
 call partition
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rdx
-pop %rax
-movq %rbx, %rax
-push %rdx
-push %rsi
-push %rdi
+popq %rdi
+popq %rsi
+popq %rdx
+popq %rax
+movq %rbx, (%rax)
+pushq %rdx
+pushq %rsi
+pushq %rdi
 movq %rbp, %rax
-subq $3, %rax
-movq %rax, %rbx
+subq $32, %rax
+movq (%rax), %rbx
 movq %rbx, %rdi
 movq %rbp, %rax
-subq $2, %rax
-movq %rax, %rcx
+subq $24, %rax
+movq (%rax), %rcx
 movq %rcx, %rsi
 movq %rbp, %rax
-movq %rax, %rbp
+subq $64, %rax
+movq (%rax), %rbp
 movq %rbp, %rax
 subq $1, %rax
 movq %rax, %rdx
 call quicksortRec
-pop %rdi
-pop %rsi
-pop %rdx
-push %rdx
-push %rsi
-push %rdi
+popq %rdi
+popq %rsi
+popq %rdx
+pushq %rdx
+pushq %rsi
+pushq %rdi
 movq %rbp, %rax
-subq $3, %rax
-movq %rax, %rbx
+subq $32, %rax
+movq (%rax), %rbx
 movq %rbx, %rdi
 movq %rbp, %rax
-movq %rax, %rcx
+subq $64, %rax
+movq (%rax), %rcx
 leaq 1(%rcx), %rax
 movq %rax, %rsi
 movq %rbp, %rcx
-subq $1, %rcx
-movq %rcx, %rbp
+subq $16, %rcx
+movq (%rcx), %rbp
 movq %rbp, %rdx
 call quicksortRec
-pop %rdi
-pop %rsi
-pop %rdx
+popq %rdi
+popq %rsi
+popq %rdx
 _sortArray_if1:
 movq %rbp, %rsp
-pop %rbp
+popq %rbp
 ret
 
 sortArray:
-push %rbp
+pushq %rbp
 movq %rsp, %rbp
 cmpq $1, %rsi
 jle _sortArray_if2
 _sortArray_if2:
-push %rsi
-push %rdi
+pushq %rsi
+pushq %rdi
 movq %rbp, %rax
-subq $1, %rax
-movq %rax, %rbx
+subq $16, %rax
+movq (%rax), %rbx
 movq %rbx, %rdi
 movq $0, %rsi
 movq %rbp, %rax
-movq %rax, %rcx
+subq $8, %rax
+movq (%rax), %rcx
 movq %rcx, %rax
 subq $1, %rax
 movq %rax, %rdx
 call quicksortRec
-pop %rdi
-pop %rsi
+popq %rdi
+popq %rsi
 movq %rbp, %rsp
-pop %rbp
+popq %rbp
 ret

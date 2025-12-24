@@ -1,201 +1,213 @@
 printArray:
-push %rbp
+pushq %rbp
 movq %rsp, %rbp
-subq $12, %rsp
+subq $96, %rsp
 movq %rbp, %rax
-push %rax
-push %rsi
-push %rdi
+subq $8, %rax
+pushq %rax
+pushq %rsi
+pushq %rdi
 movq $2, %rdi
 call @malloc
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rax
-movq %rbx, %rax
+popq %rdi
+popq %rsi
+popq %rax
+movq %rbx, (%rax)
 movq %rbp, %rax
-movq %rax, %rbx
+subq $64, %rax
+movq (%rax), %rbx
 movq %rbx, %rax
-movq $91, %rax
+movq $91, (%rax)
 leaq 1(%rbx), %rax
-movq $0, %rax
+movq $0, (%rax)
 movq %rbp, %rax
-subq $1, %rax
-movq $0, %rax
+subq $16, %rax
+movq $0, (%rax)
 _printArray_while0:
 movq %rbp, %rax
-subq $1, %rax
-movq %rax, %rbx
+subq $128, %rax
+movq (%rax), %rbx
 cmpq %rsi, %rbx
 jg _printArray_whileEnd0
 movq %rbp, %rax
-subq $2, %rax
-push %rax
-push %rsi
-push %rdi
+subq $24, %rax
+pushq %rax
+pushq %rsi
+pushq %rdi
 movq %rbp, %rbx
-subq $14, %rbx
-movq %rbx, %rcx
+subq $120, %rbx
+movq (%rbx), %rcx
 movq %rbp, %rbx
-subq $1, %rbx
-movq %rbx, %rdx
+subq $128, %rbx
+movq (%rbx), %rdx
 leaq (%rcx, %rdx), %rbp
-movq %rbp, %rbx
+movq (%rbp), %rbx
 movq %rbx, %rdi
 call @intToString
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rax
-movq %rbx, %rax
+popq %rdi
+popq %rsi
+popq %rax
+movq %rbx, (%rax)
 movq %rbp, %rax
-subq $3, %rax
-push %rax
-push %rsi
-push %rdi
+subq $32, %rax
+pushq %rax
+pushq %rsi
+pushq %rdi
 movq %rbp, %rbx
-movq %rbx, %rcx
+subq $64, %rbx
+movq (%rbx), %rcx
 movq %rcx, %rdi
 movq %rbp, %rbx
-subq $2, %rbx
-movq %rbx, %rdx
+subq $192, %rbx
+movq (%rbx), %rdx
 movq %rdx, %rsi
 call @concat
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rax
-movq %rbx, %rax
-push %rsi
-push %rdi
+popq %rdi
+popq %rsi
+popq %rax
+movq %rbx, (%rax)
+pushq %rsi
+pushq %rdi
 movq %rbp, %rax
-movq %rax, %rbx
+subq $64, %rax
+movq (%rax), %rbx
 movq %rbx, %rdi
 call @free
-pop %rdi
-pop %rsi
-push %rsi
-push %rdi
+popq %rdi
+popq %rsi
+pushq %rsi
+pushq %rdi
 movq %rbp, %rax
-subq $2, %rax
-movq %rax, %rbx
+subq $192, %rax
+movq (%rax), %rbx
 movq %rbx, %rdi
 call @free
-pop %rdi
-pop %rsi
+popq %rdi
+popq %rsi
 movq %rbp, %rax
+subq $8, %rax
 movq %rbp, %rbx
-subq $3, %rbx
-movq %rbx, %rcx
-movq %rcx, %rax
-push %rsi
-push %rdi
+subq $256, %rbx
+movq (%rbx), %rcx
+movq %rcx, (%rax)
+pushq %rsi
+pushq %rdi
 movq %rbp, %rax
-subq $3, %rax
-movq %rax, %rbx
+subq $256, %rax
+movq (%rax), %rbx
 movq %rbx, %rdi
 call @free
-pop %rdi
-pop %rsi
+popq %rdi
+popq %rsi
 movq %rbp, %rax
-subq $1, %rax
-movq %rax, %rbx
+subq $128, %rax
+movq (%rax), %rbx
 movq %rsi, %rax
 subq $1, %rax
 cmpq %rax, %rbx
 jg _printArray_if0
 movq %rbp, %rax
-subq $4, %rax
-push %rax
-push %rsi
-push %rdi
+subq $40, %rax
+pushq %rax
+pushq %rsi
+pushq %rdi
 movq %rbp, %rbx
-movq %rbx, %rcx
+subq $64, %rbx
+movq (%rbx), %rcx
 movq %rcx, %rdi
 movq %rbp, %rbx
-subq $7, %rbx
+subq $64, %rbx
 movq %rbx, %rdx
-movq $44, %rdx
+movq $44, (%rdx)
 leaq 1(%rbx), %rdx
-movq $32, %rdx
+movq $32, (%rdx)
 leaq 2(%rbx), %rdx
-movq $0, %rdx
+movq $0, (%rdx)
 movq %rbx, %rsi
 call @concat
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rax
-movq %rbx, %rax
-push %rsi
-push %rdi
+popq %rdi
+popq %rsi
+popq %rax
+movq %rbx, (%rax)
+pushq %rsi
+pushq %rdi
 movq %rbp, %rax
-movq %rax, %rbx
+subq $64, %rax
+movq (%rax), %rbx
 movq %rbx, %rdi
 call @free
-pop %rdi
-pop %rsi
+popq %rdi
+popq %rsi
 movq %rbp, %rax
+subq $8, %rax
 movq %rbp, %rbx
-subq $4, %rbx
-movq %rbx, %rcx
-movq %rcx, %rax
-push %rsi
-push %rdi
+subq $320, %rbx
+movq (%rbx), %rcx
+movq %rcx, (%rax)
+pushq %rsi
+pushq %rdi
 movq %rbp, %rax
-subq $4, %rax
-movq %rax, %rbx
+subq $320, %rax
+movq (%rax), %rbx
 movq %rbx, %rdi
 call @free
-pop %rdi
-pop %rsi
+popq %rdi
+popq %rsi
 _printArray_if0:
 _printArray_while1:
 movq %rbp, %rax
-subq $1, %rax
+subq $16, %rax
 movq %rbp, %rbx
-subq $1, %rbx
-movq %rbx, %rcx
+subq $128, %rbx
+movq (%rbx), %rcx
 leaq 1(%rcx), %rbx
-movq %rbx, %rax
+movq %rbx, (%rax)
 jmp _printArray_while0
 _printArray_whileEnd0:
 movq %rbp, %rax
-push %rax
-push %rsi
-push %rdi
+subq $8, %rax
+pushq %rax
+pushq %rsi
+pushq %rdi
 movq %rbp, %rbx
-movq %rbx, %rcx
+subq $64, %rbx
+movq (%rbx), %rcx
 movq %rcx, %rdi
 movq %rbp, %rbx
-subq $3, %rbx
+subq $32, %rbx
 movq %rbx, %rdx
-movq $93, %rdx
+movq $93, (%rdx)
 leaq 1(%rbx), %rdx
-movq $0, %rdx
+movq $0, (%rdx)
 movq %rbx, %rsi
 call @concat
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rax
-movq %rbx, %rax
-push %rsi
-push %rdi
+popq %rdi
+popq %rsi
+popq %rax
+movq %rbx, (%rax)
+pushq %rsi
+pushq %rdi
 movq %rbp, %rax
-movq %rax, %rbx
+subq $64, %rax
+movq (%rax), %rbx
 movq %rbx, %rdi
 call @println
-pop %rdi
-pop %rsi
-push %rsi
-push %rdi
+popq %rdi
+popq %rsi
+pushq %rsi
+pushq %rdi
 movq %rbp, %rax
-movq %rax, %rbx
+subq $64, %rax
+movq (%rax), %rbx
 movq %rbx, %rdi
 call @free
-pop %rdi
-pop %rsi
+popq %rdi
+popq %rsi
 movq %rbp, %rsp
-pop %rbp
+popq %rbp
 ret

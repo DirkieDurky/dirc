@@ -11,11 +11,6 @@ public class CodeGenBaseX86 : ICodeGenBase
     private StringBuilder _code = new();
     public StringBuilder Code => _code;
 
-    public void EmitStartLabel()
-    {
-        EmitLabel($"_start");
-    }
-
     public void EmitLabel(string name)
     {
         Emit($"{name}:");
@@ -81,6 +76,10 @@ public class CodeGenBaseX86 : ICodeGenBase
                 {
                     EmitMov(left!, result);
                     break;
+                }
+                if (right is NumberLiteralNode numberLiteralNode && int.Parse(numberLiteralNode.Value) < 0)
+                {
+
                 }
                 EmitMov(left, result);
                 Emit($"subq {AddOperandPrefix(right)}, %{result}");
@@ -176,24 +175,25 @@ public class CodeGenBaseX86 : ICodeGenBase
 
     public void EmitPush(IOperand value)
     {
-        Emit($"push {AddOperandPrefix(value)}");
+        Emit($"pushq {AddOperandPrefix(value)}");
     }
 
     public void EmitPop(Register result)
     {
-        Emit($"pop %{result}");
+        Emit($"popq %{result}");
     }
 
     public void EmitStore(IOperand value, IOperand address)
     {
-        // string addressStr = IsAssemblyReady(address) ? $"{address.AsOperand()}(%rip)" : $"(%{address.AsOperand()})";
-        string addressStr = AddOperandPrefix(address);
+        string addressStr = IsAssemblyReady(address) ? $"${address.AsOperand()}" : $"(%{address.AsOperand()})";
+        // string addressStr = AddOperandPrefix(address);
         Emit($"movq {AddOperandPrefix(value)}, {addressStr}");
     }
 
     public void EmitLoad(IOperand location, Register result)
     {
-        Emit($"movq {AddOperandPrefix(location)}, %{result}");
+        string addressStr = IsAssemblyReady(location) ? $"${location.AsOperand()}" : $"(%{location.AsOperand()})";
+        Emit($"movq {addressStr}, %{result}");
     }
 
     public void EmitNoop()

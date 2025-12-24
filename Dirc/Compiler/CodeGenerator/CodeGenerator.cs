@@ -96,7 +96,7 @@ class CodeGenerator
             {
                 throw new CodeGenException("File contains top-level code. Libraries may not contain any top-level code.", null, Context.Options, Context.BuildContext);
             }
-            _codeGenBase.EmitStartLabel();
+            _codeGenBase.Emit(Context.Options.TargetArchitecture.StartLabel);
             Context.StackframeSize = Context.FunctionFactory.CalculateStackframeSize(nodes);
             Context.FunctionFactory.AllocateStackframe(Context);
         }

@@ -1,14 +1,15 @@
 print:
-push %rbp
+pushq %rbp
 movq %rsp, %rbp
-push %rdi
+pushq %rdi
 movq $1, %rdi
 movq %rbp, %rax
-movq %rax, %rbx
+subq $8, %rax
+movq (%rax), %rbx
 movq %rbx, %rsi
 movq $20, %rdx
 call @write
-pop %rdi
+popq %rdi
 movq %rbp, %rsp
-pop %rbp
+popq %rbp
 ret

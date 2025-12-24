@@ -32,7 +32,7 @@ class IdentifierFactory
             _codeGenBase.EmitBinaryOperation(
                 Operation.Sub,
                 new ReadonlyRegister(context.FP),
-                new NumberLiteralNode(stackVar.FramePointerOffset * context.Options.TargetArchitecture.StackAlignment),
+                new NumberLiteralNode(stackVar.FramePointerOffset * context.Options.TargetArchitecture.StackSlotSize),
                 tmp
             );
 

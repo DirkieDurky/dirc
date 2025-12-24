@@ -11,11 +11,6 @@ public class CodeGenBaseDiric : ICodeGenBase
     private StringBuilder _code = new();
     public StringBuilder Code => _code;
 
-    public void EmitStartLabel()
-    {
-        EmitLabel($"_start");
-    }
-
     public void EmitLabel(string name)
     {
         Emit($"label {name}");

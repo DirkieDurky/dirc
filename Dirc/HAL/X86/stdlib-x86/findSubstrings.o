@@ -1,308 +1,312 @@
 findFirstSubstring:
-push %rbp
+pushq %rbp
 movq %rsp, %rbp
-subq $4, %rsp
+subq $32, %rsp
 movq %rbp, %rax
-push %rax
-push %rdx
-push %rsi
-push %rdi
+subq $8, %rax
+pushq %rax
+pushq %rdx
+pushq %rsi
+pushq %rdi
 movq %rbp, %rbx
-subq $7, %rbx
-movq %rbx, %rcx
+subq $64, %rbx
+movq (%rbx), %rcx
 movq %rcx, %rdi
 call @strlen
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rdx
-pop %rax
-movq %rbx, %rax
+popq %rdi
+popq %rsi
+popq %rdx
+popq %rax
+movq %rbx, (%rax)
 movq %rbp, %rax
-subq $1, %rax
-push %rax
-push %rdx
-push %rsi
-push %rdi
+subq $16, %rax
+pushq %rax
+pushq %rdx
+pushq %rsi
+pushq %rdi
 movq %rbp, %rbx
-subq $6, %rbx
-movq %rbx, %rcx
+subq $56, %rbx
+movq (%rbx), %rcx
 movq %rcx, %rdi
 call @strlen
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rdx
-pop %rax
-movq %rbx, %rax
+popq %rdi
+popq %rsi
+popq %rdx
+popq %rax
+movq %rbx, (%rax)
 movq %rbp, %rax
-subq $2, %rax
-movq $0, %rax
+subq $24, %rax
+movq $0, (%rax)
 movq %rbp, %rax
-subq $3, %rax
-movq %rdx, %rax
+subq $32, %rax
+movq %rdx, (%rax)
 _findSubstrings_while0:
 movq %rbp, %rax
-subq $3, %rax
-movq %rax, %rbx
+subq $256, %rax
+movq (%rax), %rbx
 movq %rbp, %rax
-movq %rax, %rcx
+subq $64, %rax
+movq (%rax), %rcx
 cmpq %rcx, %rbx
 jg _findSubstrings_whileEnd0
 movq %rbp, %rax
-subq $3, %rax
-movq %rax, %rbx
+subq $256, %rax
+movq (%rax), %rbx
 leaq (%rdi, %rbx), %rcx
-movq %rcx, %rax
+movq (%rcx), %rax
 movq %rbp, %rbx
-subq $2, %rbx
-movq %rbx, %rcx
+subq $192, %rbx
+movq (%rbx), %rcx
 leaq (%rsi, %rcx), %rbp
-movq %rbp, %rbx
+movq (%rbp), %rbx
 cmpq %rbx, %rax
 jge _findSubstrings_else0
 movq %rbp, %rax
-subq $2, %rax
+subq $24, %rax
 movq %rbp, %rbx
-subq $2, %rbx
-movq %rbx, %rcx
+subq $192, %rbx
+movq (%rbx), %rcx
 leaq 1(%rcx), %rbx
-movq %rbx, %rax
+movq %rbx, (%rax)
 movq %rbp, %rax
-subq $2, %rax
-movq %rax, %rbx
+subq $192, %rax
+movq (%rax), %rbx
 movq %rbp, %rax
-subq $1, %rax
-movq %rax, %rcx
+subq $128, %rax
+movq (%rax), %rcx
 cmpq %rcx, %rbx
 jge _findSubstrings_if0
 movq %rbp, %rax
-subq $3, %rax
-movq %rax, %rbx
+subq $256, %rax
+movq (%rax), %rbx
 movq %rbp, %rax
-subq $2, %rax
-movq %rax, %rcx
+subq $192, %rax
+movq (%rax), %rcx
 movq %rbx, %rax
 subq %rcx, %rax
 leaq 1(%rax), %rbx
 movq %rbx, %rax
 movq %rbp, %rsp
-pop %rbp
+popq %rbp
 ret
 _findSubstrings_if0:
 jmp _findSubstrings_ifElseEnd0
 _findSubstrings_else0:
 movq %rbp, %rax
-subq $2, %rax
-movq $0, %rax
+subq $24, %rax
+movq $0, (%rax)
 _findSubstrings_ifElseEnd0:
 _findSubstrings_while1:
 movq %rbp, %rax
-subq $3, %rax
+subq $32, %rax
 movq %rbp, %rbx
-subq $3, %rbx
-movq %rbx, %rcx
+subq $256, %rbx
+movq (%rbx), %rcx
 leaq 1(%rcx), %rbx
-movq %rbx, %rax
+movq %rbx, (%rax)
 jmp _findSubstrings_while0
 _findSubstrings_whileEnd0:
 movq $-1, %rax
 movq %rbp, %rsp
-pop %rbp
+popq %rbp
 ret
 movq %rbp, %rsp
-pop %rbp
+popq %rbp
 ret
 
 findAllNonOverlappingSubstrings:
-push %rbp
+pushq %rbp
 movq %rsp, %rbp
-subq $6, %rsp
+subq $48, %rsp
 movq %rbp, %rax
-push %rax
-push %rsi
-push %rdi
+subq $8, %rax
+pushq %rax
+pushq %rsi
+pushq %rdi
 movq %rbp, %rbx
-subq $7, %rbx
-movq %rbx, %rcx
+subq $64, %rbx
+movq (%rbx), %rcx
 movq %rcx, %rdi
 call @strlen
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rax
-movq %rbx, %rax
+popq %rdi
+popq %rsi
+popq %rax
+movq %rbx, (%rax)
 movq %rbp, %rax
-subq $1, %rax
-push %rax
-push %rsi
-push %rdi
+subq $16, %rax
+pushq %rax
+pushq %rsi
+pushq %rdi
 movq $1, %rdi
 call @malloc
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rax
-movq %rbx, %rax
+popq %rdi
+popq %rsi
+popq %rax
+movq %rbx, (%rax)
 movq %rbp, %rax
-subq $2, %rax
-movq $0, %rax
+subq $24, %rax
+movq $0, (%rax)
 movq %rbp, %rax
-subq $3, %rax
-movq $0, %rax
+subq $32, %rax
+movq $0, (%rax)
 movq %rbp, %rax
-subq $4, %rax
-push %rax
-push %rsi
-push %rdi
+subq $40, %rax
+pushq %rax
+pushq %rsi
+pushq %rdi
 movq %rbp, %rbx
-subq $8, %rbx
-movq %rbx, %rcx
+subq $72, %rbx
+movq (%rbx), %rcx
 movq %rcx, %rdi
 movq %rbp, %rbx
-subq $7, %rbx
-movq %rbx, %rdx
+subq $64, %rbx
+movq (%rbx), %rdx
 movq %rdx, %rsi
 movq %rbp, %rbx
-subq $3, %rbx
-movq %rbx, %rbp
+subq $256, %rbx
+movq (%rbx), %rbp
 movq %rbp, %rdx
 call findFirstSubstring
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rax
-movq %rbx, %rax
+popq %rdi
+popq %rsi
+popq %rax
+movq %rbx, (%rax)
 _findSubstrings_while2:
 movq %rbp, %rax
-subq $4, %rax
-movq %rax, %rbx
+subq $320, %rax
+movq (%rax), %rbx
 cmpq $-1, %rbx
 je _findSubstrings_whileEnd1
 movq %rbp, %rax
-subq $2, %rax
+subq $24, %rax
 movq %rbp, %rbx
-subq $2, %rbx
-movq %rbx, %rcx
+subq $192, %rbx
+movq (%rbx), %rcx
 leaq 1(%rcx), %rbx
-movq %rbx, %rax
+movq %rbx, (%rax)
 movq %rbp, %rax
-subq $5, %rax
-push %rax
-push %rsi
-push %rdi
+subq $48, %rax
+pushq %rax
+pushq %rsi
+pushq %rdi
 movq %rbp, %rbx
-subq $1, %rbx
-movq %rbx, %rcx
+subq $128, %rbx
+movq (%rbx), %rcx
 movq %rcx, %rdi
 call @getSize
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rax
-movq %rbx, %rax
+popq %rdi
+popq %rsi
+popq %rax
+movq %rbx, (%rax)
 movq %rbp, %rax
-subq $2, %rax
-movq %rax, %rbx
+subq $192, %rax
+movq (%rax), %rbx
 movq %rbp, %rax
-subq $5, %rax
-movq %rax, %rcx
+subq $384, %rax
+movq (%rax), %rcx
 cmpq %rcx, %rbx
 jne _findSubstrings_if1
 movq %rbp, %rax
-subq $1, %rax
-push %rax
-push %rsi
-push %rdi
+subq $16, %rax
+pushq %rax
+pushq %rsi
+pushq %rdi
 movq %rbp, %rbx
-subq $1, %rbx
-movq %rbx, %rcx
+subq $128, %rbx
+movq (%rbx), %rcx
 movq %rcx, %rdi
 movq %rbp, %rbx
-subq $5, %rbx
-movq %rbx, %rdx
+subq $384, %rbx
+movq (%rbx), %rdx
 leaq 1(%rdx), %rbx
 movq %rbx, %rsi
 call @realloc
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rax
-movq %rbx, %rax
+popq %rdi
+popq %rsi
+popq %rax
+movq %rbx, (%rax)
 _findSubstrings_if1:
 movq %rbp, %rax
-subq $1, %rax
-movq %rax, %rbx
+subq $128, %rax
+movq (%rax), %rbx
 movq %rbp, %rax
-subq $2, %rax
-movq %rax, %rcx
+subq $192, %rax
+movq (%rax), %rcx
 movq %rcx, %rax
 subq $1, %rax
 leaq (%rbx, %rax), %rdx
 movq %rbp, %rax
-subq $4, %rax
-movq %rax, %rbx
-movq %rbx, %rdx
+subq $320, %rax
+movq (%rax), %rbx
+movq %rbx, (%rdx)
 movq %rbp, %rax
-subq $3, %rax
+subq $32, %rax
 movq %rbp, %rbx
-subq $4, %rbx
-movq %rbx, %rcx
+subq $320, %rbx
+movq (%rbx), %rcx
 movq %rbp, %rbx
-movq %rbx, %rdx
+subq $64, %rbx
+movq (%rbx), %rdx
 leaq (%rcx, %rdx), %rbx
-movq %rbx, %rax
+movq %rbx, (%rax)
 movq %rbp, %rax
-subq $4, %rax
-push %rax
-push %rsi
-push %rdi
+subq $40, %rax
+pushq %rax
+pushq %rsi
+pushq %rdi
 movq %rbp, %rbx
-subq $8, %rbx
-movq %rbx, %rcx
+subq $72, %rbx
+movq (%rbx), %rcx
 movq %rcx, %rdi
 movq %rbp, %rbx
-subq $7, %rbx
-movq %rbx, %rdx
+subq $64, %rbx
+movq (%rbx), %rdx
 movq %rdx, %rsi
 movq %rbp, %rbx
-subq $3, %rbx
-movq %rbx, %rbp
+subq $256, %rbx
+movq (%rbx), %rbp
 movq %rbp, %rdx
 call findFirstSubstring
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rax
-movq %rbx, %rax
+popq %rdi
+popq %rsi
+popq %rax
+movq %rbx, (%rax)
 jmp _findSubstrings_while2
 _findSubstrings_whileEnd1:
 movq %rbp, %rax
-subq $1, %rax
-push %rax
-push %rsi
-push %rdi
+subq $16, %rax
+pushq %rax
+pushq %rsi
+pushq %rdi
 movq %rbp, %rbx
-subq $1, %rbx
-movq %rbx, %rcx
+subq $128, %rbx
+movq (%rbx), %rcx
 movq %rcx, %rdi
 movq %rbp, %rbx
-subq $2, %rbx
-movq %rbx, %rdx
+subq $192, %rbx
+movq (%rbx), %rdx
 movq %rdx, %rsi
 call @realloc
 movq %rax, %rbx
-pop %rdi
-pop %rsi
-pop %rax
-movq %rbx, %rax
+popq %rdi
+popq %rsi
+popq %rax
+movq %rbx, (%rax)
 movq %rbp, %rax
-subq $1, %rax
-movq %rax, %rbx
+subq $128, %rax
+movq (%rax), %rbx
 movq %rbx, %rax
 movq %rbp, %rsp
-pop %rbp
+popq %rbp
 ret
 movq %rbp, %rsp
-pop %rbp
+popq %rbp
 ret
